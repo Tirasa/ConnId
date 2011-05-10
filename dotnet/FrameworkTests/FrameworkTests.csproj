@@ -1,0 +1,165 @@
+<!--
+  ====================
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+  
+  Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.     
+  
+  The contents of this file are subject to the terms of the Common Development 
+  and Distribution License("CDDL") (the "License").  You may not use this file 
+  except in compliance with the License.
+  
+  You can obtain a copy of the License at 
+  http://IdentityConnectors.dev.java.net/legal/license.txt
+  See the License for the specific language governing permissions and limitations 
+  under the License. 
+  
+  When distributing the Covered Code, include this CDDL Header Notice in each file
+  and include the License file at identityconnectors/legal/license.txt.
+  If applicable, add the following below this CDDL Header, with the fields 
+  enclosed by brackets [] replaced by your own identifying information: 
+  "Portions Copyrighted [year] [name of copyright owner]"
+  ====================
+-->
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{32804F5A-812C-4FA6-835C-BDAE5B24D355}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FrameworkTests</RootNamespace>
+    <AssemblyName>FrameworkTests</AssemblyName>
+    <ProductName>FrameworkTests</ProductName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <Import Project="$(MSBuildProjectDirectory)\..\Framework.targets" />
+  <ItemGroup>
+    <Reference Include="nunit.framework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="MockConnector.cs" />
+    <Compile Include="CollectionUtilTests.cs" />
+    <Compile Include="ConnectorAttributeUtilTests.cs" />
+    <Compile Include="ConnectorFacadeTests.cs" />
+    <Compile Include="ConnectorFacadeExceptionTests.cs" />
+    <Compile Include="ExceptionUtilTests.cs" />
+    <Compile Include="GuardedByteArrayTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ObjectClassUtilTests.cs" />
+    <Compile Include="ObjectPoolTests.cs" />
+    <Compile Include="ConnectorInfoManagerTests.cs" />
+    <Compile Include="FilterTranslatorTests.cs" />
+    <Compile Include="LocaleTests.cs" />
+    <Compile Include="ObjectNormalizerFacadeTests.cs" />
+    <Compile Include="ObjectSerializationTests.cs" />
+    <Compile Include="PropertyBagTests.cs" />
+    <Compile Include="ProxyTests.cs" />
+    <Compile Include="SafeTypeTest.cs" />
+    <Compile Include="ScriptTests.cs" />
+    <Compile Include="GuardedStringTests.cs" />
+    <Compile Include="TestHelperTests.cs" />
+    <Compile Include="TestUtil.cs" />
+    <Compile Include="UpdateImplTests.cs" />
+    <None Include="app.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{F140E8DA-52B4-4159-992A-9DA10EA8EEFB}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Framework\Framework.csproj">
+      <Project>{8B24461B-456A-4032-89A1-CD418F7B5B62}</Project>
+      <Name>Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FrameworkInternal\FrameworkInternal.csproj">
+      <Project>{5B011775-B121-4EEE-A410-BA2D2F5BFB8B}</Project>
+      <Name>FrameworkInternal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestCommon\TestCommon.csproj">
+      <Project>{E6A207D2-E083-41BF-B522-D9D3EC09323E}</Project>
+      <Name>TestCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Target Name="BeforeBuild">
+    <MakeDir Directories="$(OutputPath)" />
+    <!-- Building test bundles and script executor factories here because we do not want FrameworkTests to depend on them -->
+    <!-- Build TestBundle V1 -->
+    <MSBuild Projects="..\TestBundles\TestBundleV1\TestBundleV1.csproj" />
+    <CreateItem Include="..\TestBundles\TestBundleV1\bin\$(Configuration)\TestBundleV1*.*">
+      <Output TaskParameter="Include" ItemName="V1SourceFiles" />
+    </CreateItem>
+    <CreateItem Include="..\TestBundles\TestBundleV1\bin\$(Configuration)\es*\**">
+      <Output TaskParameter="Include" ItemName="V1LocaleESSourceFiles" />
+    </CreateItem>
+    <Copy SourceFiles="@(V1LocaleESSourceFiles)" DestinationFolder="bin\$(Configuration)\%(RecursiveDir)" />
+    <Copy SourceFiles="@(V1SourceFiles)" DestinationFolder="bin\$(Configuration)" />
+    <!-- Build TestBundle V2 -->
+    <MSBuild Projects="..\TestBundles\TestBundleV2\TestBundleV2.csproj" />
+    <CreateItem Include="..\TestBundles\TestBundleV2\bin\$(Configuration)\TestBundleV2*.*">
+      <Output TaskParameter="Include" ItemName="V2SourceFiles" />
+    </CreateItem>
+    <Copy SourceFiles="@(V2SourceFiles)" DestinationFolder="bin\$(Configuration)" />
+    <!-- Build BooScriptExecutor -->
+    <MSBuild Projects="..\BooScriptExecutorFactory\BooScriptExecutorFactory.csproj" />
+    <CreateItem Include="..\BooScriptExecutorFactory\bin\$(Configuration)\Boo*.dll">
+      <Output TaskParameter="Include" ItemName="BooScriptExecutorFiles" />
+    </CreateItem>
+    <Copy SourceFiles="@(BooScriptExecutorFiles)" DestinationFolder="bin\$(Configuration)" />
+    <!-- Build ShellScriptExecutor -->
+    <MSBuild Projects="..\ShellScriptExecutorFactory\ShellScriptExecutorFactory.csproj" />
+    <CreateItem Include="..\ShellScriptExecutorFactory\bin\$(Configuration)\Shell*.dll">
+      <Output TaskParameter="Include" ItemName="ShellScriptExecutorFiles" />
+    </CreateItem>
+    <Copy SourceFiles="@(ShellScriptExecutorFiles)" DestinationFolder="bin\$(Configuration)" />
+  </Target>
+  <Target Name="AfterBuild" Condition=" !Exists('$(SharpDevelopBinPath)') ">
+    <!-- Run the tests -->
+    <CreateItem Include="FrameworkTests.dll">
+      <Output TaskParameter="Include" ItemName="TestAssembly" />
+    </CreateItem>
+    <MSBuild.Community.Tasks.NUnit DisableShadowCopy="true" WorkingDirectory="bin\$(Configuration)" Assemblies="@(TestAssembly)" ContinueOnError="true" ToolPath="$(NUNIT_HOME)\bin" OutputXmlFile="TestResults_$(Configuration).xml" />
+  </Target>
+  <Target Name="Clean">
+    <RemoveDir Directories="bin;obj">
+    </RemoveDir>
+  </Target>
+  <ItemGroup>
+    <EmbeddedResource Include="Org.IdentityConnectors.TestConnector.FakeConnector\config\config.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Org.IdentityConnectors.TestConnector.FakeConnector\config\myconfig\config.xml" />
+  </ItemGroup>
+</Project>

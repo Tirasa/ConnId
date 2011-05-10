@@ -1,0 +1,129 @@
+<!--
+  ====================
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+  
+  Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.     
+  
+  The contents of this file are subject to the terms of the Common Development 
+  and Distribution License("CDDL") (the "License").  You may not use this file 
+  except in compliance with the License.
+  
+  You can obtain a copy of the License at 
+  http://IdentityConnectors.dev.java.net/legal/license.txt
+  See the License for the specific language governing permissions and limitations 
+  under the License. 
+  
+  When distributing the Covered Code, include this CDDL Header Notice in each file
+  and include the License file at identityconnectors/legal/license.txt.
+  If applicable, add the following below this CDDL Header, with the fields 
+  enclosed by brackets [] replaced by your own identifying information: 
+  "Portions Copyrighted [year] [name of copyright owner]"
+  ====================
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+    <PropertyGroup>                
+        <VersionFileIn>$(MSBuildProjectDirectory)\version.template</VersionFileIn>
+        <VersionFileOut>$(MSBuildProjectDirectory)\version.txt</VersionFileOut>
+        <Company>Sun Microsystems, Inc.</Company>
+        <Copyright>Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.</Copyright>
+        <FrameworkDistDir>$(MSBuildProjectDirectory)\..\Dist</FrameworkDistDir>
+        <FrameworkRootDir>$(MSBuildProjectDirectory)\..\..\</FrameworkRootDir>
+    </PropertyGroup>
+
+    <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+
+    <Target Name="SetRevision" Condition="'$(SVN_REVISION)' == ''">
+        <!--
+            Use the "framework" directory to compute the SVN revision.
+            That way, even if the last change to the framework was made in two
+            separate check-ins (for Java and .NET), both the Java and .NET framework
+            get the same revision (that of the last change of the "framework" directory).
+        -->
+        <SvnVersion LocalPath="$(FrameworkRootDir)" UseLastCommittedRevision="true">
+            <Output TaskParameter="Revision" PropertyName="SVN_REVISION" />
+        </SvnVersion>
+    </Target>
+
+    <Target Name="GenerateAssemblyInfo" DependsOnTargets="SetRevision">
+        <Version VersionFile="$(VersionFileIn)">
+            <Output TaskParameter="Major" PropertyName="Major" />
+            <Output TaskParameter="Minor" PropertyName="Minor" />
+            <Output TaskParameter="Build" PropertyName="Build" />
+        </Version>
+        <WriteLinesToFile File="$(VersionFileOut)" Lines="$(Major).$(Minor).$(Build).$(SVN_REVISION)" Overwrite="true" />
+        <AssemblyInfo CodeLanguage="CS"  
+            OutputFile="AssemblyInfo.cs"
+            AssemblyTitle="$(ProductName)"
+            AssemblyProduct="$(ProductName)"
+            AssemblyCopyright="$(Copyright)"
+            AssemblyCompany="$(Company)"             
+            AssemblyVersion="$(Major).$(Minor).$(Build).$(SVN_REVISION)" 
+            AssemblyFileVersion="$(Major).$(Minor).$(Build).$(SVN_REVISION)"
+            InternalsVisibleTo="$(InternalsVisibleTo)"
+        />
+    </Target>
+    
+    <Target Name="CopyOutput">
+        <MakeDir Directories="$(FrameworkDistDir)" Condition="!Exists('$(FrameworkDistDir)')" />
+        <Copy
+            SourceFiles="$(OutputPath)\$(TargetFileName)"
+            DestinationFolder="$(FrameworkDistDir)"
+        />
+    </Target>
+
+    <Target Name="BuildZip">
+        <Copy
+            SourceFiles="$(MSBuildProjectDirectory)\..\..\license.txt"
+            DestinationFolder="$(OutputPath)"
+        />
+        <Copy
+            SourceFiles="$(MSBuildProjectDirectory)\..\..\THIRDPARTYREADME.txt"
+            DestinationFolder="$(OutputPath)"
+        />
+        <ItemGroup>        
+            <ZipFiles Include="$(OutputPath)\*.*" Exclude="*.zip" />
+            <ZipFiles Include="$(OutputPath)\??-??\*.*" Exclude="*.zip" />
+        </ItemGroup>
+        <MakeDir Directories="$(FrameworkDistDir)" Condition="!Exists('$(FrameworkDistDir)')" />
+        <Zip
+            Files="@(ZipFiles)"
+            WorkingDirectory="$(OutputPath)" 
+            ZipFileName="$(FrameworkDistDir)\$(AssemblyName)-$(Major).$(Minor).$(Build).$(SVN_Revision).zip"
+        />
+    </Target>
+
+    <Target Name="NUnit" DependsOnTargets="Build">
+        <CreateItem Include="$(OutputPath)\*Tests.dll">
+            <Output TaskParameter="Include" ItemName="TestAssembly" />
+        </CreateItem>
+        <MSBuild.Community.Tasks.NUnit DisableShadowCopy="true" Assemblies="@(TestAssembly)" ContinueOnError="true" ToolPath="$(NUNIT_HOME)\bin" OutputXmlFile="$(OutputPath)\NUnitResults_$(Configuration).xml" />
+    </Target>
+
+    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    
+    <PropertyGroup>
+        <BuildDependsOn>
+            FrameworkBeforeBuild;
+            $(BuildDependsOn);
+            FrameworkAfterBuild
+        </BuildDependsOn>
+        <CleanDependsOn>            
+            $(CleanDependsOn);
+            FrameworkClean
+        </CleanDependsOn>
+    </PropertyGroup>
+
+    <Target Name="FrameworkBeforeBuild">
+        <CallTarget Targets="GenerateAssemblyInfo" />
+    </Target>
+
+    <Target Name="FrameworkAfterBuild">
+        <CallTarget Condition=" '$(CopyOutput)'=='true' " Targets="CopyOutput" />
+        <CallTarget Condition=" '$(Configuration)'=='Release' And '$(ZipRelease)'=='true' " Targets="BuildZip" />            
+    </Target>
+
+    <Target Name="FrameworkClean">
+        <RemoveDir Directories="$(FrameworkDistDir)"/>
+    </Target>
+    
+</Project>
