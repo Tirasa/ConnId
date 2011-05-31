@@ -24,10 +24,11 @@
     <PropertyGroup>                
         <VersionFileIn>$(MSBuildProjectDirectory)\version.template</VersionFileIn>
         <VersionFileOut>$(MSBuildProjectDirectory)\version.txt</VersionFileOut>
-        <Company>Sun Microsystems, Inc.</Company>
+        <Company>ForgeRock AS</Company>
         <Copyright>Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.</Copyright>
         <FrameworkDistDir>$(MSBuildProjectDirectory)\..\Dist</FrameworkDistDir>
-        <FrameworkRootDir>$(MSBuildProjectDirectory)\..\..\</FrameworkRootDir>
+        <!--FrameworkRootDir>$(MSBuildProjectDirectory)\..\..\</FrameworkRootDir-->
+	<FrameworkRootDir>$(MSBuildProjectDirectory)</FrameworkRootDir>
     </PropertyGroup>
 
     <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
@@ -73,11 +74,11 @@
 
     <Target Name="BuildZip">
         <Copy
-            SourceFiles="$(MSBuildProjectDirectory)\..\..\license.txt"
+            SourceFiles="$(MSBuildProjectDirectory)\..\legal\CDDLv1.txt"
             DestinationFolder="$(OutputPath)"
         />
         <Copy
-            SourceFiles="$(MSBuildProjectDirectory)\..\..\THIRDPARTYREADME.txt"
+            SourceFiles="$(MSBuildProjectDirectory)\..\legal\THIRDPARTYREADME.txt"
             DestinationFolder="$(OutputPath)"
         />
         <ItemGroup>        
