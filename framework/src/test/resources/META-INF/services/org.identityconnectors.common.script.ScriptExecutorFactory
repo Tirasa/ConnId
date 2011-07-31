@@ -1,0 +1,6 @@
+    #
+    org.identityconnectors.common.script.FooScriptExecutorFactory # For the Foo language.
+    org.identityconnectors.common.script.MissingScriptExecutorFactory # Does not exist and should be ignored.
+    org.identityconnectors.common.script.BarScriptExecutorFactory
+  
+    # org.identityconnectors.common.script.BarScriptExecutorFactory -- this should be ignored
