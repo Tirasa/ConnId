@@ -31,7 +31,7 @@
     <description>ConnId</description>
     <groupId>org.connid</groupId>
     <artifactId>connid</artifactId>
-    <version>1.3.1</version>
+    <version>1.3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- maven repository on sonatype -->
@@ -55,9 +55,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:svn:http://connid.googlecode.com/svn/base/tags/connid-1.3.1</connection>
-        <developerConnection>scm:svn:https://connid.googlecode.com/svn/base/tags/connid-1.3.1</developerConnection>
-        <url>http://connid.googlecode.com/svn/base/tags/connid-1.3.1</url>
+        <connection>scm:svn:http://connid.googlecode.com/svn/base/trunk/</connection>
+        <developerConnection>scm:svn:https://connid.googlecode.com/svn/base/trunk/</developerConnection>
+        <url>http://connid.googlecode.com/svn/base/trunk/</url>
     </scm>
 
     <issueManagement>
