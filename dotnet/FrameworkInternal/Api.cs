@@ -244,6 +244,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
     {
         private ObjectPoolConfiguration _connectorPooling;
 
+        private ResultsHandlerConfiguration _resultsHandlerConfiguration;
         private ConfigurationPropertiesImpl _configurationProperties;
         private ICollection<SafeType<APIOperation>> _supportedOperations =
             CollectionUtil.NewReadOnlySet<SafeType<APIOperation>>(new SafeType<APIOperation>[0]);
@@ -295,6 +296,21 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
             set
             {
                 _connectorPooling = value;
+            }
+        }
+        public ResultsHandlerConfiguration ResultsHandlerConfiguration
+        {
+            get
+            {
+                if (_resultsHandlerConfiguration == null)
+                {
+                    _resultsHandlerConfiguration = new ResultsHandlerConfiguration();
+                }
+                return _resultsHandlerConfiguration;
+            }
+            set
+            {
+                _resultsHandlerConfiguration = value;
             }
         }
         public ICollection<SafeType<APIOperation>> SupportedOperations

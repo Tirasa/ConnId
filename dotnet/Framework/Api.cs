@@ -47,6 +47,7 @@ namespace Org.IdentityConnectors.Framework.Api
         ConfigurationProperties ConfigurationProperties { get; }
         bool IsConnectorPoolingSupported { get; }
         ObjectPoolConfiguration ConnectorPoolConfiguration { get; }
+        ResultsHandlerConfiguration ResultsHandlerConfiguration { get; }
         ICollection<SafeType<APIOperation>> SupportedOperations { get; }
 
         int GetTimeout(SafeType<APIOperation> operation);
@@ -587,6 +588,154 @@ namespace Org.IdentityConnectors.Framework.Api
         public override String ToString()
         {
             return "{host=" + _host + ", port=" + _port + "}";
+        }
+    }
+    
+    
+    /// <summary>
+    /// Configuration for result handler chain
+    /// </summary>
+    public sealed class ResultsHandlerConfiguration
+    {
+
+        /// <summary>
+        /// Enables the {@link NormalizingResultsHandler} in the handler chain.
+        /// </summary>
+        private bool _enableNormalizingResultsHandler = true;
+
+        /// <summary>
+        /// Enables the {@link FilteredResultsHandler} in the handler chain.
+        /// </summary>
+        private bool _enableFilteredResultsHandler = true;
+
+        /// <summary>
+        /// Enables the case insensitive filtering.
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        private bool _enableCaseInsensitiveFilter = false;
+
+        /// <summary>
+        /// Enables the {@link AttributesToGetSearchResultsHandler} in the handler chain.
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        private bool _enableAttributesToGetSearchResultsHandler = true;
+
+
+        /// <summary>
+        /// Get the set number of maximum objects (idle+active)
+        /// </summary>
+        public bool EnableNormalizingResultsHandler
+        {
+            get
+            {
+                return _enableNormalizingResultsHandler;
+            }
+            set
+            {
+                _enableNormalizingResultsHandler = value;
+            }
+        }
+
+        /// <summary>
+        /// Get the maximum number of idle objects.
+        /// </summary>
+        public bool EnableFilteredResultsHandler
+        {
+            get
+            {
+                return _enableFilteredResultsHandler;
+            }
+            set
+            {
+                _enableFilteredResultsHandler = value;
+            }
+        }
+
+        /// <summary>
+        /// Max time to wait if the pool is waiting for a free object to become
+        /// available before failing.
+        /// </summary>
+        /// <remarks>
+        /// Zero means don't wait
+        /// </remarks>
+        public bool EnableCaseInsensitiveFilter
+        {
+            get
+            {
+                return _enableCaseInsensitiveFilter;
+            }
+            set
+            {
+                _enableCaseInsensitiveFilter = value;
+            }
+        }
+
+        /// <summary>
+        /// Minimum time to wait before evicting an idle object.
+        /// </summary>
+        /// <remarks>
+        /// Zero means don't wait
+        /// </remarks>
+        public bool EnableAttributesToGetSearchResultsHandler
+        {
+            get
+            {
+                return _enableAttributesToGetSearchResultsHandler;
+            }
+            set
+            {
+                _enableAttributesToGetSearchResultsHandler = value;
+            }
+        }
+        
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return 42;//return (int)(EnableNormalizingResultsHandler + EnableFilteredResultsHandler + EnableCaseInsensitiveFilter + EnableAttributesToGetSearchResultsHandler + MinIdle);
+            }
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if (obj is ResultsHandlerConfiguration)
+            {
+                ResultsHandlerConfiguration other = (ResultsHandlerConfiguration)obj;
+
+                if (EnableNormalizingResultsHandler != other.EnableNormalizingResultsHandler)
+                {
+                    return false;
+                }
+                if (EnableFilteredResultsHandler != other.EnableFilteredResultsHandler)
+                {
+                    return false;
+                }
+                if (EnableCaseInsensitiveFilter != other.EnableCaseInsensitiveFilter)
+                {
+                    return false;
+                }
+                if (EnableAttributesToGetSearchResultsHandler != other.EnableAttributesToGetSearchResultsHandler)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public override String ToString()
+        {
+            // poor man's toString()
+            IDictionary<String, Object> bld = new Dictionary<String, Object>();
+            bld["EnableNormalizingResultsHandler"] = EnableNormalizingResultsHandler;
+            bld["EnableFilteredResultsHandler"] = EnableFilteredResultsHandler;
+            bld["EnableCaseInsensitiveFilter"] = EnableCaseInsensitiveFilter;
+            bld["EnableAttributesToGetSearchResultsHandler"] = EnableAttributesToGetSearchResultsHandler;
+            return bld.ToString();
         }
     }
 }

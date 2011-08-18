@@ -1242,6 +1242,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
         static APIConfigurationHandlers()
         {
             HANDLERS.Add(new ConnectionPoolingConfigurationHandler());
+            HANDLERS.Add(new ResultsHandlerConfigurationHandler());
             HANDLERS.Add(new ConfigurationPropertyHandler());
             HANDLERS.Add(new ConfigurationPropertiesHandler());
             HANDLERS.Add(new APIConfigurationHandler());
@@ -1284,6 +1285,39 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                         val.MinEvictableIdleTimeMillis);
                 encoder.WriteIntField("minIdle",
                         val.MinIdle);
+            }
+        }
+        private class ResultsHandlerConfigurationHandler : AbstractObjectSerializationHandler
+        {
+            public ResultsHandlerConfigurationHandler()
+                : base(typeof(ResultsHandlerConfiguration), "ResultsHandlerConfiguration")
+            {
+
+            }
+            public override Object Deserialize(ObjectDecoder decoder)
+            {
+                ResultsHandlerConfiguration rv =
+                    new ResultsHandlerConfiguration();
+                rv.EnableNormalizingResultsHandler = (decoder.ReadBooleanField("enableNormalizingResultsHandler", rv.EnableNormalizingResultsHandler));
+                rv.EnableFilteredResultsHandler = (decoder.ReadBooleanField("enableFilteredResultsHandler", rv.EnableFilteredResultsHandler));
+                rv.EnableCaseInsensitiveFilter = (decoder.ReadBooleanField("enableCaseInsensitiveFilter", rv.EnableCaseInsensitiveFilter));
+                rv.EnableAttributesToGetSearchResultsHandler = (
+                        decoder.ReadBooleanField("enableAttributesToGetSearchResultsHandler", rv.EnableAttributesToGetSearchResultsHandler));
+                return rv;
+            }
+
+            public override void Serialize(Object obj, ObjectEncoder encoder)
+            {
+                ResultsHandlerConfiguration val =
+                    (ResultsHandlerConfiguration)obj;
+                encoder.WriteBooleanField("enableNormalizingResultsHandler",
+                        val.EnableNormalizingResultsHandler);
+                encoder.WriteBooleanField("enableFilteredResultsHandler",
+                        val.EnableFilteredResultsHandler);
+                encoder.WriteBooleanField("enableCaseInsensitiveFilter",
+                        val.EnableCaseInsensitiveFilter);
+                encoder.WriteBooleanField("enableAttributesToGetSearchResultsHandler",
+                        val.EnableAttributesToGetSearchResultsHandler);
             }
         }
         private class ConfigurationPropertyHandler : AbstractObjectSerializationHandler
@@ -1404,6 +1438,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                 rv.ConnectorPoolConfiguration = (
                         (ObjectPoolConfiguration)
                         decoder.ReadObjectField("connectorPoolConfiguration", null, null));
+                rv.ResultsHandlerConfiguration = (
+                        (ResultsHandlerConfiguration)
+                        decoder.ReadObjectField("resultsHandlerConfiguration", null, null));
                 rv.ConfigurationProperties = ((ConfigurationPropertiesImpl)
                                             decoder.ReadObjectField("ConfigurationProperties", typeof(ConfigurationPropertiesImpl), null));
                 IDictionary<object, object> timeoutMapObj =
@@ -1461,6 +1498,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                         val.IsConnectorPoolingSupported);
                 encoder.WriteObjectField("connectorPoolConfiguration",
                         val.ConnectorPoolConfiguration, false);
+                encoder.WriteObjectField("resultsHandlerConfiguration",
+                        val.ResultsHandlerConfiguration, false);
                 encoder.WriteObjectField("ConfigurationProperties",
                         val.ConfigurationProperties, true);
                 encoder.WriteObjectField("timeoutMap",
