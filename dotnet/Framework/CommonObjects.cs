@@ -4130,7 +4130,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             Assertions.NullCheck(uid, "uid");
 
             //do not allow previous Uid for anything else than create or update
-            if (previousUid != null && deltaType != SyncDeltaType.CREATE_OR_UPDATE)
+            if (previousUid != null && deltaType == SyncDeltaType.DELETE)
             {
                 throw new ArgumentException("The previous Uid can only be specified for create or update.");
             }
@@ -4484,7 +4484,25 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         /// <summary>
         /// The change represents a DELETE in the resource
         /// </summary>
-        DELETE
+        DELETE,
+
+        /// <summary>
+        /// The change represents a CREATE in the resource
+        /// </summary>
+        /// <remarks>
+        /// Experimental type to support better event mechanism where it's possible.
+        /// @see #CREATE_OR_UPDATE
+        /// </remarks>
+        CREATE,
+
+        /// <summary>
+        /// The change represents a UPDATE in the resource
+        /// </summary>
+        /// <remarks>
+        /// Experimental type to support better event mechanism where it's possible.
+        /// @see #CREATE_OR_UPDATE
+        /// </remarks>
+        UPDATE
     }
     #endregion
 

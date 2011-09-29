@@ -696,7 +696,12 @@ namespace Org.IdentityConnectors.Framework.Api
         {
             unchecked
             {
-                return 42;//return (int)(EnableNormalizingResultsHandler + EnableFilteredResultsHandler + EnableCaseInsensitiveFilter + EnableAttributesToGetSearchResultsHandler + MinIdle);
+                int hash = 3;
+                hash = 79 * hash + (EnableNormalizingResultsHandler ? 1 : 0);
+                hash = 79 * hash + (EnableFilteredResultsHandler ? 1 : 0);
+                hash = 79 * hash + (EnableCaseInsensitiveFilter ? 1 : 0);
+                hash = 79 * hash + (EnableAttributesToGetSearchResultsHandler ? 1 : 0);
+                return hash;
             }
         }
 
