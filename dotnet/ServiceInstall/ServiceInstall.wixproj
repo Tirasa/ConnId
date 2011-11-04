@@ -68,26 +68,31 @@
       <Name>Common</Name>
       <Project>{f140e8da-52b4-4159-992a-9da10ea8eefb}</Project>
       <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>    
     </ProjectReference>
     <ProjectReference Include="..\FrameworkInternal\FrameworkInternal.csproj">
       <Name>FrameworkInternal</Name>
       <Project>{5b011775-b121-4eee-a410-ba2d2f5bfb8b}</Project>
       <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>
     <ProjectReference Include="..\Framework\Framework.csproj">
       <Name>Framework</Name>
       <Project>{8b24461b-456a-4032-89a1-cd418f7b5b62}</Project>
       <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>
     <ProjectReference Include="..\Service\Service.csproj">
       <Name>Service</Name>
       <Project>{a9d6374a-d51f-4fa3-8c02-5b1d23faa82e}</Project>
       <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>
     <ProjectReference Include="..\TestCommon\TestCommon.csproj">
       <Name>TestCommon</Name>
       <Project>{e6a207d2-e083-41bf-b522-d9d3ec09323e}</Project>
       <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>
   </ItemGroup>
 </Project>
