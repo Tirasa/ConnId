@@ -37,6 +37,7 @@ using Org.IdentityConnectors.Framework.Spi.Operations;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using Org.IdentityConnectors.Framework.Api;
 
 namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
 {
@@ -735,6 +736,12 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         {
             return connectorInfo;
         }
+
+
+        public ResultsHandlerConfiguration getResultsHandlerConfiguration()
+        {
+            return apiConfiguration.ResultsHandlerConfiguration;
+        }
     }
     #endregion
 
@@ -1118,15 +1125,32 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             {
                 options = new OperationOptionsBuilder().Build();
             }
-            ObjectNormalizerFacade normalizer =
-                GetNormalizer(oclass);
-            //chain a normalizing handler (must come before
-            //filter handler)
-            handler =
-                new NormalizingResultsHandler(handler, normalizer).Handle;
-            Filter normalizedFilter =
-                normalizer.NormalizeFilter(originalFilter);
+            
+            ResultsHandlerConfiguration hdlCfg = null != GetOperationalContext() ?
+ 	 	 	 		            GetOperationalContext().getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
+ 	 	 	ResultsHandler handlerChain = handler;
 
+            Filter finalFilter = originalFilter;
+ 	 	 	 		
+ 	 	 	if (hdlCfg.EnableNormalizingResultsHandler) {
+ 	 	 	 	ObjectNormalizerFacade normalizer =  GetNormalizer(oclass);
+ 	 	 	 	//chain a normalizing handler (must come before
+ 	 	 	 	//filter handler)
+                ResultsHandler normalizingHandler = new NormalizingResultsHandler(handler, normalizer).Handle;
+ 	 	 	 	Filter normalizedFilter = normalizer.NormalizeFilter(originalFilter);
+ 	 	 	 	// chain a filter handler..
+ 	 	 	if (hdlCfg.EnableFilteredResultsHandler) {
+ 	 	 	 		// chain a filter handler..
+ 	 	 	 		handlerChain =  new FilteredResultsHandler(handler, normalizedFilter).Handle;                   
+ 	 	 	 		finalFilter = normalizedFilter;
+ 	 	 	 	} else {
+ 	 	 	 		handlerChain = normalizingHandler;
+ 	 	 	 	}
+ 	 	 	} else if (hdlCfg.EnableFilteredResultsHandler) {
+ 	 	 	 	// chain a filter handler..
+ 	 	 	 	ResultsHandler filteredHandler =  new FilteredResultsHandler(handlerChain, originalFilter).Handle;
+ 	 	 	}
+           
             //get the IList interface that this type implements
             Type interfaceType = ReflectionUtil.FindInHierarchyOf
                 (typeof(SearchOp<>), GetConnector().GetType());
@@ -1140,16 +1164,15 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             Type searcherType =
                 searcherRawType.MakeGenericType(queryType);
             RawSearcher searcher = (RawSearcher)Activator.CreateInstance(searcherType);
-            // add filtering handler
-            handler = new FilteredResultsHandler(handler, normalizedFilter).Handle;
+
             // add attributes to get handler
             string[] attrsToGet = options.AttributesToGet;
-            if (attrsToGet != null && attrsToGet.Length > 0)
+            if (attrsToGet != null && attrsToGet.Length > 0 && hdlCfg.EnableAttributesToGetSearchResultsHandler)
             {
-                handler = new SearchAttributesToGetResultsHandler(
+                handlerChain = new SearchAttributesToGetResultsHandler(
                     handler, attrsToGet).Handle;
             }
-            searcher.RawSearch(GetConnector(), oclass, normalizedFilter, handler, options);
+            searcher.RawSearch(GetConnector(), oclass, finalFilter, handlerChain, options);
         }
     }
     #endregion
