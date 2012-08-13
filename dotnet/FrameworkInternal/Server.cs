@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.Collections.Generic;
@@ -261,6 +262,11 @@ namespace Org.IdentityConnectors.Framework.Server
         abstract public void DumpRequests();
 
         /// <summary>
+        /// Gets the time when the servers was started last time.
+        /// </summary>
+        abstract public long StartTime();
+
+        /// <summary>
         /// Starts the server.
         /// </summary>
         /// <remarks>
@@ -435,7 +441,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
                 if (authException != null)
                 {
                     HelloResponse response =
-                        new HelloResponse(authException, null);
+                        new HelloResponse(authException, null, null, null);
                     _connection.WriteObject(response);
                 }
                 else
@@ -503,22 +509,38 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
 
         private HelloResponse ProcessHelloRequest(HelloRequest request)
         {
-            IList<RemoteConnectorInfoImpl> connectorInfo;
+            IList<RemoteConnectorInfoImpl> connectorInfo = null;
+            IList<ConnectorKey> connectorKeys = null;
+            IDictionary<string, object> serverInfo = null;
             Exception exception = null;
             try
             {
-                ConnectorInfoManager manager =
-                    GetConnectorInfoManager();
-                IList<ConnectorInfo> localInfos =
-                    manager.ConnectorInfos;
-                connectorInfo = new List<RemoteConnectorInfoImpl>();
-                foreach (ConnectorInfo localInfo in localInfos)
+                serverInfo = new Dictionary<string, object>(1);
+                if (request.isServerInfo())
                 {
-                    LocalConnectorInfoImpl localInfoImpl =
-                        (LocalConnectorInfoImpl)localInfo;
-                    RemoteConnectorInfoImpl remoteInfo =
-                        localInfoImpl.ToRemote();
-                    connectorInfo.Add(remoteInfo);
+                    serverInfo.Add(HelloResponse.SERVER_START_TIME, _server.StartTime());
+                }
+                if (request.isConnectorKeys())
+                {
+                    ConnectorInfoManager manager = GetConnectorInfoManager();
+                    IList<ConnectorInfo> localInfos = manager.ConnectorInfos;
+                    connectorKeys = new List<ConnectorKey>();
+                    foreach (ConnectorInfo localInfo in localInfos)
+                    {
+                        connectorKeys.Add(localInfo.ConnectorKey);
+                    }
+                    if (request.isConnectorInfo())
+                    {
+                        connectorInfo = new List<RemoteConnectorInfoImpl>();
+                        foreach (ConnectorInfo localInfo in localInfos)
+                        {
+                            LocalConnectorInfoImpl localInfoImpl =
+                                    (LocalConnectorInfoImpl)localInfo;
+                            RemoteConnectorInfoImpl remoteInfo =
+                                    localInfoImpl.ToRemote();
+                            connectorInfo.Add(remoteInfo);
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -527,7 +549,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
                 exception = e;
                 connectorInfo = null;
             }
-            return new HelloResponse(exception, connectorInfo);
+            return new HelloResponse(exception, serverInfo, connectorKeys, connectorInfo);
         }
 
         private MethodInfo GetOperationMethod(OperationRequest request)
@@ -904,11 +926,17 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
             _pendingRequests = CollectionUtil.NewIdentityDictionary<Thread, RequestStats>();
         private ConnectionListener _listener;
         private Object COUNT_LOCK = new Object();
+        private long _startDate = 0;
         private long _requestCount = 0;
 
         public override bool IsStarted()
         {
             return _listener != null;
+        }
+
+        public override long StartTime()
+        {
+            return _startDate;
         }
 
         public void BeginRequest()
@@ -1018,6 +1046,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
             //make sure we are configured properly
             ConnectorInfoManagerFactory.GetInstance().GetLocalManager();
             _requestCount = 0;
+            _startDate = DateTimeUtil.GetCurrentUtcTimeMillis();
             _pendingRequests.Clear();
             TcpListener socket =
                 CreateServerSocket();
@@ -1048,6 +1077,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
                 _listener.Shutdown();
                 _listener = null;
             }
+            _startDate = 0;
             ConnectorFacadeFactory.GetInstance().Dispose();
         }
     }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.IO;
@@ -418,6 +419,7 @@ namespace FrameworkTests
             v1.Name = ("foo");
             v1.HelpMessageKey = ("help key");
             v1.DisplayMessageKey = ("display key");
+            v1.GroupMessageKey = ("group key");
             v1.Value = ("bar");
             v1.ValueType = (typeof(string));
             v1.Operations = FrameworkUtil.AllAPIOperations();
@@ -430,6 +432,7 @@ namespace FrameworkTests
             Assert.AreEqual("foo", v2.Name);
             Assert.AreEqual("help key", v2.HelpMessageKey);
             Assert.AreEqual("display key", v2.DisplayMessageKey);
+            Assert.AreEqual("group key", v2.GroupMessageKey);
             Assert.AreEqual("bar", v2.Value);
             Assert.AreEqual(typeof(string), v2.ValueType);
             Assert.IsTrue(CollectionUtil.Equals(
@@ -445,6 +448,7 @@ namespace FrameworkTests
             prop1.Name = ("foo");
             prop1.HelpMessageKey = ("help key");
             prop1.DisplayMessageKey = ("display key");
+            prop1.GroupMessageKey = ("group key");
             prop1.Value = ("bar");
             prop1.ValueType = (typeof(string));
             prop1.Operations = null;
@@ -467,6 +471,7 @@ namespace FrameworkTests
             prop1.Name = ("foo");
             prop1.HelpMessageKey = ("help key");
             prop1.DisplayMessageKey = ("display key");
+            prop1.GroupMessageKey = ("group key");
             prop1.Value = ("bar");
             prop1.ValueType = (typeof(string));
             prop1.Operations = null;
@@ -535,6 +540,7 @@ namespace FrameworkTests
             apiImpl.ConfigurationProperties = (configProperties);
             v1.DefaultAPIConfiguration = (apiImpl);
             v1.ConnectorDisplayNameKey = ("mykey");
+            v1.ConnectorCategoryKey = ("LDAP");
 
             RemoteConnectorInfoImpl v2 = (RemoteConnectorInfoImpl)
                 CloneObject(v1);
@@ -544,6 +550,7 @@ namespace FrameworkTests
             Assert.AreEqual("my version", v2.ConnectorKey.BundleVersion);
             Assert.AreEqual("my connector", v2.ConnectorKey.ConnectorName);
             Assert.AreEqual("mykey", v2.ConnectorDisplayNameKey);
+            Assert.AreEqual("LDAP", v2.ConnectorCategoryKey);
             Assert.IsNotNull(v2.DefaultAPIConfiguration);
         }
 
@@ -906,30 +913,36 @@ namespace FrameworkTests
         [Test]
         public void TestHelloRequest()
         {
-            HelloRequest v1 = new HelloRequest();
+            HelloRequest v1 = new HelloRequest(HelloRequest.CONNECTOR_INFO);
             HelloRequest v2 = (HelloRequest)CloneObject(v1);
             Assert.IsNotNull(v2);
+            Assert.AreEqual(HelloRequest.CONNECTOR_INFO, v2.GetInfoLevel());
         }
 
         [Test]
         public void TestHelloResponse()
         {
+            Exception ex = new Exception("foo");
+            IDictionary<string,object> serverInfo = new Dictionary<string, object>(1);
+            serverInfo.Add(HelloResponse.SERVER_START_TIME, DateTimeUtil.GetCurrentUtcTimeMillis());
+ 	 	 	ConnectorKey key = new ConnectorKey("my bundle", "my version", "my connector");
             RemoteConnectorInfoImpl info = new RemoteConnectorInfoImpl();
             info.Messages = (new ConnectorMessagesImpl());
-            info.ConnectorKey = (new ConnectorKey("my bundle",
-                "my version",
-            "my connector"));
+            info.ConnectorKey = (key);
             ConfigurationPropertiesImpl configProperties = new ConfigurationPropertiesImpl();
             configProperties.Properties = (new List<ConfigurationPropertyImpl>());
             APIConfigurationImpl apiImpl = new APIConfigurationImpl();
             apiImpl.ConfigurationProperties = (configProperties);
             info.DefaultAPIConfiguration = (apiImpl);
             info.ConnectorDisplayNameKey = ("mykey");
+            info.ConnectorCategoryKey = ("");
 
-            Exception ex = new Exception("foo");
-            HelloResponse v1 = new HelloResponse(ex, CollectionUtil.NewReadOnlyList<RemoteConnectorInfoImpl>(info));
+
+            HelloResponse v1 = new HelloResponse(ex, serverInfo, CollectionUtil.NewReadOnlyList<ConnectorKey>(key), CollectionUtil.NewReadOnlyList<RemoteConnectorInfoImpl>(info));
             HelloResponse v2 = (HelloResponse)CloneObject(v1);
             Assert.IsNotNull(v2.Exception);
+            Assert.IsNotNull(v2.ServerInfo[HelloResponse.SERVER_START_TIME]);
+            Assert.IsNotNull(v2.ConnectorKeys.First());
             Assert.IsNotNull(v2.ConnectorInfos.First());
         }
 

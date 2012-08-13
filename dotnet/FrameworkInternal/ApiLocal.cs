@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.Diagnostics;
@@ -209,6 +210,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                 int order = 0;
                 String helpKey = name + ".help";
                 String displKey = name + ".display";
+                string grpKey = name + ".group";
                 bool confidential = false;
                 bool required = false;
                 if (options != null)
@@ -221,6 +223,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                     if (!StringUtil.IsBlank(options.DisplayMessageKey))
                     {
                         displKey = options.DisplayMessageKey;
+                    }
+                    if (!StringUtil.IsBlank(options.GroupMessageKey))
+                    {
+                        displKey = options.GroupMessageKey;
                     }
                     // determine the order..
                     order = options.Order;
@@ -241,6 +247,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                 prop.IsRequired = required;
                 prop.DisplayMessageKey = displKey;
                 prop.HelpMessageKey = helpKey;
+                prop.GroupMessageKey = grpKey;
                 prop.Name = name;
                 prop.Order = order;
                 prop.Value = value;
@@ -461,6 +468,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
             rv.ConnectorClass = connectorClass;
             rv.ConnectorConfigurationClass = connectorConfigurationClass;
             rv.ConnectorDisplayNameKey = connectorDisplayNameKey;
+            rv.ConnectorCategoryKey = attribute.ConnectorCategoryKey; 
             rv.ConnectorKey = key;
             rv.DefaultAPIConfiguration = CreateDefaultAPIConfiguration(rv);
             rv.Messages = LoadMessages(assembly, rv, attribute.MessageCatalogPaths);

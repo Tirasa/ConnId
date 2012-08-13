@@ -32,9 +32,41 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
     /// </summary>
     public class HelloRequest : Message
     {
+        public const int SERVER_INFO = 4;
+        public const int CONNECTOR_KEY_LIST = 16;
+        private const int DEFAULT_CONFIG = 32;
+        public const int CONNECTOR_INFO = CONNECTOR_KEY_LIST | DEFAULT_CONFIG;
 
-        public HelloRequest()
+        private readonly int _level;
+
+        public HelloRequest(int infoLevel)
         {
+            _level = infoLevel;
+        }
+
+        public int GetInfoLevel()
+        {
+            return _level;
+        }
+
+        private bool checkInfoLevel(int info)
+        {
+            return ((_level & info) == info);
+        }
+
+        public bool isServerInfo()
+        {
+            return checkInfoLevel(SERVER_INFO);
+        }
+
+        public bool isConnectorKeys()
+        {
+            return checkInfoLevel(CONNECTOR_KEY_LIST);
+        }
+
+        public bool isConnectorInfo()
+        {
+            return checkInfoLevel(CONNECTOR_INFO);
         }
     }
 
@@ -43,10 +75,14 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
     /// </summary>
     public class HelloResponse : Message
     {
+        public const string SERVER_START_TIME = "SERVER_START_TIME";
+
         /// <summary>
         /// The exception
         /// </summary>
         private Exception _exception;
+
+        private IDictionary<string, object> _serverInfo;
 
         /// <summary>
         /// List of connector infos, containing infos for all the connectors
@@ -54,10 +90,20 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         /// </summary>
         private IList<RemoteConnectorInfoImpl> _connectorInfos;
 
+        /// <summary>
+        /// List of connector keys, containing the keys of all the connectors
+        /// on the server.
+        /// </summary>
+        private IList<ConnectorKey> _connectorKeys;
+
         public HelloResponse(Exception exception,
+                IDictionary<string, object> serverInfo,
+                IList<ConnectorKey> connectorKeys,
                 IList<RemoteConnectorInfoImpl> connectorInfos)
         {
             _exception = exception;
+            _serverInfo = CollectionUtil.AsReadOnlyDictionary(serverInfo);
+            _connectorKeys = CollectionUtil.NewReadOnlyList<ConnectorKey>(connectorKeys);
             _connectorInfos = CollectionUtil.NewReadOnlyList<RemoteConnectorInfoImpl>(connectorInfos);
         }
 
@@ -75,6 +121,32 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
             {
                 return _connectorInfos;
             }
+        }
+
+        public IList<ConnectorKey> ConnectorKeys
+        {
+            get
+            {
+                return _connectorKeys;
+            }
+        }
+
+        public IDictionary<string, object> ServerInfo
+        {
+            get
+            {
+                return _serverInfo;
+            }
+        }
+
+        public DateTime? getStartTime()
+        {
+            object time = ServerInfo[SERVER_START_TIME];
+            if (time is long)
+            {
+                return new DateTime((long)time);
+            }
+            return null;
         }
     }
 

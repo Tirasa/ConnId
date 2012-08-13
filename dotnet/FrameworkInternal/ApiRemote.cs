@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.Collections.Generic;
@@ -185,7 +186,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
             {
                 connection.WriteObject(CultureInfo.CurrentUICulture);
                 connection.WriteObject(info.Key);
-                connection.WriteObject(new HelloRequest());
+                connection.WriteObject(new HelloRequest(HelloRequest.CONNECTOR_INFO));
                 HelloResponse response = (HelloResponse)connection.ReadObject();
                 if (response.Exception != null)
                 {

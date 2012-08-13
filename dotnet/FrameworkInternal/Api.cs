@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 
@@ -88,11 +89,18 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
 
         public object Value { get; set; }
 
+        public string GroupMessageKey { get; set; }
+
         public Type ValueType { get; set; }
 
         public bool IsConfidential { get; set; }
 
         public bool IsRequired { get; set; }
+
+        public string GetGroup(string def)
+        {
+            return FormatMessage(GroupMessageKey, def);
+        }
 
         public override int GetHashCode()
         {
@@ -121,6 +129,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
                     return false;
                 }
                 if (!CollectionUtil.Equals(DisplayMessageKey, other.DisplayMessageKey))
+                {
+                    return false;
+                }
+                if (!CollectionUtil.Equals(GroupMessageKey, other.GroupMessageKey))
                 {
                     return false;
                 }
@@ -364,6 +376,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
 
         public string ConnectorDisplayNameKey { get; set; }
 
+        public string ConnectorCategoryKey { get; set; }
+
         public ConnectorMessages Messages { get; set; }
 
         public APIConfigurationImpl DefaultAPIConfiguration
@@ -389,6 +403,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
             SerializerUtil.CloneObject(_defaultAPIConfiguration);
             rv.ConnectorInfo = this;
             return rv;
+        }
+
+        public string GetConnectorCategory()
+        {
+            return Messages.Format(ConnectorCategoryKey, null);
         }
     }
     #endregion

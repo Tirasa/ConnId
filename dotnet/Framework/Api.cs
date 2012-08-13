@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.Reflection;
@@ -103,9 +104,14 @@ namespace Org.IdentityConnectors.Framework.Api
         string GetHelpMessage(string def);
 
         /// <summary>
-        /// Get the display name for the is configuration
+        /// Get the display name for this configuration property.
         /// </summary>
         string GetDisplayName(string def);
+
+        /// <summary>
+        /// Get name of the group for this configuration property.
+        /// </summary>
+        string GetGroup(string def);
 
         /// <summary>
         /// Get the value from the property.

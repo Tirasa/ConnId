@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using NUnit.Framework;
@@ -121,6 +122,7 @@ namespace FrameworkTests
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
             Assert.AreEqual("Help for test field.", property.GetHelpMessage(null));
             Assert.AreEqual("Display for test field.", property.GetDisplayName(null));
+            Assert.AreEqual("Group for test field.", property.GetGroup(null));
             Assert.AreEqual("Test Framework Value",
                 info.Messages.Format("TEST_FRAMEWORK_KEY", "empty"));
 

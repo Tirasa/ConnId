@@ -267,6 +267,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
     name CDATA #REQUIRED  
     helpMessageKey CDATA #REQUIRED
     displayMessageKey CDATA #REQUIRED
+    groupMessageKey CDATA #REQUIRED
     type CDATA #REQUIRED
 &gt;
 &lt;!ELEMENT value (%xmlObject;)&gt; 
@@ -292,6 +293,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 &lt;!ELEMENT ConnectorInfo (ConnectorKey,ConnectorMessages,APIConfiguration)&gt; 
 &lt;!ATTLIST ConnectorInfo
     connectorDisplayNameKey CDATA #REQUIRED
+    connectorCategoryKey CDATA #REQUIRED
 &gt;
 
 &lt;!--=======================================================--&gt;
@@ -471,10 +473,14 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 &lt;!--= Messages                                            =--&gt;
 &lt;!--=                                                     =--&gt;
 &lt;!--=======================================================--&gt;
-&lt;!ELEMENT HelloRequest EMPTY&gt;
+&lt;!ELEMENT HelloRequest EMPTY
+      infoLevel CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT serverInfoMap (Map)&gt;
+&lt;!ELEMENT ConnectorKeys ((ConnectorKey)*)&gt;
 &lt;!ELEMENT ConnectorInfos ((ConnectorInfo)*)&gt;
 &lt;!ELEMENT exception (%exceptionTypes;)&gt;
-&lt;!ELEMENT HelloResponse (exception,ConnectorInfos)&gt;
+&lt;!ELEMENT HelloResponse (exception,serverInfoMap,ConnectorInfos,ConnectorKeys)&gt;
 &lt;!ELEMENT OperationRequest (ConnectorKey,APIConfiguration,Arguments)&gt;
 &lt;!ATTLIST OperationRequest
     operation CDATA #REQUIRED

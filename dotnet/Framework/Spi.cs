@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.Globalization;
@@ -162,20 +163,44 @@ namespace Org.IdentityConnectors.Framework.Spi
     {
 
         private readonly String _connectorDisplayNameKey;
+        private readonly String _connectorCategoryKey;
         private readonly SafeType<Configuration> _connectorConfigurationClass;
 
         public ConnectorClassAttribute(String connectorDisplayNameKey,
                                       Type connectorConfigurationClass)
         {
             _connectorDisplayNameKey = connectorDisplayNameKey;
+            _connectorCategoryKey = string.Empty;
             _connectorConfigurationClass = SafeType<Configuration>.ForRawType(connectorConfigurationClass);
         }
 
+        public ConnectorClassAttribute(String connectorDisplayNameKey, String connectorCategoryKey,
+                                      Type connectorConfigurationClass)
+        {
+            _connectorDisplayNameKey = connectorDisplayNameKey;
+            _connectorCategoryKey = connectorCategoryKey;
+            _connectorConfigurationClass = SafeType<Configuration>.ForRawType(connectorConfigurationClass);
+        }
+
+        /// <summary>
+        /// The display name key. This must be a key in the message catalog.
+        /// </summary>
         public string ConnectorDisplayNameKey
         {
             get
             {
                 return _connectorDisplayNameKey;
+            }
+        }
+
+        /// <summary>
+        /// Category the connector belongs to such as 'LDAP' or 'DB'.
+        /// </summary>
+        public string ConnectorCategoryKey
+        {
+            get
+            {
+                return _connectorCategoryKey;
             }
         }
 
@@ -187,6 +212,12 @@ namespace Org.IdentityConnectors.Framework.Spi
             }
         }
 
+        /// <summary>
+        /// The resource path(s) to the message catalog.
+        /// Message catalogs are searched in the order given such 
+        /// that the first one wins. By default, if no paths are
+        /// specified, we use <code>connector-package.Messages.resx</code>
+        /// </summary>
         public string[] MessageCatalogPaths { get; set; }
 
     }
@@ -231,6 +262,10 @@ namespace Org.IdentityConnectors.Framework.Spi
         /// Change the default display message key.
         /// </summary>
         public string DisplayMessageKey { get; set; }
+        /// <summary>
+        /// Change the default group message key.
+        /// </summary>
+        public string GroupMessageKey { get; set; }
 
         /// <summary>
         /// List of operations for which this property must be specified.
@@ -279,6 +314,7 @@ namespace Org.IdentityConnectors.Framework.Spi
             HelpMessageKey = null;
             DisplayMessageKey = null;
             OperationTypes = new Type[0];
+            GroupMessageKey = null;
         }
     }
     #endregion

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.IO;
@@ -62,13 +63,15 @@ namespace Org.IdentityConnectors.Common.Script.Shell
         class ShellScriptExecutor : ScriptExecutor
         {
             private readonly string _script;
-
+            
             public ShellScriptExecutor(string script)
             {
                 _script = script;
             }
             public object Execute(IDictionary<string, object> arguments)
             {
+                //
+                string fn = String.Empty;
                 // create the process info..
                 Process process = new Process();
                 // set the defaults..
@@ -76,74 +79,99 @@ namespace Org.IdentityConnectors.Common.Script.Shell
                 process.StartInfo.UseShellExecute = true;
                 // set the default timeout..
                 int timeout = 1000 * 30; // 30 secss
-                // if there are any environment varibles set to false..
-                process.StartInfo.UseShellExecute = arguments.Count == 0;
-                // take out username and password if they're in the options.
-                foreach (KeyValuePair<string, object> kv in arguments)
+                int exitCode = 1;
+                try
                 {
-                    if (kv.Key.ToUpper().Equals("USERNAME"))
+                    // if there are any environment varibles set to false..
+                    process.StartInfo.UseShellExecute = arguments.Count == 0;
+                    // take out username and password if they're in the options.
+                    foreach (KeyValuePair<string, object> kv in arguments)
                     {
-                        string domainUser = kv.Value.ToString();
-                        string[] split = domainUser.Split(new char[] { '\\' });
-                        if (split.Length == 1)
+                        if (kv.Key.ToUpper().Equals("USERNAME"))
                         {
-                            process.StartInfo.UserName = split[0];
+                            string domainUser = kv.Value.ToString();
+                            string[] split = domainUser.Split(new char[] { '\\' });
+                            if (split.Length == 1)
+                            {
+                                process.StartInfo.UserName = split[0];
+                            }
+                            else
+                            {
+                                process.StartInfo.Domain = split[0];
+                                process.StartInfo.UserName = split[1];
+                            }
+                        }
+                        else if (kv.Key.ToUpper().Equals("PASSWORD"))
+                        {
+                            if (kv.Value is SecureString)
+                            {
+                                process.StartInfo.Password = (SecureString)kv.Value;
+                            }
+                            else if (kv.Value is GuardedString)
+                            {
+                                process.StartInfo.Password = ((GuardedString)kv.Value).ToSecureString();
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Invalid type for password.");
+                            }
+                        }
+                        else if (kv.Key.ToUpper().Equals("WORKINGDIR"))
+                        {
+                            process.StartInfo.WorkingDirectory = kv.Value.ToString();
+                        }
+                        else if (kv.Key.ToUpper().Equals("TIMEOUT"))
+                        {
+                            timeout = Int32.Parse(kv.Value.ToString());
                         }
                         else
                         {
-                            process.StartInfo.Domain = split[0];
-                            process.StartInfo.UserName = split[1];
+                            process.StartInfo.EnvironmentVariables[kv.Key] = kv.Value.ToString();
                         }
                     }
-                    else if (kv.Key.ToUpper().Equals("PASSWORD"))
+                    // write out the script..
+                    fn = Path.GetTempFileName() + ".cmd";
+                    StreamWriter sw = null;
+                    try
                     {
-                        if (kv.Value is SecureString)
-                        {
-                            process.StartInfo.Password = (SecureString)kv.Value;
-                        }
-                        else if (kv.Value is GuardedString)
-                        {
-                            process.StartInfo.Password = ((GuardedString)kv.Value).ToSecureString();
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Invalid type for password.");
-                        }
+                        sw = new StreamWriter(fn);
+                        sw.Write(_script);
                     }
-                    else if (kv.Key.ToUpper().Equals("WORKINGDIR"))
+                    finally
+                    {                        
+                        sw.Close();
+                        sw.Dispose();
+                    }
+                    // set temp file..
+                    process.StartInfo.FileName = fn;
+                    // execute script..
+                    process.Start();
+                    // wait for the process to exit..
+                    if (!process.WaitForExit(timeout))
                     {
-                        process.StartInfo.WorkingDirectory = kv.Value.ToString();
+                        throw new TimeoutException("Script failed to exit in time!");
                     }
-                    else if (kv.Key.ToUpper().Equals("TIMEOUT"))
-                    {
-                        timeout = Int32.Parse(kv.Value.ToString());
-                    }
-                    else
-                    {
-                        process.StartInfo.EnvironmentVariables[kv.Key] = kv.Value.ToString();
-                    }
+                    exitCode = process.ExitCode;
+                                        
                 }
-                // write out the script..
-                string fn = Path.GetTempFileName() + ".cmd";
-                using (StreamWriter sw = new StreamWriter(fn))
-                {
-                    sw.Write(_script);
+                catch (Exception e) {
+                    
                 }
-                // set temp file..
-                process.StartInfo.FileName = fn;
-                // execute script..
-                process.Start();
-                // wait for the process to exit..
-                if (!process.WaitForExit(timeout))
-                {
+                finally {
+                    // close up the process
                     process.Close();
-                    throw new TimeoutException("Script failed to exit in time!");
+                    process.Dispose();
                 }
-                int exitCode = process.ExitCode;
-                // close up the process and return the exit code..
-                process.Close();
                 // clean up temp file..
-                File.Delete(fn);
+                try
+                {
+                    File.Delete(fn);
+                }
+                catch (Exception e)
+                {
+                    
+                }
+                
                 return exitCode;
             }
         }

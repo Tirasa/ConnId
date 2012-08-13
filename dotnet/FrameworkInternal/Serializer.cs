@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.IO;
@@ -1338,6 +1339,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                     decoder.ReadStringField("helpMessageKey", null));
                 rv.DisplayMessageKey = (
                     decoder.ReadStringField("displayMessageKey", null));
+                rv.GroupMessageKey = (
+                    decoder.ReadStringField("groupMessageKey", null));
                 rv.ValueType = (
                         decoder.ReadClassField("type", null));
                 rv.Value = (
@@ -1372,6 +1375,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                         val.HelpMessageKey);
                 encoder.WriteStringField("displayMessageKey",
                         val.DisplayMessageKey);
+                encoder.WriteStringField("groupMessageKey",
+                        val.GroupMessageKey);
                 encoder.WriteClassField("type",
                         val.ValueType);
                 encoder.WriteObjectField("value",
@@ -1586,6 +1591,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                 RemoteConnectorInfoImpl rv = new RemoteConnectorInfoImpl();
                 rv.ConnectorDisplayNameKey = (
                                    decoder.ReadStringField("connectorDisplayNameKey", null));
+                rv.ConnectorCategoryKey = (
+                                   decoder.ReadStringField("connectorCategoryKey", null));
                 rv.ConnectorKey = ((ConnectorKey)
                     decoder.ReadObjectField("ConnectorKey", typeof(ConnectorKey), null));
                 rv.Messages = ((ConnectorMessagesImpl)
@@ -1601,6 +1608,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                     (RemoteConnectorInfoImpl)obj;
                 encoder.WriteStringField("connectorDisplayNameKey",
                         val.ConnectorDisplayNameKey);
+                encoder.WriteStringField("connectorCategoryKey",
+                        val.ConnectorCategoryKey);
                 encoder.WriteObjectField("ConnectorKey",
                         val.ConnectorKey, true);
                 encoder.WriteObjectField("ConnectorMessages",
@@ -2700,11 +2709,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
 
             public override sealed Object Deserialize(ObjectDecoder decoder)
             {
-                return new HelloRequest();
+                return new HelloRequest(decoder.ReadIntField("infoLevel", HelloRequest.CONNECTOR_INFO));
             }
 
             public override sealed void Serialize(Object obj, ObjectEncoder encoder)
             {
+                HelloRequest val = (HelloRequest)obj;
+                encoder.WriteIntField("infoLevel", val.GetInfoLevel());
             }
 
         }
@@ -2722,18 +2733,24 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             {
                 Exception exception =
                     (Exception)decoder.ReadObjectField("exception", null, null);
+                IDictionary<string, object> serverInfo =
+                                        (IDictionary<string, object>)decoder.ReadObjectField("serverInfoMap", null, null);
                 IList<object> connectorInfosObj =
                     (IList<object>)decoder.ReadObjectField("ConnectorInfos", typeof(IList<object>), null);
                 IList<RemoteConnectorInfoImpl> connectorInfos =
                     CollectionUtil.NewList<object, RemoteConnectorInfoImpl>(connectorInfosObj);
-                return new HelloResponse(exception, connectorInfos);
+                IList<ConnectorKey> connectorKeys =
+                                    (IList<ConnectorKey>)decoder.ReadObjectField("ConnectorKeys", typeof(IList<ConnectorKey>), null);
+                return new HelloResponse(exception, serverInfo, connectorKeys, connectorInfos);
             }
 
             public override sealed void Serialize(Object obj, ObjectEncoder encoder)
             {
                 HelloResponse val = (HelloResponse)obj;
                 encoder.WriteObjectField("exception", val.Exception, false);
+                encoder.WriteObjectField("serverInfoMap", val.ServerInfo, false);
                 encoder.WriteObjectField("ConnectorInfos", val.ConnectorInfos, true);
+                encoder.WriteObjectField("ConnectorKeys", val.ConnectorKeys, true);
             }
 
         }

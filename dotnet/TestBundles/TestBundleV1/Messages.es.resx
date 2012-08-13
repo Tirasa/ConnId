@@ -123,4 +123,7 @@
   <data name="tstField.display" xml:space="preserve">
     <value>tstField.display_es</value>
   </data>
+  <data name="tstField.group" xml:space="preserve">
+    <value>tstField.group_es</value>
+  </data>
 </root>

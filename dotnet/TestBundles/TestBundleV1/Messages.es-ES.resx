@@ -123,4 +123,7 @@
   <data name="tstField.help" xml:space="preserve">
     <value>tstField.help_es-ES</value>
   </data>
+  <data name="tstField.group" xml:space="preserve">
+    <value>tstField.group_es-ES</value>
+  </data>
 </root>

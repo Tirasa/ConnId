@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012 ForgeRock AS
  */
 using System;
 using System.Collections.Generic;
@@ -101,6 +102,7 @@ namespace org.identityconnectors.testconnector
     }
 
     [ConnectorClass("TestConnector",
+                    "TestConnector.category",
                     typeof(TstConnectorConfig),
                     MessageCatalogPaths = new String[] { "TestBundleV1.Messages" }
                         )]
