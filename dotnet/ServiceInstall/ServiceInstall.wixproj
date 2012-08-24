@@ -1,4 +1,5 @@
-﻿<!--
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
   ====================
   DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
   
@@ -20,7 +21,7 @@
   "Portions Copyrighted [year] [name of copyright owner]"
   ====================
 -->
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{1CBA8F74-050C-432B-8437-08BD13BDC684}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -30,6 +31,7 @@
     <OutputName>ServiceInstall</OutputName>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <SupressIces>ICE45</SupressIces>
+    <OpenICFVersion>1.1.0.1-SNAPSHOT</OpenICFVersion>	
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ErrorReport>prompt</ErrorReport>
@@ -54,6 +56,7 @@
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
   </PropertyGroup>
   <Import Project="$(WixTargetsPath)" />
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
   <ItemGroup>
     <WixExtension Include="WixUIExtension">
       <HintPath>WixUIExtension</HintPath>
@@ -68,7 +71,7 @@
       <Name>Common</Name>
       <Project>{f140e8da-52b4-4159-992a-9da10ea8eefb}</Project>
       <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>    
+      <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>
     <ProjectReference Include="..\FrameworkInternal\FrameworkInternal.csproj">
       <Name>FrameworkInternal</Name>
@@ -82,9 +85,21 @@
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>
+    <ProjectReference Include="..\PowerShellScriptExecutorFactory\PowerShellScriptExecutorFactory.csproj">
+      <Name>PowerShellScriptExecutorFactory</Name>
+      <Project>{57754ffa-bb1f-4722-a2fa-70c4f27c6784}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
     <ProjectReference Include="..\Service\Service.csproj">
       <Name>Service</Name>
       <Project>{a9d6374a-d51f-4fa3-8c02-5b1d23faa82e}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="..\ShellScriptExecutorFactory\ShellScriptExecutorFactory.csproj">
+      <Name>ShellScriptExecutorFactory</Name>
+      <Project>{4700690a-2d29-40a0-86ac-e5a9f71a479a}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
     </ProjectReference>

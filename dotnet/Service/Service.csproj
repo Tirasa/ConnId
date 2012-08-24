@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
   ====================
   DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
@@ -20,7 +21,7 @@
   "Portions Copyrighted [year] [name of copyright owner]"
   ====================
 -->
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectGuid>{A9D6374A-D51F-4FA3-8C02-5B1D23FAA82E}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -32,7 +33,6 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <NoStdLib>False</NoStdLib>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <ZipRelease>true</ZipRelease>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ErrorReport>prompt</ErrorReport>
@@ -96,7 +96,7 @@
   <Target Name="Clean">
     <RemoveDir Directories="bin;obj">
     </RemoveDir>
-  </Target>   
+  </Target>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{F140E8DA-52B4-4159-992A-9DA10EA8EEFB}</Project>

@@ -81,9 +81,10 @@
             SourceFiles="$(MSBuildProjectDirectory)\..\legal\THIRDPARTYREADME.txt"
             DestinationFolder="$(OutputPath)"
         />
-        <ItemGroup>        
-            <ZipFiles Include="$(OutputPath)\*.*" Exclude="*.zip" />
-            <ZipFiles Include="$(OutputPath)\??-??\*.*" Exclude="*.zip" />
+        <ItemGroup>    
+    	    <ZipFiles Include="$(MSBuildProjectDirectory)\..\Service\bin\$(Configuration)\*.*" />
+    	    <ZipFiles Include="$(MSBuildProjectDirectory)\..\PowerShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.dll" />
+    	    <ZipFiles Include="$(MSBuildProjectDirectory)\..\ShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.dll" />
         </ItemGroup>
         <MakeDir Directories="$(FrameworkDistDir)" Condition="!Exists('$(FrameworkDistDir)')" />
         <Zip

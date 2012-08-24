@@ -19,47 +19,71 @@
   enclosed by brackets [] replaced by your own identifying information: 
   "Portions Copyrighted [year] [name of copyright owner]"
   ====================
+  Portions Copyrighted 2012 ForgeRock AS
 -->
 <Project DefaultTargets="Clean" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-	<PropertyGroup>
-	    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-	</PropertyGroup>
-	<Target Name="BeforeBuild">
-		<!-- write out the top of the file.. -->
-		<ReadLinesFromFile File="File.top" >
-			<Output TaskParameter="Lines" ItemName="FileTopLines"/>
-		</ReadLinesFromFile>
-		<WriteLinesToFile File="Files.wxs" Lines="@(FileTopLines)" Overwrite="true" />
-		<!-- Write out the majority of base files -->
- 		<CreateItem Include="..\Service\bin\$(Configuration)\*.*" 
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+  </PropertyGroup>
+  <Target Name="BeforeBuild">
+    <!-- write out the top of the file.. -->
+    <ReadLinesFromFile File="File.top" >
+      <Output TaskParameter="Lines" ItemName="FileTopLines"/>
+    </ReadLinesFromFile>
+    <WriteLinesToFile File="Files.wxs" Lines="@(FileTopLines)" Overwrite="true" />
+    <!-- Write out the majority of base files -->
+    <CreateItem Include="..\Service\bin\$(Configuration)\*.*"
 		            Exclude="..\Service\bin\$(Configuration)\*.exe">
- 			<Output TaskParameter="Include" ItemName="AllFiles"/>
- 		</CreateItem>
- 		<WriteLinesToFile File="Files.wxs" 
+      <Output TaskParameter="Include" ItemName="AllFiles"/>
+    </CreateItem>
+    <WriteLinesToFile File="Files.wxs"
   			Lines="@(AllFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
-		<WriteLinesToFile File="Files.wxs" Lines="@(FileBottomLines)" />
-		<!-- Write out the Service Executable (should only be one) -->
-		<CreateItem Include="..\Service\bin\$(Configuration)\ConnectorServer.exe">
- 			<Output TaskParameter="Include" ItemName="EXEFiles"/>
- 		</CreateItem>
- 		<WriteLinesToFile File="Files.wxs" 
+
+    <!-- Write out the Shell and the PowerShell files -->
+    <CreateItem Include="..\PowerShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.dll">
+      <Output TaskParameter="Include" ItemName="PowerShellScriptExecutorFactoryFiles"/>
+    </CreateItem>
+    <WriteLinesToFile File="Files.wxs"
+  			Lines="@(PowerShellScriptExecutorFactoryFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
+    <CreateItem Include="..\ShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.dll">
+      <Output TaskParameter="Include" ItemName="ShellScriptExecutorFactoryFiles"/>
+    </CreateItem>
+    <WriteLinesToFile File="Files.wxs"
+  			Lines="@(ShellScriptExecutorFactoryFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
+    <WriteLinesToFile File="Files.wxs" Lines="@(FileBottomLines)" />
+
+    <!-- Write out the Service Executable (should only be one) -->
+    <CreateItem Include="..\Service\bin\$(Configuration)\ConnectorServer.exe">
+      <Output TaskParameter="Include" ItemName="EXEFiles"/>
+    </CreateItem>
+    <WriteLinesToFile File="Files.wxs"
   			Lines="@(EXEFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; KeyPath=&quot;yes&quot; /&gt;')"/>
-		<!-- Write out the bottom of the file -->
-		<ReadLinesFromFile File="File.bottom" >
-			<Output TaskParameter="Lines" ItemName="FileBottomLines"/>
-		</ReadLinesFromFile>
-		<WriteLinesToFile File="Files.wxs" Lines="@(FileBottomLines)" />
-	</Target>
-	
-	<Target Name="AfterBuild">
-	    <GetAssemblyIdentity AssemblyFiles="..\Service\bin\$(Configuration)\Framework.dll">
-	      <Output TaskParameter="Assemblies" ItemName="FrameworkAssembly"/>
-	    </GetAssemblyIdentity>
-	    <Copy SourceFiles="bin\$(Configuration)\ServiceInstall.msi" DestinationFiles="bin\$(Configuration)\ServiceInstall-%(FrameworkAssembly.Version).msi" />
+    <!-- Write out the bottom of the file -->
+    <ReadLinesFromFile File="File.bottom" >
+      <Output TaskParameter="Lines" ItemName="FileBottomLines"/>
+    </ReadLinesFromFile>
+    <WriteLinesToFile File="Files.wxs" Lines="@(FileBottomLines)" />
+  </Target>
+
+  <Target Name="AfterBuild">
+    <GetAssemblyIdentity AssemblyFiles="..\Service\bin\$(Configuration)\Framework.dll">
+      <Output TaskParameter="Assemblies" ItemName="FrameworkAssembly"/>
+    </GetAssemblyIdentity>
+    <Copy SourceFiles="bin\$(Configuration)\ServiceInstall.msi" DestinationFiles="bin\$(Configuration)\ServiceInstall-$(OpenICFVersion).msi" />
+    <Copy SourceFiles="@(AllFiles)" DestinationFolder="bin\$(Configuration)\target" />
+    <Copy SourceFiles="@(PowerShellScriptExecutorFactoryFiles)" DestinationFolder="bin\$(Configuration)\target" />
+    <Copy SourceFiles="@(ShellScriptExecutorFactoryFiles)" DestinationFolder="bin\$(Configuration)\target" />
+    <Copy SourceFiles="@(EXEFiles)" DestinationFolder="bin\$(Configuration)\target" />
+    <Copy SourceFiles="..\legal\CDDLv1.txt" DestinationFolder="bin\$(Configuration)\target" />
+    <Copy SourceFiles="..\legal\THIRDPARTYREADME.txt" DestinationFolder="bin\$(Configuration)\target" />
+    <ItemGroup>
+      <ZipFiles Include="bin\$(Configuration)\target\*.*" Exclude="*.zip" />
+    </ItemGroup>
+    <Zip Files="@(ZipFiles)" WorkingDirectory="bin\$(Configuration)\target" ZipFileName="bin\$(Configuration)\ServiceInstall-$(OpenICFVersion).zip" />
   </Target>
 
   <Target Name="Clean">
-		<RemoveDir Directories="obj;bin" />
-		<Delete Files="Files.wxs" />
-	</Target>
+    <RemoveDir Directories="obj;bin" />
+    <Delete Files="Files.wxs" />
+  </Target>
 </Project>

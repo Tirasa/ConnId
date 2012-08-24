@@ -98,7 +98,7 @@
                 <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
                 <Control Id="Description" Type="Text" X="135" Y="80" Width="220" Height="60" Transparent="yes" NoPrefix="yes" Text="!(loc.WelcomeDlgDescription)" />
                 <Control Id="SeparationLine" Type="Line" X="135" Y="140" Width="220" Height="0" />
-                <Control Id="Copyright" Type="Text" X="135" Y="150" Width="220" Height="60" Transparent="yes" NoPrefix="yes" Text="Copyright (c) 2011 ForgeRock AS. All rights reserved." />
+                <Control Id="Copyright" Type="Text" X="135" Y="150" Width="220" Height="60" Transparent="yes" NoPrefix="yes" Text="Portions Copyrighted (c) 2011-2012 ForgeRock AS." />
                 <Control Id="Title" Type="Text" X="135" Y="20" Width="220" Height="60" Transparent="yes" NoPrefix="yes" Text="!(loc.WelcomeDlgTitle)" />
             </Dialog>
             <InstallUISequence>
