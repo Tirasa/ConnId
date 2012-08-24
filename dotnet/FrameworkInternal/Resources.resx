@@ -166,11 +166,11 @@
 
 &lt;!ENTITY % xmlObject
   "%primitiveTypes; | %exceptionTypes; | %messageTypes; | %filterTypes; | %attributeTypes; |
-ObjectPoolConfiguration | ConfigurationProperty | ConfigurationProperties |
+ObjectPoolConfiguration | ResultsHandlerConfiguration | ConfigurationProperty | ConfigurationProperties |
 APIConfiguration | ConnectorMessages | ConnectorKey | ConnectorInfo |
 UpdateApiOpType | AttributeInfo | ConnectorObject | ObjectClass |
 ObjectClassInfo | Schema | Script | ScriptContext | OperationOptions | 
-OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid 
+OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 "&gt;
   
   
@@ -224,7 +224,6 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 &lt;!ELEMENT ByteArray (#PCDATA)&gt;
 &lt;!ELEMENT Class (#PCDATA)&gt;
 &lt;!ELEMENT Map ((MapEntry)*)&gt;
-
 &lt;!ATTLIST Map
     caseInsensitive CDATA #IMPLIED
 &gt;
@@ -259,6 +258,14 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
     minIdle CDATA #IMPLIED
 &gt;
 
+&lt;!ELEMENT ResultsHandlerConfiguration EMPTY&gt;
+&lt;!ATTLIST ResultsHandlerConfiguration
+    enableNormalizingResultsHandler CDATA #IMPLIED
+    enableFilteredResultsHandler CDATA #IMPLIED
+    enableCaseInsensitiveFilter CDATA #IMPLIED
+    enableAttributesToGetSearchResultsHandler CDATA #IMPLIED
+&gt;
+
 &lt;!ELEMENT ConfigurationProperty (value,operations)&gt; 
 &lt;!ATTLIST ConfigurationProperty
     order CDATA #IMPLIED
@@ -274,12 +281,13 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 &lt;!ELEMENT operations (Class)*&gt;
 &lt;!ELEMENT ConfigurationProperties ((ConfigurationProperty)*)&gt; 
 
-&lt;!ELEMENT APIConfiguration (connectorPoolConfiguration,ConfigurationProperties,timeoutMap,SupportedOperations)&gt; 
+&lt;!ELEMENT APIConfiguration (connectorPoolConfiguration,resultsHandlerConfiguration,ConfigurationProperties,timeoutMap,SupportedOperations)&gt;
 &lt;!ATTLIST APIConfiguration
     connectorPoolingSupported CDATA #REQUIRED
     producerBufferSize CDATA #REQUIRED
 &gt;
-&lt;!ELEMENT connectorPoolConfiguration ((ObjectPoolConfiguration))&gt; 
+&lt;!ELEMENT connectorPoolConfiguration ((ObjectPoolConfiguration))&gt;
+&lt;!ELEMENT resultsHandlerConfiguration ((ResultsHandlerConfiguration))&gt;
 &lt;!ELEMENT timeoutMap (Map)&gt;
 &lt;!ELEMENT SupportedOperations ((Class)*)&gt;
 &lt;!ELEMENT ConnectorMessages (catalogs)&gt;
@@ -290,7 +298,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
     bundleVersion CDATA #REQUIRED
     connectorName CDATA #REQUIRED
 &gt;
-&lt;!ELEMENT ConnectorInfo (ConnectorKey,ConnectorMessages,APIConfiguration)&gt; 
+&lt;!ELEMENT ConnectorInfo (ConnectorKey,ConnectorMessages,APIConfiguration)&gt;
 &lt;!ATTLIST ConnectorInfo
     connectorDisplayNameKey CDATA #REQUIRED
     connectorCategoryKey CDATA #REQUIRED
@@ -303,7 +311,6 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 &lt;!--=======================================================--&gt;
 &lt;!ELEMENT Attribute (Values)?&gt; 
 &lt;!ELEMENT Values ((%xmlObject;)*)&gt;
-
 &lt;!ATTLIST Attribute
     name CDATA #REQUIRED
 &gt;
@@ -341,7 +348,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
    message CDATA #IMPLIED
 &gt;
 &lt;!ELEMENT PasswordExpiredException (Uid?)&gt; 
-&lt;!ATTLIST PasswordExpiredException 
+&lt;!ATTLIST PasswordExpiredException
    message CDATA #IMPLIED
 &gt;
 &lt;!ELEMENT UnknownUidException EMPTY&gt; 
@@ -438,11 +445,10 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 &lt;!ATTLIST SyncDeltaType
    value ( CREATE_OR_UPDATE | DELETE ) #REQUIRED
 &gt;
-
 &lt;!ELEMENT SyncToken (value)&gt;
 &lt;!ELEMENT SyncDelta (SyncDeltaType,SyncToken,PreviousUid,Uid,ConnectorObject?)&gt;
 
-&lt;!ELEMENT PreviousUid (#PCDATA)&gt; 
+&lt;!ELEMENT PreviousUid (#PCDATA)&gt;
 
 &lt;!ELEMENT QualifiedUid (ObjectClass,Uid)&gt;
 
@@ -473,8 +479,9 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 &lt;!--= Messages                                            =--&gt;
 &lt;!--=                                                     =--&gt;
 &lt;!--=======================================================--&gt;
-&lt;!ELEMENT HelloRequest EMPTY
-      infoLevel CDATA #REQUIRED
+&lt;!ELEMENT HelloRequest EMPTY&gt;
+&lt;!ATTLIST HelloRequest
+    infoLevel CDATA #REQUIRED
 &gt;
 &lt;!ELEMENT serverInfoMap (Map)&gt;
 &lt;!ELEMENT ConnectorKeys ((ConnectorKey)*)&gt;
