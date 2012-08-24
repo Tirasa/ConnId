@@ -20,7 +20,7 @@
   "Portions Copyrighted [year] [name of copyright owner]"
   ====================
 -->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
     <PropertyGroup>                
         <VersionFileIn>$(MSBuildProjectDirectory)\version.template</VersionFileIn>
         <VersionFileOut>$(MSBuildProjectDirectory)\version.txt</VersionFileOut>

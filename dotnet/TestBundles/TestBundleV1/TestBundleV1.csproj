@@ -29,7 +29,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>TestBundleV1</RootNamespace>
     <AssemblyName>TestBundleV1.Connector</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
