@@ -114,12 +114,14 @@ namespace Org.ForgeRock.OpenICF.Framework.Common.Script.PowerShell
                 }
 
                 // return the script result as a single string
-                StringBuilder stringBuilder = new StringBuilder();
-                foreach (PSObject obj in results)
+                IDictionary<string, string> result = new Dictionary<string, string>();
+                int index = 0;
+                foreach (PSObject obj in results)                   
                     {
-                        stringBuilder.AppendLine(obj.ToString());
+                        result.Add(index.ToString(),obj.ToString());
+                        index++;
                     }
-                return stringBuilder.ToString();
+                return result;
             }
         }
     }

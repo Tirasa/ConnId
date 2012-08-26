@@ -40,12 +40,12 @@
   			Lines="@(AllFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
 
     <!-- Write out the Shell and the PowerShell files -->
-    <CreateItem Include="..\PowerShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.dll">
+    <CreateItem Include="..\PowerShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.*">
       <Output TaskParameter="Include" ItemName="PowerShellScriptExecutorFactoryFiles"/>
     </CreateItem>
     <WriteLinesToFile File="Files.wxs"
   			Lines="@(PowerShellScriptExecutorFactoryFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
-    <CreateItem Include="..\ShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.dll">
+    <CreateItem Include="..\ShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.*">
       <Output TaskParameter="Include" ItemName="ShellScriptExecutorFactoryFiles"/>
     </CreateItem>
     <WriteLinesToFile File="Files.wxs"
@@ -69,7 +69,7 @@
     <GetAssemblyIdentity AssemblyFiles="..\Service\bin\$(Configuration)\Framework.dll">
       <Output TaskParameter="Assemblies" ItemName="FrameworkAssembly"/>
     </GetAssemblyIdentity>
-    <Copy SourceFiles="bin\$(Configuration)\ServiceInstall.msi" DestinationFiles="bin\$(Configuration)\ServiceInstall-$(OpenICFVersion).msi" />
+    <Copy SourceFiles="bin\$(Configuration)\ServiceInstall.msi" DestinationFiles="bin\$(Configuration)\openicf-$(OpenICFVersion)-dotnet.msi" />
     <Copy SourceFiles="@(AllFiles)" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="@(PowerShellScriptExecutorFactoryFiles)" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="@(ShellScriptExecutorFactoryFiles)" DestinationFolder="bin\$(Configuration)\target" />
@@ -79,7 +79,7 @@
     <ItemGroup>
       <ZipFiles Include="bin\$(Configuration)\target\*.*" Exclude="*.zip" />
     </ItemGroup>
-    <Zip Files="@(ZipFiles)" WorkingDirectory="bin\$(Configuration)\target" ZipFileName="bin\$(Configuration)\ServiceInstall-$(OpenICFVersion).zip" />
+    <Zip Files="@(ZipFiles)" WorkingDirectory="bin\$(Configuration)\target" ZipFileName="bin\$(Configuration)\openicf-$(OpenICFVersion)-dotnet.zip" />
   </Target>
 
   <Target Name="Clean">

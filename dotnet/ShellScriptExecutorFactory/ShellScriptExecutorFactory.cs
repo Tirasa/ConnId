@@ -29,6 +29,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Org.IdentityConnectors.Common.Security;
+using System.Threading;
 
 namespace Org.IdentityConnectors.Common.Script.Shell
 {
@@ -63,7 +64,7 @@ namespace Org.IdentityConnectors.Common.Script.Shell
         class ShellScriptExecutor : ScriptExecutor
         {
             private readonly string _script;
-            
+
             public ShellScriptExecutor(string script)
             {
                 _script = script;
@@ -77,8 +78,11 @@ namespace Org.IdentityConnectors.Common.Script.Shell
                 // set the defaults..
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.UseShellExecute = true;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
                 // set the default timeout..
                 int timeout = 1000 * 30; // 30 secss
+                IDictionary<string, object> result = new Dictionary<string, object>();
                 int exitCode = 1;
                 try
                 {
@@ -138,7 +142,7 @@ namespace Org.IdentityConnectors.Common.Script.Shell
                         sw.Write(_script);
                     }
                     finally
-                    {                        
+                    {
                         sw.Close();
                         sw.Dispose();
                     }
@@ -146,18 +150,29 @@ namespace Org.IdentityConnectors.Common.Script.Shell
                     process.StartInfo.FileName = fn;
                     // execute script..
                     process.Start();
+                    string stdout = process.StandardOutput.ReadToEnd();
+                    // http://msdn.microsoft.com/en-us/library/system.diagnostics.process.standardoutput.aspx
+                    // Use asynchronous read operations on at least one of the streams.
+                    AsynchronousReader msr_stderr = new AsynchronousReader(process.StandardError);
+                    // Create the thread objects to run the code asynchronously
+                    Thread t_stderr = new Thread(msr_stderr.Go);
+                    t_stderr.Start();
+                    t_stderr.Join();
                     // wait for the process to exit..
                     if (!process.WaitForExit(timeout))
                     {
                         throw new TimeoutException("Script failed to exit in time!");
                     }
                     exitCode = process.ExitCode;
-                                        
+                    result.Add("stdout", stdout);
+                    result.Add("stderr", msr_stderr.Text);
                 }
-                catch (Exception e) {
-                    
+                catch (Exception e)
+                {
+                    Trace.TraceError("Failed to execute script with exception {0}", e.Message);
                 }
-                finally {
+                finally
+                {
                     // close up the process
                     process.Close();
                     process.Dispose();
@@ -169,11 +184,27 @@ namespace Org.IdentityConnectors.Common.Script.Shell
                 }
                 catch (Exception e)
                 {
-                    
+
                 }
-                
-                return exitCode;
+                result.Add("exitCode", exitCode);
+                return result;
             }
+        }
+    }
+    internal class AsynchronousReader
+    {
+        StreamReader _sr = null;
+        string _text = null;
+        public string Text { get { return _text; } }
+
+        public AsynchronousReader(StreamReader sr)
+        {
+            _sr = sr;
+        }
+
+        public void Go()
+        {
+            _text = _sr.ReadToEnd();
         }
     }
 }
