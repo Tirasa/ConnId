@@ -1046,7 +1046,14 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
             //make sure we are configured properly
             ConnectorInfoManagerFactory.GetInstance().GetLocalManager();
             _requestCount = 0;
-            _startDate = DateTimeUtil.GetCurrentUtcTimeMillis();
+            /*
+             * the Java and .Net dates have a different starting point: zero milliseconds in Java corresponds to January 1, 1970, 00:00:00 GMT (aka “the epoch”). 
+             * In .Net zero milliseconds* corresponds to 12:00 A.M., January 1, 0001 GMT. 
+             * So the basic is to bridge over the reference points gap with adding (or substracting) the corresponding number of milliseconds 
+             * such that zero milliseconds in .Net is mapped to -62135769600000L milliseconds in Java.
+             * This number of milliseconds corresponds to GMT zone, so do not forget to include your time zone offset into the calculations.
+             */
+            _startDate = (DateTime.UtcNow.Ticks - 621355968000000000) / 10000;
             _pendingRequests.Clear();
             TcpListener socket =
                 CreateServerSocket();

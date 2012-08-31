@@ -30,6 +30,7 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Text;
 using Org.IdentityConnectors.Common.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Org.IdentityConnectors.Framework.Service
 {
@@ -37,6 +38,8 @@ namespace Org.IdentityConnectors.Framework.Service
     static class Program
     {
         private const string OPT_SERVICE_NAME = "/serviceName";
+        private const string OPT_CERTSTOR_NAME = "/storeName";
+        private const string OPT_CERTFILE_NAME = "/certificateFile";
 
         private static void Usage()
         {
@@ -45,6 +48,7 @@ namespace Org.IdentityConnectors.Framework.Service
             Console.WriteLine("       /uninstall [/serviceName <serviceName>] - Uninstalls the service.");
             Console.WriteLine("       /run - Runs the service from the console.");
             Console.WriteLine("       /setKey [<key>] - Sets the connector server key.");
+            Console.WriteLine("       /storeCertificate [/storeName <certificatestorename>] [/certificateFile <certificate>]- Stores the Certificate in the storage.");
         }
 
         private static IDictionary<string, string> ParseOptions(string[] args)
@@ -118,6 +122,10 @@ namespace Org.IdentityConnectors.Framework.Service
                 else if ("/run".Equals(cmd))
                 {
                     DoRun(options);
+                }
+                else if ("/storeCertificate".Equals(cmd))
+                {
+                    DoStoreCertificate(options);
                 }
                 else
                 {
@@ -246,6 +254,40 @@ namespace Org.IdentityConnectors.Framework.Service
             config.AppSettings.Settings.Add(Service.PROP_KEY, str.GetBase64SHA1Hash());
             config.Save(ConfigurationSaveMode.Modified);
             Console.WriteLine("Key Updated.");
+        }
+
+        private static void DoStoreCertificate(IDictionary<string, string> options)
+        {
+            string storeName = null != options[OPT_CERTSTOR_NAME] ? options[OPT_CERTSTOR_NAME] : "ConnectorServerSSLCertificate";
+            string certificateFile = options[OPT_CERTFILE_NAME];
+
+            if (certificateFile == null)
+            {
+                Usage();
+                throw new Org.IdentityConnectors.Framework.Common.Exceptions.ConfigurationException("Missing required argument: " + OPT_CERTFILE_NAME);
+            }
+
+            X509Certificate2 certificate = new X509Certificate2(certificateFile);
+            X509Store store = new X509Store(storeName,  StoreLocation.LocalMachine);
+
+            store.Open(OpenFlags.ReadWrite);
+            X509CertificateCollection certificates = store.Certificates;
+            if (certificates.Count != 0)
+            {
+                if (certificates.Count == 1)
+                {
+                    store.Remove(store.Certificates[0]);
+                    Console.WriteLine("Previous certificate has been removed.");
+                }
+                else
+                {
+                    Console.WriteLine("There are multiple certificates were found. You may point to the wrong store.");
+                    throw new Org.IdentityConnectors.Framework.Common.Exceptions.ConfigurationException("There is supported to be exactly one certificate in the store: " + storeName);
+                }
+            }
+            store.Add(certificate);
+            store.Close();
+            Console.WriteLine("Certificate is stored in " + storeName);
         }
     }
 }

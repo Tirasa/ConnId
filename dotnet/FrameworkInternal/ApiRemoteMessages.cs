@@ -34,8 +34,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
     {
         public const int SERVER_INFO = 4;
         public const int CONNECTOR_KEY_LIST = 16;
-        private const int DEFAULT_CONFIG = 32;
-        public const int CONNECTOR_INFO = CONNECTOR_KEY_LIST | DEFAULT_CONFIG;
+        // private const int DEFAULT_CONFIG = 32;
+        public const int CONNECTOR_INFO = CONNECTOR_KEY_LIST | SERVER_INFO;
 
         private readonly int _level;
 
