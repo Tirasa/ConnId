@@ -11,7 +11,7 @@ mailing lists.
 
 # Is this Open Source?
 All the code and documentation are released under terms of 
-[CCDL 1.0](https://raw.github.com/Tirasa/ConnIdBase/master/legal/license.txt).
+[CCDL 1.0](https://raw.github.com/Tirasa/ConnId/master/legal/license.txt).
 
 # What is ConnId meant for?
 One of the main features of the framework is decoupling Connectors from any application that uses them. 
@@ -20,4 +20,4 @@ of the framework. In addition an application may choose to use multiple Connecto
 isolation. With class path isolation there is no issue with conflicting 3rd party libraries.
 An application is only required to couple to the Framework and not to any specific Connector.
 
-![ConnId architecture](https://raw.github.com/Tirasa/ConnIdBase/master/images/architecture.png "ConnId architecture")
+![ConnId architecture](https://raw.github.com/Tirasa/ConnId/master/images/architecture.png "ConnId architecture")
