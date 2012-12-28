@@ -41,7 +41,7 @@
     <version>7</version>
   </parent>
 
-  <url>http://connid.googlecode.com/</url>
+  <url>http://tirasa.github.com/ConnId/</url>
   <prerequisites>
     <maven>[3.0.3,)</maven>
   </prerequisites>
@@ -49,15 +49,15 @@
   <licenses>
     <license>
       <name>CDDL 1.0</name>
-      <url>http://www.sun.com/cddl/cddl.html</url>
+      <url>https://raw.github.com/Tirasa/ConnId/master/legal/license.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:svn:http://connid.googlecode.com/svn/base/trunk/</connection>
-    <developerConnection>scm:svn:https://connid.googlecode.com/svn/base/trunk/</developerConnection>
-    <url>http://connid.googlecode.com/svn/base/trunk/</url>
+    <connection>scm:git:git@github.com:Tirasa/ConnId.git</connection>
+    <url>scm:git:git@github.com:Tirasa/ConnId.git</url>
+    <developerConnection>scm:git:git@github.com:Tirasa/ConnId.git</developerConnection>
   </scm>
 
   <issueManagement>
