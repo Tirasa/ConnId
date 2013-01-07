@@ -314,11 +314,10 @@ section {
 /* Footer */
 
 footer {
-  width:170px;
-  float:left;
-  position:fixed;
-  bottom:10px;
-	padding-left: 50px;
+  float: right;
+  width: 650px;
+  font-size: 90%;
+  border-top: 1px solid #CCCCCC;
 }
 
 @media print, screen and (max-width: 960px) {
