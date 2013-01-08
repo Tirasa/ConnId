@@ -22,6 +22,7 @@
  */
 using System;
 using System.Reflection;
+using System.Text;
 using System.Collections.Generic;
 using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Common.Security;
@@ -379,4 +380,338 @@ namespace Org.IdentityConnectors.Framework.Common
             return Assembly.GetExecutingAssembly().GetName().Version;
         }
     }
+
+    /// <summary>
+    /// A version range is an interval describing a set of <seealso cref="Version versions"/>.
+    /// <p/>
+    /// A range has a left (lower) endpoint and a right (upper) endpoint. Each
+    /// endpoint can be open (excluded from the set) or closed (included in the set).
+    /// 
+    /// <p>
+    /// {@code VersionRange} objects are immutable.
+    /// 
+    /// @author Laszlo Hordos
+    /// @Immutable
+    /// </summary>
+    public class VersionRange
+    {
+
+        /// <summary>
+        /// The left endpoint is open and is excluded from the range.
+        /// <p>
+        /// The value of {@code LEFT_OPEN} is {@code '('}.
+        /// </summary>
+        public const char LEFT_OPEN = '(';
+        /// <summary>
+        /// The left endpoint is closed and is included in the range.
+        /// <p>
+        /// The value of {@code LEFT_CLOSED} is {@code '['}.
+        /// </summary>
+        public const char LEFT_CLOSED = '[';
+        /// <summary>
+        /// The right endpoint is open and is excluded from the range.
+        /// <p>
+        /// The value of {@code RIGHT_OPEN} is {@code ')'}.
+        /// </summary>
+        public const char RIGHT_OPEN = ')';
+        /// <summary>
+        /// The right endpoint is closed and is included in the range.
+        /// <p>
+        /// The value of {@code RIGHT_CLOSED} is {@code ']'}.
+        /// </summary>
+        public const char RIGHT_CLOSED = ']';
+
+        private const string ENDPOINT_DELIMITER = ",";
+
+        private readonly Version floorVersion;
+        private readonly bool isFloorInclusive;
+        private readonly Version ceilingVersion;
+        private readonly bool isCeilingInclusive;
+        private readonly bool empty;
+
+        /// <summary>
+        /// Parse version component into a Version.
+        /// </summary>
+        /// <param name="version">
+        ///            version component string </param>
+        /// <param name="range">
+        ///            Complete range string for exception message, if any </param>
+        /// <returns> Version </returns>
+        private static Version parseVersion(string version, string range)
+        {
+            try
+            {
+                return Version.Parse(version);
+            }
+            catch (System.ArgumentException e)
+            {
+                throw new System.ArgumentException("invalid range \"" + range + "\": " + e.Message, e);
+            }
+        }
+
+        /// <summary>
+        /// Creates a version range from the specified string.
+        /// 
+        /// <p>
+        /// Version range string grammar:
+        /// 
+        /// <pre>
+        /// range ::= interval | at least
+        /// interval ::= ( '[' | '(' ) left ',' right ( ']' | ')' )
+        /// left ::= version
+        /// right ::= version
+        /// at least ::= version
+        /// </pre>
+        /// </summary>
+        /// <param name="range">
+        ///            String representation of the version range. The versions in
+        ///            the range must contain no whitespace. Other whitespace in the
+        ///            range string is ignored. </param>
+        /// <exception cref="IllegalArgumentException">
+        ///             If {@code range} is improperly formatted. </exception>
+        public static VersionRange Parse(string range)
+        {
+            Assertions.BlankCheck(range, "range");
+            int idx = range.IndexOf(ENDPOINT_DELIMITER);
+            // Check if the version is an interval.
+            if (idx > 1 && idx == range.LastIndexOf(ENDPOINT_DELIMITER))
+            {
+                string vlo = range.Substring(0, idx).Trim();
+                string vhi = range.Substring(idx + 1).Trim();
+
+                bool isLowInclusive = true;
+                bool isHighInclusive = true;
+                if (vlo[0] == LEFT_OPEN)
+                {
+                    isLowInclusive = false;
+                }
+                else if (vlo[0] != LEFT_CLOSED)
+                {
+                    throw new System.ArgumentException("invalid range \"" + range + "\": invalid format");
+                }
+                vlo = vlo.Substring(1).Trim();
+
+                if (vhi[vhi.Length - 1] == RIGHT_OPEN)
+                {
+                    isHighInclusive = false;
+                }
+                else if (vhi[vhi.Length - 1] != RIGHT_CLOSED)
+                {
+                    throw new System.ArgumentException("invalid range \"" + range + "\": invalid format");
+                }
+                vhi = vhi.Substring(0, vhi.Length - 1).Trim();
+
+                return new VersionRange(parseVersion(vlo, range), isLowInclusive, parseVersion(vhi, range), isHighInclusive);
+            }
+            else if (idx == -1)
+            {
+                return new VersionRange(VersionRange.parseVersion(range.Trim(), range), true, null, false);
+            }
+            else
+            {
+                throw new System.ArgumentException("invalid range \"" + range + "\": invalid format");
+            }
+        }
+
+        public VersionRange(Version low, bool isLowInclusive, Version high, bool isHighInclusive)
+        {
+            Assertions.NullCheck(low, "floorVersion");
+            floorVersion = low;
+            isFloorInclusive = isLowInclusive;
+            ceilingVersion = high;
+            isCeilingInclusive = isHighInclusive;
+            empty = Empty0;
+        }
+
+        public virtual Version Floor
+        {
+            get
+            {
+                return floorVersion;
+            }
+        }
+
+        public virtual bool FloorInclusive
+        {
+            get
+            {
+                return isFloorInclusive;
+            }
+        }
+
+        public virtual Version Ceiling
+        {
+            get
+            {
+                return ceilingVersion;
+            }
+        }
+
+        public virtual bool CeilingInclusive
+        {
+            get
+            {
+                return isCeilingInclusive;
+            }
+        }
+
+        public virtual bool IsInRange(Version version)
+        {
+            if (empty)
+            {
+                return false;
+            }
+            if (floorVersion.CompareTo(version) >= (isFloorInclusive ? 1 : 0))
+            {
+                return false;
+            }
+            if (ceilingVersion == null)
+            {
+                return true;
+            }
+            return ceilingVersion.CompareTo(version) >= (isCeilingInclusive ? 0 : 1);
+
+        }
+
+        /// <summary>
+        /// Returns whether this version range contains only a single version.
+        /// </summary>
+        /// <returns> {@code true} if this version range contains only a single
+        ///         version; {@code false} otherwise. </returns>
+        public virtual bool Exact
+        {
+            get
+            {
+                if (empty)
+                {
+                    return false;
+                }
+                else if (ceilingVersion == null)
+                {
+                    return true;
+                }
+                if (isFloorInclusive)
+                {
+                    if (isCeilingInclusive)
+                    {
+                        // [f,c]: exact if f == c
+                        return floorVersion.Equals(ceilingVersion);
+                    }
+                    else
+                    {
+                        // [f,c): exact if f++ >= c
+                        Version adjacent1 = new Version(floorVersion.Major, floorVersion.Minor, floorVersion.Build, floorVersion.Revision + 1);
+                        return adjacent1.CompareTo(ceilingVersion) >= 0;
+                    }
+                }
+                else
+                {
+                    if (isCeilingInclusive)
+                    {
+                        // (f,c] is equivalent to [f++,c]: exact if f++ == c
+                        Version adjacent1 = new Version(floorVersion.Major, floorVersion.Minor, floorVersion.Build, floorVersion.Revision + 1);
+                        return adjacent1.Equals(ceilingVersion);
+                    }
+                    else
+                    {
+                        // (f,c) is equivalent to [f++,c): exact if (f++)++ >=c
+                        Version adjacent2 = new Version(floorVersion.Major, floorVersion.Minor, floorVersion.Build, floorVersion.Revision + 2);
+                        return adjacent2.CompareTo(ceilingVersion) >= 0;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns whether this version range is empty. A version range is empty if
+        /// the set of versions defined by the interval is empty.
+        /// </summary>
+        /// <returns> {@code true} if this version range is empty; {@code false}
+        ///         otherwise. </returns>
+        public virtual bool Empty
+        {
+            get
+            {
+                return empty;
+            }
+        }
+
+        /// <summary>
+        /// Internal isEmpty behavior.
+        /// </summary>
+        /// <returns> {@code true} if this version range is empty; {@code false}
+        ///         otherwise. </returns>
+        private bool Empty0
+        {
+            get
+            {
+                if (ceilingVersion == null) // infinity
+                {
+                    return false;
+                }
+                int comparison = floorVersion.CompareTo(ceilingVersion);
+                if (comparison == 0) // endpoints equal
+                {
+                    return !isFloorInclusive || !isCeilingInclusive;
+                }
+                return comparison > 0; // true if left > right
+            }
+        }
+
+        public virtual bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (this.GetType() != obj.GetType())
+            {
+                return false;
+            }
+            VersionRange other = (VersionRange)obj;
+            if (floorVersion != other.floorVersion && (floorVersion == null || !floorVersion.Equals(other.floorVersion)))
+            {
+                return false;
+            }
+            if (isFloorInclusive != other.isFloorInclusive)
+            {
+                return false;
+            }
+            if (ceilingVersion != other.ceilingVersion && (ceilingVersion == null || !ceilingVersion.Equals(other.ceilingVersion)))
+            {
+                return false;
+            }
+            if (isCeilingInclusive != other.isCeilingInclusive)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            int result = floorVersion.GetHashCode();
+            result = 31 * result + (isFloorInclusive ? 1 : 0);
+            result = 31 * result + (ceilingVersion != null ? ceilingVersion.GetHashCode() : 0);
+            result = 31 * result + (isCeilingInclusive ? 1 : 0);
+            return result;
+        }
+
+        public virtual string ToString()
+        {
+            if (ceilingVersion != null)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(isFloorInclusive ? LEFT_CLOSED : LEFT_OPEN);
+                sb.Append(floorVersion.ToString()).Append(ENDPOINT_DELIMITER).Append(ceilingVersion.ToString());
+                sb.Append(isCeilingInclusive ? RIGHT_CLOSED : RIGHT_OPEN);
+                return sb.ToString();
+            }
+            else
+            {
+                return floorVersion.ToString();
+            }
+        }
+    }
+
 }

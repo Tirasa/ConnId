@@ -92,6 +92,7 @@
     <Compile Include="TestHelperTests.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="UpdateImplTests.cs" />
+    <Compile Include="VersionRangeTests.cs" />
     <None Include="app.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
