@@ -61,9 +61,14 @@
   </scm>
 
   <issueManagement>
-    <system>Google Code</system>
-    <url>http://code.google.com/p/connid/issues/</url>
+    <system>jira</system>
+    <url>https://connid.atlassian.net/browse/BASE</url>
   </issueManagement>
+
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>http://jenkins.tirasa.net/job/ConnId%20base%20(master)/</url>
+  </ciManagement>
 
   <mailingLists>
     <mailingList>
