@@ -162,9 +162,9 @@ public final class Version implements Comparable<Version> {
      * @return this version as a string.
      */
     public String getVersion() {
-        StringBuffer buffer = new StringBuffer();
-        appendTo(buffer);
-        return buffer.toString();
+        StringBuilder builder = new StringBuilder();
+        appendTo(builder);
+        return builder.toString();
     }
 
     @Override
@@ -198,18 +198,18 @@ public final class Version implements Comparable<Version> {
 
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("Version[");
-        appendTo(buf);
-        buf.append(']');
-        return buf.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append("Version[");
+        appendTo(builder);
+        builder.append(']');
+        return builder.toString();
     }
 
-    private void appendTo(StringBuffer buffer) {
+    private void appendTo(StringBuilder builder) {
         for (int i = 0; i < components.length; i++) {
-            buffer.append(components[i]);
+            builder.append(components[i]);
             if (i < components.length - 1) {
-                buffer.append('.');
+                builder.append('.');
             }
         }
     }

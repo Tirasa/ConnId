@@ -173,10 +173,10 @@ public class StringUtil {
                 closeQuote += 1;
             }
             // construct new string from parts..
-            StringBuffer buf = new StringBuffer();
-            buf.append(ret.substring(0, start));
-            buf.append(ret.substring(closeQuote + 1));
-            ret = buf.toString();
+            StringBuilder builder = new StringBuilder();
+            builder.append(ret.substring(0, start));
+            builder.append(ret.substring(closeQuote + 1));
+            ret = builder.toString();
         }
         return ret;
     }
@@ -187,7 +187,7 @@ public class StringUtil {
     public static String stripNewlines(String src) {
         String dest = null;
         if (src != null) {
-            StringBuffer b = new StringBuffer();
+            StringBuilder b = new StringBuilder();
             int max = src.length();
             for (int i = 0; i < max; i++) {
                 char c = src.charAt(i);
@@ -242,10 +242,10 @@ public class StringUtil {
                 break;
             }
             // construct new string from parts..
-            StringBuffer buf = new StringBuffer();
-            buf.append(ret.substring(0, start));
-            buf.append(ret.substring(end + END_XMLCOMMENT.length()));
-            ret = buf.toString();
+            StringBuilder builder = new StringBuilder();
+            builder.append(ret.substring(0, start));
+            builder.append(ret.substring(end + END_XMLCOMMENT.length()));
+            ret = builder.toString();
         }
         return ret;
     }
