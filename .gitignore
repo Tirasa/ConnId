@@ -1,0 +1,8 @@
+/framework/target/
+/framework-internal/target/
+/test-common/target/
+/testbundles/testcommonv1/target/
+/testbundles/testbundlev1/target/
+/testbundles/testbundlev2/target/
+/testbundles/testcommonv2/target/
+/test-contract/target/
