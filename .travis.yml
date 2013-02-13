@@ -3,7 +3,8 @@ language: java
 env:
   global:
     - SONATYPE_USERNAME=chicchiricco
-    - secure: "GeYWdEWPJDeXyVn29hUfwlbS0lp+O7hArW3Fzows3XpG9ZENGJKy9kK3pbHa\nenw2JrYtCXE47TNkmH6gHbq1yJGbgRFLYoTwiRWpAZ491veRlSs1s8qWBnir\nAoc7rPAK6f4I6Uhn20MFZXbvgKgx9/xCkQ2cP4hzshAaTt4tna0="
+    - secure: "dhCSFSaImzvQ+DT6nhc2qRaKMiU39ePDQcWoU3K6tk0GVQYd5tHZM4ZhiowT\nTeo0BcQH2AZ3+CnojHkJ0ZFHxKrRyiWQzJEiz7eaQIKsVq+ZHnNmYfsBZevH\nQcAHadUVEmlKucu8U6WC/5HIc3m7xKseUIkPYbVG7eg6GmL1SsI="
+
 
 after_success:
   - "[[ $TRAVIS_BRANCH == \"master\" ]] && { python .travis.addServer.py; mvn clean deploy --settings ~/.m2/mySettings.xml; };"
