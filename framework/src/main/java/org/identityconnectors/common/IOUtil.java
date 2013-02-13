@@ -48,6 +48,7 @@ import java.util.zip.CRC32;
  * IO Utilities
  */
 public class IOUtil {
+
     /**
      * Never allow this to be instantiated.
      */
@@ -56,13 +57,10 @@ public class IOUtil {
     }
 
     /**
-     * Quietly closes the reader. This avoids having to handle exceptions, and
-     * then inside of the exception handling have a try catch block to close the
-     * reader and catch any {@link IOException} which may be thrown and ignore
-     * it.
-     * 
-     * @param reader -
-     *            Reader to close
+     * Quietly closes the reader. This avoids having to handle exceptions, and then inside of the exception handling
+     * have a try catch block to close the reader and catch any {@link IOException} which may be thrown and ignore it.
+     *
+     * @param reader - Reader to close
      */
     public static void quietClose(Reader reader) {
         try {
@@ -75,12 +73,10 @@ public class IOUtil {
     }
 
     /**
-     * Quietly closes the stream. This avoids having to handle exceptions, and
-     * then inside of the exception handling have a try catch block to close the
-     * stream and catch any {@link IOException} which may be thrown.
-     * 
-     * @param stream -
-     *            Stream to close
+     * Quietly closes the stream. This avoids having to handle exceptions, and then inside of the exception handling
+     * have a try catch block to close the stream and catch any {@link IOException} which may be thrown.
+     *
+     * @param stream - Stream to close
      */
     public static void quietClose(InputStream stream) {
         try {
@@ -93,12 +89,10 @@ public class IOUtil {
     }
 
     /**
-     * Quietly closes the Writer. This avoids having to handle exceptions, and
-     * then inside of the exception handling have a try catch block to close the
-     * Writer and catch any ioexceptions which may be thrown.
-     * 
-     * @param writer -
-     *            Writer to close
+     * Quietly closes the Writer. This avoids having to handle exceptions, and then inside of the exception handling
+     * have a try catch block to close the Writer and catch any ioexceptions which may be thrown.
+     *
+     * @param writer - Writer to close
      */
     public static void quietClose(Writer writer) {
         try {
@@ -111,12 +105,10 @@ public class IOUtil {
     }
 
     /**
-     * Quietly closes the stream. This avoids having to handle exceptions, and
-     * then inside of the exception handling have a try catch block to close the
-     * stream and catch any ioexceptions which may be thrown.
-     * 
-     * @param stream -
-     *            Stream to close
+     * Quietly closes the stream. This avoids having to handle exceptions, and then inside of the exception handling
+     * have a try catch block to close the stream and catch any ioexceptions which may be thrown.
+     *
+     * @param stream - Stream to close
      */
     public static void quietClose(OutputStream stream) {
         try {
@@ -133,11 +125,9 @@ public class IOUtil {
     // =======================================================================
     /**
      * Get the path to a resource base on the package of given class.
-     * 
-     * @param c
-     *            Class to get the package path too.
-     * @param res
-     *            Name of the resource to get the path of.
+     *
+     * @param c Class to get the package path too.
+     * @param res Name of the resource to get the path of.
      * @return Returns the fully quilified path to a resource.
      */
     public static String getResourcePath(Class<?> c, String res) {
@@ -156,15 +146,15 @@ public class IOUtil {
 
     /**
      * Returns an input stream of the resource specified.
-     * 
+     *
      * @return Returns an InputStream to the resource.
      */
     public static InputStream getResourceAsStream(Class<?> clazz, String res) {
         assert clazz != null && StringUtil.isNotBlank(res);
         InputStream ret = null;
         ClassLoader classLoader = clazz.getClassLoader();
-        String name[] = { res, getResourcePath(clazz, res),
-                "/" + getResourcePath(clazz, res) };
+        String name[] = {res, getResourcePath(clazz, res),
+            "/" + getResourcePath(clazz, res)};
         for (int i = 0; ret == null && i < name.length; i++) {
             ret = classLoader.getResourceAsStream(name[i]);
         }
@@ -236,11 +226,9 @@ public class IOUtil {
 
     /**
      * Takes a 'Reader' and returns the contents as a string.
-     * 
-     * @param rdr
-     *            Producer for the string data.
-     * @return Null if the 'Reader' is broken or empty otherwise the contents as
-     *         a string.
+     *
+     * @param rdr Producer for the string data.
+     * @return Null if the 'Reader' is broken or empty otherwise the contents as a string.
      */
     public static String readerToString(Reader rdr) {
         String ret = null;
@@ -262,11 +250,9 @@ public class IOUtil {
 
     /**
      * Copies a file to a destination.
-     * 
-     * @param src
-     *            The source must be a file
-     * @param dest
-     *            This can be a directory or a file.
+     *
+     * @param src The source must be a file
+     * @param dest This can be a directory or a file.
      * @return True if succeeded otherwise false.
      */
     public static boolean copyFile(File src, File dest) throws IOException {
@@ -298,10 +284,8 @@ public class IOUtil {
     }
 
     /**
-     * Copies one file to another.
-     * <p>
-     * NOTE: does not close streams.
-     * 
+     * Copies one file to another. <p> NOTE: does not close streams.
+     *
      * @return total bytes copied.
      */
     public static long copyFile(InputStream fis, OutputStream fos)
@@ -317,9 +301,8 @@ public class IOUtil {
 
     /**
      * Calculates the CRC32 checksum of the specified file.
-     * 
-     * @param fileName -
-     *            the path to the file on which to calculate the checksum
+     *
+     * @param fileName - the path to the file on which to calculate the checksum
      */
     public static long checksum(String fileName) throws IOException,
             FileNotFoundException {
@@ -347,9 +330,8 @@ public class IOUtil {
 
     /**
      * Reads an entire file and returns the bytes.
-     * 
-     * @param close
-     *            if true, close when finished reading.
+     *
+     * @param close if true, close when finished reading.
      * @return file bytes.
      */
     public static byte[] readInputStreamBytes(InputStream is, boolean close)
@@ -375,9 +357,8 @@ public class IOUtil {
 
     /**
      * Recursively delete all the files in a directory and the directory.
-     * 
-     * @throws RuntimeException
-     *             iff there is file that can not be deleted.
+     *
+     * @throws RuntimeException iff there is file that can not be deleted.
      */
     public static void delete(File f) throws IOException {
         // determine if the file/directory exists..
@@ -414,7 +395,7 @@ public class IOUtil {
             in.close();
         }
     }
-    
+
     /**
      * Stores the given file as a Properties file.
      */
@@ -429,14 +410,11 @@ public class IOUtil {
 
     /**
      * Loads the given resource as a properties object.
-     * 
-     * @param loader
-     *            The class loader
-     * @param path
-     *            The path to the resource
+     *
+     * @param loader The class loader
+     * @param path The path to the resource
      * @return The properties or null if not found
-     * @throws IOException
-     *             If an error occurs reading it
+     * @throws IOException If an error occurs reading it
      */
     public static Properties getResourceAsProperties(ClassLoader loader,
             String path) throws IOException {
@@ -452,48 +430,42 @@ public class IOUtil {
             in.close();
         }
     }
+
     /**
      * Extracts the resource to a file.
-     * 
-     * @param clazz
-     *            The class, relative to which path is resolved
-     * @param path
-     *            The path to the resource
-     * @param file
-     *            The file to extract to
-     * @throws IOException
-     *             If an error occurs reading it
+     *
+     * @param clazz The class, relative to which path is resolved
+     * @param path The path to the resource
+     * @param file The file to extract to
+     * @throws IOException If an error occurs reading it
      */
     public static void extractResourceToFile(Class<?> clazz,
             String path,
             File file) throws IOException {
         InputStream in = getResourceAsStream(clazz, path);
-        if ( in == null ) {
-            throw new IOException("Missing resource: "+path);
+        if (in == null) {
+            throw new IOException("Missing resource: " + path);
         }
         OutputStream out = null;
         try {
             out = new FileOutputStream(file);
             IOUtil.copyFile(in, out);
         } finally {
-            if ( out != null ) {
+            if (out != null) {
                 out.close();
             }
-            if ( in != null ) {
+            if (in != null) {
                 in.close();
             }
-            
+
         }
     }
 
     /**
-     * Unjars the given file to the given directory. Does not close the JarFile
-     * when finished.
-     * 
-     * @param jarFile
-     *            The file to unjar.
-     * @param toDir
-     *            The directory to unjar to.
+     * Unjars the given file to the given directory. Does not close the JarFile when finished.
+     *
+     * @param jarFile The file to unjar.
+     * @param toDir The directory to unjar to.
      */
     public static void unjar(JarFile jarFile, File toDir) throws IOException {
         Enumeration<JarEntry> entries = jarFile.entries();
@@ -517,12 +489,10 @@ public class IOUtil {
 
     /**
      * Reads the given file as UTF-8
-     * 
-     * @param file
-     *            The file to read
+     *
+     * @param file The file to read
      * @return The contents of the file
-     * @throws IOException
-     *             iff there is an issue reading the file.
+     * @throws IOException iff there is an issue reading the file.
      */
     public static String readFileUTF8(File file) throws IOException {
         byte[] bytes = IOUtil.readFileBytes(file);
@@ -531,12 +501,10 @@ public class IOUtil {
 
     /**
      * Reads the given file as bytes
-     * 
-     * @param file
-     *            The file to read
+     *
+     * @param file The file to read
      * @return The contents of the file
-     * @throws IOException
-     *             iff there is an issue reading the file.
+     * @throws IOException iff there is an issue reading the file.
      */
     public static byte[] readFileBytes(File file) throws IOException {
         InputStream ins = new FileInputStream(file);
@@ -546,15 +514,11 @@ public class IOUtil {
 
     /**
      * Write the contents of the string out to a file in UTF-8 format.
-     * 
-     * @param file
-     *            the file to write to.
-     * @param contents
-     *            the contents of the file to write to.
-     * @throws IOException
-     *             iff there is an issue writing the file.
-     * @throws NullPointerException
-     *             iff the file parameter is null.
+     *
+     * @param file the file to write to.
+     * @param contents the contents of the file to write to.
+     * @throws IOException iff there is an issue writing the file.
+     * @throws NullPointerException iff the file parameter is null.
      */
     public static void writeFileUTF8(File file, String contents)
             throws IOException {
@@ -568,32 +532,26 @@ public class IOUtil {
 
     /**
      * Make a URL from a directory and path.
-     * 
-     * @param dir
-     *            directory to start from.
-     * @param path
-     *            file or path to create the url.
+     *
+     * @param dir directory to start from.
+     * @param path file or path to create the url.
      * @return URL based on the parameter provided.
-     * @throws IOException
-     *             iff the URL create from the parameters does not specify a
-     *             file.
+     * @throws IOException iff the URL create from the parameters does not specify a file.
      */
     public static URL makeURL(File dir, String path) throws IOException {
         File file = new File(dir, path);
         if (!file.isFile()) {
             throw new IOException(file.getPath() + " does not exist");
         }
-        return file.toURL();
+        return file.toURI().toURL();
     }
 
     /**
      * Attempt to load file based on a string base filename.
-     * 
-     * @param string
-     *            represents the file.
+     *
+     * @param string represents the file.
      * @return a loaded properties file.
-     * @throws IOException
-     *             if there is an issue.
+     * @throws IOException if there is an issue.
      */
     public static Properties loadPropertiesFile(String string)
             throws IOException {

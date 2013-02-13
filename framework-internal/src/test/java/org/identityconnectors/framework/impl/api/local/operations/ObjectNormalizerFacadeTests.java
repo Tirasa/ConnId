@@ -22,7 +22,8 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
@@ -79,7 +80,7 @@ public class ObjectNormalizerFacadeTests {
         String expectedXml = SerializerUtil.serializeXmlObject(
                 expectedNormalizedFilter, false);
         String actualXml = SerializerUtil.serializeXmlObject(filter, false);
-        Assert.assertEquals(expectedXml, actualXml);
+        assertEquals(expectedXml, actualXml);
     }
 
     @Test
@@ -213,8 +214,8 @@ public class ObjectNormalizerFacadeTests {
         builder.setUid("myuid");
         builder.addAttribute(createNormalizedTestAttribute());
         ConnectorObject expected = builder.build();
-        Assert.assertEquals(expected, v2);
-        Assert.assertFalse(expected.equals(v1));
+        assertEquals(expected, v2);
+        assertFalse(expected.equals(v1));
     }
 
     @Test
@@ -244,8 +245,8 @@ public class ObjectNormalizerFacadeTests {
         objbuilder.addAttribute(createNormalizedTestAttribute());
         builder.setObject(objbuilder.build());
         SyncDelta expected = builder.build();
-        Assert.assertEquals(expected, v2);
-        Assert.assertFalse(expected.equals(v1));
+        assertEquals(expected, v2);
+        assertFalse(expected.equals(v1));
 
     }
 }

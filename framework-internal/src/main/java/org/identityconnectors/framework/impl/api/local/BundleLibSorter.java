@@ -42,17 +42,17 @@ public class BundleLibSorter implements Comparator<File> {
     /**
      * Returns the sorted libs from the given bundle directory.
      */
-    public static File [] getSortedFiles(File dir) {
-        File [] files = dir.listFiles();
-        Arrays.sort(files,new BundleLibSorter());
+    public static File[] getSortedFiles(File dir) {
+        File[] files = dir.listFiles();
+        Arrays.sort(files, new BundleLibSorter());
         return files;
     }
-    
+
     public static List<URL> getSortedURLs(File dir) throws IOException {
-        File [] files = getSortedFiles(dir);
+        File[] files = getSortedFiles(dir);
         List<URL> rv = new ArrayList<URL>();
         for (File file : files) {
-            rv.add(file.toURL());
+            rv.add(file.toURI().toURL());
         }
         return rv;
     }

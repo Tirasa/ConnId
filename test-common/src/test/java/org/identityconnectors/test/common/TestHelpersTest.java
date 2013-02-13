@@ -23,6 +23,7 @@
 package org.identityconnectors.test.common;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -38,9 +39,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
-
-import junit.framework.Assert;
-
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.junit.Test;
@@ -61,7 +59,7 @@ public class TestHelpersTest {
             PropertyBag properties1 = TestHelpers.getProperties(DummyConnector.class, new ConfigClassLoader());
             checkProperties(properties1);
             PropertyBag properties2 = TestHelpers.getProperties(DummyConnector.class, new ConfigClassLoader());
-            Assert.assertSame("TestHepers must create same PropertyBag for same connector", properties1, properties2);
+            assertSame("TestHepers must create same PropertyBag for same connector", properties1, properties2);
         } finally {
             if (oldTestConfig == null) {
                 System.getProperties().remove("testConfig");
@@ -84,6 +82,7 @@ public class TestHelpersTest {
     }
 
     static class DummyConnector implements Connector {
+
         public void dispose() {
         }
 
@@ -96,6 +95,7 @@ public class TestHelpersTest {
     }
 
     static class ConfigClassLoader extends ClassLoader {
+
         @Override
         public URL getResource(String name) {
             String prefix = DummyConnector.class.getName();
@@ -131,6 +131,7 @@ public class TestHelpersTest {
     }
 
     private static class SingleURLEnumeration implements Enumeration<URL> {
+
         private URL url;
 
         private SingleURLEnumeration(URL url) {
@@ -154,9 +155,11 @@ public class TestHelpersTest {
 
     private static URL map2URL(final Properties properties) {
         URLStreamHandler handler = new URLStreamHandler() {
+
             @Override
             protected URLConnection openConnection(URL u) throws IOException {
                 return new URLConnection(u) {
+
                     @Override
                     public void connect() throws IOException {
                     }
@@ -178,7 +181,6 @@ public class TestHelpersTest {
                     }
                 };
             }
-
         };
         try {
             return new URL(null, "file:///map", handler);
@@ -186,5 +188,4 @@ public class TestHelpersTest {
             throw new IllegalStateException("Invalid url", e);
         }
     }
-
 }

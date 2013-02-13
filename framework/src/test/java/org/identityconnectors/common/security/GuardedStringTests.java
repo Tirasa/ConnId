@@ -22,7 +22,10 @@
  */
 package org.identityconnectors.common.security;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,12 +46,12 @@ public class GuardedStringTests {
     @Test
     public void testBasics() {
         GuardedString str = new GuardedString("foo".toCharArray());
-        Assert.assertEquals("foo", decryptToString(str));
+        assertEquals("foo", decryptToString(str));
         str.appendChar('2');
-        Assert.assertEquals("foo2", decryptToString(str));
-        Assert.assertFalse(str.verifyBase64SHA1Hash(SecurityUtil.
+        assertEquals("foo2", decryptToString(str));
+        assertFalse(str.verifyBase64SHA1Hash(SecurityUtil.
                 computeBase64SHA1Hash("foo".toCharArray())));
-        Assert.assertTrue(str.verifyBase64SHA1Hash(SecurityUtil.
+        assertTrue(str.verifyBase64SHA1Hash(SecurityUtil.
                 computeBase64SHA1Hash("foo2".toCharArray())));
     }
 
@@ -56,29 +59,29 @@ public class GuardedStringTests {
     public void testEquals() {
         GuardedString str1 = new GuardedString();
         GuardedString str2 = new GuardedString();
-        Assert.assertEquals(str1, str2);
+        assertEquals(str1, str2);
         str2.appendChar('2');
-        Assert.assertFalse(str1.equals(str2));
+        assertFalse(str1.equals(str2));
         str1.appendChar('2');
-        Assert.assertEquals(str1, str2);
+        assertEquals(str1, str2);
     }
 
     @Test
     public void testReadOnly() {
         GuardedString str = new GuardedString("foo".toCharArray());
-        Assert.assertEquals(false, str.isReadOnly());
+        assertEquals(false, str.isReadOnly());
         str.makeReadOnly();
-        Assert.assertEquals(true, str.isReadOnly());
-        Assert.assertEquals("foo", decryptToString(str));
+        assertEquals(true, str.isReadOnly());
+        assertEquals("foo", decryptToString(str));
         try {
             str.appendChar('2');
-            Assert.fail("expected exception");
+            fail("expected exception");
         } catch (IllegalStateException e) {
         }
         str = str.copy();
-        Assert.assertEquals("foo", decryptToString(str));
+        assertEquals("foo", decryptToString(str));
         str.appendChar('2');
-        Assert.assertEquals("foo2", decryptToString(str));
+        assertEquals("foo2", decryptToString(str));
     }
 
     @Test
@@ -87,27 +90,27 @@ public class GuardedStringTests {
         str.dispose();
         try {
             decryptToString(str);
-            Assert.fail("expected exception");
+            fail("expected exception");
         } catch (IllegalStateException e) {
         }
         try {
             str.isReadOnly();
-            Assert.fail("expected exception");
+            fail("expected exception");
         } catch (IllegalStateException e) {
         }
         try {
             str.appendChar('c');
-            Assert.fail("expected exception");
+            fail("expected exception");
         } catch (IllegalStateException e) {
         }
         try {
             str.copy();
-            Assert.fail("expected exception");
+            fail("expected exception");
         } catch (IllegalStateException e) {
         }
         try {
             str.verifyBase64SHA1Hash("foo");
-            Assert.fail("expected exception");
+            fail("expected exception");
         } catch (IllegalStateException e) {
         }
     }
@@ -123,7 +126,7 @@ public class GuardedStringTests {
 
                 public void access(char[] clearChars) {
                     int v = (int) clearChars[0];
-                    Assert.assertEquals(expected, v);
+                    assertEquals(expected, v);
                 }
             });
 
@@ -131,8 +134,7 @@ public class GuardedStringTests {
     }
 
     /**
-     * Highly insecure method! Do not do this in production
-     * code. This is only for test purposes
+     * Highly insecure method! Do not do this in production code. This is only for test purposes
      */
     private String decryptToString(GuardedString string) {
         final StringBuilder buf = new StringBuilder();

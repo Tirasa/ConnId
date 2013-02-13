@@ -22,11 +22,12 @@
  */
 package org.identityconnectors.framework.impl.serializer;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.Assert;
 import org.identityconnectors.framework.common.serializer.ObjectSerializerFactory;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.common.serializer.XmlObjectResultsHandler;
@@ -76,8 +77,8 @@ public class XmlSerializationTests extends ObjectSerializationTests {
                     }
                 },
                 true);
-        Assert.assertEquals(2, results.size());
-        Assert.assertEquals("foo", results.get(0));
-        Assert.assertEquals("bar", results.get(1));
+        assertEquals(2, results.size());
+        assertEquals("foo", results.get(0));
+        assertEquals("bar", results.get(1));
     }
 }
