@@ -25,89 +25,87 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <artifactId>testbundles</artifactId>
-        <groupId>org.connid.testbundles</groupId>
-        <version>1.3.3-SNAPSHOT</version>
-    </parent>
-
+  <parent>
     <groupId>org.connid.testbundles</groupId>
-    <artifactId>testbundlev1</artifactId>
+    <artifactId>connid-testbundles</artifactId>
+    <version>1.3.3-SNAPSHOT</version>
+  </parent>
 
-    <name>Test bundles: V1</name>
+  <groupId>org.connid.testbundles</groupId>
+  <artifactId>connid-testbundlev1</artifactId>
 
-    <packaging>jar</packaging>
+  <name>ConnId: Test bundles: V1</name>
 
-    <properties>
-        <bundle.version>1.0.0.0</bundle.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+  <packaging>jar</packaging>
 
-   <dependencies>
-        <dependency>
-            <groupId>org.connid</groupId>
-            <artifactId>framework</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.connid.testbundles</groupId>
-            <artifactId>testcommonv1</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-   </dependencies>
+  <properties>
+    <bundle.version>1.0.0.0</bundle.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
-   <build>
-        <finalName>${project.groupId}-${project.artifactId}-${bundle.version}</finalName>
-        <plugins>
+  <dependencies>
+    <dependency>
+      <groupId>org.connid</groupId>
+      <artifactId>connid-framework</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.connid.testbundles</groupId>
+      <artifactId>connid-testcommonv1</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
+  <build>
+    <finalName>${project.groupId}-${project.artifactId}-${bundle.version}</finalName>
+    <plugins>
 
-                    <finalName>${project.groupId}-${project.artifactId}-${bundle.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
 
-                    <descriptors>
-                        <descriptor>src/assemble/connector.xml</descriptor>
-                    </descriptors>
+          <finalName>${project.groupId}-${project.artifactId}-${bundle.version}</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
 
-                    <archive>
-                        <index>true</index>
-                        <manifestEntries>
+          <descriptors>
+            <descriptor>src/assemble/connector.xml</descriptor>
+          </descriptors>
 
-                            <ConnectorBundle-FrameworkVersion>
-                                ${project.version}
-                            </ConnectorBundle-FrameworkVersion>
+          <archive>
+            <index>true</index>
+            <manifestEntries>
 
-                            <ConnectorBundle-Name>
-                                ${project.groupId}-${project.artifactId}
-                            </ConnectorBundle-Name>
+              <ConnectorBundle-FrameworkVersion>
+                ${project.version}
+              </ConnectorBundle-FrameworkVersion>
 
-                            <ConnectorBundle-Version>
-                                ${bundle.version}
-                            </ConnectorBundle-Version>
+              <ConnectorBundle-Name>
+                ${project.groupId}-${project.artifactId}
+              </ConnectorBundle-Name>
 
-                        </manifestEntries>
-                    </archive>
+              <ConnectorBundle-Version>
+                ${bundle.version}
+              </ConnectorBundle-Version>
 
-                </configuration>
+            </manifestEntries>
+          </archive>
 
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+        </configuration>
 
-        </plugins>
-   </build>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>
