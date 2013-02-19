@@ -25,9 +25,8 @@ package org.identityconnectors.framework.api;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
 /**
- * Allows an application to obtain a {@link ConnectorFacade connector instance}.
- * Manages a pool of connector instances.
- * 
+ * Allows an application to obtain a {@link ConnectorFacade connector instance}. Manages a pool of connector instances.
+ *
  * @author Will Droste
  * @version $Revision $
  * @since 1.0
@@ -45,8 +44,8 @@ public abstract class ConnectorFacadeFactory {
     public static synchronized ConnectorFacadeFactory getInstance() {
         if (_instance == null) {
             try {
-                Class<?> clazz = Class.forName(IMPL_NAME);
-                Object object = clazz.newInstance();
+                final Class<?> clazz = Class.forName(IMPL_NAME);
+                final Object object = clazz.newInstance();
                 _instance = ConnectorFacadeFactory.class.cast(object);
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);
@@ -62,12 +61,9 @@ public abstract class ConnectorFacadeFactory {
 
     /**
      * Get a new instance of {@link ConnectorFacade}.
-     * 
-     * @param config
-     *            all the configuration that the framework, connector, and
-     *            pooling needs.
+     *
+     * @param config all the configuration that the framework, connector, and pooling needs.
      * @return {@link ConnectorFacade} to call API operations against.
      */
     public abstract ConnectorFacade newInstance(APIConfiguration config);
-
 }

@@ -32,45 +32,39 @@ import org.identityconnectors.framework.impl.api.local.LocalConnectorFacadeImpl;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorFacadeImpl;
 
-
 public class ConnectorFacadeFactoryImpl extends ConnectorFacadeFactory {
 
-    private static final Log _log = Log.getLog(ConnectorFacadeFactoryImpl.class);
+    private static final Log LOG = Log.getLog(ConnectorFacadeFactoryImpl.class);
 
     /**
      * {@inheritDoc}
      */
-    public ConnectorFacade newInstance(APIConfiguration config) {
+    @Override
+    public ConnectorFacade newInstance(final APIConfiguration config) {
         ConnectorFacade ret = null;
-        APIConfigurationImpl impl = (APIConfigurationImpl) config;
-        AbstractConnectorInfo connectorInfo = impl.getConnectorInfo();
-        if ( connectorInfo instanceof LocalConnectorInfoImpl ) {
-            LocalConnectorInfoImpl localInfo =
-                (LocalConnectorInfoImpl)connectorInfo;
+        final APIConfigurationImpl impl = (APIConfigurationImpl) config;
+        final AbstractConnectorInfo connectorInfo = impl.getConnectorInfo();
+        if (connectorInfo instanceof LocalConnectorInfoImpl) {
+            final LocalConnectorInfoImpl localInfo = (LocalConnectorInfoImpl) connectorInfo;
             try {
                 // create a new Provisioner..
-                ret = new LocalConnectorFacadeImpl(localInfo,impl);
-                
-            } catch (Exception ex) {
-                String connector = impl.getConnectorInfo().getConnectorKey().toString();
-                _log.error(ex, "Failed to create new connector facade: {0}, {1}",
-                        connector, config);
-                throw ConnectorException.wrap(ex);
+                ret = new LocalConnectorFacadeImpl(localInfo, impl);
+            } catch (Exception e) {
+                LOG.error(e, "Failed to create new connector facade: {0}, {1}",
+                        impl.getConnectorInfo().getConnectorKey().toString(), config);
+                throw ConnectorException.wrap(e);
             }
-        }
-        else {
+        } else {
             ret = new RemoteConnectorFacadeImpl(impl);
         }
         return ret;
     }
 
-    
     /**
-     * Dispose of all object pools and other resources associated with this
-     * class.
+     * Dispose of all object pools and other resources associated with this class.
      */
+    @Override
     public void dispose() {
         ConnectorPoolManager.dispose();
     }
-
 }

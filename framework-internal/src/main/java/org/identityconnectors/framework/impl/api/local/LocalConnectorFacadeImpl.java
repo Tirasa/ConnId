@@ -25,7 +25,6 @@ package org.identityconnectors.framework.impl.api.local;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
@@ -65,10 +64,8 @@ import org.identityconnectors.framework.impl.api.local.operations.ValidateImpl;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.PoolableConnector;
 
-
 /**
  * Implements all the methods of the facade.
- * <p>  
  */
 public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
 
@@ -78,22 +75,10 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
     /**
      * Map the API interfaces to their implementation counterparts.
      */
-    private static final Map<Class<? extends APIOperation>, Constructor<? extends ConnectorAPIOperationRunner>> API_TO_IMPL=
-        new HashMap<Class<? extends APIOperation>, Constructor<? extends ConnectorAPIOperationRunner>>();
+    private static final Map<
+            Class<? extends APIOperation>, Constructor<? extends ConnectorAPIOperationRunner>> API_TO_IMPL =
+            new HashMap<Class<? extends APIOperation>, Constructor<? extends ConnectorAPIOperationRunner>>();
 
-    private static void addImplementation(Class<? extends APIOperation> inter,
-            Class<? extends ConnectorAPIOperationRunner> impl) {
-        Constructor<? extends ConnectorAPIOperationRunner> constructor;
-        try {
-            constructor = impl.getConstructor(ConnectorOperationalContext.class,Connector.class);
-            API_TO_IMPL.put(inter, constructor);
-        }
-        catch (Exception e) {
-            // this should never happen..
-            throw ConnectorException.wrap(e);
-        }
-    }
-    
     static {
         addImplementation(CreateApiOp.class, CreateImpl.class);
         addImplementation(DeleteApiOp.class, DeleteImpl.class);
@@ -108,10 +93,22 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
         addImplementation(SyncApiOp.class, SyncImpl.class);
     }
 
+    private static void addImplementation(final Class<? extends APIOperation> inter,
+            final Class<? extends ConnectorAPIOperationRunner> impl) {
+
+        try {
+            final Constructor<? extends ConnectorAPIOperationRunner> constructor =
+                    impl.getConstructor(ConnectorOperationalContext.class, Connector.class);
+            API_TO_IMPL.put(inter, constructor);
+        } catch (Exception e) {
+            // this should never happen..
+            throw ConnectorException.wrap(e);
+        }
+    }
+
     // =======================================================================
     // Fields
     // =======================================================================
-    
     /**
      * The connector info
      */
@@ -121,73 +118,57 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
      * Builds up the maps of supported operations and calls.
      */
     public LocalConnectorFacadeImpl(final LocalConnectorInfoImpl connectorInfo,
-            final APIConfigurationImpl apiConfiguration)  {
+            final APIConfigurationImpl apiConfiguration) {
+
         super(apiConfiguration);
         this.connectorInfo = connectorInfo;
     }
 
-    
     // =======================================================================
     // ConnectorFacade Interface
     // =======================================================================
-
     @Override
     protected APIOperation getOperationImplementation(final Class<? extends APIOperation> api) {
-
-                
         APIOperation proxy;
-        //first create the inner proxy - this is the proxy that obtaining
-        //a connector from the pool, etc
-        //NOTE: we want to skip this part of the proxy for
-        //validate op, but we will want the timeout proxy
-        if ( api == ValidateApiOp.class ) {
-            OperationalContext context =
-                new OperationalContext(connectorInfo,getAPIConfiguration());
+        // first create the inner proxy - this is the proxy that obtaining a connector from the pool, etc
+        // NOTE: we want to skip this part of the proxy for validate op, but we will want the timeout proxy
+        if (api == ValidateApiOp.class) {
+            final OperationalContext context = new OperationalContext(connectorInfo, getAPIConfiguration());
             proxy = new ValidateImpl(context);
-        }
-        else if ( api == GetApiOp.class ) {
-            Constructor<? extends APIOperationRunner> constructor =
-                API_TO_IMPL.get(SearchApiOp.class);
-            ConnectorOperationalContext context =
-            new ConnectorOperationalContext(connectorInfo,
-                    getAPIConfiguration(), 
+        } else if (api == GetApiOp.class) {
+            final Constructor<? extends APIOperationRunner> constructor = API_TO_IMPL.get(SearchApiOp.class);
+            final ConnectorOperationalContext context =
+                    new ConnectorOperationalContext(connectorInfo,
+                    getAPIConfiguration(),
                     getPool());
-        
-            ConnectorAPIOperationRunnerProxy handler =
-                new ConnectorAPIOperationRunnerProxy(context,constructor);
-            proxy = 
-                new GetImpl((SearchApiOp)newAPIOperationProxy(SearchApiOp.class, handler));            
-        }
-        else {
-            Constructor<? extends APIOperationRunner> constructor =
-                API_TO_IMPL.get(api);
-            ConnectorOperationalContext context =
-            new ConnectorOperationalContext(connectorInfo,
-                    getAPIConfiguration(), 
+
+            final ConnectorAPIOperationRunnerProxy handler = new ConnectorAPIOperationRunnerProxy(context, constructor);
+            proxy = new GetImpl((SearchApiOp) newAPIOperationProxy(SearchApiOp.class, handler));
+        } else {
+            final Constructor<? extends APIOperationRunner> constructor = API_TO_IMPL.get(api);
+            final ConnectorOperationalContext context =
+                    new ConnectorOperationalContext(connectorInfo,
+                    getAPIConfiguration(),
                     getPool());
-        
-            ConnectorAPIOperationRunnerProxy handler =
-                new ConnectorAPIOperationRunnerProxy(context,constructor);
+
+            final ConnectorAPIOperationRunnerProxy handler = new ConnectorAPIOperationRunnerProxy(context, constructor);
             proxy = newAPIOperationProxy(api, handler);
         }
-        
-        //now proxy to setup the thread-local classloader
-        proxy = newAPIOperationProxy(api, 
+
+        // now proxy to setup the thread-local classloader
+        proxy = newAPIOperationProxy(api,
                 new ThreadClassLoaderManagerProxy(
-                        connectorInfo.getConnectorClass().getClassLoader(),
-                        proxy));
-        
-        //now wrap the proxy in the appropriate timeout proxy
+                connectorInfo.getConnectorClass().getClassLoader(),
+                proxy));
+
+        // now wrap the proxy in the appropriate timeout proxy
         proxy = createTimeoutProxy(api, proxy);
-        // wrap in a logging proxy..
+        //  wrap in a logging proxy..
         proxy = createLoggingProxy(api, proxy);
         return proxy;
     }
 
-    
-    private ObjectPool<PoolableConnector> getPool()
-    {
-        return ConnectorPoolManager.getPool(getAPIConfiguration(),connectorInfo);        
+    private ObjectPool<PoolableConnector> getPool() {
+        return ConnectorPoolManager.getPool(getAPIConfiguration(), connectorInfo);
     }
-
 }
