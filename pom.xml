@@ -66,8 +66,8 @@
   </issueManagement>
 
   <ciManagement>
-    <system>Jenkins</system>
-    <url>http://jenkins.tirasa.net/job/ConnId%20base%20(master)/</url>
+    <system>Travis CI</system>
+    <url>https://travis-ci.org/Tirasa/ConnId</url>
   </ciManagement>
 
   <mailingLists>
