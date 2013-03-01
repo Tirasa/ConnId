@@ -29,34 +29,36 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.identityconnectors.common.StringPrintWriter;
-import org.identityconnectors.common.logging.LogSpi;
 import org.identityconnectors.common.logging.Log.Level;
 
 /**
- * Standard out logger. It logs all messages to STDOUT. The method
- * {@link LogSpi#isLoggable(Class, Level)} will always return true so currently
- * logging is not filtered.
- * 
+ * Standard out logger. It logs all messages to STDOUT. The method {@link LogSpi#isLoggable(Class, Level)} will always
+ * return true so currently logging is not filtered.
+ *
  * @author Will Droste
  * @version $Revision: 1.5 $
  * @since 1.0
  */
 class StdOutLogger implements LogSpi {
 
-    private static final String PATTERN = "Thread Id: {0}\tTime: {1}\tClass: {2}\tMethod: {3}\tLevel: {4}\tMessage: {5}";
+    private static final String PATTERN =
+            "Thread Id: {0}\tTime: {1}\tClass: {2}\tMethod: {3}\tLevel: {4}\tMessage: {5}";
+
     /**
-     * Insures there is only one MessageFormat per thread since MessageFormat is
-     * not thread safe.
+     * Insures there is only one MessageFormat per thread since MessageFormat is not thread safe.
      */
-    private static final ThreadLocal<MessageFormat> _messageFormatHandler = new ThreadLocal<MessageFormat>() {
+    private static final ThreadLocal<MessageFormat> MSG_FORMAT_HANDLER = new ThreadLocal<MessageFormat>() {
+
         @Override
         protected MessageFormat initialValue() {
             return new MessageFormat(PATTERN);
         }
     };
-    
+
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static final ThreadLocal<DateFormat> _dateFormatHandler = new ThreadLocal<DateFormat>(){
+
+    private static final ThreadLocal<DateFormat> DATE_FORMAT_HANDLER = new ThreadLocal<DateFormat>() {
+
         @Override
         protected DateFormat initialValue() {
             return new SimpleDateFormat(DATE_PATTERN);
@@ -64,20 +66,35 @@ class StdOutLogger implements LogSpi {
     };
 
     /**
-     * Logs the thread id, date, class, level, message, and optionally exception
-     * stack trace to standard out.
-     * 
+     * Logs the thread id, date, class, level, message, and optionally exception stack trace to standard out.
+     *
      * @see LogSpi#log(Class, String, Level, String, Throwable)
      */
-    public void log(Class<?> clazz, String methodName, Level level,
-            String message, Throwable ex) {
-        Object[] args = new Object[] { Thread.currentThread().getId(),
-                _dateFormatHandler.get().format(new Date()), clazz.getName(), methodName, level, message };
-        PrintStream out = Level.ERROR.equals(level) ? System.err : System.out;
-        String msg = _messageFormatHandler.get().format(args);
+    @Override
+    public void log(final Class<?> clazz, final String methodName, final Level level,
+            final String message, final Throwable ex) {
+
+        final String now;
+        try {
+            now = DATE_FORMAT_HANDLER.get().format(new Date());
+        } finally {
+            DATE_FORMAT_HANDLER.remove();
+        }
+        final Object[] args =
+                new Object[]{Thread.currentThread().getId(), now, clazz.getName(), methodName, level, message};
+
+        final String msg;
+        try {
+            msg = MSG_FORMAT_HANDLER.get().format(args);
+        } finally {
+            MSG_FORMAT_HANDLER.remove();
+        }
+
+        final PrintStream out = Level.ERROR == level ? System.err : System.out;
         out.println(msg);
+
         if (ex != null) {
-            StringPrintWriter wrt = new StringPrintWriter();
+            final StringPrintWriter wrt = new StringPrintWriter();
             ex.printStackTrace(wrt);
             out.print(wrt.getString());
         }
@@ -86,7 +103,8 @@ class StdOutLogger implements LogSpi {
     /**
      * Always returns true.
      */
-    public boolean isLoggable(Class<?> clazz, Level level) {
+    @Override
+    public boolean isLoggable(final Class<?> clazz, final Level level) {
         return true;
     }
 }
