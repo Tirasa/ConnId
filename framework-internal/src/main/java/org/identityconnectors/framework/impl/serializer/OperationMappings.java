@@ -39,38 +39,23 @@ import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
 import org.identityconnectors.framework.api.operations.ValidateApiOp;
 
-
 class OperationMappings {
-    
-    public static final List<ObjectTypeMapper> MAPPINGS =
-        new ArrayList<ObjectTypeMapper>();
-    
+
+    public static final List<ObjectTypeMapper> MAPPINGS = new ArrayList<ObjectTypeMapper>();
+
     static {
-        MAPPINGS.add(new ObjectTypeMapperImpl(AuthenticationApiOp.class,
-                "AuthenticationApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(ResolveUsernameApiOp.class,
-                "ResolveUsernameApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(SearchApiOp.class,
-                "SearchApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(ValidateApiOp.class,
-                "ValidateApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(CreateApiOp.class,
-                "CreateApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(SchemaApiOp.class,
-                "SchemaApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(UpdateApiOp.class,
-                "UpdateApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(DeleteApiOp.class,
-                "DeleteApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(GetApiOp.class,
-                "GetApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(TestApiOp.class, 
-                "TestApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(ScriptOnResourceApiOp.class, 
-        "ScriptOnResourceApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(ScriptOnConnectorApiOp.class, 
-        "ScriptOnConnectorApiOp"));
-        MAPPINGS.add(new ObjectTypeMapperImpl(SyncApiOp.class, 
-        "SyncApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(AuthenticationApiOp.class, "AuthenticationApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(ResolveUsernameApiOp.class, "ResolveUsernameApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(SearchApiOp.class, "SearchApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(ValidateApiOp.class, "ValidateApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(CreateApiOp.class, "CreateApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(SchemaApiOp.class, "SchemaApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(UpdateApiOp.class, "UpdateApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(DeleteApiOp.class, "DeleteApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(GetApiOp.class, "GetApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(TestApiOp.class, "TestApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(ScriptOnResourceApiOp.class, "ScriptOnResourceApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(ScriptOnConnectorApiOp.class, "ScriptOnConnectorApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(SyncApiOp.class, "SyncApiOp"));
     }
 }

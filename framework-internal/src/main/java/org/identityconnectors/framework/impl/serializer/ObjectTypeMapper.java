@@ -23,27 +23,23 @@
 package org.identityconnectors.framework.impl.serializer;
 
 /**
- * Interface to be implemented to handle the serialization/
- * deserialization of an object.
+ * Interface to be implemented to handle the serialization/ deserialization of an object.
  */
 public interface ObjectTypeMapper {
-    
+
     /**
-     * Returns the type of object being serialized. This is 
-     * an abstract type name that is intended to be language
+     * Returns the type of object being serialized. This is an abstract type name that is intended to be language
      * neutral.
      */
-    public String getHandledSerialType();
-    
+    String getHandledSerialType();
+
     /**
      * Returns the java class handled by this handler.
      */
-    public Class<?> getHandledObjectType();
-    
+    Class<?> getHandledObjectType();
+
     /**
-     * Should we match subclasses of the given class or only 
-     * the exact class?
+     * Should we match subclasses of the given class or only the exact class?
      */
-    public boolean getMatchSubclasses();
-    
+    boolean isMatchSubclasses();
 }

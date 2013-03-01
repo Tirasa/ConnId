@@ -31,93 +31,77 @@ import java.util.WeakHashMap;
 
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
+public final class ObjectSerializerRegistry {
 
-public class ObjectSerializerRegistry {
+    private static final List<ObjectTypeMapper> HANDLERS = new ArrayList<ObjectTypeMapper>();
 
-    
-    
-    private static final List<ObjectTypeMapper> HANDLERS =
-        new ArrayList<ObjectTypeMapper>();
+    private static final Map<String, ObjectTypeMapper> HANDLERS_BY_SERIAL_TYPE =
+            new HashMap<String, ObjectTypeMapper>();
+
     //initialize list of handlers
     static {
-        HANDLERS.addAll(Primitives.HANDLERS);   
+        HANDLERS.addAll(Primitives.HANDLERS);
         HANDLERS.addAll(OperationMappings.MAPPINGS);
         HANDLERS.addAll(APIConfigurationHandlers.HANDLERS);
         HANDLERS.addAll(FilterHandlers.HANDLERS);
         HANDLERS.addAll(CommonObjectHandlers.HANDLERS);
         HANDLERS.addAll(MessageHandlers.HANDLERS);
-        //object is special - just map the type, but don't actually
-        //serialize
-        HANDLERS.add(new ObjectTypeMapperImpl(Object.class,"Object"));
-    }
-    
-    
-    
-    
-    private static final Map<String,ObjectTypeMapper>
-    HANDLERS_BY_SERIAL_TYPE = new HashMap<String,ObjectTypeMapper>();
-    static {
+        //object is special - just map the type, but don't actually serialize
+        HANDLERS.add(new ObjectTypeMapperImpl(Object.class, "Object"));
+
         for (ObjectTypeMapper handler : HANDLERS) {
-            ObjectTypeMapper previous = 
-            HANDLERS_BY_SERIAL_TYPE.put(handler.getHandledSerialType(), 
-                    handler);
-            if ( previous != null ) {
-                throw new ConnectorException("More than one handler of the" +
-                		" same type: "+handler.getHandledSerialType());
+            final ObjectTypeMapper previous = HANDLERS_BY_SERIAL_TYPE.put(handler.getHandledSerialType(), handler);
+            if (previous != null) {
+                throw new ConnectorException("More than one handler of the same type: "
+                        + handler.getHandledSerialType());
             }
         }
     }
-    
+
     /**
-     * Mapping by class. Dynamically built since actual class may be
-     * a subclass.
+     * Mapping by class. Dynamically built since actual class may be a subclass.
      */
-    private static final Map<Class<?>,ObjectTypeMapper>
-    HANDLERS_BY_OBJECT_TYPE = 
-        Collections.synchronizedMap(new WeakHashMap<Class<?>,ObjectTypeMapper>());
-    
-    public static ObjectTypeMapper getMapperBySerialType(String type) {
+    private static final Map<Class<?>, ObjectTypeMapper> HANDLERS_BY_OBJECT_TYPE =
+            Collections.synchronizedMap(new WeakHashMap<Class<?>, ObjectTypeMapper>());
+
+    public static ObjectTypeMapper getMapperBySerialType(final String type) {
         return HANDLERS_BY_SERIAL_TYPE.get(type);
     }
-    
-    public static ObjectTypeMapper getMapperByObjectType(Class<?> clazz) {
-        ObjectTypeMapper rv = HANDLERS_BY_OBJECT_TYPE.get(clazz);
-        if ( rv == null ) {
+
+    public static ObjectTypeMapper getMapperByObjectType(final Class<?> clazz) {
+        ObjectTypeMapper mapper = HANDLERS_BY_OBJECT_TYPE.get(clazz);
+        if (mapper == null) {
             for (ObjectTypeMapper handler : HANDLERS) {
-                if ( handler.getMatchSubclasses() ) {
-                    if ( handler.getHandledObjectType().isAssignableFrom(clazz) ) {
-                        rv = handler;
+                if (handler.isMatchSubclasses()) {
+                    if (handler.getHandledObjectType().isAssignableFrom(clazz)) {
+                        mapper = handler;
                         break;
                     }
-                }
-                else if ( handler.getHandledObjectType().equals(clazz) ) {
-                    rv = handler;
+                } else if (handler.getHandledObjectType().equals(clazz)) {
+                    mapper = handler;
                     break;
                 }
             }
-            HANDLERS_BY_OBJECT_TYPE.put(clazz, rv);
+            HANDLERS_BY_OBJECT_TYPE.put(clazz, mapper);
         }
-        return rv;
-    }
-    public static ObjectSerializationHandler getHandlerBySerialType(String type) {
-        ObjectTypeMapper rv = getMapperBySerialType(type);
-        if ( rv instanceof ObjectSerializationHandler) {
-            return (ObjectSerializationHandler)rv;
-        }
-        else {
-            return null;
-        }
-    }
-    
-    public static ObjectSerializationHandler getHandlerByObjectType(Class<?> clazz) {
-        ObjectTypeMapper rv = getMapperByObjectType(clazz);
-        if ( rv instanceof ObjectSerializationHandler) {
-            return (ObjectSerializationHandler)rv;
-        }
-        else {
-            return null;
-        }
+        return mapper;
     }
 
+    public static ObjectSerializationHandler getHandlerBySerialType(final String type) {
+        final ObjectTypeMapper mapper = getMapperBySerialType(type);
+        return (mapper instanceof ObjectSerializationHandler)
+                ? (ObjectSerializationHandler) mapper
+                : null;
+    }
 
+    public static ObjectSerializationHandler getHandlerByObjectType(final Class<?> clazz) {
+        final ObjectTypeMapper mapper = getMapperByObjectType(clazz);
+        return (mapper instanceof ObjectSerializationHandler)
+                ? (ObjectSerializationHandler) mapper
+                : null;
+    }
+
+    private ObjectSerializerRegistry() {
+        // empty constructor for static utility class
+    }
 }

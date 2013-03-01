@@ -39,74 +39,61 @@ import org.identityconnectors.framework.impl.api.remote.messages.OperationRespon
 import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePart;
 import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePause;
 
-
 /**
- * Serialization handles for remote messages
+ * Serialization handles for remote messages.
  */
 class MessageHandlers {
-    
-    public static final List<ObjectTypeMapper> HANDLERS =
-        new ArrayList<ObjectTypeMapper>();
-    
 
-    
-    static { 
-        
-        
-        HANDLERS.add(
-                
-            new AbstractObjectSerializationHandler(HelloRequest.class,"HelloRequest") {
-            
-            public Object deserialize(ObjectDecoder decoder)  {
+    public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<ObjectTypeMapper>();
+
+    static {
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(HelloRequest.class, "HelloRequest") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
                 return new HelloRequest();
             }
-    
-            public void serialize(Object object, ObjectEncoder encoder)
-                     {
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
             }
-            
         });
-    
-        HANDLERS.add(
-                
-            new AbstractObjectSerializationHandler(HelloResponse.class,"HelloResponse") {
-            
-            public Object deserialize(ObjectDecoder decoder)  {
-                Throwable exception =
-                    (Throwable)decoder.readObjectField("exception",null,null);
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(HelloResponse.class, "HelloResponse") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final Throwable exception = (Throwable) decoder.readObjectField("exception", null, null);
                 @SuppressWarnings("unchecked")
-                List<RemoteConnectorInfoImpl> connectorInfos =
-                    (List)decoder.readObjectField("ConnectorInfos",List.class,null);
-                
-                return new HelloResponse(exception,connectorInfos);
+                final List<RemoteConnectorInfoImpl> connectorInfos =
+                        (List) decoder.readObjectField("ConnectorInfos", List.class, null);
+
+                return new HelloResponse(exception, connectorInfos);
             }
-    
-            public void serialize(Object object, ObjectEncoder encoder)
-                     {
-                HelloResponse val = (HelloResponse)object;
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final HelloResponse val = (HelloResponse) object;
                 encoder.writeObjectField("exception", val.getException(), false);
                 encoder.writeObjectField("ConnectorInfos", val.getConnectorInfos(), true);
             }
-            
         });
-        
-        HANDLERS.add(
-                
-            new AbstractObjectSerializationHandler(OperationRequest.class,"OperationRequest") {
-            
-            public Object deserialize(ObjectDecoder decoder)  {
-                ConnectorKey connectorKey = 
-                    (ConnectorKey)decoder.readObjectField("ConnectorKey",ConnectorKey.class,null);
-                APIConfigurationImpl configuration =
-                    (APIConfigurationImpl)decoder.readObjectField("APIConfiguration",APIConfigurationImpl.class,null);
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(OperationRequest.class, "OperationRequest") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final ConnectorKey connectorKey =
+                        (ConnectorKey) decoder.readObjectField("ConnectorKey", ConnectorKey.class, null);
+                final APIConfigurationImpl configuration =
+                        (APIConfigurationImpl) decoder.readObjectField("APIConfiguration", APIConfigurationImpl.class,
+                        null);
                 @SuppressWarnings("unchecked")
-                Class<? extends APIOperation> operation = 
-                    (Class)decoder.readClassField("operation",null);
-                String operationMethodName =
-                    decoder.readStringField("operationMethodName", null);
+                final Class<? extends APIOperation> operation = (Class) decoder.readClassField("operation", null);
+                final String operationMethodName = decoder.readStringField("operationMethodName", null);
                 @SuppressWarnings("unchecked")
-                List<Object> arguments = (List)
-                    decoder.readObjectField("Arguments",List.class,null);
+                final List<Object> arguments = (List) decoder.readObjectField("Arguments", List.class, null);
                 return new OperationRequest(
                         connectorKey,
                         configuration,
@@ -114,120 +101,101 @@ class MessageHandlers {
                         operationMethodName,
                         arguments);
             }
-    
-            public void serialize(Object object, ObjectEncoder encoder)
-                     {
-                OperationRequest val = 
-                    (OperationRequest)object;
-                encoder.writeClassField("operation", 
-                        val.getOperation());
-                encoder.writeStringField("operationMethodName", 
-                        val.getOperationMethodName());
-                encoder.writeObjectField("ConnectorKey", 
-                        val.getConnectorKey(),true);
-                encoder.writeObjectField("APIConfiguration", 
-                        val.getConfiguration(),true);
-                encoder.writeObjectField("Arguments", 
-                        val.getArguments(),true);
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                OperationRequest val = (OperationRequest) object;
+                encoder.writeClassField("operation", val.getOperation());
+                encoder.writeStringField("operationMethodName", val.getOperationMethodName());
+                encoder.writeObjectField("ConnectorKey", val.getConnectorKey(), true);
+                encoder.writeObjectField("APIConfiguration", val.getConfiguration(), true);
+                encoder.writeObjectField("Arguments", val.getArguments(), true);
             }
-            
         });
-        
-        HANDLERS.add(
-                
-            new AbstractObjectSerializationHandler(OperationResponseEnd.class,"OperationResponseEnd") {
-            
-            public Object deserialize(ObjectDecoder decoder)  {
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(OperationResponseEnd.class, "OperationResponseEnd") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
                 return new OperationResponseEnd();
             }
-    
-            public void serialize(Object object, ObjectEncoder encoder)
-                     {
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
             }
-            
         });
-        
-        HANDLERS.add(
-                
-            new AbstractObjectSerializationHandler(OperationResponsePart.class,"OperationResponsePart") {
-            
-            public Object deserialize(ObjectDecoder decoder)  {
-                Throwable exception =
-                    (Throwable)decoder.readObjectField("exception",null,null);
-                Object result =
-                    decoder.readObjectField("result",null,null);
-                
-                return new OperationResponsePart(exception,result);
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(OperationResponsePart.class, "OperationResponsePart") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final Throwable exception = (Throwable) decoder.readObjectField("exception", null, null);
+                final Object result = decoder.readObjectField("result", null, null);
+
+                return new OperationResponsePart(exception, result);
             }
-    
-            public void serialize(Object object, ObjectEncoder encoder)
-                     {
-                OperationResponsePart val = (OperationResponsePart)object;
-                encoder.writeObjectField("exception", val.getException(),false);
-                encoder.writeObjectField("result", val.getResult(),false);
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final OperationResponsePart val = (OperationResponsePart) object;
+                encoder.writeObjectField("exception", val.getException(), false);
+                encoder.writeObjectField("result", val.getResult(), false);
             }
-            
         });
-        
+
         HANDLERS.add(
-                
-            new AbstractObjectSerializationHandler(OperationRequestMoreData.class,"OperationRequestMoreData") {
-            
-            public Object deserialize(ObjectDecoder decoder)  {
+                new AbstractObjectSerializationHandler(OperationRequestMoreData.class, "OperationRequestMoreData") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
                 return new OperationRequestMoreData();
             }
-    
-            public void serialize(Object object, ObjectEncoder encoder)
-                     {
+
+            @Override
+            public void serialize(Object object, ObjectEncoder encoder) {
             }
-            
         });
 
         HANDLERS.add(
-                
-            new AbstractObjectSerializationHandler(OperationRequestStopData.class,"OperationRequestStopData") {
-            
-            public Object deserialize(ObjectDecoder decoder)  {
+                new AbstractObjectSerializationHandler(OperationRequestStopData.class, "OperationRequestStopData") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
                 return new OperationRequestStopData();
             }
-    
-            public void serialize(Object object, ObjectEncoder encoder)
-                     {
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
             }
-            
         });
 
         HANDLERS.add(
-                
-                new AbstractObjectSerializationHandler(OperationResponsePause.class,"OperationResponsePause") {
-                
-                public Object deserialize(ObjectDecoder decoder)  {
-                    return new OperationResponsePause();
-                }
-        
-                public void serialize(Object object, ObjectEncoder encoder)
-                         {
-                }
-                
-            });
-        HANDLERS.add(
-                
-                new AbstractObjectSerializationHandler(EchoMessage.class,"EchoMessage") {
-                
-                public Object deserialize(ObjectDecoder decoder)  {
-                    return new EchoMessage(decoder.readObjectField("value",null,null),
-                            (String)decoder.readObjectField("objectXml", String.class, null));
-                }
-        
-                public void serialize(Object object, ObjectEncoder encoder)
-                         {
-                    EchoMessage val = (EchoMessage)object;
-                    encoder.writeObjectField("value",val.getObject(),false);
-                    encoder.writeObjectField("objectXml", val.getXml(), true);
-                }
-                
-            });
+                new AbstractObjectSerializationHandler(OperationResponsePause.class, "OperationResponsePause") {
 
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                return new OperationResponsePause();
+            }
 
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+            }
+        });
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(EchoMessage.class, "EchoMessage") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                return new EchoMessage(decoder.readObjectField("value", null, null),
+                        (String) decoder.readObjectField("objectXml", String.class, null));
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final EchoMessage val = (EchoMessage) object;
+                encoder.writeObjectField("value", val.getObject(), false);
+                encoder.writeObjectField("objectXml", val.getXml(), true);
+            }
+        });
     }
 }

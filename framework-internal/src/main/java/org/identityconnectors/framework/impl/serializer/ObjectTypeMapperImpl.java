@@ -25,23 +25,26 @@ package org.identityconnectors.framework.impl.serializer;
 public class ObjectTypeMapperImpl implements ObjectTypeMapper {
 
     private Class<?> _handledClass;
+
     private String _handledType;
-    
-    public ObjectTypeMapperImpl(Class<?> handledClass, String handledType) {
+
+    public ObjectTypeMapperImpl(final Class<?> handledClass, final String handledType) {
         _handledClass = handledClass;
-        _handledType  = handledType;
+        _handledType = handledType;
     }
-    
+
+    @Override
     public final Class<?> getHandledObjectType() {
         return _handledClass;
     }
 
+    @Override
     public final String getHandledSerialType() {
         return _handledType;
     }
 
-    public boolean getMatchSubclasses() {
+    @Override
+    public boolean isMatchSubclasses() {
         return false;
     }
-
 }

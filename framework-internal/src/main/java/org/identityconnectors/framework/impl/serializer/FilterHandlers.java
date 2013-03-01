@@ -42,176 +42,162 @@ import org.identityconnectors.framework.common.objects.filter.NotFilter;
 import org.identityconnectors.framework.common.objects.filter.OrFilter;
 import org.identityconnectors.framework.common.objects.filter.StartsWithFilter;
 
-
 /**
- * Serialization handles for APIConfiguration and dependencies
+ * Serialization handles for APIConfiguration and dependencies.
  */
 class FilterHandlers {
-    
-    public static final List<ObjectTypeMapper> HANDLERS =
-        new ArrayList<ObjectTypeMapper>();
-    
 
-    private static abstract class CompositeFilterHandler<T extends CompositeFilter> 
-    extends AbstractObjectSerializationHandler {
-        
-        protected CompositeFilterHandler(Class<T> clazz, String typeName) {
-            super(clazz,typeName);
+    public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<ObjectTypeMapper>();
+
+    private static abstract class CompositeFilterHandler<T extends CompositeFilter>
+            extends AbstractObjectSerializationHandler {
+
+        protected CompositeFilterHandler(final Class<T> clazz, final String typeName) {
+            super(clazz, typeName);
         }
-        
-        
-        public final Object deserialize(ObjectDecoder decoder)  {
-            Filter left = (Filter)decoder.readObjectContents(0);
-            Filter right = (Filter)decoder.readObjectContents(1);
+
+        @Override
+        public final Object deserialize(final ObjectDecoder decoder) {
+            final Filter left = (Filter) decoder.readObjectContents(0);
+            final Filter right = (Filter) decoder.readObjectContents(1);
             return createFilter(left, right);
         }
 
-        public final void serialize(Object object, ObjectEncoder encoder)
-                 {
-            CompositeFilter val = (CompositeFilter)object;
+        @Override
+        public final void serialize(final Object object, final ObjectEncoder encoder) {
+            final CompositeFilter val = (CompositeFilter) object;
             encoder.writeObjectContents(val.getLeft());
             encoder.writeObjectContents(val.getRight());
         }
-        
+
         protected abstract T createFilter(Filter left, Filter right);
     }
-            
-    private static abstract class AttributeFilterHandler<T extends AttributeFilter> 
-    extends AbstractObjectSerializationHandler {
-        
-        protected AttributeFilterHandler(Class<T> clazz, String typeName) {
-            super(clazz,typeName);
+
+    private static abstract class AttributeFilterHandler<T extends AttributeFilter>
+            extends AbstractObjectSerializationHandler {
+
+        protected AttributeFilterHandler(final Class<T> clazz, final String typeName) {
+            super(clazz, typeName);
         }
-        
-        
-        public final Object deserialize(ObjectDecoder decoder)  {
-            Attribute attribute = (Attribute)decoder.readObjectField("attribute",null,null);
+
+        @Override
+        public final Object deserialize(final ObjectDecoder decoder) {
+            final Attribute attribute = (Attribute) decoder.readObjectField("attribute", null, null);
             return createFilter(attribute);
         }
 
-        public final void serialize(Object object, ObjectEncoder encoder)
-                 {
-            AttributeFilter val = (AttributeFilter)object;
+        @Override
+        public final void serialize(final Object object, final ObjectEncoder encoder) {
+            final AttributeFilter val = (AttributeFilter) object;
             encoder.writeObjectField("attribute", val.getAttribute(), false);
         }
-        
+
         protected abstract T createFilter(Attribute attribute);
     }
-    
-    static { 
-        HANDLERS.add(
-                
-            new CompositeFilterHandler<AndFilter>(AndFilter.class,"AndFilter") {
-            
-            protected AndFilter createFilter(Filter left, Filter right) {
-                return new AndFilter(left,right);
+
+    static {
+        HANDLERS.add(new CompositeFilterHandler<AndFilter>(AndFilter.class, "AndFilter") {
+
+            @Override
+            protected AndFilter createFilter(final Filter left, final Filter right) {
+                return new AndFilter(left, right);
             }
         });
-        
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<ContainsFilter>(ContainsFilter.class,"ContainsFilter") {
-            
-            protected ContainsFilter createFilter(Attribute attribute) {
+
+        HANDLERS.add(new AttributeFilterHandler<ContainsFilter>(ContainsFilter.class, "ContainsFilter") {
+
+            @Override
+            protected ContainsFilter createFilter(final Attribute attribute) {
                 return new ContainsFilter(attribute);
             }
         });
 
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<EndsWithFilter>(EndsWithFilter.class,"EndsWithFilter") {
-            
-            protected EndsWithFilter createFilter(Attribute attribute) {
+        HANDLERS.add(new AttributeFilterHandler<EndsWithFilter>(EndsWithFilter.class, "EndsWithFilter") {
+
+            @Override
+            protected EndsWithFilter createFilter(final Attribute attribute) {
                 return new EndsWithFilter(attribute);
             }
         });
-        
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<EqualsFilter>(EqualsFilter.class,"EqualsFilter") {
-            
-            protected EqualsFilter createFilter(Attribute attribute) {
+
+        HANDLERS.add(new AttributeFilterHandler<EqualsFilter>(EqualsFilter.class, "EqualsFilter") {
+
+            @Override
+            protected EqualsFilter createFilter(final Attribute attribute) {
                 return new EqualsFilter(attribute);
             }
         });
-        
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<GreaterThanFilter>(GreaterThanFilter.class,"GreaterThanFilter") {
-            
-            protected GreaterThanFilter createFilter(Attribute attribute) {
+
+        HANDLERS.add(new AttributeFilterHandler<GreaterThanFilter>(GreaterThanFilter.class, "GreaterThanFilter") {
+
+            @Override
+            protected GreaterThanFilter createFilter(final Attribute attribute) {
                 return new GreaterThanFilter(attribute);
             }
         });
-        
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<GreaterThanOrEqualFilter>(GreaterThanOrEqualFilter.class,"GreaterThanOrEqualFilter") {
-            
-            protected GreaterThanOrEqualFilter createFilter(Attribute attribute) {
+
+        HANDLERS.add(new AttributeFilterHandler<GreaterThanOrEqualFilter>(GreaterThanOrEqualFilter.class,
+                "GreaterThanOrEqualFilter") {
+
+            @Override
+            protected GreaterThanOrEqualFilter createFilter(final Attribute attribute) {
                 return new GreaterThanOrEqualFilter(attribute);
             }
         });
-        
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<LessThanFilter>(LessThanFilter.class,"LessThanFilter") {
-            
-            protected LessThanFilter createFilter(Attribute attribute) {
+
+        HANDLERS.add(new AttributeFilterHandler<LessThanFilter>(LessThanFilter.class, "LessThanFilter") {
+
+            @Override
+            protected LessThanFilter createFilter(final Attribute attribute) {
                 return new LessThanFilter(attribute);
             }
         });
 
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<LessThanOrEqualFilter>(LessThanOrEqualFilter.class,"LessThanOrEqualFilter") {
-            
-            protected LessThanOrEqualFilter createFilter(Attribute attribute) {
+        HANDLERS.add(new AttributeFilterHandler<LessThanOrEqualFilter>(LessThanOrEqualFilter.class,
+                "LessThanOrEqualFilter") {
+
+            @Override
+            protected LessThanOrEqualFilter createFilter(final Attribute attribute) {
                 return new LessThanOrEqualFilter(attribute);
             }
         });
 
-        HANDLERS.add(
-                
-            new AbstractObjectSerializationHandler(NotFilter.class,"NotFilter") {
-            
-            public Object deserialize(ObjectDecoder decoder)  {
-                Filter filter =
-                    (Filter)decoder.readObjectContents(0);
+        HANDLERS.add(new AbstractObjectSerializationHandler(NotFilter.class, "NotFilter") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final Filter filter = (Filter) decoder.readObjectContents(0);
                 return new NotFilter(filter);
             }
-    
-            public void serialize(Object object, ObjectEncoder encoder)
-                     {
-                NotFilter val = (NotFilter)object;
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final NotFilter val = (NotFilter) object;
                 encoder.writeObjectContents(val.getFilter());
             }
-            
         });
-        HANDLERS.add(
-                
-            new CompositeFilterHandler<OrFilter>(OrFilter.class,"OrFilter") {
-            
-            protected OrFilter createFilter(Filter left, Filter right) {
-                return new OrFilter(left,right);
+
+        HANDLERS.add(new CompositeFilterHandler<OrFilter>(OrFilter.class, "OrFilter") {
+
+            @Override
+            protected OrFilter createFilter(final Filter left, final Filter right) {
+                return new OrFilter(left, right);
             }
         });
-        
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<StartsWithFilter>(StartsWithFilter.class,"StartsWithFilter") {
-            
-            protected StartsWithFilter createFilter(Attribute attribute) {
+
+        HANDLERS.add(new AttributeFilterHandler<StartsWithFilter>(StartsWithFilter.class, "StartsWithFilter") {
+
+            @Override
+            protected StartsWithFilter createFilter(final Attribute attribute) {
                 return new StartsWithFilter(attribute);
             }
         });
 
-        HANDLERS.add(
-                
-            new AttributeFilterHandler<ContainsAllValuesFilter>(
-                    ContainsAllValuesFilter.class,"ContainsAllValuesFilter") {
+        HANDLERS.add(new AttributeFilterHandler<ContainsAllValuesFilter>(
+                ContainsAllValuesFilter.class, "ContainsAllValuesFilter") {
 
-            protected ContainsAllValuesFilter createFilter(Attribute attribute) {
+            @Override
+            protected ContainsAllValuesFilter createFilter(final Attribute attribute) {
                 return new ContainsAllValuesFilter(attribute);
             }
         });
