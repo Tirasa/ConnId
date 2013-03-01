@@ -30,49 +30,49 @@ import java.util.List;
 import java.util.Map;
 
 class BundleClassLoader extends URLClassLoader {
-    
+
     private static final String FRAMEWORK_PACKAGE = "org.identityconnectors.framework";
-    
-    // The set of packages a connector is allowed to access from the
-    // parent class loader.
-    private static final String [] ALLOWED_FRAMEWORK_PACKAGES = {
-        FRAMEWORK_PACKAGE+".api",
-        FRAMEWORK_PACKAGE+".common",
-        FRAMEWORK_PACKAGE+".spi"
+
+    /**
+     * The set of packages a connector is allowed to access from the parent class loader.
+     */
+    private static final String[] ALLOWED_FRAMEWORK_PACKAGES = {
+        FRAMEWORK_PACKAGE + ".api",
+        FRAMEWORK_PACKAGE + ".common",
+        FRAMEWORK_PACKAGE + ".spi"
     };
-    
+
     private final Map<String, String> nativeLibs;
-    
-    public BundleClassLoader(List<URL> urls, Map<String, String> nativeLibs, ClassLoader parent) {
+
+    public BundleClassLoader(final List<URL> urls, final Map<String, String> nativeLibs, final ClassLoader parent) {
         super(urls.toArray(new URL[urls.size()]), parent);
         this.nativeLibs = newReadOnlyMap(nativeLibs);
     }
-    
+
     /**
-     * Overrides <code>super.loadClass()</code>, to change loading model to
-     * child-first and to restrict access to certain classes.
+     * Overrides
+     * <code>super.loadClass()</code>, to change loading model to child-first and to restrict access to certain classes.
      */
     @Override
-    public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    public Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
         Class<?> c = findLoadedClass(name);
         if (c == null) {
             try {
-                //try to find it in the bundle's class loader
-                //anything there is considered accessible
-                c = findClass(name);     
-            }
-            catch (ClassNotFoundException ex) {
+                //try to find it in the bundle's class loader anything there is considered accessible
+                c = findClass(name);
+            } catch (ClassNotFoundException ex) {
                 // Hack for OIM: the framework is loaded by OIM's tcADPClassLoader, whose
                 // delegation strategy (parent first) is to first try to load
                 // the class through Thread.currentThread().getContextClassLoader(). When the
                 // framework is running a connector operation, the thread context class loader is
                 // BundleClassLoader. Without the hack, BundleClassLoader would delegate to its parent
                 // (i.e., tcADPClassLoader), which would again delegate to the thread context class loader
-                // (i.e., BundleClassLoader), resulting in an infinite loop reported by the JVM through a ClassCircularityError.
+                // (i.e., BundleClassLoader), resulting in an infinite loop reported by the JVM through a 
+                // ClassCircularityError.
                 // The hack sets the thread context class loader to its initial value when
                 // BundleClassLoader delegates to its parent.
                 if (runningInOIM()) {
-                    List<ClassLoader> loaders = ThreadClassLoaderManager.getInstance().popAll();
+                    final List<ClassLoader> loaders = ThreadClassLoaderManager.getInstance().popAll();
                     try {
                         // check parents class loader
                         c = getParent().loadClass(name);
@@ -91,34 +91,31 @@ class BundleClassLoader extends URLClassLoader {
         }
         if (resolve) {
             resolveClass(c);
-        }        
+        }
         return c;
     }
 
     private boolean runningInOIM() {
-        ClassLoader loader = this.getClass().getClassLoader();
+        final ClassLoader loader = this.getClass().getClassLoader();
         return loader != null && loader.getClass().getName().contains("tcADPClassLoader");
     }
 
-    private void checkAccessAllowed(Class<?> c) throws ClassNotFoundException {
-        String name = c.getName();
-        if ( !name.startsWith(FRAMEWORK_PACKAGE+".") ) {
+    private void checkAccessAllowed(final Class<?> c) throws ClassNotFoundException {
+        final String name = c.getName();
+        if (!name.startsWith(FRAMEWORK_PACKAGE + ".")) {
             return;
         }
         for (String pack : ALLOWED_FRAMEWORK_PACKAGES) {
-            if ( name.startsWith(pack+".") ) {
+            if (name.startsWith(pack + ".")) {
                 return;
             }
         }
-        String message =
-            "Connector may not reference class '"+name+"', "+
-            "it is an internal framework class.";
-        throw new ClassNotFoundException(message);
+        throw new ClassNotFoundException(
+                "Connector may not reference class '" + name + "', " + "it is an internal framework class.");
     }
 
     @Override
-    protected String findLibrary(String libname) {
+    protected String findLibrary(final String libname) {
         return nativeLibs.get(System.mapLibraryName(libname));
     }
-    
 }

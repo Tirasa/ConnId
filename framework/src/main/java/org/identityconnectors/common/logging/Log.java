@@ -32,17 +32,15 @@ import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.ReflectionUtil;
 import org.identityconnectors.common.StringUtil;
 
-
 /**
  * Yet another logging abstraction.
  */
 public final class Log {
 
     /**
-     * Default SPI implementation should all attempts to load the custom logger
-     * fail.
+     * Default SPI implementation should all attempts to load the custom logger fail.
      */
-    private static Class<?> DEFAULT_SPI = StdOutLogger.class;
+    private static Class<?> defaultSPI = StdOutLogger.class;
 
     // Hack for OIM: this ought to be Log.class.getPackage().getName(). However, OIM's
     // tcADPClassLoader does not use ClassLoader.definePackage(), and so Log.class.getPackage()
@@ -55,55 +53,53 @@ public final class Log {
     public static final String LOGSPI_PROP = PACKAGE + ".class";
 
     /**
-     * Filename 'connectors.properties' used to for SPI class in the
-     * '$(java.home)/lib/' directory.
+     * Filename 'connectors.properties' used to for SPI class in the '$(java.home)/lib/' directory.
      */
     public static final String LOGSPI_PROPS_FILE = "connectors.properties";
 
     /**
      * Cache the SPI class so we one search for it once.
      */
-    private static Class<?> _cacheSpi;
+    private static Class<?> cacheSPI;
 
     /**
      * Basic logging levels.
      */
     public static enum Level {
+
         /**
          * Maps to java.util.logging.Level.FINE.
          */
         OK,
-
         /**
          * Maps to java.util.logging.Level.INFO.
          */
         INFO,
-
         /**
          * Maps to java.util.logging.Level.WARNING
          */
         WARN,
-
         /**
          * Maps to java.util.logging.Level.SEVERE
          */
         ERROR;
+
     }
 
     /**
      * Class to log.
      */
-    private Class<?> _clazz;
+    private final Class<?> _clazz;
 
     /**
      * Implementation to use for logging.
      */
-    private LogSpi _logImpl;
+    private final LogSpi _logImpl;
 
     /**
      * Create an instance of the log based on the SPI in the System properties.
      */
-    private Log(Class<?> clazz, LogSpi logImpl) {
+    private Log(final Class<?> clazz, final LogSpi logImpl) {
         _clazz = clazz;
         _logImpl = logImpl;
     }
@@ -111,17 +107,17 @@ public final class Log {
     /**
      * Used for testing..
      */
-    static Log getLog(final Class<?> clazz, LogSpi logImpl) {
+    static Log getLog(final Class<?> clazz, final LogSpi logImpl) {
         return new Log(clazz, logImpl);
     }
 
     /**
-     * Get the logger for the particular class. <code>
+     * Get the logger for the particular class.
+     * <code>
      * private static final Log LOG = Log.getLog(MyClass.class);
      * </code>
-     * 
-     * @param clazz
-     *            class to log information about.
+     *
+     * @param clazz class to log information about.
      * @return logger to use for logging.
      */
     public static Log getLog(final Class<?> clazz) {
@@ -131,7 +127,7 @@ public final class Log {
                 throw new IllegalArgumentException();
             }
             // attempt to get an instance..
-            LogSpi logImpl = (LogSpi) getSpiClass().newInstance();
+            final LogSpi logImpl = (LogSpi) getSpiClass().newInstance();
             return new Log(clazz, logImpl);
         } catch (RuntimeException e) {
             throw e;
@@ -152,40 +148,30 @@ public final class Log {
     // =======================================================================
     /**
      * Lowest level logging method.
-     * 
-     * @param clazz
-     *            Class that is being logged.
-     * @param method
-     *            Method name that is being logged.
-     * @param level
-     *            Logging level.
-     * @param message
-     *            Message about the log.
-     * @param ex
-     *            Exception to use process.
+     *
+     * @param clazz Class that is being logged.
+     * @param method Method name that is being logged.
+     * @param level Logging level.
+     * @param message Message about the log.
+     * @param ex Exception to use process.
      */
-    public void log(Class<?> clazz, String method, Log.Level level,
-            String message, Throwable ex) {
+    public void log(final Class<?> clazz, final String method, final Log.Level level,
+            final String message, final Throwable ex) {
+
         if (isLoggable(level)) {
             _logImpl.log(clazz, method, level, message, ex);
         }
     }
 
     /**
-     * Logs based on the parameters given. Uses the format parameter inside
-     * {@link MessageFormat}.
-     * 
-     * @param level
-     *            the logging level at which to write the message.
-     * @param ex
-     *            [optional] exception stack trace to log.
-     * @param format
-     *            [optional] create a message of a particular format.
-     * @param args
-     *            [optional] parameters to the format string.
+     * Logs based on the parameters given. Uses the format parameter inside {@link MessageFormat}.
+     *
+     * @param level the logging level at which to write the message.
+     * @param ex [optional] exception stack trace to log.
+     * @param format [optional] create a message of a particular format.
+     * @param args [optional] parameters to the format string.
      */
-    public void log(final Level level, final Throwable ex, final String format,
-            final Object... args) {
+    public void log(final Level level, final Throwable ex, final String format, final Object... args) {
         if (isLoggable(level)) {
             String message = format;
             if (format != null && args != null) {
@@ -195,40 +181,40 @@ public final class Log {
             } else if (format == null && ex != null) {
                 message = ex.getLocalizedMessage();
             }
-            String methodName = ReflectionUtil.getMethodName(3);
+            final String methodName = ReflectionUtil.getMethodName(3);
             log(_clazz, methodName, level, message, ex);
         }
     }
 
-    public void ok(Throwable ex, String format, Object... args) {
+    public void ok(final Throwable ex, final String format, final Object... args) {
         log(Level.OK, ex, format, args);
     }
 
-    public void info(Throwable ex, String format, Object... args) {
+    public void info(final Throwable ex, final String format, final Object... args) {
         log(Level.INFO, ex, format, args);
     }
 
-    public void warn(Throwable ex, String format, Object... args) {
+    public void warn(final Throwable ex, final String format, final Object... args) {
         log(Level.WARN, ex, format, args);
     }
 
-    public void error(Throwable ex, String format, Object... args) {
+    public void error(final Throwable ex, final String format, final Object... args) {
         log(Level.ERROR, ex, format, args);
     }
 
-    public void ok(String format, Object... args) {
+    public void ok(final String format, final Object... args) {
         log(Level.OK, null, format, args);
     }
 
-    public void info(String format, Object... args) {
+    public void info(final String format, final Object... args) {
         log(Level.INFO, null, format, args);
     }
 
-    public void warn(String format, Object... args) {
+    public void warn(final String format, final Object... args) {
         log(Level.WARN, null, format, args);
     }
 
-    public void error(String format, Object... args) {
+    public void error(final String format, final Object... args) {
         log(Level.ERROR, null, format, args);
     }
 
@@ -251,34 +237,33 @@ public final class Log {
     /**
      * Finds the logging implementation Class object in the specified order:
      * <ol>
-     * <li>query the system property using <code>System.getProperty</code></li>
-     * <li>read <code>$java.home/lib/<i>connectors.properties</i></code>
-     * file</li>
+     * <li>query the system property using
+     * <code>System.getProperty</code></li>
      * <li>read
-     * <code>META-INF/services/<i>org.identityconnectors.common.logging.class</i></code>
-     * file</li>
-     * <li>use {@link org.identityconnectors.common.logging.impl.StdOutLogger}
-     * as a fallback.</li>
+     * <code>$java.home/lib/<i>connectors.properties</i></code> file</li>
+     * <li>read
+     * <code>META-INF/services/<i>org.identityconnectors.common.logging.class</i></code> file</li>
+     * <li>use {@link org.identityconnectors.common.logging.impl.StdOutLogger} as a fallback.</li>
      * </ol>
      */
     private static Class<?> findSpiClass() {
         // Use the system property first
-        String impl = System.getProperty(LOGSPI_PROP);
+        final String impl = System.getProperty(LOGSPI_PROP);
         if (StringUtil.isNotBlank(impl)) {
             return forName(impl);
         }
         // attempt to find the properties file..
-        File javaHome = new File(System.getProperty("java.home"));
-        File javaHomeLib = new File(javaHome, "lib");
-        File propsFile = new File(javaHomeLib, LOGSPI_PROPS_FILE);
+        final File javaHome = new File(System.getProperty("java.home"));
+        final File javaHomeLib = new File(javaHome, "lib");
+        final File propsFile = new File(javaHomeLib, LOGSPI_PROPS_FILE);
         if (propsFile.isFile() && propsFile.canRead()) {
             FileInputStream fis = null;
             try {
-                Properties props = new Properties();
+                final Properties props = new Properties();
                 fis = new FileInputStream(propsFile);
                 props.load(fis);
                 // get the same system property from the properties file..
-                String prop = props.getProperty(LOGSPI_PROP);
+                final String prop = props.getProperty(LOGSPI_PROP);
                 if (StringUtil.isNotBlank(prop)) {
                     return forName(prop);
                 }
@@ -290,19 +275,19 @@ public final class Log {
             }
         }
         // attempt to find through the jar META-INF/services..
-        String serviceId = "META-INF/services/" + PACKAGE;
-        String clazz = IOUtil.getResourceAsString(Log.class, serviceId);
+        final String serviceId = "META-INF/services/" + PACKAGE;
+        final String clazz = IOUtil.getResourceAsString(Log.class, serviceId);
         if (StringUtil.isNotBlank(clazz)) {
             return forName(clazz.trim());
         }
         // return the default..
-        return DEFAULT_SPI;
+        return defaultSPI;
     }
 
     /**
      * Simple helper function to prevent duplicate code.
      */
-    private static Class<?> forName(String clazz) {
+    private static Class<?> forName(final String clazz) {
         try {
             return Class.forName(clazz);
         } catch (ClassNotFoundException e) {
@@ -316,19 +301,19 @@ public final class Log {
     static Class<?> getSpiClass() {
         // initialize the SPI class cache object
         synchronized (Log.class) {
-            if (_cacheSpi == null) {
-                _cacheSpi = findSpiClass();
+            if (cacheSPI == null) {
+                cacheSPI = findSpiClass();
             }
         }
-        return _cacheSpi;
+        return cacheSPI;
     }
 
     /**
      * For <strong>test</strong> only.
      */
-    static void setSpiClass(Class<?> clazz) {
+    static void setSpiClass(final Class<?> clazz) {
         synchronized (Log.class) {
-            _cacheSpi = clazz;
+            cacheSPI = clazz;
         }
     }
 }

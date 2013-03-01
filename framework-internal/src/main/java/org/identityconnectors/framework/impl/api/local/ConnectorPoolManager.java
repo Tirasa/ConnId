@@ -58,9 +58,9 @@ public class ConnectorPoolManager {
         }
 
         @Override
-        public boolean equals(final Object o) {
-            if (o instanceof ConnectorPoolKey) {
-                final ConnectorPoolKey other = (ConnectorPoolKey) o;
+        public boolean equals(final Object object) {
+            if (object instanceof ConnectorPoolKey) {
+                final ConnectorPoolKey other = (ConnectorPoolKey) object;
                 if (!_connectorKey.equals(other._connectorKey)) {
                     return false;
                 }
