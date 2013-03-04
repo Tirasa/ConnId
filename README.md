@@ -25,6 +25,12 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://connid.atlassian.net/wiki/pages/viewpage.action?pageId=360482">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/AD">issues</a></td>
  </tr>
+  <tr>
+  <td>CMD</td>
+  <td>https://github.com/Tirasa/ConnIdCMDBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/CMD">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/CMD">issues</a></td>
+ </tr>
  <tr>
   <td>CSV Directory</td>
   <td>https://github.com/Tirasa/ConnIdCSVDirBundle</td>
