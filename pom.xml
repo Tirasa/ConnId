@@ -214,15 +214,14 @@ enclosed by brackets [] replaced by your own identifying information:
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>2.13</version>
-          <!-- Disabling automatic check until RAT-129 is fixed -->
-          <!--<executions>
+          <executions>
             <execution>
               <goals>
                 <goal>integration-test</goal>
                 <goal>verify</goal>
               </goals>
             </execution>
-          </executions>-->
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.mortbay.jetty</groupId>
@@ -233,7 +232,8 @@ enclosed by brackets [] replaced by your own identifying information:
     </pluginManagement>
     
     <plugins>
-      <plugin>
+      <!-- Disabling until RAT-129 is fixed -->
+      <!--<plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <version>0.9-SNAPSHOT</version>
@@ -263,7 +263,7 @@ enclosed by brackets [] replaced by your own identifying information:
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin>-->
     </plugins>
   </build>
 
@@ -304,15 +304,5 @@ enclosed by brackets [] replaced by your own identifying information:
     <module>testbundles</module>
     <module>test-contract</module>
   </modules>
-  
-  <pluginRepositories>
-    <pluginRepository>
-      <id>ASF</id>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
 
 </project>
