@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/*
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
-*
-* Copyright 2011 Tirasa. All rights reserved.
-*
-* The contents of this file are subject to the terms of either the GNU
-* General Public License Version 2 only ("GPL") or the Common Development
-* and Distribution License("CDDL") (collectively, the "License").  You
-* may not use this file except in compliance with the License. You can obtain
-* a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
-* or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
-* language governing permissions and limitations under the License.
-*
-* When distributing the software, include this License Header Notice in each
-* file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
-* Sun designates this particular file as subject to the "Classpath" exception
-* as provided by Sun in the GPL Version 2 section of the License file that
-* accompanied this code.  If applicable, add the following below the License
-* Header, with the fields enclosed by brackets [] replaced by your own
-* identifying information: "Portions Copyrighted [year]
-* [name of copyright owner]"
-*/
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright 2011-2013 Tirasa. All rights reserved.
+
+The contents of this file are subject to the terms of the Common Development
+and Distribution License("CDDL") (the "License"). You may not use this file
+except in compliance with the License.
+
+You can obtain a copy of the License at https://oss.oracle.com/licenses/CDDL
+See the License for the specific language governing permissions and limitations
+under the License.
+
+When distributing the Covered Code, include this CDDL Header Notice in each file
+and include the License file at https://oss.oracle.com/licenses/CDDL.
+If applicable, add the following below this CDDL Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyrighted [year] [name of copyright owner]"
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -49,7 +44,7 @@
   <licenses>
     <license>
       <name>CDDL 1.0</name>
-      <url>https://raw.github.com/Tirasa/ConnId/master/legal/license.txt</url>
+      <url>https://oss.oracle.com/licenses/CDDL</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -185,6 +180,14 @@
           <version>2.6</version>
         </plugin>
         <plugin>
+          <groupId>com.google.code.maven-license-plugin</groupId>
+          <artifactId>maven-license-plugin</artifactId>
+          <version>1.4.0</version>
+          <configuration>
+            <header>../legal/COPYRIGHT</header>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.13</version>
@@ -211,14 +214,15 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>2.13</version>
-          <executions>
+          <!-- Disabling automatic check until RAT-129 is fixed -->
+          <!--<executions>
             <execution>
               <goals>
                 <goal>integration-test</goal>
                 <goal>verify</goal>
               </goals>
             </execution>
-          </executions>
+          </executions>-->
         </plugin>
         <plugin>
           <groupId>org.mortbay.jetty</groupId>
@@ -227,6 +231,40 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>0.9-SNAPSHOT</version>
+        <configuration>
+          <excludes>
+            <exclude>nbactions.xml</exclude>
+            <exclude>nb-configuration.xml</exclude>
+            <exclude>**/META-INF/services/**</exclude>
+            <exclude>**/*.css</exclude>
+            <exclude>**/*.js</exclude>
+            <exclude>**/*.csv</exclude>
+            <exclude>**/goal.txt</exclude>
+            <exclude>**/maven-eclipse.xml</exclude>
+            <exclude>**/*.iml</exclude>
+            <exclude>**/*.log</exclude>
+            <exclude>.externalToolBuilders/**</exclude>
+            <exclude>.git/**</exclude>
+            <exclude>.idea/**</exclude>
+            <exclude>**/.*</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>

@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-/*
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
-*
-* Copyright 2011 Tirasa. All rights reserved.
-*
-* The contents of this file are subject to the terms of either the GNU
-* General Public License Version 2 only ("GPL") or the Common Development
-* and Distribution License("CDDL") (collectively, the "License").  You
-* may not use this file except in compliance with the License. You can obtain
-* a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html
-* or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific
-* language governing permissions and limitations under the License.
-*
-* When distributing the software, include this License Header Notice in each
-* file and include the License file at glassfish/bootstrap/legal/LICENSE.txt.
-* Sun designates this particular file as subject to the "Classpath" exception
-* as provided by Sun in the GPL Version 2 section of the License file that
-* accompanied this code.  If applicable, add the following below the License
-* Header, with the fields enclosed by brackets [] replaced by your own
-* identifying information: "Portions Copyrighted [year]
-* [name of copyright owner]"
-*/
+ DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+Copyright 2011-2013 Tirasa. All rights reserved.
+
+The contents of this file are subject to the terms of the Common Development
+and Distribution License("CDDL") (the "License"). You may not use this file
+except in compliance with the License.
+
+You can obtain a copy of the License at https://oss.oracle.com/licenses/CDDL
+See the License for the specific language governing permissions and limitations
+under the License.
+
+When distributing the Covered Code, include this CDDL Header Notice in each file
+and include the License file at https://oss.oracle.com/licenses/CDDL.
+If applicable, add the following below this CDDL Header, with the fields
+enclosed by brackets [] replaced by your own identifying information:
+"Portions Copyrighted [year] [name of copyright owner]"
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
