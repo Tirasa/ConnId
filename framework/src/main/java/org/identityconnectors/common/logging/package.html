@@ -1,7 +1,7 @@
 <!--
 
     ====================
-     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
     Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
     Copyright 2011-2013 Tirasa. All rights reserved.
