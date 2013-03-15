@@ -1,6 +1,6 @@
 /**
  * ====================
- *  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
  * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
  * Copyright 2011-2013 Tirasa. All rights reserved.
@@ -23,8 +23,9 @@
 package org.identityconnectors.common;
 
 public final class Assertions {
-    
+
     private final static String NULL_FORMAT = "Parameter '%s' must not be null.";
+
     private static final String BLANK_FORMAT = "Parameter '%s' must not be blank.";
 
     private Assertions() {
@@ -32,18 +33,16 @@ public final class Assertions {
     }
 
     /**
-     * Throws {@link NullPointerException} if the parameter <code>o</code> is
+     * Throws {@link NullPointerException} if the parameter
+     * <code>o</code> is
      * <code>null</code>.
-     * 
-     * @param o
-     *            check if the object is <code>null</code>.
-     * @param param
-     *            name of the parameter to check for <code>null</code>.
-     * @throws NullPointerException
-     *             if <code>o</code> is <code>null</code> and constructs a
-     *             message with the name of the parameter.
+     *
+     * @param o check if the object is <code>null</code>.
+     * @param param name of the parameter to check for <code>null</code>.
+     * @throws NullPointerException if <code>o</code> is <code>null</code> and constructs a
+     * message with the name of the parameter.
      */
-    public static void nullCheck(Object o, String param) {
+    public static void nullCheck(final Object o, final String param) {
         assert StringUtil.isNotBlank(param);
         if (o == null) {
             throw new NullPointerException(String.format(NULL_FORMAT, param));
@@ -51,21 +50,20 @@ public final class Assertions {
     }
 
     /**
-     * Throws {@link NullPointerException} if the parameter <code>o</code> is
-     * <code>null</code>, otherwise returns the value of the <code>o</code> parameter.
-     * 
-     * @param o
-     *            check if the object is <code>null</code>.
-     * @param param
-     *            name of the parameter to check for <code>null</code>.
+     * Throws {@link NullPointerException} if the parameter
+     * <code>o</code> is
+     * <code>null</code>, otherwise returns the value of the
+     * <code>o</code> parameter.
+     *
+     * @param o check if the object is <code>null</code>.
+     * @param param name of the parameter to check for <code>null</code>.
      * @return the value of the <code>o</code> parameter.
-     * @throws NullPointerException
-     *             if <code>o</code> is <code>null</code> and constructs a
-     *             message with the name of the parameter.
-     *             
+     * @throws NullPointerException if <code>o</code> is <code>null</code> and constructs a
+     * message with the name of the parameter.
+     *
      * @since 1.2
      */
-    public static <T> T nullChecked(T o, String param) {
+    public static <T> T nullChecked(final T o, final String param) {
         // Avoid calling nullCheck() here to reuse code: it deepens the stack trace.
         // We want the exception to be thrown as close to the call site as possible.
         assert StringUtil.isNotBlank(param);
@@ -76,15 +74,14 @@ public final class Assertions {
     }
 
     /**
-     * Throws {@link IllegalArgumentException} if the parameter <code>o</code>
-     * is <code>null</code> or blank.
-     * 
-     * @param o
-     *            value to test for blank.
-     * @param param
-     *            name of the parameter to check.
+     * Throws {@link IllegalArgumentException} if the parameter
+     * <code>o</code> * is
+     * <code>null</code> or blank.
+     *
+     * @param o value to test for blank.
+     * @param param name of the parameter to check.
      */
-    public static void blankCheck(String o, String param) {
+    public static void blankCheck(final String o, final String param) {
         assert StringUtil.isNotBlank(param);
         if (StringUtil.isBlank(o)) {
             throw new IllegalArgumentException(String.format(BLANK_FORMAT, param));
@@ -92,19 +89,18 @@ public final class Assertions {
     }
 
     /**
-     * Throws {@link IllegalArgumentException} if the parameter <code>o</code>
-     * is <code>null</code> or blank, otherwise returns the value of the
+     * Throws {@link IllegalArgumentException} if the parameter
+     * <code>o</code> is
+     * <code>null</code> or blank, otherwise returns the value of the
      * <code>o</code> parameter.
-     * 
-     * @param o
-     *            value to test for blank.
-     * @param param
-     *            name of the parameter to check.
+     *
+     * @param o value to test for blank.
+     * @param param name of the parameter to check.
      * @return the value of the <code>o</code> parameter.
-     *             
+     *
      * @since 1.2
      */
-    public static String blankChecked(String o, String param) {
+    public static String blankChecked(final String o, final String param) {
         // Avoid calling blankCheck() here to reuse code: it deepens the stack trace.
         // We want the exception to be thrown as close to the call site as possible.
         assert StringUtil.isNotBlank(param);
