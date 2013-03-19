@@ -43,7 +43,7 @@ public class PrettyStringBuilder {
         this.nullValue = "<null>";
     }
 
-    public PrettyStringBuilder(int maxArrayLen, int maxDeep, String nullValue) {
+    public PrettyStringBuilder(final int maxArrayLen, final int maxDeep, final String nullValue) {
         this.maxArrayLen = maxArrayLen;
         this.maxDeep = maxDeep;
         this.nullValue = nullValue;
@@ -52,7 +52,7 @@ public class PrettyStringBuilder {
     /**
      * Returns pretty value from object value.
      */
-    protected String toPrettyString(Object obj) {
+    protected String toPrettyString(final Object obj) {
         deep++;
         if (obj == null) {
             deep--;
@@ -62,11 +62,11 @@ public class PrettyStringBuilder {
             deep--;
             return obj.toString();
         }
-        StringBuilder s = new StringBuilder();
-        Class c = obj.getClass();
+        final StringBuilder s = new StringBuilder();
+        final Class c = obj.getClass();
         if (c.isArray()) {
-            int arrayLen = Array.getLength(obj);
-            int len = Math.min(arrayLen, maxArrayLen);
+            final int arrayLen = Array.getLength(obj);
+            final int len = Math.min(arrayLen, maxArrayLen);
             s.append('[');
             for (int i = 0; i < len; i++) {
                 s.append(toPrettyString(Array.get(obj, i)));
@@ -79,8 +79,8 @@ public class PrettyStringBuilder {
             }
             s.append(']');
         } else if (obj instanceof Collection) {
-            Collection coll = (Collection) obj;
-            Iterator it = coll.iterator();
+            final Collection coll = (Collection) obj;
+            final Iterator it = coll.iterator();
             int i = 0;
             s.append('(');
             while ((it.hasNext() && (i < maxArrayLen))) {
@@ -92,12 +92,12 @@ public class PrettyStringBuilder {
             }
             s.append(')');
         } else if (obj instanceof Map) {
-            Map map = (Map) obj;
-            Iterator it = map.keySet().iterator();
+            final Map map = (Map) obj;
+            final Iterator it = map.keySet().iterator();
             int i = 0;
             s.append('{');
             while ((it.hasNext() && (i < maxArrayLen))) {
-                Object key = it.next();
+                final Object key = it.next();
                 s.append(key).append(':');
                 s.append(toPrettyString(map.get(key)));
                 i++;
@@ -116,7 +116,7 @@ public class PrettyStringBuilder {
     /**
      * Returns pretty string representation of the object.
      */
-    public String toString(Object value) {
+    public String toString(final Object value) {
         return toPrettyString(value);
     }
 }

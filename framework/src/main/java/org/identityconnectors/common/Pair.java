@@ -22,24 +22,26 @@
  */
 package org.identityconnectors.common;
 
+import java.util.Map;
+
 /**
- * An arbitrary pair of objects. Convenient for when you want a method
- * to return a pair of objects.
+ * An arbitrary pair of objects. Convenient implementation of Map.Entry.
  */
-public class Pair<T1,T2> {
+public class Pair<T1, T2> implements Map.Entry<T1, T2> {
 
     public T1 first;
+
     public T2 second;
 
     public Pair() {
     }
 
-    public Pair(T1 f,
-                T2 s) {
-        this.first  = f;
-        this.second = s;    
+    public Pair(final T1 f, final T2 s) {
+        this.first = f;
+        this.second = s;
     }
 
+    @Override
     public int hashCode() {
         int rv = 0;
         if (first != null) {
@@ -51,29 +53,43 @@ public class Pair<T1,T2> {
         return rv;
     }
 
-    private static boolean equals(Object o1, Object o2) {
+    private boolean equals(final Object o1, final Object o2) {
         if (o1 == null) {
             return o2 == null;
-        }
-        else if (o2 == null) {
+        } else if (o2 == null) {
             return false;
-        }
-        else {
+        } else {
             return o1.equals(o2);
         }
     }
 
-    public boolean equals(Object o) {
-        if (o instanceof Pair) {
-            Pair<?,?> other = (Pair<?,?>)o;
-            return ( equals ( this.first, other.first ) &&
-                     equals ( this.second, other.second ) );
+    @Override
+    public boolean equals(final Object object) {
+        if (object instanceof Map.Entry) {
+            final Pair<?, ?> other = (Pair<?, ?>) object;
+            return (equals(this.first, other.first) && equals(this.second, other.second));
         }
         return false;
     }
 
+    @Override
     public String toString() {
-        return "( "+this.first+", "+this.second+" )";
+        return "( " + this.first + ", " + this.second + " )";
     }
 
+    @Override
+    public T1 getKey() {
+        return this.first;
+    }
+
+    @Override
+    public T2 getValue() {
+        return this.second;
+    }
+
+    @Override
+    public T2 setValue(final T2 value) {
+        this.second = value;
+        return this.second;
+    }
 }

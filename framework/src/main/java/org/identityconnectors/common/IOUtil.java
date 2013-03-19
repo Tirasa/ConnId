@@ -38,6 +38,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.jar.JarEntry;
@@ -45,9 +50,11 @@ import java.util.jar.JarFile;
 import java.util.zip.CRC32;
 
 /**
- * IO Utilities
+ * IO Utilities.
  */
-public class IOUtil {
+public final class IOUtil {
+
+    public static final String EMPTY = "";
 
     /**
      * Never allow this to be instantiated.
@@ -67,7 +74,7 @@ public class IOUtil {
             if (reader != null) {
                 reader.close();
             }
-        } catch (java.io.IOException ex) {
+        } catch (IOException e) {
             // ignore
         }
     }
@@ -83,7 +90,7 @@ public class IOUtil {
             if (stream != null) {
                 stream.close();
             }
-        } catch (java.io.IOException ex) {
+        } catch (IOException e) {
             // ignore
         }
     }
@@ -99,7 +106,7 @@ public class IOUtil {
             if (writer != null) {
                 writer.close();
             }
-        } catch (java.io.IOException ex) {
+        } catch (IOException e) {
             // ignore
         }
     }
@@ -110,13 +117,43 @@ public class IOUtil {
      *
      * @param stream - Stream to close
      */
-    public static void quietClose(OutputStream stream) {
+    public static void quietClose(final OutputStream stream) {
         try {
             if (stream != null) {
                 stream.close();
             }
-        } catch (java.io.IOException ex) {
+        } catch (IOException e) {
             // ignore
+        }
+    }
+
+    public static void quietClose(final Statement stmt) {
+        try {
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (SQLException e) {
+            // ignore            
+        }
+    }
+
+    public static void quietClose(final Connection conn) {
+        try {
+            if (conn != null) {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            // ignore            
+        }
+    }
+
+    public static void quietClose(final ResultSet resultset) {
+        try {
+            if (resultset != null) {
+                resultset.close();
+            }
+        } catch (SQLException e) {
+            // ignore            
         }
     }
 
@@ -130,13 +167,13 @@ public class IOUtil {
      * @param res Name of the resource to get the path of.
      * @return Returns the fully quilified path to a resource.
      */
-    public static String getResourcePath(Class<?> c, String res) {
+    public static String getResourcePath(final Class<?> c, final String res) {
         assert c != null && StringUtil.isNotBlank(res);
-        String classname = c.getName();
+        final String classname = c.getName();
         String result;
-        int dot = classname.lastIndexOf('.');
+        final int dot = classname.lastIndexOf('.');
         if (dot >= 0) {
-            String pkg = classname.substring(0, dot);
+            final String pkg = classname.substring(0, dot);
             result = pkg.replace('.', '/') + '/' + res;
         } else {
             result = res;
@@ -149,12 +186,11 @@ public class IOUtil {
      *
      * @return Returns an InputStream to the resource.
      */
-    public static InputStream getResourceAsStream(Class<?> clazz, String res) {
+    public static InputStream getResourceAsStream(final Class<?> clazz, final String res) {
         assert clazz != null && StringUtil.isNotBlank(res);
         InputStream ret = null;
-        ClassLoader classLoader = clazz.getClassLoader();
-        String name[] = {res, getResourcePath(clazz, res),
-            "/" + getResourcePath(clazz, res)};
+        final ClassLoader classLoader = clazz.getClassLoader();
+        final String name[] = {res, getResourcePath(clazz, res), "/" + getResourcePath(clazz, res)};
         for (int i = 0; ret == null && i < name.length; i++) {
             ret = classLoader.getResourceAsStream(name[i]);
         }
@@ -164,14 +200,14 @@ public class IOUtil {
     /**
      * Get the resource as a byte array.
      */
-    public static byte[] getResourceAsBytes(Class<?> clazz, String res) {
+    public static byte[] getResourceAsBytes(final Class<?> clazz, final String res) {
         assert clazz != null && StringUtil.isNotBlank(res);
         // copy bytes from the stream to an array..
-        InputStream ins = getResourceAsStream(clazz, res);
+        final InputStream ins = getResourceAsStream(clazz, res);
         if (ins == null) {
             throw new IllegalStateException("Resource not found: " + res);
         }
-        byte[] ret = inputStreamToBytes(ins);
+        final byte[] ret = inputStreamToBytes(ins);
         quietClose(ins);
         return ret;
     }
@@ -179,14 +215,13 @@ public class IOUtil {
     /**
      * Read the entire stream into a String and return it.
      */
-    public static String getResourceAsString(Class<?> clazz, String res,
-            Charset charset) {
+    public static String getResourceAsString(final Class<?> clazz, final String res, final Charset charset) {
         assert clazz != null && StringUtil.isNotBlank(res);
         String ret = null;
-        InputStream ins = getResourceAsStream(clazz, res);
+        final InputStream ins = getResourceAsStream(clazz, res);
         if (ins != null) {
             try {
-                InputStreamReader rdr = new InputStreamReader(ins, charset);
+                final InputStreamReader rdr = new InputStreamReader(ins, charset);
                 ret = readerToString(rdr);
             } finally {
                 quietClose(ins);
@@ -198,7 +233,7 @@ public class IOUtil {
     /**
      * Read the entire stream into a String and return it.
      */
-    public static String getResourceAsString(Class<?> clazz, String res) {
+    public static String getResourceAsString(final Class<?> clazz, final String res) {
         assert clazz != null && StringUtil.isNotBlank(res);
         return getResourceAsString(clazz, res, Charset.forName("UTF-8"));
     }
@@ -206,13 +241,13 @@ public class IOUtil {
     /**
      * Takes a 'InputStream' and returns a byte array.
      */
-    public static byte[] inputStreamToBytes(InputStream ins) {
+    public static byte[] inputStreamToBytes(final InputStream ins) {
         byte[] ret = null;
         try {
             // copy bytes from the stream to an array..
             int len = 0;
-            byte[] buf = new byte[2048];
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            final byte[] buf = new byte[2048];
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
             while ((len = ins.read(buf)) != -1) {
                 out.write(buf, 0, len);
             }
@@ -230,12 +265,12 @@ public class IOUtil {
      * @param rdr Producer for the string data.
      * @return Null if the 'Reader' is broken or empty otherwise the contents as a string.
      */
-    public static String readerToString(Reader rdr) {
+    public static String readerToString(final Reader rdr) {
         String ret = null;
         try {
             int len = 0;
-            char[] buf = new char[2048];
-            StringWriter wrt = new StringWriter();
+            final char[] buf = new char[2048];
+            final StringWriter wrt = new StringWriter();
             while ((len = rdr.read(buf)) != -1) {
                 wrt.write(buf, 0, len);
             }
@@ -255,7 +290,7 @@ public class IOUtil {
      * @param dest This can be a directory or a file.
      * @return True if succeeded otherwise false.
      */
-    public static boolean copyFile(File src, File dest) throws IOException {
+    public static boolean copyFile(final File src, File dest) throws IOException {
         boolean ret = true;
         // quick exit if this is bogus
         if (src == null || dest == null || !src.isFile()) {
@@ -263,7 +298,7 @@ public class IOUtil {
         }
         // check for directory
         if (dest.isDirectory()) {
-            String name = src.getName();
+            final String name = src.getName();
             dest = new File(dest, name);
         }
         FileInputStream fis = null;
@@ -288,10 +323,9 @@ public class IOUtil {
      *
      * @return total bytes copied.
      */
-    public static long copyFile(InputStream fis, OutputStream fos)
-            throws IOException {
+    public static long copyFile(final InputStream fis, final OutputStream fos) throws IOException {
         long ret = 0;
-        byte[] bytes = new byte[8 * 1024];
+        final byte[] bytes = new byte[8 * 1024];
         for (int rd = fis.read(bytes); rd != -1; rd = fis.read(bytes)) {
             fos.write(bytes, 0, rd);
             ret += rd;
@@ -304,15 +338,13 @@ public class IOUtil {
      *
      * @param fileName - the path to the file on which to calculate the checksum
      */
-    public static long checksum(String fileName) throws IOException,
-            FileNotFoundException {
+    public static long checksum(final String fileName) throws IOException, FileNotFoundException {
         return (checksum(new File(fileName)));
     }
 
-    public static long checksum(File file) throws java.io.IOException,
-            FileNotFoundException {
+    public static long checksum(final File file) throws IOException, FileNotFoundException {
         FileInputStream fis = null;
-        byte[] bytes = new byte[16384];
+        final byte[] bytes = new byte[16384];
         int len;
         try {
             fis = new FileInputStream(file);
@@ -334,14 +366,13 @@ public class IOUtil {
      * @param close if true, close when finished reading.
      * @return file bytes.
      */
-    public static byte[] readInputStreamBytes(InputStream is, boolean close)
-            throws IOException {
+    public static byte[] readInputStreamBytes(final InputStream is, final boolean close) throws IOException {
         byte[] bytes = null;
         if (is != null) {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream(1024);
+            final ByteArrayOutputStream bout = new ByteArrayOutputStream(1024);
             try {
                 int bytesRead = 0;
-                byte[] buf = new byte[1024];
+                final byte[] buf = new byte[1024];
                 while ((bytesRead = is.read(buf)) != -1) {
                     bout.write(buf, 0, bytesRead);
                 } // end of while ((read(buf) != -1)
@@ -360,7 +391,7 @@ public class IOUtil {
      *
      * @throws RuntimeException iff there is file that can not be deleted.
      */
-    public static void delete(File f) throws IOException {
+    public static void delete(final File f) throws IOException {
         // determine if the file/directory exists..
         if (f.exists()) {
             final String msg = "Failed to delete: " + f;
@@ -385,10 +416,10 @@ public class IOUtil {
     /**
      * Loads the given file as a Properties file.
      */
-    public static Properties loadPropertiesFile(File f) throws IOException {
+    public static Properties loadPropertiesFile(final File f) throws IOException {
         FileInputStream in = new FileInputStream(f);
         try {
-            Properties rv = new Properties();
+            final Properties rv = new Properties();
             rv.load(in);
             return rv;
         } finally {
@@ -399,8 +430,8 @@ public class IOUtil {
     /**
      * Stores the given file as a Properties file.
      */
-    public static void storePropertiesFile(File f, Properties properties) throws IOException {
-        FileOutputStream out = new FileOutputStream(f);
+    public static void storePropertiesFile(final File f, final Properties properties) throws IOException {
+        final FileOutputStream out = new FileOutputStream(f);
         try {
             properties.store(out, null);
         } finally {
@@ -416,14 +447,13 @@ public class IOUtil {
      * @return The properties or null if not found
      * @throws IOException If an error occurs reading it
      */
-    public static Properties getResourceAsProperties(ClassLoader loader,
-            String path) throws IOException {
-        InputStream in = loader.getResourceAsStream(path);
+    public static Properties getResourceAsProperties(final ClassLoader loader, final String path) throws IOException {
+        final InputStream in = loader.getResourceAsStream(path);
         if (in == null) {
             return null;
         }
         try {
-            Properties rv = new Properties();
+            final Properties rv = new Properties();
             rv.load(in);
             return rv;
         } finally {
@@ -439,10 +469,10 @@ public class IOUtil {
      * @param file The file to extract to
      * @throws IOException If an error occurs reading it
      */
-    public static void extractResourceToFile(Class<?> clazz,
-            String path,
-            File file) throws IOException {
-        InputStream in = getResourceAsStream(clazz, path);
+    public static void extractResourceToFile(final Class<?> clazz, final String path, final File file)
+            throws IOException {
+
+        final InputStream in = getResourceAsStream(clazz, path);
         if (in == null) {
             throw new IOException("Missing resource: " + path);
         }
@@ -454,10 +484,8 @@ public class IOUtil {
             if (out != null) {
                 out.close();
             }
-            if (in != null) {
-                in.close();
-            }
 
+            in.close();
         }
     }
 
@@ -467,15 +495,15 @@ public class IOUtil {
      * @param jarFile The file to unjar.
      * @param toDir The directory to unjar to.
      */
-    public static void unjar(JarFile jarFile, File toDir) throws IOException {
-        Enumeration<JarEntry> entries = jarFile.entries();
+    public static void unjar(final JarFile jarFile, final File toDir) throws IOException {
+        final Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
-            File outFile = new File(toDir, entry.getName());
+            final JarEntry entry = entries.nextElement();
+            final File outFile = new File(toDir, entry.getName());
             FileOutputStream fos = null;
             try {
                 fos = new FileOutputStream(outFile);
-                InputStream in = jarFile.getInputStream(entry);
+                final InputStream in = jarFile.getInputStream(entry);
                 IOUtil.copyFile(in, fos);
             } finally {
                 if (fos != null) {
@@ -494,8 +522,8 @@ public class IOUtil {
      * @return The contents of the file
      * @throws IOException iff there is an issue reading the file.
      */
-    public static String readFileUTF8(File file) throws IOException {
-        byte[] bytes = IOUtil.readFileBytes(file);
+    public static String readFileUTF8(final File file) throws IOException {
+        final byte[] bytes = IOUtil.readFileBytes(file);
         return new String(bytes, UTF8);
     }
 
@@ -506,10 +534,9 @@ public class IOUtil {
      * @return The contents of the file
      * @throws IOException iff there is an issue reading the file.
      */
-    public static byte[] readFileBytes(File file) throws IOException {
-        InputStream ins = new FileInputStream(file);
-        byte[] bytes = IOUtil.readInputStreamBytes(ins, true);
-        return bytes;
+    public static byte[] readFileBytes(final File file) throws IOException {
+        final InputStream ins = new FileInputStream(file);
+        return IOUtil.readInputStreamBytes(ins, true);
     }
 
     /**
@@ -520,13 +547,12 @@ public class IOUtil {
      * @throws IOException iff there is an issue writing the file.
      * @throws NullPointerException iff the file parameter is null.
      */
-    public static void writeFileUTF8(File file, String contents)
-            throws IOException {
-        Writer w = new OutputStreamWriter(new FileOutputStream(file), UTF8);
+    public static void writeFileUTF8(final File file, final String contents) throws IOException {
+        final Writer writer = new OutputStreamWriter(new FileOutputStream(file), UTF8);
         try {
-            w.write(contents);
+            writer.write(contents);
         } finally {
-            w.close();
+            writer.close();
         }
     }
 
@@ -538,8 +564,8 @@ public class IOUtil {
      * @return URL based on the parameter provided.
      * @throws IOException iff the URL create from the parameters does not specify a file.
      */
-    public static URL makeURL(File dir, String path) throws IOException {
-        File file = new File(dir, path);
+    public static URL makeURL(final File dir, final String path) throws IOException {
+        final File file = new File(dir, path);
         if (!file.isFile()) {
             throw new IOException(file.getPath() + " does not exist");
         }
@@ -553,8 +579,45 @@ public class IOUtil {
      * @return a loaded properties file.
      * @throws IOException if there is an issue.
      */
-    public static Properties loadPropertiesFile(String string)
-            throws IOException {
+    public static Properties loadPropertiesFile(final String string) throws IOException {
         return loadPropertiesFile(new File(string));
+    }
+
+    public static String join(final Collection<String> collection, final char separator) {
+        if (collection == null) {
+            return null;
+        }
+
+        return join(collection.toArray(new String[collection.size()]), separator, 0, collection.size());
+    }
+
+    public static String join(final Object[] array, final char separator) {
+        if (array == null) {
+            return null;
+        }
+
+        return join(array, separator, 0, array.length);
+    }
+
+    public static String join(final Object[] array, final char separator, final int startIndex, final int endIndex) {
+        if (array == null) {
+            return null;
+        }
+        final int noOfItems = endIndex - startIndex;
+        if (noOfItems <= 0) {
+            return EMPTY;
+        }
+
+        final StringBuilder buf = new StringBuilder(noOfItems * 16);
+
+        for (int i = startIndex; i < endIndex; i++) {
+            if (i > startIndex) {
+                buf.append(separator);
+            }
+            if (array[i] != null) {
+                buf.append(array[i]);
+            }
+        }
+        return buf.toString();
     }
 }
