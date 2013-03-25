@@ -35,9 +35,8 @@ import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.server.ConnectorServer;
 
-
 class ConnectionListener extends CCLWatchThread {
-    
+
     /**
      * This is the size of our internal queue. For now I have this
      * relatively small because I want the OS to manage the connect
@@ -45,32 +44,33 @@ class ConnectionListener extends CCLWatchThread {
      * requests
      */
     private final static int INTERNAL_QUEUE_SIZE = 2;
-    
+
     private static final Log _log = Log.getLog(ConnectionListener.class);
-    
+
     /**
      * The server object that we are using
      */
     private final ConnectorServer _server;
-    
+
     /**
      * The server socket. This must be bound at the time
      * of creation.
      */
     private final ServerSocket _socket;
-    
+
     /**
      * Pool of executors
      */
     private final ExecutorService _threadPool;
-    
+
     /**
      * Set to indicated we need to start shutting down
      */
     private boolean _stopped = false;
-    
+
     /**
      * Creates the listener thread
+     *
      * @param server The server object
      * @param socket The socket (should already be bound)
      */
@@ -79,25 +79,23 @@ class ConnectionListener extends CCLWatchThread {
         super("ConnectionListener");
         _server = server;
         _socket = socket;
-        _threadPool = 
-            new ThreadPoolExecutor
-            (server.getMinWorkers(),
-             server.getMaxWorkers(),
-             30, //idle time timeout
-             TimeUnit.SECONDS,
-             new ArrayBlockingQueue<Runnable>(
-                     INTERNAL_QUEUE_SIZE,
-                     true), //fair
-             new CCLWatchThreadFactory()); 
+        _threadPool =
+                new ThreadPoolExecutor(server.getMinWorkers(),
+                server.getMaxWorkers(),
+                30, //idle time timeout
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<Runnable>(
+                INTERNAL_QUEUE_SIZE,
+                true), //fair
+                new CCLWatchThreadFactory());
     }
-    
+
     @Override
     public void run() {
         while (!isStopped()) {
             try {
-                Socket connection = _socket.accept();
-                ConnectionProcessor processor =
-                    new ConnectionProcessor(_server,connection);
+                final Socket connection = _socket.accept();
+                final ConnectionProcessor processor = new ConnectionProcessor(_server, connection);
                 //this really sucks - ideally, execute would block
                 //if the queue is full. now we have to do a busy wait
                 //the effect is that eventually our socket's accept
@@ -107,13 +105,14 @@ class ConnectionListener extends CCLWatchThread {
                     try {
                         _threadPool.execute(processor);
                         break;
-                    }
-                    catch (RejectedExecutionException e) {
-                        try { Thread.sleep(100); } catch (Exception e2) {}
+                    } catch (RejectedExecutionException e) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (Exception e2) {
+                        }
                     }
                 }
-            }
-            catch (Throwable e) {
+            } catch (Throwable e) {
                 //log the error unless it's because we've stopped
                 if (!isStopped() || !(e instanceof SocketException)) {
                     _log.error(e, "Error processing request");
@@ -122,23 +121,21 @@ class ConnectionListener extends CCLWatchThread {
                 if (!isStopped()) {
                     try {
                         Thread.sleep(1000);
-                    }
-                    catch (Exception e2) {
-                        
+                    } catch (Exception e2) {
                     }
                 }
             }
         }
     }
-    
+
     private synchronized void markStopped() {
         _stopped = true;
     }
-    
+
     private synchronized boolean isStopped() {
         return _stopped;
     }
-    
+
     public void shutdown() {
         if (Thread.currentThread() == this) {
             throw new IllegalArgumentException("Shutdown may not be called from this thread");
@@ -155,8 +152,7 @@ class ConnectionListener extends CCLWatchThread {
                 join();
                 //wait for all in-progress requests to finish
                 _threadPool.shutdown();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw ConnectorException.wrap(e);
             }
         }

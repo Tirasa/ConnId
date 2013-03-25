@@ -36,12 +36,12 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.api.ConnectorInfoManagerFactoryImpl;
 import org.identityconnectors.framework.server.ConnectorServer;
 
-
 public class ConnectorServerImpl extends ConnectorServer {
 
     private ConnectionListener _listener;
+
     private CountDownLatch _stopLatch;
-    
+
     @Override
     public boolean isStarted() {
         return _listener != null;
@@ -49,71 +49,65 @@ public class ConnectorServerImpl extends ConnectorServer {
 
     @Override
     public void start() {
-        if ( isStarted() ) {
+        if (isStarted()) {
             throw new IllegalStateException("Server is already running.");
         }
-        if ( getPort() == 0 ) {
+        if (getPort() == 0) {
             throw new IllegalStateException("Port must be set prior to starting server.");
         }
-        if ( getKeyHash() == null ) {
-            throw new IllegalStateException("Key hash must be set prior to starting server.");            
+        if (getKeyHash() == null) {
+            throw new IllegalStateException("Key hash must be set prior to starting server.");
         }
         //make sure we are configured properly
-        ConnectorInfoManagerFactoryImpl factory = (ConnectorInfoManagerFactoryImpl) ConnectorInfoManagerFactory.getInstance();
+        final ConnectorInfoManagerFactoryImpl factory =
+                (ConnectorInfoManagerFactoryImpl) ConnectorInfoManagerFactory.getInstance();
         factory.getLocalManager(getBundleURLs(), getBundleParentClassLoader());
-        
-        ServerSocket socket =
-            createServerSocket();
-        ConnectionListener listener = new ConnectionListener(this,socket);
+
+        final ServerSocket socket = createServerSocket();
+        final ConnectionListener listener = new ConnectionListener(this, socket);
         listener.start();
         _stopLatch = new CountDownLatch(1);
         _listener = listener;
     }
-    
+
     private ServerSocket createServerSocket() {
         try {
             ServerSocketFactory factory;
             if (getUseSSL()) {
                 factory = createSSLServerSocketFactory();
-            }
-            else {
+            } else {
                 factory = ServerSocketFactory.getDefault();
             }
-            ServerSocket rv;
-            if ( getIfAddress() == null ) {
-                rv = factory.createServerSocket(getPort(), 
-                        getMaxConnections());
+            final ServerSocket socket;
+            if (getIfAddress() == null) {
+                socket = factory.createServerSocket(getPort(), getMaxConnections());
+            } else {
+                socket = factory.createServerSocket(getPort(), getMaxConnections(), getIfAddress());
             }
-            else {
-                rv = factory.createServerSocket(getPort(), 
-                        getMaxConnections(),
-                        getIfAddress());
-            }
-            return rv;
-        }
-        catch (Exception e) {
+            return socket;
+        } catch (Exception e) {
             throw ConnectorException.wrap(e);
         }
     }
-    
-    private ServerSocketFactory createSSLServerSocketFactory() 
-        throws Exception {
-        KeyManager [] keyManagers = null;
+
+    private ServerSocketFactory createSSLServerSocketFactory()
+            throws Exception {
+
+        KeyManager[] keyManagers = null;
         //convert empty to null
-        if ( getKeyManagers().size() > 0 ) {
+        if (getKeyManagers().size() > 0) {
             keyManagers = getKeyManagers().toArray(new KeyManager[0]);
         }
         //the only way to get the default keystore is this way
         if (keyManagers == null) {
             return SSLServerSocketFactory.getDefault();
-        }
-        else {
-            SSLContext context = SSLContext.getInstance("TLS");        
+        } else {
+            final SSLContext context = SSLContext.getInstance("TLS");
             context.init(keyManagers, null, null);
             return context.getServerSocketFactory();
-        }        
+        }
     }
-    
+
     @Override
     public void stop() {
         if (_listener != null) {
@@ -127,9 +121,9 @@ public class ConnectorServerImpl extends ConnectorServer {
         }
         ConnectorFacadeFactory.getInstance().dispose();
     }
-    
+
+    @Override
     public void awaitStop() throws InterruptedException {
         _stopLatch.await();
     }
-
 }
