@@ -1050,24 +1050,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         private Assembly[] BuildReferenceList(Assembly assembly)
         {
             List<Assembly> list = new List<Assembly>();
-            BuildReferenceList2(assembly, list, new HashSet<string>());
+            // Just add the connector itself.
+            list.Add(assembly);
             return list.ToArray();
-        }
-
-        private void BuildReferenceList2(Assembly assembly,
-                                         List<Assembly> list,
-                                         HashSet<string> visited)
-        {
-            bool notThere = visited.Add(assembly.GetName().FullName);
-            if (notThere)
-            {
-                list.Add(assembly);
-                foreach (AssemblyName referenced in assembly.GetReferencedAssemblies())
-                {
-                    Assembly assembly2 = Assembly.Load(referenced);
-                    BuildReferenceList2(assembly2, list, visited);
-                }
-            }
         }
     }
     #endregion
