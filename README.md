@@ -62,7 +62,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://connid.atlassian.net/browse/CSVDIR">issues</a></td>
  </tr>
  <tr>
-  <td>Database Table</td>
+  <td>Database</td>
   <td>https://github.com/Tirasa/ConnIdDBBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/Database">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/DB">issues</a></td>
