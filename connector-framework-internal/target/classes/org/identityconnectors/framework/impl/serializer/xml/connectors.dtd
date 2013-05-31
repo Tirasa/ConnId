@@ -1,0 +1,386 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+
+<!--=======================================================-->
+<!--=                                                     =-->
+<!--= DTD for Connector Objects                           =-->
+<!--=                                                     =-->
+<!--=======================================================-->
+
+<!--=======================================================-->
+<!--=                                                     =-->
+<!--= All XML Objects                                     =-->
+<!--=                                                     =-->
+<!--=======================================================-->
+
+<!ENTITY % exceptionTypes
+  "AlreadyExistsException | ConfigurationException | ConnectionBrokenException 
+  | ConnectionFailedException | ConnectorIOException | InvalidPasswordException 
+  | UnknownUidException | InvalidCredentialException | PermissionDeniedException
+  | ConnectorSecurityException | OperationTimeoutException | ConnectorException
+  | RuntimeException | Exception | Throwable | PasswordExpiredException | IllegalArgumentException
+  ">
+  
+<!ENTITY % messageTypes
+  "HelloRequest | HelloResponse | OperationRequest | OperationResponseEnd |
+   OperationResponsePart | OperationRequestMoreData | OperationRequestStopData |
+   OperationResponsePause | EchoMessage
+  ">
+
+<!ENTITY % filterTypes
+  "AndFilter | ContainsFilter | EndsWithFilter | EqualsFilter |
+  GreaterThanFilter | GreaterThanOrEqualFilter | LessThanFilter |
+  LessThanOrEqualFilter | NotFilter | OrFilter | StartsWithFilter |
+  ContainsAllValuesFilter
+  ">
+  
+<!ENTITY % attributeTypes
+  "Attribute | Uid | Name">
+
+<!ENTITY % primitiveTypes
+  "null | Array | Boolean | boolean | Character | char | Integer |
+  int | Long | long | Float | float | Double | double | String |
+  URI | File | BigDecimal | BigInteger | ByteArray | Class |
+  Map | List | Set | Locale | GuardedByteArray | GuardedString
+  ">
+
+<!ENTITY % xmlObject
+  "%primitiveTypes; | %exceptionTypes; | %messageTypes; | %filterTypes; | %attributeTypes; |
+ObjectPoolConfiguration | ResultsHandlerConfiguration | ConfigurationProperty | ConfigurationProperties |
+APIConfiguration | ConnectorMessages | ConnectorKey | ConnectorInfo |
+UpdateApiOpType | AttributeInfo | ConnectorObject | ObjectClass |
+ObjectClassInfo | Schema | Script | ScriptContext | OperationOptions | 
+OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
+">
+  
+  
+
+<!--=======================================================-->
+<!--=                                                     =-->
+<!--= Top Level Element for object streams                =-->
+<!--=                                                     =-->
+<!--=======================================================-->
+
+
+<!ELEMENT MultiObject ((
+  %xmlObject; 
+)*)>
+
+
+<!--=======================================================-->
+<!--=                                                     =-->
+<!--= Primitives                                          =-->
+<!--=                                                     =-->
+<!--=======================================================-->
+
+
+
+<!ELEMENT null EMPTY>
+<!ELEMENT Array ((%xmlObject;)*)>
+<!ATTLIST Array
+  componentType CDATA #REQUIRED
+>
+<!ELEMENT Boolean (#PCDATA)>
+<!ELEMENT boolean (#PCDATA)>
+<!ELEMENT Character (#PCDATA)>
+<!ELEMENT char (#PCDATA)>
+<!ELEMENT Integer (#PCDATA)>
+<!ELEMENT int (#PCDATA)>
+<!ELEMENT Long (#PCDATA)>
+<!ELEMENT long (#PCDATA)>
+<!ELEMENT Float (#PCDATA)>
+<!ELEMENT float (#PCDATA)>
+<!ELEMENT Double (#PCDATA)>
+<!ELEMENT double (#PCDATA)>
+<!ELEMENT String (#PCDATA)>
+<!ELEMENT URI (#PCDATA)>
+<!ELEMENT File (#PCDATA)>
+<!ELEMENT BigDecimal EMPTY> 
+<!ATTLIST BigDecimal
+    unscaled CDATA #REQUIRED
+    scale CDATA #REQUIRED
+>
+<!ELEMENT BigInteger (#PCDATA)>
+<!ELEMENT ByteArray (#PCDATA)>
+<!ELEMENT Class (#PCDATA)>
+<!ELEMENT Map ((MapEntry)*)>
+<!ATTLIST Map
+    caseInsensitive CDATA #IMPLIED
+>
+<!ELEMENT MapEntry ((%xmlObject;),(%xmlObject;))> 
+<!ELEMENT Keys ((%xmlObject;)*)>
+<!ELEMENT List ((%xmlObject;)*)>
+<!ELEMENT Set ((%xmlObject;)*)>
+<!ATTLIST Set
+    caseInsensitive CDATA #IMPLIED
+>
+<!ELEMENT Locale EMPTY> 
+<!ATTLIST Locale
+    language CDATA #IMPLIED
+    country CDATA #IMPLIED
+    variant CDATA #IMPLIED
+>
+<!ELEMENT GuardedByteArray (#PCDATA)>
+<!ELEMENT GuardedString (#PCDATA)>
+
+<!--=======================================================-->
+<!--=                                                     =-->
+<!--= APIConfiguration                                    =-->
+<!--=                                                     =-->
+<!--=======================================================-->
+
+<!ELEMENT ObjectPoolConfiguration EMPTY>
+<!ATTLIST ObjectPoolConfiguration
+    maxObjects CDATA #IMPLIED
+    maxIdle CDATA #IMPLIED
+    maxWait CDATA #IMPLIED
+    minEvictableIdleTimeMillis CDATA #IMPLIED
+    minIdle CDATA #IMPLIED
+>
+
+<!ELEMENT ResultsHandlerConfiguration EMPTY>
+<!ATTLIST ResultsHandlerConfiguration
+    enableNormalizingResultsHandler CDATA #IMPLIED
+    enableFilteredResultsHandler CDATA #IMPLIED
+    enableCaseInsensitiveFilter CDATA #IMPLIED
+    enableAttributesToGetSearchResultsHandler CDATA #IMPLIED
+>
+
+<!ELEMENT ConfigurationProperty (value,operations)> 
+<!ATTLIST ConfigurationProperty
+    order CDATA #IMPLIED
+    confidential CDATA #IMPLIED
+    required CDATA #IMPLIED
+    name CDATA #REQUIRED  
+    helpMessageKey CDATA #REQUIRED
+    displayMessageKey CDATA #REQUIRED
+    groupMessageKey CDATA #REQUIRED
+    type CDATA #REQUIRED
+>
+<!ELEMENT value (%xmlObject;)> 
+<!ELEMENT operations (Class)*>
+<!ELEMENT ConfigurationProperties ((ConfigurationProperty)*)> 
+
+<!ELEMENT APIConfiguration (connectorPoolConfiguration,resultsHandlerConfiguration,ConfigurationProperties,timeoutMap,SupportedOperations)>
+<!ATTLIST APIConfiguration
+    connectorPoolingSupported CDATA #REQUIRED
+    producerBufferSize CDATA #REQUIRED
+>
+<!ELEMENT connectorPoolConfiguration ((ObjectPoolConfiguration))>
+<!ELEMENT resultsHandlerConfiguration ((ResultsHandlerConfiguration))>
+<!ELEMENT timeoutMap (Map)>
+<!ELEMENT SupportedOperations ((Class)*)>
+<!ELEMENT ConnectorMessages (catalogs)>
+<!ELEMENT catalogs (Map)>
+<!ELEMENT ConnectorKey EMPTY> 
+<!ATTLIST ConnectorKey
+    bundleName CDATA #REQUIRED
+    bundleVersion CDATA #REQUIRED
+    connectorName CDATA #REQUIRED
+>
+<!ELEMENT ConnectorInfo (ConnectorKey,ConnectorMessages,APIConfiguration)>
+<!ATTLIST ConnectorInfo
+    connectorDisplayNameKey CDATA #REQUIRED
+    connectorCategoryKey CDATA #REQUIRED
+>
+
+<!--=======================================================-->
+<!--=                                                     =-->
+<!--= Common Objects                                      =-->
+<!--=                                                     =-->
+<!--=======================================================-->
+<!ELEMENT Attribute (Values)?> 
+<!ELEMENT Values ((%xmlObject;)*)>
+<!ATTLIST Attribute
+    name CDATA #REQUIRED
+>
+
+<!ELEMENT Uid (#PCDATA)> 
+<!ELEMENT Name (#PCDATA)> 
+
+
+
+<!ELEMENT UpdateApiOpType (#PCDATA)> 
+
+  
+<!ELEMENT AlreadyExistsException EMPTY> 
+<!ATTLIST AlreadyExistsException
+   message CDATA #IMPLIED
+>
+<!ELEMENT ConfigurationException EMPTY> 
+<!ATTLIST ConfigurationException
+   message CDATA #IMPLIED
+>
+<!ELEMENT ConnectionBrokenException EMPTY> 
+<!ATTLIST ConnectionBrokenException
+   message CDATA #IMPLIED
+>
+<!ELEMENT ConnectionFailedException EMPTY> 
+<!ATTLIST ConnectionFailedException
+   message CDATA #IMPLIED
+>
+<!ELEMENT ConnectorIOException EMPTY> 
+<!ATTLIST ConnectorIOException
+   message CDATA #IMPLIED
+>
+<!ELEMENT InvalidPasswordException EMPTY> 
+<!ATTLIST InvalidPasswordException
+   message CDATA #IMPLIED
+>
+<!ELEMENT PasswordExpiredException (Uid?)> 
+<!ATTLIST PasswordExpiredException
+   message CDATA #IMPLIED
+>
+<!ELEMENT UnknownUidException EMPTY> 
+<!ATTLIST UnknownUidException
+   message CDATA #IMPLIED
+>
+<!ELEMENT InvalidCredentialException EMPTY> 
+<!ATTLIST InvalidCredentialException
+   message CDATA #IMPLIED
+>
+<!ELEMENT PermissionDeniedException EMPTY> 
+<!ATTLIST PermissionDeniedException
+   message CDATA #IMPLIED
+>
+<!ELEMENT ConnectorSecurityException EMPTY> 
+<!ATTLIST ConnectorSecurityException
+   message CDATA #IMPLIED
+>
+<!ELEMENT OperationTimeoutException EMPTY> 
+<!ATTLIST OperationTimeoutException
+   message CDATA #IMPLIED
+>
+<!ELEMENT ConnectorException EMPTY> 
+<!ATTLIST ConnectorException
+   message CDATA #IMPLIED
+>
+<!ELEMENT IllegalArgumentException EMPTY> 
+<!ATTLIST IllegalArgumentException
+   message CDATA #IMPLIED
+>
+<!ELEMENT RuntimeException EMPTY> 
+<!ATTLIST RuntimeException
+   message CDATA #IMPLIED
+>
+<!ELEMENT Exception EMPTY> 
+<!ATTLIST Exception
+   message CDATA #IMPLIED
+>
+<!ELEMENT Throwable EMPTY> 
+<!ATTLIST Throwable
+   message CDATA #IMPLIED
+>
+<!ELEMENT AttributeInfo (AttributeInfoFlag*)>
+<!ATTLIST AttributeInfo  
+   name CDATA #REQUIRED
+   type CDATA #REQUIRED
+>
+<!ELEMENT AttributeInfoFlag EMPTY>
+<!ATTLIST AttributeInfoFlag 
+   value ( REQUIRED | MULTIVALUED | NOT_CREATABLE | NOT_UPDATEABLE | NOT_READABLE | NOT_RETURNED_BY_DEFAULT ) #REQUIRED
+>
+<!ELEMENT ConnectorObject (ObjectClass,Attributes)>
+<!ELEMENT Attributes ((%attributeTypes;)*)>
+
+<!ELEMENT ObjectClass EMPTY>
+<!ATTLIST ObjectClass  
+   type CDATA #REQUIRED
+>
+
+<!ELEMENT ObjectClassInfo (AttributeInfos)>
+<!ATTLIST ObjectClassInfo  
+   type CDATA #REQUIRED
+   container CDATA #IMPLIED
+>
+<!ELEMENT AttributeInfos ((AttributeInfo)*)>
+
+<!ELEMENT Schema (ObjectClassInfos,OperationOptionInfos,objectClassesByOperation,optionsByOperation)>
+<!ELEMENT ObjectClassInfos ((ObjectClassInfo)*)>
+<!ELEMENT OperationOptionInfos ((OperationOptionInfo)*)>
+<!ELEMENT objectClassesByOperation (Map)>
+<!ELEMENT optionsByOperation (Map)>
+
+<!ELEMENT scriptText (#PCDATA)>
+<!ELEMENT scriptArguments (Map)>
+
+<!ELEMENT Script (scriptText)>
+<!ATTLIST Script
+   scriptLanguage CDATA #REQUIRED
+>
+
+<!ELEMENT ScriptContext (scriptArguments,scriptText)>
+<!ATTLIST ScriptContext  
+   scriptLanguage CDATA #REQUIRED
+>
+
+<!ELEMENT OperationOptions (options)>
+<!ELEMENT options (Map)>
+<!ELEMENT OperationOptionInfo EMPTY>
+<!ATTLIST OperationOptionInfo  
+   name CDATA #REQUIRED
+   type CDATA #REQUIRED
+>
+<!ELEMENT SyncDeltaType EMPTY>
+<!ATTLIST SyncDeltaType
+   value ( CREATE_OR_UPDATE | DELETE ) #REQUIRED
+>
+<!ELEMENT SyncToken (value)>
+<!ELEMENT SyncDelta (SyncDeltaType,SyncToken,PreviousUid,Uid,ConnectorObject?)>
+
+<!ELEMENT PreviousUid (#PCDATA)>
+
+<!ELEMENT QualifiedUid (ObjectClass,Uid)>
+
+
+<!--=======================================================-->
+<!--=                                                     =-->
+<!--= Filters                                             =-->
+<!--=                                                     =-->
+<!--=======================================================-->
+
+
+<!ELEMENT attribute (%attributeTypes;)>
+<!ELEMENT AndFilter ((%filterTypes;),(%filterTypes;))>
+<!ELEMENT ContainsFilter (attribute)>
+<!ELEMENT EndsWithFilter (attribute)>
+<!ELEMENT EqualsFilter (attribute)>
+<!ELEMENT GreaterThanFilter (attribute)>
+<!ELEMENT GreaterThanOrEqualFilter (attribute)>
+<!ELEMENT LessThanFilter (attribute)>
+<!ELEMENT LessThanOrEqualFilter (attribute)>
+<!ELEMENT NotFilter (%filterTypes;)>
+<!ELEMENT OrFilter ((%filterTypes;),(%filterTypes;))>
+<!ELEMENT StartsWithFilter (attribute)>
+<!ELEMENT ContainsAllValuesFilter (attribute)>
+
+<!--=======================================================-->
+<!--=                                                     =-->
+<!--= Messages                                            =-->
+<!--=                                                     =-->
+<!--=======================================================-->
+<!ELEMENT HelloRequest EMPTY>
+<!ATTLIST HelloRequest
+    infoLevel CDATA #REQUIRED
+>
+<!ELEMENT serverInfoMap (Map)>
+<!ELEMENT ConnectorKeys ((ConnectorKey)*)>
+<!ELEMENT ConnectorInfos ((ConnectorInfo)*)>
+<!ELEMENT exception (%exceptionTypes;)>
+<!ELEMENT HelloResponse (exception,serverInfoMap,ConnectorInfos,ConnectorKeys)>
+<!ELEMENT OperationRequest (ConnectorKey,APIConfiguration,Arguments)>
+<!ATTLIST OperationRequest
+    operation CDATA #REQUIRED
+    operationMethodName CDATA #REQUIRED
+>
+<!ELEMENT Arguments ((%xmlObject;)*)>
+<!ELEMENT OperationResponseEnd EMPTY>
+<!ELEMENT OperationResponsePart (exception,result)>
+<!ELEMENT result ((%xmlObject;)*)>
+<!ELEMENT OperationRequestMoreData EMPTY>
+<!ELEMENT OperationRequestStopData EMPTY>
+<!ELEMENT OperationResponsePause EMPTY>
+<!ELEMENT EchoMessage (value,objectXml?)>
+<!ELEMENT objectXml (#PCDATA)>
+
+

@@ -1,0 +1,97 @@
+<!--
+  ====================
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+  Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+
+  The contents of this file are subject to the terms of the Common Development
+  and Distribution License("CDDL") (the "License").  You may not use this file
+  except in compliance with the License.
+
+  You can obtain a copy of the License at
+  http://opensource.org/licenses/cddl1.php
+  See the License for the specific language governing permissions and limitations
+  under the License.
+
+  When distributing the Covered Code, include this CDDL Header Notice in each file
+  and include the License file at http://opensource.org/licenses/cddl1.php.
+  If applicable, add the following below this CDDL Header, with the fields
+  enclosed by brackets [] replaced by your own identifying information:
+  "Portions Copyrighted [year] [name of copyright owner]"
+  ====================
+-->
+<html>
+<head>
+</head>
+<body>
+The Sun Connector Toolkit is intended to help developers write Connectors
+and to help applications use Connectors.
+The Connector framework provides a consistent, generic layer between calling applications
+and the Connector bundles that access target <i>resources</i>.
+Each target resource may be a system or application in its own right,
+but a Connector bundle enables any calling application
+to manage objects that exist on the target resource.
+
+<p>Calling applications use the Connector API; Connector bundles implement the Connector SPI.
+The Connector API (<code>org.identityconnectors.framework.api</code>)
+is generic (in that it can be used to manipulate any type of object, not merely accounts),
+but the Connector API is optimized to support provisioning operations and password management.
+Every supported operation is synchronous to the caller.
+
+<p>This Toolkit is designed to support development with minimal dependencies
+of Connector bundles that implement the SPI.
+The Toolkit allows a developer to implement a Connector bundle
+and to test the bundle within the Connector framework
+so there is no need to implement it or test it within the context of each calling application.
+
+<p>The developer of a Connector bundle is expected to implement the operations
+(Java interfaces within the <code>org.identityconnectors.framework.spi.operations</code> package)
+that make the most sense for the target resource the developer intends to support.
+The developer is expected to be appropriately flexible in tolerating inputs,
+to be as reasonably robust in handling errors,
+and to throw errors whenever it is prudent to do so.
+Applications that use Connectors should expect
+<code>java.lang.IllegalArgumentException</code>,
+<code>java.lang.UnsupportedOperationException</code>,
+<code>java.lang.IllegalStateException</code>
+and other subclasses of <code>java.lang.RuntimeException</code>.
+
+<p>NOTE: The developers of this framework made a conscious decision to throw <code>RuntimeException</code>
+(and subclasses of <code>RuntimeException</code>) rather than using declared exceptions.
+The reasoning, briefly, is as follows:
+<ol>
+<li>Declared exceptions tend to bloat code (and changes in declared exceptions tend to ripple).</li>
+<li><code>RuntimeException</code> is ubiquitous; any piece of code can throw them (even without intending to do so).</li>
+<li>Java defines subclasses of RuntimeException that cover most common situations.</li>
+</ol>
+
+<p>One of the main functions of this framework is to prevent coupling
+between a Connector and any application that uses it.
+A calling application will be coupled only to this framework
+and not to any specific Connector.
+<ul>
+<li>Each Connector implementation must be easy to replace and should not
+depend on a specific version of the framework.</li>
+<li>Because an application may use multiple Connectors,
+the framework must provide classpath isolation
+(and may provide JVM isolation at some point in the future).</li>
+<li>Classpath isolation ensures that there is no issue with conflicting third-party libraries.</li>
+</ul>
+
+<p>The design for Connectors derives from requirements of the Sun Identity Manager product.
+Sun Identity Manager currently supports remote management of target resources through its Resource Adapter technology.
+Sun Identity Manager and its deployers have developed more than seventy Resource Adapters for enterprise customers
+who needed provisioning solutions for their heterogeneous environments.
+Connectors represent the next generation of this technology.
+Connectors are designed to minimize coupling, to maximize re-use, and to harness the power of open-source development
+to achieve best-of-breed solutions.
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+<p>
+</body>
+</html>

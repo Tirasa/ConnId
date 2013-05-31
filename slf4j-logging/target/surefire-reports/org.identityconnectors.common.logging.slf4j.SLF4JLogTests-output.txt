@@ -1,0 +1,601 @@
+Configuring TestNG with: TestNG652Configurator
+14:44:28.151 [Thread-50] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.151 [Thread-37] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-19] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.151 [Thread-95] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.150 [Thread-68] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.149 [Thread-1] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-83] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.151 [Thread-74] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.151 [Thread-40] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.151 [Thread-49] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.151 [Thread-66] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.151 [Thread-39] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.151 [Thread-12] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-10] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-52] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-43] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-32] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-65] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-69] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-35] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-75] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.149 [Thread-38] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.134 [Thread-78] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.135 [Thread-36] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.135 [Thread-79] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.135 [Thread-82] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.149 [Thread-2] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.135 [Thread-63] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.136 [Thread-25] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.149 [Thread-28] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-11] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-87] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-86] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-85] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.148 [Thread-34] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.148 [Thread-33] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-46] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.148 [Thread-24] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.148 [Thread-48] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.148 [Thread-57] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-84] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-77] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.133 [Thread-29] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.137 [Thread-30] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.137 [Thread-3] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.137 [Thread-18] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.138 [Thread-6] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.138 [Thread-88] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-72] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.152 [Thread-56] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.138 [Thread-70] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.138 [Thread-26] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-53] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-7] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-58] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-64] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-13] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.138 [Thread-27] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.138 [Thread-71] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.138 [Thread-22] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-96] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-76] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.139 [Thread-93] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.138 [Thread-23] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.139 [Thread-14] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.139 [Thread-20] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.139 [Thread-59] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.139 [Thread-91] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.147 [Thread-60] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.147 [Thread-17] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.142 [Thread-89] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.147 [Thread-67] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.147 [Thread-9] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.142 [Thread-90] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.147 [Thread-0] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.147 [Thread-4] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.147 [Thread-61] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.142 [Thread-42] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.143 [Thread-62] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.143 [Thread-15] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.143 [Thread-8] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.143 [Thread-31] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-97] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.143 [Thread-44] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.143 [Thread-5] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.144 [Thread-94] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.144 [Thread-55] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.143 [Thread-16] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.144 [Thread-21] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.143 [Thread-80] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.144 [Thread-73] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.144 [Thread-45] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-98] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.144 [Thread-47] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.144 [Thread-54] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.145 [Thread-92] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.146 [Thread-51] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.144 [Thread-41] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.145 [Thread-81] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted
+14:44:28.153 [Thread-99] INFO  o.i.c.logging.slf4j.SLF4JLogTests - Method: run	Failed with:
+java.lang.IllegalArgumentException: java.lang.RuntimeException: Cause
+	at org.identityconnectors.common.logging.slf4j.SLF4JLogTests$CreateLogger.run(SLF4JLogTests.java:84) [test-classes/:na]
+	at java.lang.Thread.run(Thread.java:722) [na:1.7.0_21]
+Caused by: java.lang.RuntimeException: Cause
+	... 2 common frames omitted

@@ -1,0 +1,3 @@
+org/identityconnectors/framework/impl/api/osgi/internal/OsgiConnectorInfoManagerImpl.class
+org/identityconnectors/framework/impl/api/osgi/internal/ConnectorManifestScanner.class
+org/identityconnectors/framework/impl/api/osgi/internal/Activator.class

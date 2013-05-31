@@ -1,0 +1,64 @@
+<!--
+  ====================
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+  Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+
+  The contents of this file are subject to the terms of the Common Development
+  and Distribution License("CDDL") (the "License").  You may not use this file
+  except in compliance with the License.
+
+  You can obtain a copy of the License at
+  http://opensource.org/licenses/cddl1.php
+  See the License for the specific language governing permissions and limitations
+  under the License.
+
+  When distributing the Covered Code, include this CDDL Header Notice in each file
+  and include the License file at http://opensource.org/licenses/cddl1.php.
+  If applicable, add the following below this CDDL Header, with the fields
+  enclosed by brackets [] replaced by your own identifying information:
+  "Portions Copyrighted [year] [name of copyright owner]"
+  ====================
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Open Connectors</title>
+</head>
+<body>
+
+<p>Connectors framework is designed to be simple, extensible,
+flexible, and comprehensive. The design focuses on separating out only
+those operations a connector developer should implement. This is an
+attempt to be as simple as possible.
+<p>The Connector developer must implement two classes the first is
+the Configuration interface. This interface will determine the
+configuration information necessary to initialize the Connector. The
+second interface is the Connector interface. This is where all the
+operations the Connector intends to support are implemented.
+<p>Operation interfaces generally only have one method this provides
+us with some flexibility to add more interfaces without changing the
+base interface. The Connector developer is responsible for implementing
+only those operations the resource can support. For instance some
+resources support creating creating objects but does not support
+authentication. In that case the developer would implement the interface
+'Create' and not 'Authenticate'.
+<p>To provide functionality to the Connector additional operational
+interfaces will need to be implemented by the Connector. For instance if
+the Connector is to support normal CRUD operations the Connector will
+need to implement the following operations Create, Update, and Delete.
+<p>The design also focuses on working by convention. So for instance
+in the Configuration object the bean property names are used as keys
+into a message catalog, for display and help.
+<p>TODO: What is builders?
+<p>TODO: What does IDM expect?
+<p>Identity Manager expects that Connector developer to do the pure
+native methods. We attempt to provide the pooling and generic
+functionality for instance we'll do filtering etc.. The Connector
+developer is required to implement that operations the Target/Resource.
+<p>The 'Builders' are there to help facilitate create the objects
+the Connector API uses. These 'Builders' provide default implementations
+that we improve w/o forcing upgrades on the Connectors.
+<p>Explain 'Account', etc..
+</body>
+</html>

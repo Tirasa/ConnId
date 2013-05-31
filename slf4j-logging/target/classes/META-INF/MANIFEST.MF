@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1370004268389
+Build-Jdk: 1.7.0_21
+Built-By: ilgrosso
+Bundle-Description: Sonatype helps open source projects to set up Maven 
+ repositories on https://oss.sonatype.org/
+Bundle-License: http://opensource.org/licenses/CDDL-1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ConnId: SLF4J Logging
+Bundle-SymbolicName: org.connid.slf4j-logging
+Bundle-Version: 1.4.0.0-SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Fragment-Host: org.identityconnectors.framework.connector-framework
+Import-Package: org.identityconnectors.common.logging;version="[1.4,2)",
+ org.slf4j;version="[1.7,2)",org.slf4j.spi;version="[1.7,2)"
+Tool: Bnd-1.50.0

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TestSuite" time="0.648" tests="176" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64"/>
+    <property name="java.vm.version" value="23.7-b01"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="java.vendor.url" value="http://java.oracle.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="IT"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/home/ilgrosso/work/connid/base"/>
+    <property name="java.runtime.version" value="1.7.0_21-b02"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="os.name" value="Linux"/>
+    <property name="classworlds.conf" value="/opt/apache-maven-3.0.5/bin/m2.conf"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib/amd64:/usr/lib/jni:/lib:/usr/lib"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="51.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="3.8-2-amd64"/>
+    <property name="user.home" value="/home/ilgrosso"/>
+    <property name="user.timezone" value="Europe/Rome"/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.specification.version" value="1.7"/>
+    <property name="user.name" value="ilgrosso"/>
+    <property name="java.class.path" value="/opt/apache-maven-3.0.5/boot/plexus-classworlds-2.4.jar"/>
+    <property name="java.vm.specification.version" value="1.7"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/usr/lib/jvm/java-7-openjdk-amd64/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher clean install"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language" value="it"/>
+    <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.7.0_21"/>
+    <property name="java.ext.dirs" value="/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="securerandom.source" value="file:/dev/./urandom"/>
+    <property name="sun.boot.class.path" value="/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/netx.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/plugin.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rhino.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/jfr.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/classes"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="/opt/apache-maven-3.0.5"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase name="buildBoolean" classname="org.identityconnectors.framework.common.objects.AttributeBuilderTests" time="0.027"/>
+  <testcase name="nameFromBuilder" classname="org.identityconnectors.framework.common.objects.AttributeBuilderTests" time="0"/>
+  <testcase name="nullAttribute" classname="org.identityconnectors.framework.common.objects.AttributeBuilderTests" time="0"/>
+  <testcase name="uidFromBuilderDouble" classname="org.identityconnectors.framework.common.objects.AttributeBuilderTests" time="0.001"/>
+  <testcase name="uidFromBuilderInteger" classname="org.identityconnectors.framework.common.objects.AttributeBuilderTests" time="0"/>
+  <testcase name="uidFromBuilderLong" classname="org.identityconnectors.framework.common.objects.AttributeBuilderTests" time="0"/>
+  <testcase name="testEqualsObservesLocale" classname="org.identityconnectors.framework.common.objects.AttributeInfoTests" time="0.001"/>
+  <testcase name="testHashCodeIndependentOnLocale" classname="org.identityconnectors.framework.common.objects.AttributeInfoTests" time="0"/>
+  <testcase name="testCurrentPasswordBuild" classname="org.identityconnectors.framework.common.objects.AttributeInfoUtilTests" time="0"/>
+  <testcase name="testFindMethod" classname="org.identityconnectors.framework.common.objects.AttributeInfoUtilTests" time="0.001"/>
+  <testcase name="testIsMethod" classname="org.identityconnectors.framework.common.objects.AttributeInfoUtilTests" time="0"/>
+  <testcase name="testPasswordBuild" classname="org.identityconnectors.framework.common.objects.AttributeInfoUtilTests" time="0"/>
+  <testcase name="testRegularPassword" classname="org.identityconnectors.framework.common.objects.AttributeInfoUtilTests" time="0"/>
+  <testcase name="testArrays" classname="org.identityconnectors.framework.common.objects.AttributeTests" time="0"/>
+  <testcase name="testEqualsObservesLocale" classname="org.identityconnectors.framework.common.objects.AttributeTests" time="0.001"/>
+  <testcase name="testHashCodeIndependentOnLocale" classname="org.identityconnectors.framework.common.objects.AttributeTests" time="0.001"/>
+  <testcase name="testName" classname="org.identityconnectors.framework.common.objects.AttributeTests" time="0"/>
+  <testcase name="testNormal" classname="org.identityconnectors.framework.common.objects.AttributeTests" time="0"/>
+  <testcase name="testBigDecimalValue" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0.001"/>
+  <testcase name="testEnableDate" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0"/>
+  <testcase name="testFindMethod" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0"/>
+  <testcase name="testGetAsStringValue" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0"/>
+  <testcase name="testGetBasicAttributes" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0"/>
+  <testcase name="testGetIntegerValue" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0"/>
+  <testcase name="testGetLongValue" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0.001"/>
+  <testcase name="testGetSingleValue" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0.001"/>
+  <testcase name="testGetStringValue" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0.001"/>
+  <testcase name="testGetUidAttribute" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0.001"/>
+  <testcase name="testIsMethod" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0"/>
+  <testcase name="testIsSpecial" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0"/>
+  <testcase name="testNamesEqual" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0"/>
+  <testcase name="testToMap" classname="org.identityconnectors.framework.common.objects.AttributeUtilTests" time="0.003"/>
+  <testcase name="testAsList" classname="org.identityconnectors.common.CollectionUtilTests" time="0.001"/>
+  <testcase name="testAsSet" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testEquals" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testHashCode" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testIsEmpty" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testList" classname="org.identityconnectors.common.CollectionUtilTests" time="0.001"/>
+  <testcase name="testNullAsEmptyList" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testNullAsEmptyMap" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testNullAsEmptySet" classname="org.identityconnectors.common.CollectionUtilTests" time="0.001"/>
+  <testcase name="testReadonlyList" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testReadonlySet" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testSet" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testUnique" classname="org.identityconnectors.common.CollectionUtilTests" time="0"/>
+  <testcase name="testBeanComparison" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.003"/>
+  <testcase name="testBoolean" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testBooleanArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.001"/>
+  <testcase name="testBooleanArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testByte" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.001"/>
+  <testcase name="testByteArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testByteArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.001"/>
+  <testcase name="testChar" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testCharArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.001"/>
+  <testcase name="testCharArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testDouble" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testDoubleArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testDoubleArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testFloat" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testFloatArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testFloatArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.001"/>
+  <testcase name="testInt" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testIntArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.001"/>
+  <testcase name="testIntArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testList" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.001"/>
+  <testcase name="testLong" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testLongArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testLongArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testNonCollectionSupport" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testObjectArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testObjectArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testSet" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testShort" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0.001"/>
+  <testcase name="testShortArray" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testShortArrayHiddenByObject" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="testUnrelatedClasses" classname="org.identityconnectors.common.EqualsHashCodeBuilderTests" time="0"/>
+  <testcase name="andFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.002"/>
+  <testcase name="constainsWithFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.004"/>
+  <testcase name="containsAllValuesFilterFalse" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="containsAllValuesFilterTrue" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="endsWithFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="equalsFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="greaterThanEqualsToFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.002"/>
+  <testcase name="greaterThanFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0"/>
+  <testcase name="illegalArgument" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="lessThanEqualToFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="lessThanFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="notFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="orFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0"/>
+  <testcase name="startsWithFilter" classname="org.identityconnectors.framework.common.objects.FilterBuilderTests" time="0.001"/>
+  <testcase name="testBasics" classname="org.identityconnectors.framework.common.objects.filter.FilterTranslatorTests" time="0.002"/>
+  <testcase name="testDistribution" classname="org.identityconnectors.framework.common.objects.filter.FilterTranslatorTests" time="0.03"/>
+  <testcase name="testSimplifyNoAnd" classname="org.identityconnectors.framework.common.objects.filter.FilterTranslatorTests" time="0.001"/>
+  <testcase name="testSimplifyNoAndNoLeaf" classname="org.identityconnectors.framework.common.objects.filter.FilterTranslatorTests" time="0.001"/>
+  <testcase name="testSimplifyNoAndNoOrNoLeaf" classname="org.identityconnectors.framework.common.objects.filter.FilterTranslatorTests" time="0.001"/>
+  <testcase name="testSimplifyNoLeaf" classname="org.identityconnectors.framework.common.objects.filter.FilterTranslatorTests" time="0"/>
+  <testcase name="testSimplifyNoLeafNoOr" classname="org.identityconnectors.framework.common.objects.filter.FilterTranslatorTests" time="0"/>
+  <testcase name="testFrameworkVersion" classname="org.identityconnectors.framework.common.FrameworkUtilTests" time="0.019"/>
+  <testcase name="testFrameworkVersionCannotBeBlank" classname="org.identityconnectors.framework.common.FrameworkUtilTests" time="0"/>
+  <testcase name="testBasics" classname="org.identityconnectors.common.security.GuardedByteArrayTests" time="0.007"/>
+  <testcase name="testDispose" classname="org.identityconnectors.common.security.GuardedByteArrayTests" time="0"/>
+  <testcase name="testEquals" classname="org.identityconnectors.common.security.GuardedByteArrayTests" time="0"/>
+  <testcase name="testRange" classname="org.identityconnectors.common.security.GuardedByteArrayTests" time="0.014"/>
+  <testcase name="testReadOnly" classname="org.identityconnectors.common.security.GuardedByteArrayTests" time="0"/>
+  <testcase name="testBasics" classname="org.identityconnectors.common.security.GuardedStringTests" time="0.001"/>
+  <testcase name="testDispose" classname="org.identityconnectors.common.security.GuardedStringTests" time="0.001"/>
+  <testcase name="testEquals" classname="org.identityconnectors.common.security.GuardedStringTests" time="0"/>
+  <testcase name="testReadOnly" classname="org.identityconnectors.common.security.GuardedStringTests" time="0"/>
+  <testcase name="testUnicode" classname="org.identityconnectors.common.security.GuardedStringTests" time="0.417"/>
+  <testcase name="quietClose" classname="org.identityconnectors.common.IOUtilsTests" time="0.001"/>
+  <testcase name="resourcePath" classname="org.identityconnectors.common.IOUtilsTests" time="0"/>
+  <testcase name="checkBasicLogging" classname="org.identityconnectors.common.logging.LogTests" time="0.007"/>
+  <testcase name="checkBasicLoggingOff" classname="org.identityconnectors.common.logging.LogTests" time="0"/>
+  <testcase name="checkBasicLoggingWithExceptionAndFormating" classname="org.identityconnectors.common.logging.LogTests" time="0.001"/>
+  <testcase name="checkBasicLoggingWithFormating" classname="org.identityconnectors.common.logging.LogTests" time="0.001"/>
+  <testcase name="checkFullLogMessage" classname="org.identityconnectors.common.logging.LogTests" time="0.007"/>
+  <testcase name="checkGetLog" classname="org.identityconnectors.common.logging.LogTests" time="0"/>
+  <testcase name="checkIsLoggableMethods" classname="org.identityconnectors.common.logging.LogTests" time="0"/>
+  <testcase name="checkMessageLog" classname="org.identityconnectors.common.logging.LogTests" time="0"/>
+  <testcase name="checkSystemProperty" classname="org.identityconnectors.common.logging.LogTests" time="0.002"/>
+  <testcase name="testAllDuplicate" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0.002"/>
+  <testcase name="testBuilderAddsName" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0"/>
+  <testcase name="testDuplicate" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0"/>
+  <testcase name="testEquals" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0"/>
+  <testcase name="testEqualsObservesLocale" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0"/>
+  <testcase name="testHashCode" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0.001"/>
+  <testcase name="testHashCodeIndependentOnLocale" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0"/>
+  <testcase name="testIs" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0"/>
+  <testcase name="testNoName" classname="org.identityconnectors.framework.common.objects.ObjectClassInfoTests" time="0.001"/>
+  <testcase name="testEquals" classname="org.identityconnectors.framework.common.objects.ObjectClassTests" time="0.001"/>
+  <testcase name="testEqualsObservesLocale" classname="org.identityconnectors.framework.common.objects.ObjectClassTests" time="0"/>
+  <testcase name="testHashCode" classname="org.identityconnectors.framework.common.objects.ObjectClassTests" time="0.001"/>
+  <testcase name="testHashCodeIndependentOnLocale" classname="org.identityconnectors.framework.common.objects.ObjectClassTests" time="0"/>
+  <testcase name="testIs" classname="org.identityconnectors.framework.common.objects.ObjectClassTests" time="0.001"/>
+  <testcase name="testIsSpecial" classname="org.identityconnectors.framework.common.objects.ObjectClassUtilTests" time="0"/>
+  <testcase name="testNamesEqual" classname="org.identityconnectors.framework.common.objects.ObjectClassUtilTests" time="0"/>
+  <testcase name="equals" classname="org.identityconnectors.common.PairTests" time="0.001"/>
+  <testcase name="hash" classname="org.identityconnectors.common.PairTests" time="0.001"/>
+  <testcase name="functional" classname="org.identityconnectors.common.ReflectionUtilTests" time="0"/>
+  <testcase name="testRegisteredFactories" classname="org.identityconnectors.common.script.ScriptExecutorFactoryTests" time="0.004"/>
+  <testcase name="testBasic" classname="org.identityconnectors.common.script.ScriptTests" time="0.001"/>
+  <testcase name="testLanguageNotBlank" classname="org.identityconnectors.common.script.ScriptTests" time="0.001"/>
+  <testcase name="testTextNotNull" classname="org.identityconnectors.common.script.ScriptTests" time="0.001"/>
+  <testcase name="checkIsLogger" classname="org.identityconnectors.common.logging.StdOutLoggerTests" time="0"/>
+  <testcase name="checkLogFormat" classname="org.identityconnectors.common.logging.StdOutLoggerTests" time="0.011"/>
+  <testcase name="getReader" classname="org.identityconnectors.common.StringPrintWriterTests" time="0"/>
+  <testcase name="getString" classname="org.identityconnectors.common.StringPrintWriterTests" time="0.001"/>
+  <testcase name="printArray" classname="org.identityconnectors.common.StringPrintWriterTests" time="0"/>
+  <testcase name="println" classname="org.identityconnectors.common.StringPrintWriterTests" time="0.001"/>
+  <testcase name="testEndsWith" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testIndexOfDigit" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testIndexOfNonDigit" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testIsBlank" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testIsEmpty" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testIsNotBlank" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testIsNotEmpty" classname="org.identityconnectors.common.StringUtilTests" time="0.001"/>
+  <testcase name="testParseLine" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testRandomParseLine" classname="org.identityconnectors.common.StringUtilTests" time="0.024"/>
+  <testcase name="testRandomString" classname="org.identityconnectors.common.StringUtilTests" time="0.001"/>
+  <testcase name="testReplaceVariables" classname="org.identityconnectors.common.StringUtilTests" time="0.003"/>
+  <testcase name="testStripNewlines" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testStripXmlAttribute" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testStripXmlComments" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testSubDigitString" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testToProperties" classname="org.identityconnectors.common.StringUtilTests" time="0.001"/>
+  <testcase name="testWhtiespace" classname="org.identityconnectors.common.StringUtilTests" time="0"/>
+  <testcase name="testForceCompare" classname="org.identityconnectors.common.UtilTests" time="0.001"/>
+  <testcase name="testGetMethodName" classname="org.identityconnectors.common.UtilTests" time="0"/>
+  <testcase name="testCompare" classname="org.identityconnectors.common.VersionTests" time="0.002"/>
+  <testcase name="testComponents" classname="org.identityconnectors.common.VersionTests" time="0"/>
+  <testcase name="testCornerCases" classname="org.identityconnectors.common.VersionTests" time="0.001"/>
+  <testcase name="testEqualsHashCode" classname="org.identityconnectors.common.VersionTests" time="0"/>
+  <testcase name="testParse" classname="org.identityconnectors.common.VersionTests" time="0.001"/>
+  <testcase name="testQualifiedIgnored" classname="org.identityconnectors.common.VersionTests" time="0"/>
+  <testcase name="testToString" classname="org.identityconnectors.common.VersionTests" time="0"/>
+</testsuite>

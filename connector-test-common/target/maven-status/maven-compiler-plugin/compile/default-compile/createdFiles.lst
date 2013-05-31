@@ -1,0 +1,4 @@
+org/identityconnectors/test/common/PropertyBag.class
+org/identityconnectors/test/common/spi/TestHelpersSpi.class
+org/identityconnectors/test/common/TestHelpers.class
+org/identityconnectors/test/common/ToListResultsHandler.class

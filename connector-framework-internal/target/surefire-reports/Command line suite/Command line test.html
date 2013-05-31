@@ -1,0 +1,2527 @@
+<html>
+<head>
+<title>TestNG:  Command line test</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>Command line test</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>374/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Fri May 31 14:43:16 CEST 2013</td>
+</tr>
+<tr><td>Total time:</td><td>68 seconds (68247 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.authenticateCallPattern()'><b>authenticateCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.createCallPattern()'><b>createCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.createDuplicatAttributesPattern()'><b>createDuplicatAttributesPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td><div><pre>java.lang.IllegalArgumentException: Duplicated named attributes: abc
+	at org.identityconnectors.framework.impl.api.local.operations.CreateImpl.create(CreateImpl.java:68)
+	at org.identityconnectors.framework.impl.api.local.operations.ConnectorAPIOperationRunnerProxy.invoke(ConnectorAPIOperationRunnerProxy.java:96)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.local.operations.ThreadClassLoaderManagerProxy.invoke(ThreadClassLoaderManagerProxy.java:96)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.DelegatingTimeoutProxy.invoke(DelegatingTimeoutProxy.java:98)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.LoggingProxy.invoke(LoggingProxy.java:75)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.AbstractConnectorFacade.create(AbstractConnectorFacade.java:123)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests$8.makeCall(ConnectorFacadeTests.java:243)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testCallPattern(ConnectorFacadeTests.java:109)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testCallPattern(ConnectorFacadeTests.java:97)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.createDuplicatAttributesPattern(ConnectorFacadeTests.java:238)
+... Removed 46 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace231595158", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace231595158'><pre>java.lang.IllegalArgumentException: Duplicated named attributes: abc
+	at org.identityconnectors.framework.impl.api.local.operations.CreateImpl.create(CreateImpl.java:68)
+	at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.identityconnectors.framework.impl.api.local.operations.ConnectorAPIOperationRunnerProxy.invoke(ConnectorAPIOperationRunnerProxy.java:96)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.identityconnectors.framework.impl.api.local.operations.ThreadClassLoaderManagerProxy.invoke(ThreadClassLoaderManagerProxy.java:96)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.identityconnectors.framework.impl.api.DelegatingTimeoutProxy.invoke(DelegatingTimeoutProxy.java:98)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.identityconnectors.framework.impl.api.LoggingProxy.invoke(LoggingProxy.java:75)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.AbstractConnectorFacade.create(AbstractConnectorFacade.java:123)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests$8.makeCall(ConnectorFacadeTests.java:243)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testCallPattern(ConnectorFacadeTests.java:109)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testCallPattern(ConnectorFacadeTests.java:97)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.createDuplicatAttributesPattern(ConnectorFacadeTests.java:238)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.createWithOutObjectClassPattern()'><b>createWithOutObjectClassPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td><div><pre>java.lang.NullPointerException: Parameter &apos;oclass&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.CreateImpl.create(CreateImpl.java:58)
+	at org.identityconnectors.framework.impl.api.local.operations.ConnectorAPIOperationRunnerProxy.invoke(ConnectorAPIOperationRunnerProxy.java:96)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.local.operations.ThreadClassLoaderManagerProxy.invoke(ThreadClassLoaderManagerProxy.java:96)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.DelegatingTimeoutProxy.invoke(DelegatingTimeoutProxy.java:98)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.LoggingProxy.invoke(LoggingProxy.java:75)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.AbstractConnectorFacade.create(AbstractConnectorFacade.java:123)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests$7.makeCall(ConnectorFacadeTests.java:227)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testCallPattern(ConnectorFacadeTests.java:109)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testCallPattern(ConnectorFacadeTests.java:97)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.createWithOutObjectClassPattern(ConnectorFacadeTests.java:224)
+... Removed 46 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1652557561", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1652557561'><pre>java.lang.NullPointerException: Parameter &apos;oclass&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.CreateImpl.create(CreateImpl.java:58)
+	at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.identityconnectors.framework.impl.api.local.operations.ConnectorAPIOperationRunnerProxy.invoke(ConnectorAPIOperationRunnerProxy.java:96)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.identityconnectors.framework.impl.api.local.operations.ThreadClassLoaderManagerProxy.invoke(ThreadClassLoaderManagerProxy.java:96)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.identityconnectors.framework.impl.api.DelegatingTimeoutProxy.invoke(DelegatingTimeoutProxy.java:98)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor1.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.identityconnectors.framework.impl.api.LoggingProxy.invoke(LoggingProxy.java:75)
+	at com.sun.proxy.$Proxy10.create(Unknown Source)
+	at org.identityconnectors.framework.impl.api.AbstractConnectorFacade.create(AbstractConnectorFacade.java:123)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests$7.makeCall(ConnectorFacadeTests.java:227)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testCallPattern(ConnectorFacadeTests.java:109)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testCallPattern(ConnectorFacadeTests.java:97)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.createWithOutObjectClassPattern(ConnectorFacadeTests.java:224)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.deleteCallPattern()'><b>deleteCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.common.logging.impl.NoOpLoggerTests.falseLogger()'><b>falseLogger</b><br>Test class: org.identityconnectors.common.logging.impl.NoOpLoggerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.common.logging.impl.NoOpLoggerTests@35b5a4ca</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.getCallPattern()'><b>getCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.mergeAddAttribute()'><b>mergeAddAttribute</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.mergeAddToExistingAttribute()'><b>mergeAddToExistingAttribute</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.mergeDeleteNonExistentAttribute()'><b>mergeDeleteNonExistentAttribute</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.mergeDeleteToExistingAttribute()'><b>mergeDeleteToExistingAttribute</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.mergeDeleteToExistingAttributeCompletely()'><b>mergeDeleteToExistingAttributeCompletely</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests.nullProducer()'><b>nullProducer</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests</td>
+<td><div><pre>java.lang.IllegalArgumentException: Handler must not be null!
+	at org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandler.&lt;init&gt;(FilteredResultsHandler.java:51)
+	at org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests.nullProducer(FilteredResultsHandlerTests.java:103)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1951263989", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1951263989'><pre>java.lang.IllegalArgumentException: Handler must not be null!
+	at org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandler.&lt;init&gt;(FilteredResultsHandler.java:51)
+	at org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests.nullProducer(FilteredResultsHandlerTests.java:103)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests@25a6cc45</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.BufferedSearchProxyTests.passException()'><b>passException</b><br>Test class: org.identityconnectors.framework.impl.api.BufferedSearchProxyTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.BufferedSearchProxyTests@24bb5e2d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.resolveUsernameCallPattern()'><b>resolveUsernameCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.runScriptOnConnectorCallPattern()'><b>runScriptOnConnectorCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.runScriptOnResourceCallPattern()'><b>runScriptOnResourceCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.schemaCallPattern()'><b>schemaCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.searchCallPattern()'><b>searchCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.BufferedSearchProxyTests.slowProducer()'><b>slowProducer</b><br>Test class: org.identityconnectors.framework.impl.api.BufferedSearchProxyTests</td>
+<td></td>
+<td>1</td>
+<td>org.identityconnectors.framework.impl.api.BufferedSearchProxyTests@24bb5e2d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testAPIConfiguration()'><b>testAPIConfiguration</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testAPIConfiguration()'><b>testAPIConfiguration</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testAPIConfiguration()'><b>testAPIConfiguration</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testAPIConfiguration()'><b>testAPIConfiguration</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testAPIConfiguration()'><b>testAPIConfiguration</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testAPIConfiguration()'><b>testAPIConfiguration</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testAPIConfiguration()'><b>testAPIConfiguration</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testAnd()'><b>testAnd</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testAndFilter()'><b>testAndFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testAndFilter()'><b>testAndFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testAndFilter()'><b>testAndFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testAndFilter()'><b>testAndFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testArrays()'><b>testArrays</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testArrays()'><b>testArrays</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testArrays()'><b>testArrays</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testArrays()'><b>testArrays</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testAttribute()'><b>testAttribute</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testAttribute()'><b>testAttribute</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testAttribute()'><b>testAttribute</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testAttribute()'><b>testAttribute</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testAttributeInfo()'><b>testAttributeInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testAttributeInfo()'><b>testAttributeInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testAttributeInfo()'><b>testAttributeInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testAttributeInfo()'><b>testAttributeInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests.testAttrsToGet()'><b>testAttrsToGet</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests</td>
+<td><div><pre>java.lang.NullPointerException: Parameter &apos;attrsToGet&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandler.&lt;init&gt;(AttributesToGetResultsHandler.java:48)
+	at org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests$TestHandler.&lt;init&gt;(AttributesToGetResultsHandlerTests.java:84)
+	at org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests.testAttrsToGet(AttributesToGetResultsHandlerTests.java:41)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace631251971", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace631251971'><pre>java.lang.NullPointerException: Parameter &apos;attrsToGet&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandler.&lt;init&gt;(AttributesToGetResultsHandler.java:48)
+	at org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests$TestHandler.&lt;init&gt;(AttributesToGetResultsHandlerTests.java:84)
+	at org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests.testAttrsToGet(AttributesToGetResultsHandlerTests.java:41)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests@2735537e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.SearchImplTests.testAttrsToGetQuery()'><b>testAttrsToGetQuery</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.SearchImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.SearchImplTests@548dacbb</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.ObjectPoolTests.testBadConnection()'><b>testBadConnection</b><br>Test class: org.identityconnectors.framework.impl.api.local.ObjectPoolTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.ObjectPoolTests@923ef32</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testBigDecimal()'><b>testBigDecimal</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testBigDecimal()'><b>testBigDecimal</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testBigDecimal()'><b>testBigDecimal</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testBigDecimal()'><b>testBigDecimal</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testBigInteger()'><b>testBigInteger</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testBigInteger()'><b>testBigInteger</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testBigInteger()'><b>testBigInteger</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testBigInteger()'><b>testBigInteger</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testBoolean()'><b>testBoolean</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testBoolean()'><b>testBoolean</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testBoolean()'><b>testBoolean</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testBoolean()'><b>testBoolean</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testByteArray()'><b>testByteArray</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testByteArray()'><b>testByteArray</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testByteArray()'><b>testByteArray</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testByteArray()'><b>testByteArray</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.BufferedSearchProxyTests.testCancel()'><b>testCancel</b><br>Test class: org.identityconnectors.framework.impl.api.BufferedSearchProxyTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.BufferedSearchProxyTests@24bb5e2d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testCaseInsensitiveMap()'><b>testCaseInsensitiveMap</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testCaseInsensitiveMap()'><b>testCaseInsensitiveMap</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testCaseInsensitiveMap()'><b>testCaseInsensitiveMap</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testCaseInsensitiveMap()'><b>testCaseInsensitiveMap</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testCaseInsensitiveSet()'><b>testCaseInsensitiveSet</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testCaseInsensitiveSet()'><b>testCaseInsensitiveSet</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testCaseInsensitiveSet()'><b>testCaseInsensitiveSet</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testCaseInsensitiveSet()'><b>testCaseInsensitiveSet</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testCharacter()'><b>testCharacter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testCharacter()'><b>testCharacter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testCharacter()'><b>testCharacter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testCharacter()'><b>testCharacter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testCheckVersion()'><b>testCheckVersion</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testClassLoading()'><b>testClassLoading</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testClassLoading()'><b>testClassLoading</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testClassLoading()'><b>testClassLoading</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testClasses()'><b>testClasses</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testClasses()'><b>testClasses</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testClasses()'><b>testClasses</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testClasses()'><b>testClasses</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testConfigurationProperties()'><b>testConfigurationProperties</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testConfigurationProperties()'><b>testConfigurationProperties</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testConfigurationProperties()'><b>testConfigurationProperties</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testConfigurationProperties()'><b>testConfigurationProperties</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testConfigurationProperty()'><b>testConfigurationProperty</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testConfigurationProperty()'><b>testConfigurationProperty</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testConfigurationProperty()'><b>testConfigurationProperty</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testConfigurationProperty()'><b>testConfigurationProperty</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testConnectionPooling()'><b>testConnectionPooling</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testConnectionPooling()'><b>testConnectionPooling</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testConnectionPooling()'><b>testConnectionPooling</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>1</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testConnectionPoolingConfiguration()'><b>testConnectionPoolingConfiguration</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testConnectionPoolingConfiguration()'><b>testConnectionPoolingConfiguration</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testConnectionPoolingConfiguration()'><b>testConnectionPoolingConfiguration</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testConnectionPoolingConfiguration()'><b>testConnectionPoolingConfiguration</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testConnectorMessages()'><b>testConnectorMessages</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testConnectorMessages()'><b>testConnectorMessages</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testConnectorMessages()'><b>testConnectorMessages</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testConnectorMessages()'><b>testConnectorMessages</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testConnectorObject()'><b>testConnectorObject</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testConnectorObject()'><b>testConnectorObject</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testConnectorObject()'><b>testConnectorObject</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testConnectorObject()'><b>testConnectorObject</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testConnectorObject()'><b>testConnectorObject</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testContains()'><b>testContains</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testContainsAllValues()'><b>testContainsAllValues</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testContainsAllValuesFilter()'><b>testContainsAllValuesFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testContainsAllValuesFilter()'><b>testContainsAllValuesFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testContainsAllValuesFilter()'><b>testContainsAllValuesFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testContainsAllValuesFilter()'><b>testContainsAllValuesFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testContainsFilter()'><b>testContainsFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testContainsFilter()'><b>testContainsFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testContainsFilter()'><b>testContainsFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testContainsFilter()'><b>testContainsFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.ObjectPoolTests.testCreateBadConnection()'><b>testCreateBadConnection</b><br>Test class: org.identityconnectors.framework.impl.api.local.ObjectPoolTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.ObjectPoolTests@923ef32</td></tr>
+<tr>
+<td title='org.identityconnectors.common.logging.impl.JDKLoggerTests.testCreateJDKLogger()'><b>testCreateJDKLogger</b><br>Test class: org.identityconnectors.common.logging.impl.JDKLoggerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.common.logging.impl.JDKLoggerTests@51b1373d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testDouble()'><b>testDouble</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testDouble()'><b>testDouble</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testDouble()'><b>testDouble</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testDouble()'><b>testDouble</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testEchoMessage()'><b>testEchoMessage</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testEchoMessage()'><b>testEchoMessage</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testEchoMessage()'><b>testEchoMessage</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testEchoMessage()'><b>testEchoMessage</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.SearchImplTests.testEliminateDups()'><b>testEliminateDups</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.SearchImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.SearchImplTests@548dacbb</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testEndsWith()'><b>testEndsWith</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testEndsWithFilter()'><b>testEndsWithFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testEndsWithFilter()'><b>testEndsWithFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testEndsWithFilter()'><b>testEndsWithFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testEndsWithFilter()'><b>testEndsWithFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testEqualTo()'><b>testEqualTo</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testEqualsFilter()'><b>testEqualsFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testEqualsFilter()'><b>testEqualsFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testEqualsFilter()'><b>testEqualsFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testEqualsFilter()'><b>testEqualsFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testExceptions()'><b>testExceptions</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testExceptions()'><b>testExceptions</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testExceptions()'><b>testExceptions</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testExceptions()'><b>testExceptions</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testFile()'><b>testFile</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testFile()'><b>testFile</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testFile()'><b>testFile</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testFile()'><b>testFile</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.test.TestHelpersImplTests.testFillConfiguration()'><b>testFillConfiguration</b><br>Test class: org.identityconnectors.framework.impl.test.TestHelpersImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.test.TestHelpersImplTests@53b5e629</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testFloat()'><b>testFloat</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testFloat()'><b>testFloat</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testFloat()'><b>testFloat</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testFloat()'><b>testFloat</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testGreaterThan()'><b>testGreaterThan</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testGreaterThanFilter()'><b>testGreaterThanFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testGreaterThanFilter()'><b>testGreaterThanFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testGreaterThanFilter()'><b>testGreaterThanFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testGreaterThanFilter()'><b>testGreaterThanFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testGreaterThanOrEqualFilter()'><b>testGreaterThanOrEqualFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testGreaterThanOrEqualFilter()'><b>testGreaterThanOrEqualFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testGreaterThanOrEqualFilter()'><b>testGreaterThanOrEqualFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testGreaterThanOrEqualFilter()'><b>testGreaterThanOrEqualFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testGreaterThanOrEqualTo()'><b>testGreaterThanOrEqualTo</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testGuardedByteArray()'><b>testGuardedByteArray</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testGuardedByteArray()'><b>testGuardedByteArray</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testGuardedByteArray()'><b>testGuardedByteArray</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testGuardedByteArray()'><b>testGuardedByteArray</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testGuardedString()'><b>testGuardedString</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testGuardedString()'><b>testGuardedString</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testGuardedString()'><b>testGuardedString</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testGuardedString()'><b>testGuardedString</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testHelloRequest()'><b>testHelloRequest</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testHelloRequest()'><b>testHelloRequest</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testHelloRequest()'><b>testHelloRequest</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testHelloRequest()'><b>testHelloRequest</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testHelloResponse()'><b>testHelloResponse</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testHelloResponse()'><b>testHelloResponse</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testHelloResponse()'><b>testHelloResponse</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testHelloResponse()'><b>testHelloResponse</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.ObjectPoolTests.testIdleCleanup()'><b>testIdleCleanup</b><br>Test class: org.identityconnectors.framework.impl.api.local.ObjectPoolTests</td>
+<td></td>
+<td>4</td>
+<td>org.identityconnectors.framework.impl.api.local.ObjectPoolTests@923ef32</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests.testIgnoreMissing()'><b>testIgnoreMissing</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests@2735537e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testInteger()'><b>testInteger</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testInteger()'><b>testInteger</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testInteger()'><b>testInteger</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testInteger()'><b>testInteger</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.BufferedSearchProxyTests.testInvalidSearch()'><b>testInvalidSearch</b><br>Test class: org.identityconnectors.framework.impl.api.BufferedSearchProxyTests</td>
+<td><div><pre>java.lang.IllegalArgumentException: Target argument must not be null!
+	at org.identityconnectors.framework.impl.api.BufferedResultsProxy.&lt;init&gt;(BufferedResultsProxy.java:49)
+	at org.identityconnectors.framework.impl.api.BufferedSearchProxyTests.testInvalidSearch(BufferedSearchProxyTests.java:113)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace961998084", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace961998084'><pre>java.lang.IllegalArgumentException: Target argument must not be null!
+	at org.identityconnectors.framework.impl.api.BufferedResultsProxy.&lt;init&gt;(BufferedResultsProxy.java:49)
+	at org.identityconnectors.framework.impl.api.BufferedSearchProxyTests.testInvalidSearch(BufferedSearchProxyTests.java:113)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.BufferedSearchProxyTests@24bb5e2d</td></tr>
+<tr>
+<td title='org.identityconnectors.common.logging.impl.JDKLoggerTests.testIsLoggable()'><b>testIsLoggable</b><br>Test class: org.identityconnectors.common.logging.impl.JDKLoggerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.common.logging.impl.JDKLoggerTests@51b1373d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testLessThan()'><b>testLessThan</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testLessThanFilter()'><b>testLessThanFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testLessThanFilter()'><b>testLessThanFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testLessThanFilter()'><b>testLessThanFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testLessThanFilter()'><b>testLessThanFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testLessThanOrEqualFilter()'><b>testLessThanOrEqualFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testLessThanOrEqualFilter()'><b>testLessThanOrEqualFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testLessThanOrEqualFilter()'><b>testLessThanOrEqualFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testLessThanOrEqualFilter()'><b>testLessThanOrEqualFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testLessThanOrEqualTo()'><b>testLessThanOrEqualTo</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testList()'><b>testList</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testList()'><b>testList</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testList()'><b>testList</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testList()'><b>testList</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testLocale()'><b>testLocale</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testLocale()'><b>testLocale</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testLocale()'><b>testLocale</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testLocale()'><b>testLocale</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.common.logging.impl.JDKLoggerTests.testLog()'><b>testLog</b><br>Test class: org.identityconnectors.common.logging.impl.JDKLoggerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.common.logging.impl.JDKLoggerTests@51b1373d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testLong()'><b>testLong</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testLong()'><b>testLong</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testLong()'><b>testLong</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testLong()'><b>testLong</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testMap()'><b>testMap</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testMap()'><b>testMap</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testMap()'><b>testMap</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testMap()'><b>testMap</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testMultiObject()'><b>testMultiObject</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.common.logging.impl.JDKLoggerTests.testMultithreaded()'><b>testMultithreaded</b><br>Test class: org.identityconnectors.common.logging.impl.JDKLoggerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.common.logging.impl.JDKLoggerTests@51b1373d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testName()'><b>testName</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testName()'><b>testName</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testName()'><b>testName</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testName()'><b>testName</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testNativeLibraries()'><b>testNativeLibraries</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testNativeLibraries()'><b>testNativeLibraries</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testNativeLibraries()'><b>testNativeLibraries</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testNot()'><b>testNot</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testNotFilter()'><b>testNotFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testNotFilter()'><b>testNotFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testNotFilter()'><b>testNotFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testNotFilter()'><b>testNotFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testNull()'><b>testNull</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testNull()'><b>testNull</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testNull()'><b>testNull</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testNull()'><b>testNull</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testObjectArrays()'><b>testObjectArrays</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testObjectArrays()'><b>testObjectArrays</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testObjectArrays()'><b>testObjectArrays</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testObjectArrays()'><b>testObjectArrays</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testObjectClass()'><b>testObjectClass</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testObjectClass()'><b>testObjectClass</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testObjectClass()'><b>testObjectClass</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testObjectClass()'><b>testObjectClass</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testObjectClassInfo()'><b>testObjectClassInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testObjectClassInfo()'><b>testObjectClassInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testObjectClassInfo()'><b>testObjectClassInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testObjectClassInfo()'><b>testObjectClassInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.testOpCallPattern()'><b>testOpCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOperationOptionInfo()'><b>testOperationOptionInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOperationOptionInfo()'><b>testOperationOptionInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOperationOptionInfo()'><b>testOperationOptionInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOperationOptionInfo()'><b>testOperationOptionInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOperationOptions()'><b>testOperationOptions</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOperationOptions()'><b>testOperationOptions</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOperationOptions()'><b>testOperationOptions</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOperationOptions()'><b>testOperationOptions</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOperationRequest()'><b>testOperationRequest</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOperationRequest()'><b>testOperationRequest</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOperationRequest()'><b>testOperationRequest</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOperationRequest()'><b>testOperationRequest</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOperationRequestMoreData()'><b>testOperationRequestMoreData</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOperationRequestMoreData()'><b>testOperationRequestMoreData</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOperationRequestMoreData()'><b>testOperationRequestMoreData</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOperationRequestMoreData()'><b>testOperationRequestMoreData</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOperationRequestStopData()'><b>testOperationRequestStopData</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOperationRequestStopData()'><b>testOperationRequestStopData</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOperationRequestStopData()'><b>testOperationRequestStopData</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOperationRequestStopData()'><b>testOperationRequestStopData</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOperationResponseEnd()'><b>testOperationResponseEnd</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOperationResponseEnd()'><b>testOperationResponseEnd</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOperationResponseEnd()'><b>testOperationResponseEnd</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOperationResponseEnd()'><b>testOperationResponseEnd</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOperationResponsePart()'><b>testOperationResponsePart</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOperationResponsePart()'><b>testOperationResponsePart</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOperationResponsePart()'><b>testOperationResponsePart</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOperationResponsePart()'><b>testOperationResponsePart</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOperationResponsePause()'><b>testOperationResponsePause</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOperationResponsePause()'><b>testOperationResponsePause</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOperationResponsePause()'><b>testOperationResponsePause</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOperationResponsePause()'><b>testOperationResponsePause</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testOr()'><b>testOr</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testOrFilter()'><b>testOrFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testOrFilter()'><b>testOrFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testOrFilter()'><b>testOrFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testOrFilter()'><b>testOrFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testQualifiedUid()'><b>testQualifiedUid</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testQualifiedUid()'><b>testQualifiedUid</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testQualifiedUid()'><b>testQualifiedUid</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testQualifiedUid()'><b>testQualifiedUid</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests.testReduceAttributes()'><b>testReduceAttributes</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests@2735537e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testRemoteConnectorInfo()'><b>testRemoteConnectorInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testRemoteConnectorInfo()'><b>testRemoteConnectorInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testRemoteConnectorInfo()'><b>testRemoteConnectorInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testRemoteConnectorInfo()'><b>testRemoteConnectorInfo</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testRemoteHelloRequest()'><b>testRemoteHelloRequest</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testSchema()'><b>testSchema</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testSchema()'><b>testSchema</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testSchema()'><b>testSchema</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testSchema()'><b>testSchema</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testScript()'><b>testScript</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testScript()'><b>testScript</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testScript()'><b>testScript</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testScript()'><b>testScript</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testScriptContext()'><b>testScriptContext</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testScriptContext()'><b>testScriptContext</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testScriptContext()'><b>testScriptContext</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testScriptContext()'><b>testScriptContext</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testScripting()'><b>testScripting</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testScripting()'><b>testScripting</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testScripting()'><b>testScripting</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testSearchStress()'><b>testSearchStress</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>1</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testSearchStress()'><b>testSearchStress</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>6</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testSearchStress()'><b>testSearchStress</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>8</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testSearchWithManyResults()'><b>testSearchWithManyResults</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testSearchWithManyResults()'><b>testSearchWithManyResults</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testSearchWithManyResults()'><b>testSearchWithManyResults</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>1</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testSet()'><b>testSet</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testSet()'><b>testSet</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testSet()'><b>testSet</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testSet()'><b>testSet</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testStartsWith()'><b>testStartsWith</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testStartsWithFilter()'><b>testStartsWithFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testStartsWithFilter()'><b>testStartsWithFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testStartsWithFilter()'><b>testStartsWithFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testStartsWithFilter()'><b>testStartsWithFilter</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testString()'><b>testString</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testString()'><b>testString</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testString()'><b>testString</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testString()'><b>testString</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests.testSyncDelta()'><b>testSyncDelta</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.ObjectNormalizerFacadeTests@109310d2</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testSyncDelta()'><b>testSyncDelta</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testSyncDelta()'><b>testSyncDelta</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testSyncDelta()'><b>testSyncDelta</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testSyncDelta()'><b>testSyncDelta</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testSyncDeltaType()'><b>testSyncDeltaType</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testSyncDeltaType()'><b>testSyncDeltaType</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testSyncDeltaType()'><b>testSyncDeltaType</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testSyncDeltaType()'><b>testSyncDeltaType</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testSyncToken()'><b>testSyncToken</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testSyncToken()'><b>testSyncToken</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testSyncToken()'><b>testSyncToken</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testSyncToken()'><b>testSyncToken</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testSyncWithManyResults()'><b>testSyncWithManyResults</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testSyncWithManyResults()'><b>testSyncWithManyResults</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testSyncWithManyResults()'><b>testSyncWithManyResults</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testTimeout()'><b>testTimeout</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>10</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testTimeout()'><b>testTimeout</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>10</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testTimeout()'><b>testTimeout</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>10</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testURI()'><b>testURI</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testURI()'><b>testURI</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testURI()'><b>testURI</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testURI()'><b>testURI</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectEchoTests.testUid()'><b>testUid</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectEchoTests@4b19b8ae</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectSerializationTests.testUid()'><b>testUid</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectSerializationTests@32fac7c5</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests.testUid()'><b>testUid</b><br>Test class: org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.ObjectXmlEchoTests@12c50438</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.serializer.XmlSerializationTests.testUid()'><b>testUid</b><br>Test class: org.identityconnectors.framework.impl.serializer.XmlSerializationTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.serializer.XmlSerializationTests@2147545b</td></tr>
+<tr>
+<td title='org.identityconnectors.common.script.groovy.GroovyScriptExecutorFactoryTests.testValidScript()'><b>testValidScript</b><br>Test class: org.identityconnectors.common.script.groovy.GroovyScriptExecutorFactoryTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.common.script.groovy.GroovyScriptExecutorFactoryTests@3f64fffc</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests.testValidate()'><b>testValidate</b><br>Test class: org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.LocalConnectorInfoManagerTests@306897b6</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests.testValidate()'><b>testValidate</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerClearTests@54054c41</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests.testValidate()'><b>testValidate</b><br>Test class: org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.RemoteConnectorInfoManagerSSLTests@2fa21acf</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests.testWithConnectorObject()'><b>testWithConnectorObject</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.AttributesToGetResultsHandlerTests@2735537e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.ObjectPoolTests.testWithManyThreads()'><b>testWithManyThreads</b><br>Test class: org.identityconnectors.framework.impl.api.local.ObjectPoolTests</td>
+<td></td>
+<td>5</td>
+<td>org.identityconnectors.framework.impl.api.local.ObjectPoolTests@923ef32</td></tr>
+<tr>
+<td title='org.identityconnectors.common.script.groovy.GroovyScriptExecutorFactoryTests.testWithVariables()'><b>testWithVariables</b><br>Test class: org.identityconnectors.common.script.groovy.GroovyScriptExecutorFactoryTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.common.script.groovy.GroovyScriptExecutorFactoryTests@3f64fffc</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.BufferedSearchProxyTests.throwTimeoutException()'><b>throwTimeoutException</b><br>Test class: org.identityconnectors.framework.impl.api.BufferedSearchProxyTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.BufferedSearchProxyTests@24bb5e2d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.unsupportedOperationTest()'><b>unsupportedOperationTest</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td><div><pre>java.lang.UnsupportedOperationException: Operation &apos;interface org.identityconnectors.framework.api.operations.AuthenticationApiOp&apos; not supported.
+	at org.identityconnectors.framework.impl.api.AbstractConnectorFacade.getOperationCheckSupported(AbstractConnectorFacade.java:269)
+	at org.identityconnectors.framework.impl.api.AbstractConnectorFacade.authenticate(AbstractConnectorFacade.java:188)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.unsupportedOperationTest(ConnectorFacadeTests.java:134)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace431889353", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace431889353'><pre>java.lang.UnsupportedOperationException: Operation &apos;interface org.identityconnectors.framework.api.operations.AuthenticationApiOp&apos; not supported.
+	at org.identityconnectors.framework.impl.api.AbstractConnectorFacade.getOperationCheckSupported(AbstractConnectorFacade.java:269)
+	at org.identityconnectors.framework.impl.api.AbstractConnectorFacade.authenticate(AbstractConnectorFacade.java:188)
+	at org.identityconnectors.framework.impl.api.ConnectorFacadeTests.unsupportedOperationTest(ConnectorFacadeTests.java:134)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.updateCallPattern()'><b>updateCallPattern</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.ConnectorFacadeTests.updateMergeTests()'><b>updateMergeTests</b><br>Test class: org.identityconnectors.framework.impl.api.ConnectorFacadeTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.ConnectorFacadeTests@3c854dc9</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAddWithNullAttribute()'><b>validateAddWithNullAttribute</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td><div><pre>java.lang.IllegalArgumentException: Can not add or remove a &apos;null&apos; value.
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:246)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAddWithNullAttribute(UpdateImplTests.java:73)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace979092782", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace979092782'><pre>java.lang.IllegalArgumentException: Can not add or remove a &apos;null&apos; value.
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:246)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAddWithNullAttribute(UpdateImplTests.java:73)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAttemptToAddDeleteOperationalAttribute()'><b>validateAttemptToAddDeleteOperationalAttribute</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAttemptToAddName()'><b>validateAttemptToAddName</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td><div><pre>java.lang.IllegalArgumentException: Operational attribute &apos;__NAME__&apos; can not be added or removed.
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:253)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAttemptToAddName(UpdateImplTests.java:80)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1999778112", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1999778112'><pre>java.lang.IllegalArgumentException: Operational attribute &apos;__NAME__&apos; can not be added or removed.
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:253)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAttemptToAddName(UpdateImplTests.java:80)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAttrsArg()'><b>validateAttrsArg</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td><div><pre>java.lang.NullPointerException: Parameter &apos;attrs&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:235)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAttrsArg(UpdateImplTests.java:59)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace4169187", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace4169187'><pre>java.lang.NullPointerException: Parameter &apos;attrs&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:235)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateAttrsArg(UpdateImplTests.java:59)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateObjectClassArg()'><b>validateObjectClassArg</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td><div><pre>java.lang.NullPointerException: Parameter &apos;objectClass&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:234)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateObjectClassArg(UpdateImplTests.java:54)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1352049205", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1352049205'><pre>java.lang.NullPointerException: Parameter &apos;objectClass&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:234)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateObjectClassArg(UpdateImplTests.java:54)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateUidArg()'><b>validateUidArg</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td><div><pre>java.lang.NullPointerException: Parameter &apos;uid&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:233)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateUidArg(UpdateImplTests.java:49)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1366519528", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1366519528'><pre>java.lang.NullPointerException: Parameter &apos;uid&apos; must not be null.
+	at org.identityconnectors.common.Assertions.nullCheck(Assertions.java:50)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:233)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateUidArg(UpdateImplTests.java:49)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateUidAttribute()'><b>validateUidAttribute</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests</td>
+<td><div><pre>java.lang.IllegalArgumentException: Parameter &apos;attrs&apos; contains a uid.
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:238)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateUidAttribute(UpdateImplTests.java:66)
+... Removed 34 stack frames</pre></div><a href='#' onClick='toggleBox("stack-trace1903586078", this, "Click to show all stack frames", "Click to hide stack frames")'>Click to show all stack frames</a>
+<div class='stack-trace' id='stack-trace1903586078'><pre>java.lang.IllegalArgumentException: Parameter &apos;attrs&apos; contains a uid.
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImpl.validateInput(UpdateImpl.java:238)
+	at org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests.validateUidAttribute(UpdateImplTests.java:66)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:77)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:189)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:105)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:117)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:159)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:87)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)
+</pre></div></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.UpdateImplTests@162cc04e</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.BufferedSearchProxyTests.withBuffer()'><b>withBuffer</b><br>Test class: org.identityconnectors.framework.impl.api.BufferedSearchProxyTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.BufferedSearchProxyTests@24bb5e2d</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests.withNullFilter()'><b>withNullFilter</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests@25a6cc45</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests.withPassThruFilter()'><b>withPassThruFilter</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests@25a6cc45</td></tr>
+<tr>
+<td title='org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests.withRangeFilter()'><b>withRangeFilter</b><br>Test class: org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests</td>
+<td></td>
+<td>0</td>
+<td>org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandlerTests@25a6cc45</td></tr>
+</table><p>
+</body>
+</html>
