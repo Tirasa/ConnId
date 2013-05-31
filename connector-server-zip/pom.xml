@@ -43,7 +43,7 @@
     </dependency>
     <dependency>
       <groupId>org.connid</groupId>
-      <artifactId>icfl-over-slf4j</artifactId>
+      <artifactId>slf4j-logging</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
