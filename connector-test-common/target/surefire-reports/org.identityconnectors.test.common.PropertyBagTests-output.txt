@@ -1,1 +1,0 @@
-Configuring TestNG with: TestNG652Configurator
