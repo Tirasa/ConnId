@@ -19,6 +19,9 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ *
+ * Portions Copyrighted 2013 ConnId
+ *
  */
 package org.identityconnectors.common;
 
@@ -89,6 +92,7 @@ public class Pair<T1, T2> implements Map.Entry<T1, T2> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public T1 getKey() {
         return this.first;
     }
@@ -96,6 +100,7 @@ public class Pair<T1, T2> implements Map.Entry<T1, T2> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public T2 getValue() {
         return this.second;
     }
@@ -103,6 +108,7 @@ public class Pair<T1, T2> implements Map.Entry<T1, T2> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public T2 setValue(final T2 value) {
         this.second = value;
         return this.second;

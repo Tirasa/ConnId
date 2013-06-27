@@ -19,6 +19,9 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ *
+ * Portions Copyrighted 2013 ConnId
+ *
  */
 package org.identityconnectors.framework.impl.api.local;
 
@@ -33,30 +36,30 @@ import java.util.List;
 
 public class BundleLibSorter implements Comparator<File>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1885450684185821535L;
 
-    public int compare(File arg0, File arg1) {
-        String name1 = arg0.getName();
-        String name2 = arg1.getName();
-        int comp = name1.compareTo(name2);
-        return comp;
+    @Override
+    public int compare(final File arg0, final File arg1) {
+        final String name1 = arg0.getName();
+        final String name2 = arg1.getName();
+        return name1.compareTo(name2);
     }
 
     /**
      * Returns the sorted libs from the given bundle directory.
      */
-    public static File[] getSortedFiles(File dir) {
-        File[] files = dir.listFiles();
+    public static File[] getSortedFiles(final File dir) {
+        final File[] files = dir.listFiles();
         Arrays.sort(files, new BundleLibSorter());
         return files;
     }
 
-    public static List<URL> getSortedURLs(File dir) throws IOException {
-        File[] files = getSortedFiles(dir);
-        List<URL> rv = new ArrayList<URL>();
+    public static List<URL> getSortedURLs(final File dir) throws IOException {
+        final File[] files = getSortedFiles(dir);
+        final List<URL> sortedURLs = new ArrayList<URL>();
         for (File file : files) {
-            rv.add(file.toURI().toURL());
+            sortedURLs.add(file.toURI().toURL());
         }
-        return rv;
+        return sortedURLs;
     }
 }

@@ -19,6 +19,9 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ *
+ * Portions Copyrighted 2013 ConnId
+ *
  */
 package org.identityconnectors.contract.data;
 
@@ -210,7 +213,7 @@ public class RandomGenerator {
      */
     private static String createRandomString(String pattern,
             Map<Character, Set<Character>> characterSetMap) {
-        StringBuffer replacement = new StringBuffer();
+        StringBuilder replacement = new StringBuilder();
         for (int i = 0; i < pattern.length(); i++) {
             Set<Character> characterSet = characterSetMap.get(new Character(
                     pattern.charAt(i)));

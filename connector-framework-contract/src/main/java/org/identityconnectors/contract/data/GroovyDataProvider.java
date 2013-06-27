@@ -19,6 +19,9 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ *
+ * Portions Copyrighted 2013 ConnId
+ *
  */
 package org.identityconnectors.contract.data;
 
@@ -146,11 +149,11 @@ public class GroovyDataProvider implements DataProvider {
     /** command line switch for creating queried properties' dump */
     private final String PARAM_QUERIED_PROPERTY_OUT_FILE = "test.parameters.outQueriedFile";
     /** buffer for queried properties log */
-    private StringBuffer dumpBuffer = null;
+    private StringBuilder dumpBuffer = null;
     /** buffer for queried properties -- that were not found -- log */
-    private StringBuffer dumpBufferNotFound = null;
+    private StringBuilder dumpBufferNotFound = null;
     /** default values generated for */
-    private StringBuffer dumpBufferDefaultVal = null;
+    private StringBuilder dumpBufferDefaultVal = null;
     /** output file for concatenated snapshots */
     private File _propertyOutFile = null;
     /** output file for queried properties dump */
@@ -246,9 +249,9 @@ public class GroovyDataProvider implements DataProvider {
             }
         }
 
-        this.dumpBuffer = new StringBuffer();
-        this.dumpBufferNotFound = new StringBuffer();
-        this.dumpBufferDefaultVal = new StringBuffer();
+        this.dumpBuffer = new StringBuilder();
+        this.dumpBufferNotFound = new StringBuilder();
+        this.dumpBufferDefaultVal = new StringBuilder();
     }
 
     private void initSnapshot() {
@@ -597,7 +600,7 @@ public class GroovyDataProvider implements DataProvider {
     }
 
     private String concatenate(Object value, List<Object> successors) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (value != null) {
             sb.append(value.toString());
         }
@@ -635,7 +638,7 @@ public class GroovyDataProvider implements DataProvider {
         Assert.assertFalse(cache.keySet().contains("param.name"));
         Assert.assertFalse(cache.keySet().contains("param.dataTypeName"));
 
-        StringBuffer sbPath = new StringBuffer();
+        StringBuilder sbPath = new StringBuilder();
         if (sequenceNumber != SINGLE_VALUE_MARKER) {
             sbPath.append("i");// sequence marker e.g.: i1, i2, i3 ...
             sbPath.append(sequenceNumber);
