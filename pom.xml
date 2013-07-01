@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
- Copyright (c) 2011-2013 ConnId. All rights reserved.
+    ====================
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
- The contents of this file are subject to the terms
- of the Common Development and Distribution License
- (the License). You may not use this file except in
- compliance with the License.
+    Copyright 2013 ConnId. All rights reserved.
 
- You can obtain a copy of the License at
- http://forgerock.org/license/CDDLv1.0.html
- See the License for the specific language governing
- permission and limitations under the License.
+    The contents of this file are subject to the terms of the Common Development
+    and Distribution License("CDDL") (the "License").  You may not use this file
+    except in compliance with the License.
 
- When distributing Covered Code, include this CDDL
- Header Notice in each file and include the License file
- at http://forgerock.org/license/CDDLv1.0.html
- If applicable, add the following below the CDDL Header,
- with the fields enclosed by brackets [] replaced by
- your own identifying information:
- "Portions Copyrighted [year] [name of copyright owner]"
+    You can obtain a copy of the License at
+    http://opensource.org/licenses/cddl1.php
+    See the License for the specific language governing permissions and limitations
+    under the License.
+
+    When distributing the Covered Code, include this CDDL Header Notice in each file
+    and include the License file at http://opensource.org/licenses/cddl1.php.
+    If applicable, add the following below this CDDL Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyrighted [year] [name of copyright owner]"
+    ====================
+
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -265,21 +266,41 @@
       <plugin>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
-        <version>1.9.0</version>
+        <version>1.10.b1</version>
         <configuration>
-          <header>https://raw.github.com/Tirasa/ConnId/master/legal/COPYRIGHT</header>
+          <header>src/main/resources/header.txt</header>
           <strictCheck>true</strictCheck>
           <failIfMissing>true</failIfMissing>
           <aggregate>true</aggregate>
           <useDefaultExcludes>true</useDefaultExcludes>
           <useDefaultMapping>true</useDefaultMapping>
-          <mapping>
-            <md>XML_STYLE</md>
-          </mapping>
+	  <headerSections>
+	    <headerSection>
+	      <key>COPYRIGHT_SECTION</key>
+	      <defaultValue>Copyright 2013 ConnId. All rights reserved.</defaultValue>
+	      <ensureMatch>Copyright .*\. All rights reserved\.</ensureMatch>
+	    </headerSection>
+	    <headerSection>
+	      <key>PORTIONS_COPYRIGHT_SECTION</key>
+	      <defaultValue></defaultValue>
+	      <ensureMatch>(.*^Portions Copyrighted .*)?</ensureMatch>
+	    </headerSection>
+	  </headerSections>
+          <headerDefinitions>
+            <headerDefinition>src/main/resources/java-single-star.xml</headerDefinition>
+          </headerDefinitions>
+	  <mapping>
+	    <md>XML_STYLE</md>
+	    <java>JAVA-SINGLE-STAR</java>
+	    <groovy>JAVA-SINGLE-STAR</groovy>
+	  </mapping>
           <excludes>
-            <exclude>legal/**</exclude>
+            <exclude>**/LICENSE*</exclude>
+            <exclude>**/NOTICE*</exclude>
             <exclude>**/*.pfx</exclude>
             <exclude>**/*.dll</exclude>
+            <exclude>**/*.so</exclude>
+            <exclude>**/*.jnilib</exclude>
             <exclude>nbactions.xml</exclude>
             <exclude>nb-configuration.xml</exclude>
             <exclude>**/META-INF/services/**</exclude>
@@ -295,7 +316,7 @@
             <exclude>**/.*</exclude>
           </excludes>
         </configuration>
-        <!--        <executions>
+        <!--<executions>
           <execution>
             <id>check-headers</id>
             <phase>verify</phase>
