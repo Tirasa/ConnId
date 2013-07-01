@@ -19,9 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- *
  * Portions Copyrighted 2013 ConnId
- *
  */
 package org.identityconnectors.common.l10n;
 

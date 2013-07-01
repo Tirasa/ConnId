@@ -25,14 +25,14 @@
 
 -->
 <additionalHeaders>
-    <java-single-star>
-        <firstLine>/*</firstLine>
-        <beforeEachLine> * </beforeEachLine>
-        <endLine> */</endLine>
-        <!--skipLine></skipLine-->
-        <firstLineDetectionPattern>(\s|\t)*/\*.*$</firstLineDetectionPattern>
-        <lastLineDetectionPattern>.*\*/(\s|\t)*$</lastLineDetectionPattern>
-        <allowBlankLines>false</allowBlankLines>
-        <isMultiline>true</isMultiline>
-    </java-single-star>
+  <java-single-star>
+    <firstLine>/*</firstLine>
+    <beforeEachLine> * </beforeEachLine>
+    <endLine> */</endLine>
+    <!--skipLine></skipLine-->
+    <firstLineDetectionPattern>(\s|\t)*/\*.*$</firstLineDetectionPattern>
+    <lastLineDetectionPattern>.*\*/(\s|\t)*$</lastLineDetectionPattern>
+    <allowBlankLines>false</allowBlankLines>
+    <isMultiline>true</isMultiline>
+  </java-single-star>
 </additionalHeaders>

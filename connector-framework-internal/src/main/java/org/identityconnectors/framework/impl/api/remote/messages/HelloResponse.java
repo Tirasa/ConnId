@@ -19,7 +19,6 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- *
  * Portions Copyrighted 2011-2013 ForgeRock
  */
 package org.identityconnectors.framework.impl.api.remote.messages;

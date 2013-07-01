@@ -274,26 +274,26 @@
           <aggregate>true</aggregate>
           <useDefaultExcludes>true</useDefaultExcludes>
           <useDefaultMapping>true</useDefaultMapping>
-	  <headerSections>
-	    <headerSection>
-	      <key>COPYRIGHT_SECTION</key>
-	      <defaultValue>Copyright 2013 ConnId. All rights reserved.</defaultValue>
-	      <ensureMatch>Copyright .*\. All rights reserved\.</ensureMatch>
-	    </headerSection>
-	    <headerSection>
-	      <key>PORTIONS_COPYRIGHT_SECTION</key>
-	      <defaultValue></defaultValue>
-	      <ensureMatch>(.*^Portions Copyrighted .*)?</ensureMatch>
-	    </headerSection>
-	  </headerSections>
+          <headerSections>
+            <headerSection>
+              <key>COPYRIGHT_SECTION</key>
+              <defaultValue>Copyright 2013 ConnId. All rights reserved.</defaultValue>
+              <ensureMatch>Copyright .*\. All rights reserved\.</ensureMatch>
+            </headerSection>
+            <headerSection>
+              <key>PORTIONS_COPYRIGHT_SECTION</key>
+              <defaultValue></defaultValue>
+              <ensureMatch>(.*^Portions Copyrighted .*)?</ensureMatch>
+            </headerSection>
+          </headerSections>
           <headerDefinitions>
             <headerDefinition>src/main/resources/java-single-star.xml</headerDefinition>
           </headerDefinitions>
-	  <mapping>
-	    <md>XML_STYLE</md>
-	    <java>JAVA-SINGLE-STAR</java>
-	    <groovy>JAVA-SINGLE-STAR</groovy>
-	  </mapping>
+          <mapping>
+            <md>XML_STYLE</md>
+            <java>JAVA-SINGLE-STAR</java>
+            <groovy>JAVA-SINGLE-STAR</groovy>
+          </mapping>
           <excludes>
             <exclude>**/LICENSE*</exclude>
             <exclude>**/NOTICE*</exclude>
@@ -316,7 +316,7 @@
             <exclude>**/.*</exclude>
           </excludes>
         </configuration>
-        <!--<executions>
+        <executions>
           <execution>
             <id>check-headers</id>
             <phase>verify</phase>
@@ -324,7 +324,7 @@
               <goal>check</goal>
             </goals>
           </execution>
-        </executions>-->
+        </executions>
       </plugin>
     </plugins>
   </build>
