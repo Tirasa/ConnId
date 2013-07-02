@@ -151,7 +151,7 @@ goto :EOF
 :srvInstall
 rem Install the Connector Server as Windows service
 shift
-set SERVICE_NAME=OpenICFConnectorServerJava
+set SERVICE_NAME=ConnIdConnectorServerJava
 if not ""%1"" == """" (
     set T=%1
     if "!T:~1,2!" == "%JVM_OPTION_IDENTIFIER%" goto :noServiceName
@@ -168,7 +168,7 @@ for %%P in (%*) do (
       set JAVA_OPTS_DELIM=;
     )
 )
-"%CONNECTOR_SERVER_HOME%\bin\%ARCH%\ConnectorServerJava.exe" //IS//%SERVICE_NAME% --Install="%CONNECTOR_SERVER_HOME%\bin\%ARCH%\ConnectorServerJava.exe" --Description="OpenICF Connectors Java Server" --Jvm=%JAVA_DLL% --Classpath=%CP% --JvmOptions=%JAVA_OPTS_SERVICE%%JAVA_OPTS_PARAM% --StartPath="%CONNECTOR_SERVER_HOME%" --StartMode=jvm --StartClass=%MAIN_CLASS% --StartParams="-run;%SERVER_PROPERTIES_KEY%;%SERVER_PROPERTIES%" --StopMode=jvm --StopClass=%MAIN_CLASS% --StopMethod=stop --StopParams=dummy --LogPath="%CONNECTOR_SERVER_HOME%\logs" --LogPrefix=service --StdOutput=auto --StdError=auto --LogLevel=INFO
+"%CONNECTOR_SERVER_HOME%\bin\%ARCH%\ConnectorServerJava.exe" //IS//%SERVICE_NAME% --Install="%CONNECTOR_SERVER_HOME%\bin\%ARCH%\ConnectorServerJava.exe" --Description="ConnId Connectors Java Server" --Jvm=%JAVA_DLL% --Classpath=%CP% --JvmOptions=%JAVA_OPTS_SERVICE%%JAVA_OPTS_PARAM% --StartPath="%CONNECTOR_SERVER_HOME%" --StartMode=jvm --StartClass=%MAIN_CLASS% --StartParams="-run;%SERVER_PROPERTIES_KEY%;%SERVER_PROPERTIES%" --StopMode=jvm --StopClass=%MAIN_CLASS% --StopMethod=stop --StopParams=dummy --LogPath="%CONNECTOR_SERVER_HOME%\logs" --LogPrefix=service --StdOutput=auto --StdError=auto --LogLevel=INFO
 echo Connector server successfully installed as "%SERVICE_NAME%" service
 goto :EOF
 
@@ -177,7 +177,7 @@ shift
 if not ""%1"" == """" (
     set SERVICE_NAME=%1
 ) else (
-    set SERVICE_NAME=OpenICFConnectorServerJava
+    set SERVICE_NAME=ConnIdConnectorServerJava
 )
 "%CONNECTOR_SERVER_HOME%\bin\%ARCH%\ConnectorServerJava.exe" //DS//%SERVICE_NAME%
 echo Service "%SERVICE_NAME%" removed successfully
