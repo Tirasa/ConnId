@@ -90,6 +90,7 @@ public class ConnectorPoolManager {
             localConnectorInfo = localInfo;
         }
 
+        @Override
         public ObjectPoolConfiguration validate(ObjectPoolConfiguration original) {
             ObjectPoolConfiguration configuration = (ObjectPoolConfiguration) SerializerUtil.cloneObject(original);
             try {
@@ -106,10 +107,12 @@ public class ConnectorPoolManager {
             return configuration;
         }
 
+        @Override
         public PoolableConnector makeFirstObject() {
             return makeObject(true);
         }
 
+        @Override
         public PoolableConnector makeObject() {
             return makeObject(false);
         }
@@ -142,6 +145,7 @@ public class ConnectorPoolManager {
                 ThreadClassLoaderManager.getInstance().popClassLoader();
             }
         }
+        @Override
         public void testObject(PoolableConnector object) {
             ThreadClassLoaderManager.getInstance().pushClassLoader(localConnectorInfo.getConnectorClass().getClassLoader());
             try {
@@ -162,10 +166,12 @@ public class ConnectorPoolManager {
             }
         }
 
+        @Override
         public void disposeObject(PoolableConnector object) {
             disposeObject(object, false);
         }
 
+        @Override
         public void disposeLastObject(PoolableConnector object) {
             disposeObject(object, true);
         }

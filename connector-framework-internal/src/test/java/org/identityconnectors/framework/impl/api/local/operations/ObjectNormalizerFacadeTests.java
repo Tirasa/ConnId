@@ -43,6 +43,7 @@ import org.testng.annotations.Test;
 
 public class ObjectNormalizerFacadeTests {
     public static class MyAttributeNormalizer implements AttributeNormalizer {
+        @Override
         public Attribute normalizeAttribute(ObjectClass oclass, Attribute attribute) {
             if (attribute.is("foo")) {
                 String val = AttributeUtil.getStringValue(attribute);

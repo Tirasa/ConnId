@@ -46,6 +46,7 @@ public class ConnectorMessagesImpl implements ConnectorMessages {
     public ConnectorMessagesImpl() {
     }
 
+    @Override
     public String format(String key, String dflt, Object... args) {
         if (key == null) {
             return dflt;

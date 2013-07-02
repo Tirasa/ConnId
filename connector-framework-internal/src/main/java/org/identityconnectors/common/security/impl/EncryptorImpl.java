@@ -70,6 +70,7 @@ public class EncryptorImpl implements Encryptor {
         }
     }
 
+    @Override
     public byte[] decrypt(byte[] bytes) {
         try {
             Cipher cipher = Cipher.getInstance(FULL_ALGORITHM);
@@ -82,6 +83,7 @@ public class EncryptorImpl implements Encryptor {
         }
     }
 
+    @Override
     public byte[] encrypt(byte[] bytes) {
         try {
             Cipher cipher = Cipher.getInstance(FULL_ALGORITHM);

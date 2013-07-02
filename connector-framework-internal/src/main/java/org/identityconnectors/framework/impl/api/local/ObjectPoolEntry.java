@@ -44,6 +44,7 @@ public interface ObjectPoolEntry<T> extends Closeable {
      * Release the pooled object and puts back to the pool where is was borrowed
      * from.
      */
+    @Override
     public void close() throws IOException;
 
 }

@@ -53,6 +53,7 @@ public class ContainsAllValuesFilter extends AttributeFilter {
      *
      * {@inheritDoc}
      */
+    @Override
     public boolean accept(ConnectorObject obj) {
         Attribute found = obj.getAttributeByName(name);
         if (found != null) {

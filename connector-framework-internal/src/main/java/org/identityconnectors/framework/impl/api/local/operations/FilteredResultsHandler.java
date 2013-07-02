@@ -55,6 +55,7 @@ public final class FilteredResultsHandler implements ResultsHandler {
         this.filter = filter == null ? new PassThruFilter() : filter;
     }
 
+    @Override
     public boolean handle(ConnectorObject object) {
         if ( filter.accept(object) ) {
             return handler.handle(object);
@@ -68,6 +69,7 @@ public final class FilteredResultsHandler implements ResultsHandler {
      * Use a pass thru filter to use if a null filter is provided.
      */
     public static class PassThruFilter implements Filter {
+        @Override
         public boolean accept(ConnectorObject obj) {
             return true;
         }

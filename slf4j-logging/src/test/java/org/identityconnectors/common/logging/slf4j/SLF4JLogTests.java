@@ -78,6 +78,7 @@ public class SLF4JLogTests {
             this.key = key;
         }
 
+        @Override
         public void run() {
             try {
                 logger.log(SLF4JLogTests.class, "run", Log.Level.INFO, "Failed with:",

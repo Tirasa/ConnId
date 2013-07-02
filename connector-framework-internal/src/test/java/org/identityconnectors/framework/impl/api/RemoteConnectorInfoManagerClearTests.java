@@ -34,7 +34,6 @@ import org.identityconnectors.framework.api.ConnectorInfoManager;
 import org.identityconnectors.framework.api.ConnectorInfoManagerFactory;
 import org.identityconnectors.framework.api.RemoteFrameworkConnectionInfo;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoManagerImpl;
-import org.identityconnectors.framework.impl.api.remote.messages.HelloRequest;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloResponse;
 import org.identityconnectors.framework.server.ConnectorServer;
 import org.testng.Assert;

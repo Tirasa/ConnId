@@ -270,16 +270,19 @@ public final class QueryFilter {
             readNextToken();
         }
 
+        @Override
         public boolean hasNext() {
             return nextToken != null;
         }
 
+        @Override
         public String next() {
             final String next = peek();
             readNextToken();
             return next;
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }

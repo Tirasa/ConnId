@@ -106,6 +106,7 @@ public final class SerializerUtil {
         InputSource source = new InputSource(new StringReader(str));
         final List<Object> rv = new ArrayList<Object>();
         fact.deserializeXmlStream(source, new XmlObjectResultsHandler() {
+            @Override
             public boolean handle(Object o) {
                 rv.add(o);
                 return false;

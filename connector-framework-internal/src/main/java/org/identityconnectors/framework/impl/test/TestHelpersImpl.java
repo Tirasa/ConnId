@@ -55,6 +55,7 @@ public class TestHelpersImpl implements TestHelpersSpi {
     /**
      * Method for convenient testing of local connectors.
      */
+    @Override
     public APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
             Configuration config) {
         LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
@@ -84,6 +85,7 @@ public class TestHelpersImpl implements TestHelpersSpi {
         }
     }
 
+    @Override
     public void fillConfiguration(Configuration config, Map<String, ? extends Object> configData) {
         Map<String, Object> configDataCopy = new HashMap<String, Object>(configData);
         ConfigurationPropertiesImpl configProps =
@@ -116,6 +118,7 @@ public class TestHelpersImpl implements TestHelpersSpi {
      * @param options The options - may be null - will
      *  be cast to an empty OperationOptions
      */
+    @Override
     public void search(SearchOp<?> search,
             final ObjectClass objectClass,
             final Filter filter,
@@ -127,11 +130,13 @@ public class TestHelpersImpl implements TestHelpersSpi {
         SearchImpl.rawSearch(search, objectClass, filter, handler, options);
     }
 
+    @Override
     public ConnectorMessages createDummyMessages() {
         return new DummyConnectorMessages();
     }
 
     private static class DummyConnectorMessages implements ConnectorMessages {
+        @Override
         public String format(String key, String dflt, Object... args) {
             StringBuilder builder = new StringBuilder();
             builder.append(key);

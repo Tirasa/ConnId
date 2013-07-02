@@ -52,14 +52,17 @@ public class TestHelpersImplTests {
         private String host;
         private int port;
 
+        @Override
         public ConnectorMessages getConnectorMessages() {
             return null;
         }
 
+        @Override
         public void setConnectorMessages(ConnectorMessages messages) {
             fail("Should not call setConnectorMessages()");
         }
 
+        @Override
         public void validate() {
             fail("Should not call validate()");
         }

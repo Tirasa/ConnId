@@ -37,6 +37,7 @@ public class NoOpLogger implements LogSpi {
     /**
      * Logs nothing. Its a black hole command.
      */
+    @Override
     public void log(Class<?> clazz, String methodName, Level level,
             String message, Throwable ex) {
     }
@@ -44,6 +45,7 @@ public class NoOpLogger implements LogSpi {
     /**
      * Always returns <code>false</code> because there nothing to do.
      */
+    @Override
     public boolean isLoggable(Class<?> clazz, Level level) {
         return false;
     }

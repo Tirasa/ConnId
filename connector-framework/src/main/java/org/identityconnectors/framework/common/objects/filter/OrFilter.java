@@ -37,6 +37,7 @@ public final class OrFilter extends CompositeFilter {
      *
      * @see Filter#accept(ConnectorObject)
      */
+    @Override
     public boolean accept(ConnectorObject obj) {
         return this.getLeft().accept(obj) || this.getRight().accept(obj);
     }

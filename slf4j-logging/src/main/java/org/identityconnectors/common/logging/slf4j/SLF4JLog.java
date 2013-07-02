@@ -48,6 +48,7 @@ public class SLF4JLog implements LogSpi {
      * @see LogSpi#log(Class, String,
      *      org.identityconnectors.common.logging.Log.Level, String, Throwable)
      */
+    @Override
     public void log(final Class<?> clazz, final String methodName, final Level level,
             final String message, final Throwable ex) {
         String clazzName = clazz.getName();
@@ -95,6 +96,7 @@ public class SLF4JLog implements LogSpi {
      * Use the internal SLF4J logger to determine if the level is worthy of
      * logging.
      */
+    @Override
     public boolean isLoggable(Class<?> clazz, Level level) {
         Logger logger = getSLF4JLogger(clazz.getName());
         boolean ret = true;

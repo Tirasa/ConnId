@@ -37,6 +37,7 @@ public final class LessThanOrEqualFilter extends ComparableAttributeFilter {
      *
      * @see Filter#accept(ConnectorObject)
      */
+    @Override
     public boolean accept(ConnectorObject obj) {
         return isPresent(obj) && this.compare(obj) <= 0;
     }

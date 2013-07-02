@@ -55,6 +55,7 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
      *      org.identityconnectors.framework.common.objects.ResultsHandler,
      *      org.identityconnectors.framework.common.objects.OperationOptions)
      */
+    @Override
     public void search(final ObjectClass objectClass, final Filter originalFilter,
             final ResultsHandler handler, OperationOptions options) {
         Assertions.nullCheck(objectClass, "oclass");
@@ -170,6 +171,7 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         /**
          * Handle the object w/ reduced attributes.
          */
+        @Override
         public boolean handle(ConnectorObject obj) {
             obj = reduceToAttrsToGet(obj);
             return handler.handle(obj);

@@ -94,6 +94,7 @@ public class TstConnectorConfig extends AbstractConfiguration {
         _failValidation = fail;
     }
 
+    @Override
     public void validate() {
         TstConnector.checkClassLoader();
         if (_failValidation) {

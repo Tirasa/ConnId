@@ -32,14 +32,17 @@ public abstract class AbstractConfiguration implements Configuration {
 
     private ConnectorMessages connectorMessages;
 
+    @Override
     public final ConnectorMessages getConnectorMessages() {
         return connectorMessages;
     }
 
+    @Override
     public final void setConnectorMessages(ConnectorMessages messages) {
         connectorMessages = messages;
     }
 
+    @Override
     public abstract void validate();
 
 }

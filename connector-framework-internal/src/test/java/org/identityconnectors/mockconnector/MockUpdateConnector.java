@@ -46,14 +46,17 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
 
     private Configuration configuration;
 
+    @Override
     public void dispose() {
         // nothing to do this is a mock connector..
     }
 
+    @Override
     public void init(Configuration cfg) {
         configuration = cfg;
     }
 
+    @Override
     public Configuration getConfiguration() {
         return configuration;
     }
@@ -82,6 +85,7 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
      *      org.identityconnectors.framework.common.objects.Uid, java.util.Set,
      *      org.identityconnectors.framework.common.objects.OperationOptions)
      */
+    @Override
     public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> attrs,
             OperationOptions options) {
         String val = AttributeUtil.getAsStringValue(uid);
@@ -96,6 +100,7 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
         return obj.getUid();
     }
 
+    @Override
     public FilterTranslator<String> createFilterTranslator(ObjectClass objectClass,
             OperationOptions options) {
         // no translation - ok since this is just for tests
@@ -111,6 +116,7 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
      *      org.identityconnectors.framework.common.objects.ResultsHandler,
      *      org.identityconnectors.framework.common.objects.OperationOptions)
      */
+    @Override
     public void executeQuery(ObjectClass objectClass, String query, ResultsHandler handler,
             OperationOptions options) {
         Iterator<ConnectorObject> iter = objects.iterator();

@@ -74,6 +74,7 @@ public abstract class ObjectClassRunner extends ContractTestBase {
      * Dispose the test environment, do the cleanup
      */
     @AfterTest
+    @Override
     public void dispose() {
         _objectClassInfo = null;
         super.dispose();

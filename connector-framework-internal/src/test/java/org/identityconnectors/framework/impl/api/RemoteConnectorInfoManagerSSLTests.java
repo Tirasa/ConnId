@@ -75,6 +75,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
             _keyStoreName = name;
         }
 
+        @Override
         public int hashCode() {
             return 0;
         }

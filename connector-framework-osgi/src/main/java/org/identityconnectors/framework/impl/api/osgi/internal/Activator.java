@@ -55,8 +55,10 @@ public class Activator implements BundleActivator {
     /**
      *
      */
-    private ServiceRegistration connectorInfoManager;
-
+    private ServiceRegistration<?> connectorInfoManager;
+    
+    @SuppressWarnings("unchecked")
+    @Override
     public void start(BundleContext context) throws Exception {
         LOG.debug("OpenICF OSGi Extender - Starting");
 
@@ -77,6 +79,7 @@ public class Activator implements BundleActivator {
         LOG.debug("OpenICF OSGi Extender - Started");
     }
 
+    @Override
     public void stop(BundleContext context) throws Exception {
         LOG.debug("OpenICF OSGi Extender - Stopping");
         connectorInfoManager.unregister();

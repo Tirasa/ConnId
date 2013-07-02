@@ -40,6 +40,7 @@ public class StreamHandlerUtil {
             this.target = target;
         }
 
+        @Override
         public boolean handle(final ConnectorObject obj) {
             return target.handle(obj);
         }
@@ -55,6 +56,7 @@ public class StreamHandlerUtil {
             this.target = target;
         }
 
+        @Override
         public boolean handle(final SyncDelta obj) {
             return target.handle(obj);
         }
@@ -81,6 +83,7 @@ public class StreamHandlerUtil {
             this.target = target;
         }
 
+        @Override
         public boolean handle(final Object obj) {
             if (targetInterface == ResultsHandler.class) {
                 return ((ResultsHandler) target).handle((ConnectorObject) obj);

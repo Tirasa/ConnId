@@ -144,6 +144,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
         final int [] count = new int[1];
         facade1.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+            @Override
             public boolean handle(ConnectorObject obj) {
                 count[0]++;
                 // make sure thread local classloader is restored
@@ -322,6 +323,7 @@ public abstract class ConnectorInfoManagerTestBase {
         final List<ConnectorObject> results = new ArrayList<ConnectorObject>();
 
         facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+            @Override
             public boolean handle(ConnectorObject obj) {
                 results.add(obj);
                 return true;
@@ -337,6 +339,7 @@ public abstract class ConnectorInfoManagerTestBase {
         results.clear();
 
         facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+            @Override
             public boolean handle(ConnectorObject obj) {
                 if (results.size() < 500) {
                     results.add(obj);
@@ -374,6 +377,7 @@ public abstract class ConnectorInfoManagerTestBase {
         ConnectorFacade facade = facf.newInstance(api);
         long start = System.currentTimeMillis();
         facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+            @Override
             public boolean handle(ConnectorObject obj) {
                 return true;
             }
@@ -459,6 +463,7 @@ public abstract class ConnectorInfoManagerTestBase {
         final List<SyncDelta> results = new ArrayList<SyncDelta>();
 
         facade.sync(ObjectClass.ACCOUNT, null, new SyncResultsHandler() {
+            @Override
             public boolean handle(SyncDelta obj) {
                 results.add(obj);
                 return true;
@@ -474,6 +479,7 @@ public abstract class ConnectorInfoManagerTestBase {
         results.clear();
 
         facade.sync(ObjectClass.ACCOUNT, null, new SyncResultsHandler() {
+            @Override
             public boolean handle(SyncDelta obj) {
                 if (results.size() < 500) {
                     results.add(obj);
@@ -640,6 +646,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
         try {
             facade1.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+                @Override
                 public boolean handle(ConnectorObject obj) {
                     return true;
                 }

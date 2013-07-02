@@ -59,64 +59,79 @@ public class XmlObjectEncoder implements ObjectEncoder {
         return writeObjectInternal(o, false);
     }
 
+    @Override
     public void writeBooleanContents(boolean v) {
         writeStringContentsInternal(encodeBoolean(v));
     }
 
+    @Override
     public void writeBooleanField(String fieldName, boolean v) {
         writeAttributeInternal(fieldName, encodeBoolean(v));
     }
 
+    @Override
     public void writeByteContents(byte v) {
         writeStringContentsInternal(encodeByte(v));
     }
 
+    @Override
     public void writeByteArrayContents(byte[] v) {
         writeStringContentsInternal(encodeByteArray(v));
     }
 
+    @Override
     public void writeClassContents(Class<?> v) {
         writeStringContentsInternal(encodeClass(v));
     }
 
+    @Override
     public void writeClassField(String name, Class<?> v) {
         if (v != null) {
             writeAttributeInternal(name, encodeClass(v));
         }
     }
 
+    @Override
     public void writeDoubleContents(double v) {
         writeStringContentsInternal(encodeDouble(v));
     }
 
+    @Override
     public void writeDoubleField(String fieldName, double v) {
         writeAttributeInternal(fieldName, encodeDouble(v));
     }
 
+    @Override
     public void writeFloatContents(float v) {
         writeStringContentsInternal(encodeFloat(v));
     }
 
+    @Override
     public void writeFloatField(String fieldName, float v) {
         writeAttributeInternal(fieldName, encodeFloat(v));
     }
 
+    @Override
     public void writeIntContents(int v) {
         writeStringContentsInternal(encodeInt(v));
     }
 
+    @Override
     public void writeIntField(String fieldName, int v) {
         writeAttributeInternal(fieldName, encodeInt(v));
     }
 
+    @Override
     public void writeLongContents(long v) {
         writeStringContentsInternal(encodeLong(v));
     }
 
+    @Override
     public void writeLongField(String fieldName, long v) {
         writeAttributeInternal(fieldName, encodeLong(v));
     }
 
+    @Override
     public void writeObjectContents(Object o) {
         if (outputStack.size() == 0) {
             throw new IllegalStateException("May not write contents on top-level object");
@@ -124,6 +139,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
         writeObjectInternal(o, false);
     }
 
+    @Override
     public void writeObjectField(String fieldName, Object object, boolean inline) {
         if (outputStack.size() == 0) {
             throw new IllegalStateException("May not write field on top-level object");
@@ -136,10 +152,12 @@ public class XmlObjectEncoder implements ObjectEncoder {
         endElement();
     }
 
+    @Override
     public void writeStringContents(String str) {
         writeStringContentsInternal(str);
     }
 
+    @Override
     public void writeStringField(String fieldName, String str) {
         if (str != null) {
             writeAttributeInternal(fieldName, str);

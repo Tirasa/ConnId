@@ -80,6 +80,7 @@ public class BufferedResultsProxy implements InvocationHandler {
             this.timeoutMillis = timeoutMillis;
         }
 
+        @Override
         public boolean handle(final Object obj) {
             if (isStopped()) {
                 return false;
@@ -148,6 +149,7 @@ public class BufferedResultsProxy implements InvocationHandler {
             return actualArguments;
         }
 
+        @Override
         public void run() {
             try {
                 try {
@@ -203,6 +205,7 @@ public class BufferedResultsProxy implements InvocationHandler {
         }
     }
 
+    @Override
     public Object invoke(final Object proxy, final Method method, Object[] arguments)
             throws Throwable {
         // do not buffer/timeout equals, hashCode, toString

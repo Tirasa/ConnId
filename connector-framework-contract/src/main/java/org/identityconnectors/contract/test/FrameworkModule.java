@@ -48,6 +48,7 @@ public class FrameworkModule extends AbstractModule {
         this.dataProvider = dataProvider;
     }
 
+    @Override
     protected void configure() {
         bind(DataProvider.class).annotatedWith(Names.named("DataProvider")).toInstance(dataProvider);
     }

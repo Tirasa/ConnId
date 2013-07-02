@@ -46,6 +46,7 @@ import com.google.inject.Injector;
  * 
  * @author Laszlo Hordos
  */
+@SuppressWarnings("rawtypes")
 public class ContractITCase {
 
     public static final Class[] DEFAULT_TEST_CLASSES = new Class[] { AttributeTests.class,
@@ -84,7 +85,8 @@ public class ContractITCase {
         }
         return result.toArray();
     }
-
+    
+    @SuppressWarnings("rawtypes")
     public List<Class> getContractTestClasses(ITestContext context) {
         String testNames = System.getProperty("testClasses");
         if (StringUtil.isNotBlank(testNames)) {

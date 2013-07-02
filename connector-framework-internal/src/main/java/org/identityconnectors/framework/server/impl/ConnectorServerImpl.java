@@ -44,6 +44,7 @@ public class ConnectorServerImpl extends ConnectorServer {
     private CountDownLatch stopLatch;
     private Long startDate = null;
 
+    @Override
     public Long getStartTime() {
         return startDate;
     }

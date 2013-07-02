@@ -46,6 +46,7 @@ public class AuthenticationImpl extends ConnectorAPIOperationRunner implements
      *
      * @see AuthenticationOpTests#authenticate(String, String)
      */
+    @Override
     public Uid authenticate(final ObjectClass objectClass, final String username,
             final GuardedString password,
             OperationOptions options) {

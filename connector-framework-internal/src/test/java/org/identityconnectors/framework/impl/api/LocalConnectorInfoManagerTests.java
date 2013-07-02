@@ -60,6 +60,7 @@ public class LocalConnectorInfoManagerTests extends ConnectorInfoManagerTestBase
      * @return
      * @throws Exception
      */
+    @Override
     protected ConnectorInfoManager getConnectorInfoManager() throws Exception {
         List<URL> urls = getTestBundles();
         ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.getInstance();
@@ -67,6 +68,7 @@ public class LocalConnectorInfoManagerTests extends ConnectorInfoManagerTestBase
         return manager;
     }
 
+    @Override
     protected void shutdownConnnectorInfoManager() {
         ConnectorFacadeFactory.getInstance().dispose();
         ConnectorInfoManagerFactory.getInstance().clearLocalCache();

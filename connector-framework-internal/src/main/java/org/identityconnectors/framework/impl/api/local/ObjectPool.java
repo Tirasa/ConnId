@@ -99,10 +99,12 @@ public class ObjectPool<T> {
             touch();
         }
 
+        @Override
         public T getPooledObject() {
             return object;
         }
 
+        @Override
         public void close() throws IOException {
             try {
                 returnObject(this);
@@ -238,7 +240,7 @@ public class ObjectPool<T> {
      *
      * @return An object
      */
-    public ObjectPoolEntry borrowObject() {
+    public ObjectPoolEntry<T> borrowObject() {
         PooledObject rv = null;
         try {
             do {

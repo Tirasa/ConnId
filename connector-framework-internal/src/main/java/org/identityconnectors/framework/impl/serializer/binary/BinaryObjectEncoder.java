@@ -292,6 +292,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
                 new InternalEncoder(new DataOutputStream(new BufferedOutputStream(output, 4096)));
     }
 
+    @Override
     public void flush() {
         try {
             internalEncoder.rootOutput.flush();
@@ -300,6 +301,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         }
     }
 
+    @Override
     public void close() {
         flush();
         try {
@@ -309,40 +311,47 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         }
     }
 
+    @Override
     public void writeObject(Object o) {
         internalEncoder.writeObject(this, o);
     }
 
+    @Override
     public void writeBooleanContents(boolean v) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeBoolean(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeBooleanField(String fieldName, boolean v) {
         internalEncoder.startField(fieldName);
         internalEncoder.writeBoolean(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeByteContents(byte v) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeByte(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeByteArrayContents(byte[] v) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeByteArray(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeClassContents(Class<?> v) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeClass(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeClassField(String fieldName, Class<?> v) {
         if (v != null) {
             internalEncoder.startField(fieldName);
@@ -351,18 +360,21 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         }
     }
 
+    @Override
     public void writeDoubleContents(double v) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeDouble(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeDoubleField(String fieldName, double v) {
         internalEncoder.startField(fieldName);
         internalEncoder.writeDouble(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeFloatContents(float v) {
         internalEncoder.startAnonymousField();
         // write as double since C# only knows how to deal with that
@@ -370,6 +382,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         internalEncoder.endField();
     }
 
+    @Override
     public void writeFloatField(String fieldName, float v) {
         internalEncoder.startField(fieldName);
         // write as double since C# only knows how to deal with that
@@ -377,48 +390,56 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         internalEncoder.endField();
     }
 
+    @Override
     public void writeIntContents(int v) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeInt(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeIntField(String fieldName, int v) {
         internalEncoder.startField(fieldName);
         internalEncoder.writeInt(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeLongContents(long v) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeLong(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeLongField(String fieldName, long v) {
         internalEncoder.startField(fieldName);
         internalEncoder.writeLong(v);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeObjectContents(Object object) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeObject(this, object);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeObjectField(String fieldName, Object object, boolean inline) {
         internalEncoder.startField(fieldName);
         internalEncoder.writeObject(this, object);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeStringContents(String str) {
         internalEncoder.startAnonymousField();
         internalEncoder.writeString(str, false);
         internalEncoder.endField();
     }
 
+    @Override
     public void writeStringField(String fieldName, String v) {
         if (v != null) {
             internalEncoder.startField(fieldName);

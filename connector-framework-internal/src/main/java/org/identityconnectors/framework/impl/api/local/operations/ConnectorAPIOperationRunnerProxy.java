@@ -67,6 +67,7 @@ public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
         this.runnerImplConstructor = runnerImplConstructor;
     }
 
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
         //do not proxy equals, hashCode, toString

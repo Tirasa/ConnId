@@ -81,6 +81,7 @@ public class ConnectionProcessor implements Runnable {
             connection = conn;
         }
 
+        @Override
         public boolean handle(Object obj) {
             try {
                 OperationResponsePart part = new OperationResponsePart(null, obj);
@@ -112,6 +113,7 @@ public class ConnectionProcessor implements Runnable {
         connection = new RemoteFrameworkConnection(socket);
     }
 
+    @Override
     public void run() {
         try {
             try {

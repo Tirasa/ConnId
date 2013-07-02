@@ -122,6 +122,7 @@ public class RemoteFrameworkConnection implements Closeable {
         decoder = factory.newBinaryDeserializer(inputStream);
     }
 
+    @Override
     public void close() {
         flush();
         try {

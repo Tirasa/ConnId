@@ -31,6 +31,7 @@ public final class GreaterThanOrEqualFilter extends ComparableAttributeFilter {
         super(attr);
     }
 
+    @Override
     public boolean accept(ConnectorObject obj) {
         return isPresent(obj) && this.compare(obj) >= 0;
     }

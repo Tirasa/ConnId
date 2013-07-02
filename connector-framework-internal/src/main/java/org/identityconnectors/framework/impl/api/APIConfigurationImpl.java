@@ -124,6 +124,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isConnectorPoolingSupported() {
         return isConnectorPoolingSupported;
     }
@@ -131,6 +132,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ObjectPoolConfiguration getConnectorPoolConfiguration() {
         if (connectorPoolConfiguration == null) {
             connectorPoolConfiguration = new ObjectPoolConfiguration();
@@ -141,6 +143,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ConfigurationPropertiesImpl getConfigurationProperties() {
         return configurationProperties;
     }
@@ -148,6 +151,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getTimeout(Class<? extends APIOperation> operation) {
         Integer ret = this.timeoutMap.get(operation);
         if (ret == null) {
@@ -160,6 +164,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Set<Class<? extends APIOperation>> getSupportedOperations() {
         return CollectionUtil.newReadOnlySet(supportedOperations);
     }
@@ -167,6 +172,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setTimeout(Class<? extends APIOperation> operation,
             int timeout) {
         this.timeoutMap.put(operation, timeout);
@@ -175,6 +181,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setProducerBufferSize(int size) {
         this.bufferSize = size;
     }
@@ -182,6 +189,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getProducerBufferSize() {
         return this.bufferSize;
     }
@@ -189,6 +197,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * {@inheritDoc}
      */
+    @Override
     public ResultsHandlerConfiguration getResultsHandlerConfiguration() {
         if (null == resultsHandlerConfiguration) {
             resultsHandlerConfiguration = new ResultsHandlerConfiguration();

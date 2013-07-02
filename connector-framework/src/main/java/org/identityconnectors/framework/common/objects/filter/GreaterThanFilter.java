@@ -41,6 +41,7 @@ public final class GreaterThanFilter extends ComparableAttributeFilter {
      *
      * @see org.identityconnectors.framework.common.objects.filter.Filter#accept(ConnectorObject)
      */
+    @Override
     public boolean accept(ConnectorObject obj) {
         return isPresent(obj) && this.compare(obj) > 0;
     }

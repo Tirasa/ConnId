@@ -619,6 +619,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object get(Class<?> dataTypeName, String name, String componentName,
             int sequenceNumber, boolean isMultivalue)  {
         // put the parameters in the Map ... this will fail if called
@@ -687,6 +688,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object get(Class<?> dataTypeName, String name, String componentName) {
 
         return get(dataTypeName, name, componentName, SINGLE_VALUE_MARKER, false);
@@ -695,6 +697,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getString(String name, String componentName,
             int sequenceNumber)  {
         return (String) get(String.class, name, componentName,
@@ -704,6 +707,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getString(String name, String componentName) {
         return (String) get(String.class, name, componentName);
     }
@@ -711,6 +715,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getTestSuiteAttribute(String propName) {
 
         return get("testsuite." + propName, null, false);
@@ -719,6 +724,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getTestSuiteAttribute(String propName, String testName)  {
         return get("testsuite." + testName + "." + propName, null, false);
     }
@@ -726,6 +732,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getConnectorAttribute(String propName) {
 
         return get("connector." + propName, null, false);
@@ -734,6 +741,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object get(String name) {
         Object result = get(name, null, false);
         if (result instanceof Map<?,?>) {
@@ -747,6 +755,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object generate(String pattern, Class<?> clazz) {
         return RandomGenerator.generate(pattern, clazz);
     }
@@ -754,6 +763,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object generate(String pattern) {
         return RandomGenerator.generate(pattern);
     }
@@ -761,6 +771,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object get(String name, int sequenceNumber) {
         String resolvedName = String.format("i%s%s%s", sequenceNumber, PROPERTY_SEPARATOR, name);
 
@@ -783,6 +794,7 @@ public class GroovyDataProvider implements DataProvider {
      * @param propertySetName
      * @return The set <CODE>Set<Attribute></CODE> of attributes
      */
+    @Override
     public Set<Attribute> getAttributeSet(final String propertySetName) {
         Map<String, Object> propMap = getPropertyMap(propertySetName);
         assertNotNull(propMap);
@@ -811,6 +823,7 @@ public class GroovyDataProvider implements DataProvider {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
+    @Override
     public void loadConfiguration(final String configName, Configuration cfg) {
         Map<String, ? extends Object> propMap = getPropertyMap(configName);
         assertNotNull(propMap);

@@ -879,6 +879,7 @@ public class EqualsHashCodeBuilderTests {
             this.a = a;
         }
 
+        @Override
         public boolean equals(Object o) {
             boolean ret = false;
             if (o instanceof TestObject) {
@@ -918,6 +919,7 @@ public class EqualsHashCodeBuilderTests {
             this.b = b;
         }
 
+        @Override
         public boolean equals(Object o) {
             boolean ret = false;
             if (o instanceof TestSubObject) {
@@ -958,6 +960,7 @@ public class EqualsHashCodeBuilderTests {
             this.a = a;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (o == this) {
                 return true;
@@ -983,6 +986,7 @@ public class EqualsHashCodeBuilderTests {
             this.b = b;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (o == this) {
                 return true;

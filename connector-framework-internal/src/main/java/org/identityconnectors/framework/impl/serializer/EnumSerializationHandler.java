@@ -28,18 +28,19 @@ public class EnumSerializationHandler extends AbstractObjectSerializationHandler
         super(clazz, name);
     }
 
+    @SuppressWarnings("rawtypes")
+    @Override
     public Object deserialize(final ObjectDecoder decoder) {
         String val = decoder.readStringField("value", null);
-        @SuppressWarnings("unchecked")
         Class enumClass = (Class) getHandledObjectType();
         @SuppressWarnings("unchecked")
         Object rv = Enum.valueOf(enumClass, val);
         return rv;
     }
 
+    @Override
     public void serialize(final Object object, final ObjectEncoder encoder) {
         Enum<?> e = (Enum<?>) object;
         encoder.writeStringField("value", e.name());
     }
-
 }

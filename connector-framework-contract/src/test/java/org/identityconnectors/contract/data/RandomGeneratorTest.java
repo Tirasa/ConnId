@@ -90,6 +90,7 @@ public class RandomGeneratorTest {
         assertTrue(o instanceof GuardedString);
         GuardedString pass = (GuardedString) o;
         pass.access(new GuardedString.Accessor() {
+            @Override
             public void access(char[] clearChars) {
                 final String result = new String(clearChars);
                 assertTrue(result.startsWith("ah"));

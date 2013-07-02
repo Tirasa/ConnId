@@ -101,6 +101,7 @@ public class ConnectorInfoManagerFactoryImpl extends ConnectorInfoManagerFactory
         }
     }
 
+    @Override
     public ConnectorInfoManager getUnCheckedRemoteManager(RemoteFrameworkConnectionInfo info) {
         RemoteManagerKey key = new RemoteManagerKey(info);
         synchronized (remoteManagerCache) {

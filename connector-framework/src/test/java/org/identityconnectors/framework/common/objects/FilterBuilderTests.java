@@ -250,12 +250,14 @@ public class FilterBuilderTests {
     // =======================================================================
 
     static class TrueFilter implements Filter {
+        @Override
         public boolean accept(ConnectorObject obj) {
             return true;
         }
     }
 
     static class FalseFilter implements Filter {
+        @Override
         public boolean accept(ConnectorObject obj) {
             return false;
         }

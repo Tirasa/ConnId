@@ -43,6 +43,7 @@ public class JDKLogger implements LogSpi {
      * Uses the JDK logger to log the message.
      * @see LogSpi#log(Class, Level, String, Throwable)
      */
+    @Override
     public void log(Class<?> clazz, String methodName, Level level, String message, Throwable ex) {
         // uses different call if the exception is not null..
         String clazzName = clazz.getName();
@@ -58,6 +59,7 @@ public class JDKLogger implements LogSpi {
     /**
      * Use the internal JDK logger to determine if the level is worthy of logging.
      */
+    @Override
     public boolean isLoggable(Class<?> clazz, Level level) {
         return getJDKLogger(clazz.getName()).isLoggable(getJDKLevel(level));
     }

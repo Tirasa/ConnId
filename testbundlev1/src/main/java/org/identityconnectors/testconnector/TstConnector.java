@@ -75,6 +75,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         checkClassLoader();
     }
 
+    @Override
     public Uid create(ObjectClass objectClass, Set<Attribute> createAttributes, OperationOptions options) {
         checkClassLoader();
         Integer delay = (Integer)options.getOptions().get("delay");
@@ -89,6 +90,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             return new Uid(version);
         }
     }
+    @Override
     public void init(Configuration cfg) {
         checkClassLoader();
         _config = (TstConnectorConfig)cfg;
@@ -97,10 +99,12 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         }
         _myConnection = new MyTstConnection(_connectionCount++);
     }
+    @Override
     public Configuration getConfiguration() {
         return _config;
     }
 
+    @Override
     public void dispose() {
         checkClassLoader();
         if (_myConnection != null) {
@@ -109,6 +113,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         }
     }
 
+    @Override
     public void checkAlive() {
         checkClassLoader();
         _myConnection.test();
@@ -122,11 +127,13 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         return s1+s2;
     }
 
+    @Override
     public FilterTranslator<String> createFilterTranslator(ObjectClass objectClass, OperationOptions options) {
          checkClassLoader();
          //no translation - ok since this is just for tests
          return new AbstractFilterTranslator<String>(){};
     }
+    @Override
     public void executeQuery(ObjectClass objectClass, String query, ResultsHandler handler, OperationOptions options) {
         checkClassLoader();
         for (int i = 0; i < _config.getNumResults(); i++ ) {
@@ -149,6 +156,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             }
         }
     }
+    @Override
     public void sync(ObjectClass objectClass, SyncToken token,
                      SyncResultsHandler handler,
                      OperationOptions options) {
@@ -172,11 +180,13 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             }
         }
     }
+    @Override
     public SyncToken getLatestSyncToken(ObjectClass objectClass) {
         checkClassLoader();
         return new SyncToken("mylatest");
     }
 
+    @Override
     public Schema schema() {
         checkClassLoader();
         SchemaBuilder builder = new SchemaBuilder(TstConnector.class);

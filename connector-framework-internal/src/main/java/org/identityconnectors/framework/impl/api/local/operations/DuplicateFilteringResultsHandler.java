@@ -56,6 +56,7 @@ public final class DuplicateFilteringResultsHandler implements ResultsHandler {
         this.handler = handler;
     }
 
+    @Override
     public boolean handle(ConnectorObject object) {
         String uid = object.getUid().getUidValue();
         if (!visitedUIDs.add(uid)) {

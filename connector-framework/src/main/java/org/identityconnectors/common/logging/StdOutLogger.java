@@ -73,6 +73,7 @@ class StdOutLogger implements LogSpi {
      *
      * @see LogSpi#log(Class, String, Level, String, Throwable)
      */
+    @Override
     public void log(final Class<?> clazz, final String methodName, final Level level,
             final String message, final Throwable ex) {
 
@@ -106,6 +107,7 @@ class StdOutLogger implements LogSpi {
     /**
      * Always returns true.
      */
+    @Override
     public boolean isLoggable(final Class<?> clazz, final Level level) {
         return true;
     }

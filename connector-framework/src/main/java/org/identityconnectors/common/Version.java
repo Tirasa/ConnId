@@ -189,6 +189,7 @@ public final class Version implements Comparable<Version> {
         return false;
     }
 
+    @Override
     public int compareTo(Version that) {
         for (int i = 0; i < Math.max(this.components.length, that.components.length); i++) {
             Integer c1 = i < this.components.length ? this.components[i] : Integer.valueOf(0);

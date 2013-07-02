@@ -40,12 +40,14 @@ public class LogTests {
         public Throwable _exception = null;
         public boolean _isloggable = false;
 
+        @Override
         public boolean isLoggable(Class<?> clazz, Level level) {
             _class = clazz;
             _level = level;
             return _isloggable;
         }
 
+        @Override
         public void log(Class<?> clazz, String methodName, Level level, String message, Throwable ex) {
             _class = clazz;
             _level = level;

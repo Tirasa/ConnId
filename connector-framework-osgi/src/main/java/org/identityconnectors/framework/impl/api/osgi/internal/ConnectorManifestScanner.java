@@ -57,6 +57,7 @@ public class ConnectorManifestScanner implements BundleScanner<ManifestEntry> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<ManifestEntry> scan(Bundle bundle) {
         NullArgumentException.validateNotNull(bundle, "Bundle");
 
@@ -64,9 +65,9 @@ public class ConnectorManifestScanner implements BundleScanner<ManifestEntry> {
         String bundleName = null;
         String bundleVersion = null;
 
-        final Dictionary bundleHeaders = bundle.getHeaders();
+        final Dictionary<?,?> bundleHeaders = bundle.getHeaders();
         if (bundleHeaders != null && !bundleHeaders.isEmpty()) {
-            final Enumeration keys = bundleHeaders.keys();
+            final Enumeration<?> keys = bundleHeaders.keys();
             while (keys.hasMoreElements()) {
                 final String key = (String) keys.nextElement();
                 if (ATT_FRAMEWORK_VERSION.equals(key)) {

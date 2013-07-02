@@ -70,6 +70,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
         OPERATIONAL_ATTRIBUTE_NAMES.add(Name.NAME);
     };
 
+    @Override
     public Uid update(final ObjectClass objectClass, Uid uid, Set<Attribute> replaceAttributes,
             OperationOptions options) {
         // validate all the parameters..
@@ -87,6 +88,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
         return (Uid) normalizer.normalizeAttribute(ret);
     }
 
+    @Override
     public Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd,
             OperationOptions options) {
         // validate all the parameters..
@@ -112,6 +114,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
         return (Uid) normalizer.normalizeAttribute(ret);
     }
 
+    @Override
     public Uid removeAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToRemove,
             OperationOptions options) {
         // validate all the parameters..

@@ -116,6 +116,7 @@ public class FilteredResultsHandlerTests {
             this.high = high;
         }
 
+        @Override
         public boolean accept(ConnectorObject obj) {
             boolean ret = false;
             Attribute attr = obj.getAttributeByName("count");

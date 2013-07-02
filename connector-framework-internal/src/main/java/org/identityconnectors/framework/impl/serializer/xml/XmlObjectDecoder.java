@@ -50,27 +50,33 @@ public class XmlObjectDecoder implements ObjectDecoder {
         return readObjectInternal();
     }
 
+    @Override
     public boolean readBooleanContents() {
         return decodeBoolean(readStringContentsInternal());
     }
 
+    @Override
     public boolean readBooleanField(String fieldName, boolean dflt) {
         return decodeBoolean(readStringAttributeInternal(fieldName, XmlObjectEncoder
                 .encodeBoolean(dflt)));
     }
 
+    @Override
     public byte readByteContents() {
         return decodeByte(readStringContentsInternal());
     }
 
+    @Override
     public byte[] readByteArrayContents() {
         return decodeByteArray(readStringContentsInternal());
     }
 
+    @Override
     public Class<?> readClassContents() {
         return decodeClass(readStringContentsInternal());
     }
 
+    @Override
     public Class<?> readClassField(String name, Class<?> dflt) {
         String val = readStringAttributeInternal(name, null);
         if (val == null) {
@@ -80,40 +86,49 @@ public class XmlObjectDecoder implements ObjectDecoder {
         }
     }
 
+    @Override
     public double readDoubleContents() {
         return decodeDouble(readStringContentsInternal());
     }
 
+    @Override
     public double readDoubleField(String fieldName, double dflt) {
         return decodeDouble(readStringAttributeInternal(fieldName, XmlObjectEncoder
                 .encodeDouble(dflt)));
     }
 
+    @Override
     public float readFloatContents() {
         return decodeFloat(readStringContentsInternal());
     }
 
+    @Override
     public float readFloatField(String fieldName, float dflt) {
         return decodeFloat(readStringAttributeInternal(fieldName, XmlObjectEncoder
                 .encodeFloat(dflt)));
     }
 
+    @Override
     public int readIntContents() {
         return decodeInt(readStringContentsInternal());
     }
 
+    @Override
     public int readIntField(String fieldName, int dflt) {
         return decodeInt(readStringAttributeInternal(fieldName, XmlObjectEncoder.encodeInt(dflt)));
     }
 
+    @Override
     public long readLongContents() {
         return decodeLong(readStringContentsInternal());
     }
 
+    @Override
     public long readLongField(String fieldName, long dflt) {
         return decodeLong(readStringAttributeInternal(fieldName, XmlObjectEncoder.encodeLong(dflt)));
     }
 
+    @Override
     public int getNumSubObjects() {
         int count = 0;
         for (Element subElement = XmlUtil.getFirstChildElement(node); subElement != null; subElement =
@@ -123,6 +138,7 @@ public class XmlObjectDecoder implements ObjectDecoder {
         return count;
     }
 
+    @Override
     public Object readObjectContents(int index) {
 
         Element subElement = XmlUtil.getFirstChildElement(node);
@@ -137,6 +153,7 @@ public class XmlObjectDecoder implements ObjectDecoder {
         return new XmlObjectDecoder(subElement, null).readObject();
     }
 
+    @Override
     public Object readObjectField(String fieldName, Class<?> expected, Object dflt) {
         Element child = XmlUtil.findImmediateChildElement(node, fieldName);
         if (child == null) {
@@ -153,11 +170,13 @@ public class XmlObjectDecoder implements ObjectDecoder {
         return new XmlObjectDecoder(subElement, null).readObject();
     }
 
+    @Override
     public String readStringContents() {
         String rv = readStringContentsInternal();
         return rv == null ? "" : rv;
     }
 
+    @Override
     public String readStringField(String fieldName, String dflt) {
         return readStringAttributeInternal(fieldName, dflt);
     }

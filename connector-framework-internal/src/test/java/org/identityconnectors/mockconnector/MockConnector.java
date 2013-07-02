@@ -60,20 +60,24 @@ public class MockConnector implements Connector, SchemaOp {
 
     private Configuration configuration;
 
+    @Override
     public void dispose() {
         addCall();
     }
 
+    @Override
     public Schema schema() {
         addCall();
         return null;
     }
 
+    @Override
     public void init(Configuration cfg) {
         configuration = cfg;
         addCall(cfg);
     }
 
+    @Override
     public Configuration getConfiguration() {
         return configuration;
     }

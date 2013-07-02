@@ -74,6 +74,7 @@ public final class XmlUtil {
     }
 
     private static class DummyDTDResolver implements EntityResolver {
+        @Override
         public InputSource resolveEntity(String publicID, String systemID) {
             if ((publicID != null && publicID.endsWith(".dtd"))
                     || (systemID != null && systemID.endsWith(".dtd"))) {

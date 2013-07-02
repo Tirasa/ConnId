@@ -47,6 +47,7 @@ public class MockConfiguration extends AbstractConfiguration {
         this.fail = failvalidation;
     }
 
+    @Override
     public void validate() {
         if (fail) {
             throw new IllegalStateException();

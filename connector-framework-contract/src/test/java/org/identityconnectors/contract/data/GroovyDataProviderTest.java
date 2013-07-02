@@ -680,6 +680,7 @@ public class GroovyDataProviderTest {
         assertTrue(defaultedValue instanceof GuardedString);
         GuardedString gs = (GuardedString) defaultedValue;
         gs.access(new GuardedString.Accessor() {
+            @Override
             public void access(char[] clearChars) {
                  String result = new String(clearChars);
                  assertTrue(result.length() > 0);
@@ -694,6 +695,7 @@ public class GroovyDataProviderTest {
         assertTrue(seekedValue instanceof GuardedString);
         GuardedString gs = (GuardedString) seekedValue;
         gs.access(new GuardedString.Accessor() {
+            @Override
             public void access(char[] clearChars) {
                  String result = new String(clearChars);
                  assertTrue(result.length() > 0 && result.endsWith("ahoj"));

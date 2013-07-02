@@ -52,6 +52,7 @@ public class PrettyStringBuilder {
     /**
      * Returns pretty value from object value.
      */
+    @SuppressWarnings("rawtypes")         
     protected String toPrettyString(final Object obj) {
         deep++;
         if (obj == null) {
@@ -63,7 +64,7 @@ public class PrettyStringBuilder {
             return obj.toString();
         }
         final StringBuilder s = new StringBuilder();
-        final Class c = obj.getClass();
+        final Class<?> c = obj.getClass();
         if (c.isArray()) {
             final int arrayLen = Array.getLength(obj);
             final int len = Math.min(arrayLen, maxArrayLen);

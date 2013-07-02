@@ -44,6 +44,7 @@ abstract public class AbstractConnectorInfo implements ConnectorInfo {
 
     }
 
+    @Override
     public final ConnectorMessages getMessages() {
         return messages;
     }
@@ -52,6 +53,7 @@ abstract public class AbstractConnectorInfo implements ConnectorInfo {
         this.messages = messages;
     }
 
+    @Override
     public final String getConnectorDisplayName() {
         return messages.format(connectorDisplayNameKey, connectorKey.getConnectorName());
     }
@@ -64,6 +66,7 @@ abstract public class AbstractConnectorInfo implements ConnectorInfo {
         connectorDisplayNameKey = name;
     }
 
+    @Override
     public final String getConnectorCategory() {
         return messages.format(connectorCategoryKey, null);
     }
@@ -76,6 +79,7 @@ abstract public class AbstractConnectorInfo implements ConnectorInfo {
         connectorCategoryKey = key;
     }
 
+    @Override
     public final ConnectorKey getConnectorKey() {
         return connectorKey;
     }
@@ -84,6 +88,7 @@ abstract public class AbstractConnectorInfo implements ConnectorInfo {
         connectorKey = key;
     }
 
+    @Override
     public final APIConfiguration createDefaultAPIConfiguration() {
         APIConfigurationImpl rv =
                 (APIConfigurationImpl) SerializerUtil.cloneObject(defaultAPIConfiguration);

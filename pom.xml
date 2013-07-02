@@ -185,7 +185,7 @@
             <target>1.6</target>
             <showWarnings>true</showWarnings>
             <showDeprecation>true</showDeprecation>
-            <!--<compilerArgument>-Xlint:unchecked</compilerArgument>-->
+            <compilerArgument>-Xlint:all</compilerArgument>
           </configuration>
         </plugin>
         <plugin>

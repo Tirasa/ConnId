@@ -146,10 +146,12 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
         this.parent = parent;
     }
 
+    @Override
     public Set<Class<? extends APIOperation>> getOperations() {
         return operations;
     }
 
+    @Override
     public boolean isRequired() {
         return required;
     }
@@ -175,6 +177,7 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isConfidential() {
         return confidential;
     }
@@ -182,6 +185,7 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -189,6 +193,7 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Class<?> getType() {
         return type;
     }
@@ -196,6 +201,7 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object getValue() {
         return value;
     }
@@ -203,6 +209,7 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(Object value) {
         this.value = value;
     }
@@ -210,6 +217,7 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getHelpMessage(String def) {
         return formatMessage(helpMessageKey, def);
     }
@@ -217,6 +225,7 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDisplayName(String def) {
         return formatMessage(displayMessageKey, def);
     }
@@ -224,14 +233,17 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGroup(String def) {
         return formatMessage(groupMessageKey, def);
     }
 
+    @Override
     public int hashCode() {
         return getName().hashCode();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof ConfigurationPropertyImpl) {
             ConfigurationPropertyImpl other = (ConfigurationPropertyImpl) o;

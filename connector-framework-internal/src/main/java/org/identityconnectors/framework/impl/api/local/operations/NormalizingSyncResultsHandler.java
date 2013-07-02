@@ -39,6 +39,7 @@ public class NormalizingSyncResultsHandler implements SyncResultsHandler {
         this.normalizer = normalizer;
     }
 
+    @Override
     public boolean handle(SyncDelta delta) {
         SyncDelta normalized = normalizer.normalizeSyncDelta(delta);
         return target.handle(normalized);

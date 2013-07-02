@@ -50,6 +50,7 @@ public final class NotFilter implements Filter {
      *
      * @see Filter#accept(ConnectorObject)
      */
+    @Override
     public boolean accept(ConnectorObject obj) {
         return !this.filter.accept(obj);
     }

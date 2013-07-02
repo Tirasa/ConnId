@@ -59,6 +59,7 @@ public final class EqualsFilter extends AttributeFilter {
      *
      * @see Filter#accept(ConnectorObject)
      */
+    @Override
     public boolean accept(ConnectorObject obj) {
         boolean ret = false;
         Attribute thisAttr = getAttribute();

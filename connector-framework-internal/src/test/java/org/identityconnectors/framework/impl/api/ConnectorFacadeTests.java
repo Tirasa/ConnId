@@ -138,11 +138,13 @@ public class ConnectorFacadeTests {
     @Test
     public void runScriptOnConnectorCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 facade.runScriptOnConnector(new ScriptContextBuilder("lang", "script").build(),
                         null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "runScriptOnConnector");
             }
@@ -152,10 +154,12 @@ public class ConnectorFacadeTests {
     @Test
     public void runScriptOnResourceCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 facade.runScriptOnResource(new ScriptContextBuilder("lang", "script").build(), null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "runScriptOnResource");
             }
@@ -168,10 +172,12 @@ public class ConnectorFacadeTests {
     @Test
     public void schemaCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 facade.schema();
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "schema");
             }
@@ -181,11 +187,13 @@ public class ConnectorFacadeTests {
     @Test
     public void authenticateCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 facade.authenticate(ObjectClass.ACCOUNT, "dfadf", new GuardedString("fadfkj"
                         .toCharArray()), null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "authenticate");
             }
@@ -195,10 +203,12 @@ public class ConnectorFacadeTests {
     @Test
     public void resolveUsernameCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 facade.resolveUsername(ObjectClass.ACCOUNT, "dfadf", null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "resolveUsername");
             }
@@ -208,11 +218,13 @@ public class ConnectorFacadeTests {
     @Test
     public void createCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = CollectionUtil.<Attribute> newReadOnlySet();
                 facade.create(ObjectClass.ACCOUNT, attrs, null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "create");
             }
@@ -222,11 +234,13 @@ public class ConnectorFacadeTests {
     @Test(expectedExceptions = NullPointerException.class)
     public void createWithOutObjectClassPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = new HashSet<Attribute>();
                 facade.create(null, attrs, null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 fail("Should not get here..");
             }
@@ -236,6 +250,7 @@ public class ConnectorFacadeTests {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void createDuplicatAttributesPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = new HashSet<Attribute>();
                 attrs.add(AttributeBuilder.build("abc", 1));
@@ -243,6 +258,7 @@ public class ConnectorFacadeTests {
                 facade.create(ObjectClass.ACCOUNT, attrs, null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 fail("Should not get here..");
             }
@@ -252,12 +268,14 @@ public class ConnectorFacadeTests {
     @Test
     public void updateCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = new HashSet<Attribute>();
                 attrs.add(AttributeBuilder.build("accountid"));
                 facade.update(ObjectClass.ACCOUNT, newUid(0), attrs, null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "update");
             }
@@ -267,10 +285,12 @@ public class ConnectorFacadeTests {
     @Test
     public void deleteCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 facade.delete(ObjectClass.ACCOUNT, newUid(0), null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "delete");
             }
@@ -280,9 +300,11 @@ public class ConnectorFacadeTests {
     @Test
     public void searchCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 // create an empty results handler..
                 ResultsHandler rh = new ResultsHandler() {
+                    @Override
                     public boolean handle(ConnectorObject obj) {
                         return true;
                     }
@@ -291,6 +313,7 @@ public class ConnectorFacadeTests {
                 facade.search(ObjectClass.ACCOUNT, null, rh, null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "createFilterTranslator");
                 assertEquals(calls.remove(0).getMethodName(), "executeQuery");
@@ -301,12 +324,14 @@ public class ConnectorFacadeTests {
     @Test
     public void getCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 // create an empty results handler..
                 // call the search method..
                 facade.getObject(ObjectClass.ACCOUNT, newUid(0), null);
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "createFilterTranslator");
                 assertEquals(calls.remove(0).getMethodName(), "executeQuery");
@@ -317,10 +342,12 @@ public class ConnectorFacadeTests {
     @Test
     public void testOpCallPattern() {
         testCallPattern(new TestOperationPattern() {
+            @Override
             public void makeCall(ConnectorFacade facade) {
                 facade.test();
             }
 
+            @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "test");
             }
