@@ -9,12 +9,12 @@
  * except in compliance with the License.
  * 
  * You can obtain a copy of the License at 
- * http://IdentityConnectors.dev.java.net/legal/license.txt
+ * http://opensource.org/licenses/cddl1.php
  * See the License for the specific language governing permissions and limitations 
  * under the License. 
  * 
  * When distributing the Covered Code, include this CDDL Header Notice in each file
- * and include the License file at identityconnectors/legal/license.txt.
+ * and include the License file at http://opensource.org/licenses/cddl1.php.
  * If applicable, add the following below this CDDL Header, with the fields 
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
@@ -1110,32 +1110,38 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             {
                 options = new OperationOptionsBuilder().Build();
             }
-            
-            ResultsHandlerConfiguration hdlCfg = null != GetOperationalContext() ?
- 	 	 	 		            GetOperationalContext().getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
- 	 	 	ResultsHandler handlerChain = handler;
 
+            ResultsHandlerConfiguration hdlCfg = null != GetOperationalContext() ?
+                                GetOperationalContext().getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
+            ResultsHandler handlerChain = handler;
             Filter finalFilter = originalFilter;
- 	 	 	 		
- 	 	 	if (hdlCfg.EnableNormalizingResultsHandler) {
- 	 	 	 	ObjectNormalizerFacade normalizer =  GetNormalizer(oclass);
- 	 	 	 	//chain a normalizing handler (must come before
- 	 	 	 	//filter handler)
+
+            if (hdlCfg.EnableNormalizingResultsHandler)
+            {
+                ObjectNormalizerFacade normalizer = GetNormalizer(oclass);
+                //chain a normalizing handler (must come before
+                //filter handler)
                 ResultsHandler normalizingHandler = new NormalizingResultsHandler(handler, normalizer).Handle;
- 	 	 	 	Filter normalizedFilter = normalizer.NormalizeFilter(originalFilter);
- 	 	 	 	// chain a filter handler..
- 	 	 	if (hdlCfg.EnableFilteredResultsHandler) {
- 	 	 	 		// chain a filter handler..
- 	 	 	 		handlerChain =  new FilteredResultsHandler(handler, normalizedFilter).Handle;                   
- 	 	 	 		finalFilter = normalizedFilter;
- 	 	 	 	} else {
- 	 	 	 		handlerChain = normalizingHandler;
- 	 	 	 	}
- 	 	 	} else if (hdlCfg.EnableFilteredResultsHandler) {
- 	 	 	 	// chain a filter handler..
- 	 	 	 	ResultsHandler filteredHandler =  new FilteredResultsHandler(handlerChain, originalFilter).Handle;
- 	 	 	}
-           
+                Filter normalizedFilter = normalizer.NormalizeFilter(originalFilter);
+                // chain a filter handler..
+                if (hdlCfg.EnableFilteredResultsHandler)
+                {
+                    // chain a filter handler..
+                    handlerChain = new FilteredResultsHandler(normalizingHandler, normalizedFilter).Handle;
+                    finalFilter = normalizedFilter;
+                }
+                else
+                {
+                    handlerChain = normalizingHandler;
+                }
+            }
+            else if (hdlCfg.EnableFilteredResultsHandler)
+            {
+                // chain a filter handler..
+                handlerChain = new FilteredResultsHandler(handlerChain, originalFilter).Handle;
+                finalFilter = originalFilter;
+            }
+
             //get the IList interface that this type implements
             Type interfaceType = ReflectionUtil.FindInHierarchyOf
                 (typeof(SearchOp<>), GetConnector().GetType());
@@ -1155,7 +1161,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             if (attrsToGet != null && attrsToGet.Length > 0 && hdlCfg.EnableAttributesToGetSearchResultsHandler)
             {
                 handlerChain = new SearchAttributesToGetResultsHandler(
-                    handler, attrsToGet).Handle;
+                    handlerChain, attrsToGet).Handle;
             }
             searcher.RawSearch(GetConnector(), oclass, finalFilter, handlerChain, options);
         }

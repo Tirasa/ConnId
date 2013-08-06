@@ -9,12 +9,12 @@
   except in compliance with the License.
   
   You can obtain a copy of the License at 
-  http://IdentityConnectors.dev.java.net/legal/license.txt
+  http://opensource.org/licenses/cddl1.php
   See the License for the specific language governing permissions and limitations 
   under the License. 
   
   When distributing the Covered Code, include this CDDL Header Notice in each file
-  and include the License file at identityconnectors/legal/license.txt.
+  and include the License file at http://opensource.org/licenses/cddl1.php.
   If applicable, add the following below this CDDL Header, with the fields 
   enclosed by brackets [] replaced by your own identifying information: 
   "Portions Copyrighted [year] [name of copyright owner]"
@@ -28,69 +28,41 @@
         <Copyright>Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.</Copyright>
         <FrameworkDistDir>$(MSBuildProjectDirectory)\..\Dist</FrameworkDistDir>
         <!--FrameworkRootDir>$(MSBuildProjectDirectory)\..\..\</FrameworkRootDir-->
-	<FrameworkRootDir>$(MSBuildProjectDirectory)</FrameworkRootDir>
+        <FrameworkRootDir>$(MSBuildProjectDirectory)</FrameworkRootDir>
     </PropertyGroup>
 
     <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
 
-    <Target Name="SetRevision" Condition="'$(SVN_REVISION)' == ''">
-        <!--
-            Use the "framework" directory to compute the SVN revision.
-            That way, even if the last change to the framework was made in two
-            separate check-ins (for Java and .NET), both the Java and .NET framework
-            get the same revision (that of the last change of the "framework" directory).
-        -->
-        <SvnVersion LocalPath="$(FrameworkRootDir)" UseLastCommittedRevision="true">
-            <Output TaskParameter="Revision" PropertyName="SVN_REVISION" />
-        </SvnVersion>
+    <Target Name="SetRevision" Condition="'$(REVISION)' == ''">
+      <CreateProperty Value="$(REVISION)">
+        <Output TaskParameter="Value" PropertyName="Revision" />
+      </CreateProperty>
     </Target>
 
-    <Target Name="GenerateAssemblyInfo" DependsOnTargets="SetRevision">
+    <Target Name="GenerateAssemblyInfo">
         <Version VersionFile="$(VersionFileIn)">
             <Output TaskParameter="Major" PropertyName="Major" />
             <Output TaskParameter="Minor" PropertyName="Minor" />
             <Output TaskParameter="Build" PropertyName="Build" />
+            <Output TaskParameter="Revision" PropertyName="Revision" />
         </Version>
-        <WriteLinesToFile File="$(VersionFileOut)" Lines="$(Major).$(Minor).$(Build).$(SVN_REVISION)" Overwrite="true" />
+        <WriteLinesToFile File="$(VersionFileOut)" Lines="$(Major).$(Minor).$(Build).$(Revision)" Overwrite="true" />
         <AssemblyInfo CodeLanguage="CS"  
             OutputFile="AssemblyInfo.cs"
             AssemblyTitle="$(ProductName)"
             AssemblyProduct="$(ProductName)"
             AssemblyCopyright="$(Copyright)"
             AssemblyCompany="$(Company)"             
-            AssemblyVersion="$(Major).$(Minor).$(Build).$(SVN_REVISION)" 
-            AssemblyFileVersion="$(Major).$(Minor).$(Build).$(SVN_REVISION)"
-            InternalsVisibleTo="$(InternalsVisibleTo)"
-        />
+            AssemblyVersion="$(Major).$(Minor).$(Build).$(Revision)" 
+            AssemblyFileVersion="$(Major).$(Minor).$(Build).$(Revision)"
+            InternalsVisibleTo="$(InternalsVisibleTo)" />
     </Target>
     
     <Target Name="CopyOutput">
         <MakeDir Directories="$(FrameworkDistDir)" Condition="!Exists('$(FrameworkDistDir)')" />
         <Copy
             SourceFiles="$(OutputPath)\$(TargetFileName)"
-            DestinationFolder="$(FrameworkDistDir)"
-        />
-    </Target>
-
-    <Target Name="BuildZip">
-        <Copy
-            SourceFiles="$(MSBuildProjectDirectory)\..\legal\CDDLv1.txt"
-            DestinationFolder="$(OutputPath)"
-        />
-        <Copy
-            SourceFiles="$(MSBuildProjectDirectory)\..\legal\THIRDPARTYREADME.txt"
-            DestinationFolder="$(OutputPath)"
-        />
-        <ItemGroup>    
-    	    <ZipFiles Include="$(OutputPath)\*.*" Exclude="*.zip" />
-    	    <ZipFiles Include="$(OutputPath)\??-??\*.*" Exclude="*.zip" />
-        </ItemGroup>
-        <MakeDir Directories="$(FrameworkDistDir)" Condition="!Exists('$(FrameworkDistDir)')" />
-        <Zip
-            Files="@(ZipFiles)"
-            WorkingDirectory="$(OutputPath)" 
-            ZipFileName="$(FrameworkDistDir)\$(AssemblyName)-$(Major).$(Minor).$(Build).$(SVN_Revision).zip"
-        />
+            DestinationFolder="$(FrameworkDistDir)" />
     </Target>
 
     <Target Name="NUnit" DependsOnTargets="Build">
@@ -119,8 +91,7 @@
     </Target>
 
     <Target Name="FrameworkAfterBuild">
-        <CallTarget Condition=" '$(CopyOutput)'=='true' " Targets="CopyOutput" />
-        <CallTarget Condition=" '$(Configuration)'=='Release' And '$(ZipRelease)'=='true' " Targets="BuildZip" />            
+        <CallTarget Condition=" '$(CopyOutput)'=='true' " Targets="CopyOutput" />           
     </Target>
 
     <Target Name="FrameworkClean">

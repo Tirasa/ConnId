@@ -94,4 +94,7 @@
     <Compile Include="TraceUtil.cs" />
     <Compile Include="XmlUtil.cs" />
   </ItemGroup>
+  <Target Name="Clean">
+    <RemoveDir Directories="obj;bin" />
+  </Target>
 </Project>

@@ -9,12 +9,12 @@
  * except in compliance with the License.
  * 
  * You can obtain a copy of the License at 
- * http://IdentityConnectors.dev.java.net/legal/license.txt
+ * http://opensource.org/licenses/cddl1.php
  * See the License for the specific language governing permissions and limitations 
  * under the License. 
  * 
  * When distributing the Covered Code, include this CDDL Header Notice in each file
- * and include the License file at identityconnectors/legal/license.txt.
+ * and include the License file at http://opensource.org/licenses/cddl1.php.
  * If applicable, add the following below this CDDL Header, with the fields 
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
@@ -616,7 +616,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer.Xml
             {
                 mySettings.ValidationType = ValidationType.DTD;
             }
-            mySettings.ProhibitDtd = false;
+            mySettings.DtdProcessing = DtdProcessing.Parse;
+            //mySettings.ProhibitDtd = false;
             mySettings.XmlResolver = new MyEntityResolver(validate);
             XmlReader reader = XmlReader.Create(inputSource, mySettings);
             MyParser parser = new MyParser(handler);

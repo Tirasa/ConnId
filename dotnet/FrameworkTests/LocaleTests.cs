@@ -9,12 +9,12 @@
  * except in compliance with the License.
  * 
  * You can obtain a copy of the License at 
- * http://IdentityConnectors.dev.java.net/legal/license.txt
+ * http://opensource.org/licenses/cddl1.php
  * See the License for the specific language governing permissions and limitations 
  * under the License. 
  * 
  * When distributing the Covered Code, include this CDDL Header Notice in each file
- * and include the License file at identityconnectors/legal/license.txt.
+ * and include the License file at http://opensource.org/licenses/cddl1.php.
  * If applicable, add the following below this CDDL Header, with the fields 
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
@@ -111,9 +111,7 @@ namespace FrameworkTests
             TestJavaLocale(cultures, new Locale("en", "CA", ""), "English (Canada)");
             TestJavaLocale(cultures, new Locale("en", "GB", ""), "English (United Kingdom)");
             TestJavaLocale(cultures, new Locale("en", "IE", ""), "English (Ireland)");
-            TestJavaLocale(cultures, new Locale("en", "IN", ""),
-                           "English (India)",
-                           new Locale("en"));
+            TestJavaLocale(cultures, new Locale("en", "IN", ""), "English (India)");
             TestJavaLocale(cultures, new Locale("en", "NZ", ""), "English (New Zealand)");
             TestJavaLocale(cultures, new Locale("en", "US", ""), "English (United States)");
             TestJavaLocale(cultures, new Locale("en", "ZA", ""), "English (South Africa)");

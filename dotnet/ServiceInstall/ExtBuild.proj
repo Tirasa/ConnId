@@ -19,7 +19,7 @@
   enclosed by brackets [] replaced by your own identifying information: 
   "Portions Copyrighted [year] [name of copyright owner]"
   ====================
-  Portions Copyrighted 2012 ForgeRock AS
+  Portions Copyrighted 2012-2013 ForgeRock AS
 -->
 <Project DefaultTargets="Clean" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
@@ -31,31 +31,34 @@
       <Output TaskParameter="Lines" ItemName="FileTopLines"/>
     </ReadLinesFromFile>
     <WriteLinesToFile File="Files.wxs" Lines="@(FileTopLines)" Overwrite="true" />
+
+    <ItemGroup>
+      <AllFiles Include="..\Service\bin\$(Configuration)\*.*"
+		            Exclude="..\Service\bin\$(Configuration)\*.exe"/>
+      <EXEFiles Include="..\Service\bin\$(Configuration)\ConnectorServer.exe"/>
+      <PowerShellScriptExecutorFactoryFiles  Include="..\PowerShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.*"/>
+      <ShellScriptExecutorFactoryFiles Include="..\ShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.*"/>
+      <LegalFiles Include="..\legal\*.txt"
+                  Exclude="..\legal\ForgeRock*.txt"/>
+      <ForgeRockLegalFiles Include="..\legal\ForgeRock*.txt"/>
+      <LegalFiles Include="@(ForgeRockLegalFiles)" Condition=" '$(Configuration)' == 'Release' "/>
+    </ItemGroup>
+        
     <!-- Write out the majority of base files -->
-    <CreateItem Include="..\Service\bin\$(Configuration)\*.*"
-		            Exclude="..\Service\bin\$(Configuration)\*.exe">
-      <Output TaskParameter="Include" ItemName="AllFiles"/>
-    </CreateItem>
     <WriteLinesToFile File="Files.wxs"
   			Lines="@(AllFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
 
     <!-- Write out the Shell and the PowerShell files -->
-    <CreateItem Include="..\PowerShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.*">
-      <Output TaskParameter="Include" ItemName="PowerShellScriptExecutorFactoryFiles"/>
-    </CreateItem>
     <WriteLinesToFile File="Files.wxs"
   			Lines="@(PowerShellScriptExecutorFactoryFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
-    <CreateItem Include="..\ShellScriptExecutorFactory\bin\$(Configuration)\*.ScriptExecutorFactory.*">
-      <Output TaskParameter="Include" ItemName="ShellScriptExecutorFactoryFiles"/>
-    </CreateItem>
     <WriteLinesToFile File="Files.wxs"
   			Lines="@(ShellScriptExecutorFactoryFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
-    <WriteLinesToFile File="Files.wxs" Lines="@(FileBottomLines)" />
 
+    <!-- Write out the Legal files -->
+    <WriteLinesToFile File="Files.wxs"
+  			Lines="@(LegalFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; /&gt;')"/>
+    
     <!-- Write out the Service Executable (should only be one) -->
-    <CreateItem Include="..\Service\bin\$(Configuration)\ConnectorServer.exe">
-      <Output TaskParameter="Include" ItemName="EXEFiles"/>
-    </CreateItem>
     <WriteLinesToFile File="Files.wxs"
   			Lines="@(EXEFiles->'&lt;File Source=&quot;%(Fullpath)&quot; Name=&quot;%(Filename)%(Extension)&quot; KeyPath=&quot;yes&quot; /&gt;')"/>
     <!-- Write out the bottom of the file -->
@@ -76,6 +79,7 @@
     <Copy SourceFiles="@(EXEFiles)" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="..\legal\CDDLv1.txt" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="..\legal\THIRDPARTYREADME.txt" DestinationFolder="bin\$(Configuration)\target" />
+    <Copy SourceFiles="..\legal\ForgeRock_License.txt" DestinationFolder="bin\$(Configuration)\target" Condition=" '$(Configuration)' == 'Release' "/>
     <ItemGroup>
       <ZipFiles Include="bin\$(Configuration)\target\*.*" Exclude="*.zip" />
     </ItemGroup>

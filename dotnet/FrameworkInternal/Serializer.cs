@@ -9,12 +9,12 @@
  * except in compliance with the License.
  * 
  * You can obtain a copy of the License at 
- * http://IdentityConnectors.dev.java.net/legal/license.txt
+ * http://opensource.org/licenses/cddl1.php
  * See the License for the specific language governing permissions and limitations 
  * under the License. 
  * 
  * When distributing the Covered Code, include this CDDL Header Notice in each file
- * and include the License file at identityconnectors/legal/license.txt.
+ * and include the License file at http://opensource.org/licenses/cddl1.php.
  * If applicable, add the following below this CDDL Header, with the fields 
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
@@ -2733,14 +2733,25 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             {
                 Exception exception =
                     (Exception)decoder.ReadObjectField("exception", null, null);
-                IDictionary<string, object> serverInfo =
-                                        (IDictionary<string, object>)decoder.ReadObjectField("serverInfoMap", null, null);
+                IDictionary<object, object> serverInfoRaw =
+                                        (IDictionary<object, object>)decoder.ReadObjectField("serverInfoMap", null, null);
+                IDictionary<string, object> serverInfo = null;
+                if (null != serverInfoRaw)
+                {
+                    serverInfo = new Dictionary<string, object>(serverInfoRaw.Count);
+                    foreach (KeyValuePair<object, object> entry in serverInfoRaw)
+                    {
+                        serverInfo.Add(entry.Key.ToString(), entry.Value);
+                    }
+                }
+
                 IList<object> connectorInfosObj =
                     (IList<object>)decoder.ReadObjectField("ConnectorInfos", typeof(IList<object>), null);
                 IList<RemoteConnectorInfoImpl> connectorInfos =
                     CollectionUtil.NewList<object, RemoteConnectorInfoImpl>(connectorInfosObj);
-                IList<ConnectorKey> connectorKeys =
-                                    (IList<ConnectorKey>)decoder.ReadObjectField("ConnectorKeys", typeof(IList<ConnectorKey>), null);
+                IList<object> connectorKeysObj =
+                                    (IList<object>)decoder.ReadObjectField("ConnectorKeys", typeof(IList<ConnectorKey>), null);
+                IList<ConnectorKey> connectorKeys = CollectionUtil.NewList<object, ConnectorKey>(connectorKeysObj);
                 return new HelloResponse(exception, serverInfo, connectorKeys, connectorInfos);
             }
 

@@ -108,4 +108,8 @@
       <Name>TestCommon</Name>
     </ProjectReference>
   </ItemGroup>
+  <Target Name="Clean">
+    <CallTarget Targets="FrameworkClean" />
+    <RemoveDir Directories="obj;bin" />
+  </Target>
 </Project>

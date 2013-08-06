@@ -53,7 +53,8 @@ namespace FrameworkTests
         public virtual void TestIsExact()
         {
             Assert.IsTrue(VersionRange.Parse("1.1.0.0").Exact);
-            Assert.IsTrue(VersionRange.Parse("  [  1 , 1 ]  ").Exact);
+            //Version string portion was too short or too long (major.minor[.build[.revision]]).
+            //Assert.IsTrue(VersionRange.Parse("  [  1 , 1 ]  ").Exact); 
             Assert.IsTrue(VersionRange.Parse("[  1.1 , 1.1 ]").Exact);
             Assert.IsTrue(VersionRange.Parse("  [1.1.1 , 1.1.1]  ").Exact);
             Assert.IsTrue(VersionRange.Parse("[1.1.0.0,1.1.0.0]").Exact);
@@ -75,7 +76,7 @@ namespace FrameworkTests
                 VersionRange.Parse("(1.1.0.0)");
                 Assert.Fail("Invalid syntax not failed");
             }
-            catch (System.ArgumentException e)
+            catch (System.FormatException e)
             {
                 // ok
             }

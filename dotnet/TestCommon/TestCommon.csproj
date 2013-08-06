@@ -66,4 +66,7 @@
   <ItemGroup>
     <EmbeddedResource Include="config.xsd" />
   </ItemGroup>
+  <Target Name="Clean">
+    <RemoveDir Directories="obj;bin" />
+  </Target>
 </Project>
