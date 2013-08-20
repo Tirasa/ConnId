@@ -35,7 +35,7 @@ namespace Org.IdentityConnectors.Framework.Service
 	    
 	    static ProjectInstaller()
 	    {
-	        ServiceName = "Connector Server";
+            ServiceName = "ConnectorServerService";
 	    }
 	    
 		private ServiceProcessInstaller serviceProcessInstaller;
