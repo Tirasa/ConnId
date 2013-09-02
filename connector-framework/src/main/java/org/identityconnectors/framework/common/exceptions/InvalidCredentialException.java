@@ -23,8 +23,13 @@
 package org.identityconnectors.framework.common.exceptions;
 
 /**
- * Thrown when at least one credential (e.g., password, username or certificate)
- * passed into an operation is invalid.
+ * InvalidCredentialException signals that user authentication failed.
+ * <p/>
+ * This exception is thrown by Connector if authentication failed. For example,
+ * a <code>Connector</code> throws this exception if the user entered an
+ * incorrect password.
+ *
+ * @see javax.security.auth.login.FailedLoginException
  */
 public class InvalidCredentialException extends ConnectorSecurityException {
 

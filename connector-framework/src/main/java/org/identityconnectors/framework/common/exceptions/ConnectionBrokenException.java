@@ -23,10 +23,12 @@
 package org.identityconnectors.framework.common.exceptions;
 
 /**
- * Thrown when a connection to a target resource instance fails during an
- * operation. An instance of <code>ConnectionBrokenException</code> generally
- * wraps the native exception (or describes the native error) returned by the
- * target resource.
+ * ConnectionBrokenException is thrown when a connection to a target resource
+ * instance fails during an operation.
+ *
+ * An instance of <code>ConnectionBrokenException</code> generally wraps the
+ * native exception (or describes the native error) returned by the target
+ * resource.
  */
 public class ConnectionBrokenException extends ConnectorIOException {
 

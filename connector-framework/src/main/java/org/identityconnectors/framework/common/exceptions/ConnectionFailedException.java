@@ -23,9 +23,12 @@
 package org.identityconnectors.framework.common.exceptions;
 
 /**
- * Thrown when a Connector cannot reach the target resource instance. An
- * instance of <code>ConnectionFailedException</code> generally wraps the native
- * exception (or describes the native error) returned by the target resource.
+ * ConnectionFailedException is thrown when a Connector cannot reach the target
+ * resource instance.
+ *
+ * An instance of <code>ConnectionFailedException</code> generally wraps the
+ * native exception (or describes the native error) returned by the target
+ * resource.
  */
 public class ConnectionFailedException extends ConnectorIOException {
 
