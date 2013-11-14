@@ -28,6 +28,7 @@ import java.util.Set;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
@@ -35,16 +36,13 @@ import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 
-
-public class CreateImpl extends ConnectorAPIOperationRunner implements
-        org.identityconnectors.framework.api.operations.CreateApiOp {
+public class CreateImpl extends ConnectorAPIOperationRunner implements CreateApiOp {
 
     /**
      * Initializes the operation works.
      */
-    public CreateImpl(final ConnectorOperationalContext context,
-            final Connector connector) {
-        super(context,connector);
+    public CreateImpl(final ConnectorOperationalContext context, final Connector connector) {
+        super(context, connector);
     }
 
     /**
@@ -53,18 +51,20 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
      * @see CreateApiOp#create(Set)
      */
     @Override
-    public Uid create(final ObjectClass objectClass,
-            final Set<Attribute> createAttributes,
-            OperationOptions options) {
-        Assertions.nullCheck(objectClass, "oclass");
-        Assertions.nullCheck(objectClass, "attributes");
+    public Uid create(final ObjectClass oclass, final Set<Attribute> attributes, OperationOptions options) {
+        Assertions.nullCheck(oclass, "oclass");
+        Assertions.nullCheck(oclass, "attributes");
         //cast null as empty
-        if ( options == null ) {
+        if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
+        // check to make sure there's not a uid..
+        if (AttributeUtil.getUidAttribute(attributes) != null) {
+            throw new IllegalArgumentException("Parameter 'attributes' contains a uid.");
+        }
         // validate input..
-        Set<String> dups = new HashSet<String>();
-        for (Attribute attr : createAttributes) {
+        final Set<String> dups = new HashSet<String>();
+        for (Attribute attr : attributes) {
             if (dups.contains(attr.getName())) {
                 throw new IllegalArgumentException("Duplicated named attributes: " + attr.getName());
             }
@@ -72,13 +72,11 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
             dups.add(attr.getName());
         }
 
-        Connector connector = getConnector();
-        final ObjectNormalizerFacade normalizer =
-            getNormalizer(objectClass);
+        final Connector connector = getConnector();
+        final ObjectNormalizerFacade normalizer = getNormalizer(oclass);
         // create the object..
-        final Set<Attribute> normalizedAttributes =
-            normalizer.normalizeAttributes(createAttributes);
-        Uid ret = ((CreateOp) connector).create(objectClass,normalizedAttributes,options);
-        return (Uid)normalizer.normalizeAttribute(ret);
+        final Set<Attribute> normalizedAttributes = normalizer.normalizeAttributes(attributes);
+        final Uid ret = ((CreateOp) connector).create(oclass, normalizedAttributes, options);
+        return (Uid) normalizer.normalizeAttribute(ret);
     }
 }
