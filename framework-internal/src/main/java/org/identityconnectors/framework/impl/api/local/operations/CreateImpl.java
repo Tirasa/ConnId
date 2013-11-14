@@ -28,6 +28,7 @@ import java.util.Set;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
@@ -56,6 +57,10 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements CreateApi
         //cast null as empty
         if (options == null) {
             options = new OperationOptionsBuilder().build();
+        }
+        // check to make sure there's not a uid..
+        if (AttributeUtil.getUidAttribute(attributes) != null) {
+            throw new IllegalArgumentException("Parameter 'attributes' contains a uid.");
         }
         // validate input..
         final Set<String> dups = new HashSet<String>();
