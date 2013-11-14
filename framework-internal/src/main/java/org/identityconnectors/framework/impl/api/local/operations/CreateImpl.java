@@ -35,34 +35,30 @@ import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 
-
-public class CreateImpl extends ConnectorAPIOperationRunner implements
-        org.identityconnectors.framework.api.operations.CreateApiOp {
+public class CreateImpl extends ConnectorAPIOperationRunner implements CreateApiOp {
 
     /**
      * Initializes the operation works.
      */
-    public CreateImpl(final ConnectorOperationalContext context,
-            final Connector connector) {
-        super(context,connector);
+    public CreateImpl(final ConnectorOperationalContext context, final Connector connector) {
+        super(context, connector);
     }
 
     /**
      * Calls the create method on the Connector side.
-     * 
+     *
      * @see CreateApiOp#create(Set)
      */
-    public Uid create(final ObjectClass oclass, 
-            final Set<Attribute> attributes,
-            OperationOptions options) {
+    @Override
+    public Uid create(final ObjectClass oclass, final Set<Attribute> attributes, OperationOptions options) {
         Assertions.nullCheck(oclass, "oclass");
         Assertions.nullCheck(oclass, "attributes");
         //cast null as empty
-        if ( options == null ) {
+        if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
         // validate input..
-        Set<String> dups = new HashSet<String>();
+        final Set<String> dups = new HashSet<String>();
         for (Attribute attr : attributes) {
             if (dups.contains(attr.getName())) {
                 throw new IllegalArgumentException("Duplicated named attributes: " + attr.getName());
@@ -70,14 +66,12 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
             // add for the detection..s
             dups.add(attr.getName());
         }
-        
-        Connector connector = getConnector();
-        final ObjectNormalizerFacade normalizer =
-            getNormalizer(oclass);
+
+        final Connector connector = getConnector();
+        final ObjectNormalizerFacade normalizer = getNormalizer(oclass);
         // create the object..
-        final Set<Attribute> normalizedAttributes =
-            normalizer.normalizeAttributes(attributes);
-        Uid ret = ((CreateOp) connector).create(oclass,normalizedAttributes,options);
-        return (Uid)normalizer.normalizeAttribute(ret);
+        final Set<Attribute> normalizedAttributes = normalizer.normalizeAttributes(attributes);
+        final Uid ret = ((CreateOp) connector).create(oclass, normalizedAttributes, options);
+        return (Uid) normalizer.normalizeAttribute(ret);
     }
 }
