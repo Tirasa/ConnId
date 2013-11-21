@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.testconnector;
 
@@ -31,6 +32,7 @@ import org.identityconnectors.framework.common.objects.ObjectClassInfoBuilder;
 import org.identityconnectors.framework.common.objects.SchemaBuilder;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
+import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
@@ -48,6 +50,8 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.PoolableConnector;
 import org.identityconnectors.framework.spi.ConnectorClass;
+import org.identityconnectors.framework.spi.SearchResultsHandler;
+import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 import org.identityconnectors.framework.spi.operations.SchemaOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
@@ -136,6 +140,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
     @Override
     public void executeQuery(ObjectClass objectClass, String query, ResultsHandler handler, OperationOptions options) {
         checkClassLoader();
+        int remaining = _config.getNumResults();
         for (int i = 0; i < _config.getNumResults(); i++ ) {
             Integer delay = (Integer)options.getOptions().get("delay");
             if ( delay != null ) {
@@ -154,6 +159,11 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             if (!handler.handle(rv)) {
                 break;
             }
+            remaining--;
+        }
+
+        if (handler instanceof SearchResultsHandler) {
+            ((SearchResultsHandler) handler).handleResult(new SearchResult("",remaining));
         }
     }
     @Override
@@ -161,6 +171,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
                      SyncResultsHandler handler,
                      OperationOptions options) {
         checkClassLoader();
+        int remaining = _config.getNumResults();
         for (int i = 0; i < _config.getNumResults(); i++ ) {
             ConnectorObjectBuilder obuilder =
                 new ConnectorObjectBuilder();
@@ -178,6 +189,10 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             if (!handler.handle(rv)) {
                 break;
             }
+            remaining--;
+        }
+        if (handler instanceof SyncTokenResultsHandler) {
+            ((SyncTokenResultsHandler) handler).handleResult(new SyncToken(remaining));
         }
     }
     @Override

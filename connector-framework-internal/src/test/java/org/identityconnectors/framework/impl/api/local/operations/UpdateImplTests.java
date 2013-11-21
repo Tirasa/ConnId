@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.identityconnectors.common.CollectionUtil;
+import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.Name;
@@ -59,7 +60,7 @@ public class UpdateImplTests {
         UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), null, true);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = InvalidAttributeValueException.class)
     public void validateUidAttribute() {
         Set<Attribute> attrs = new HashSet<Attribute>();
         attrs.add(new Uid("foo"));

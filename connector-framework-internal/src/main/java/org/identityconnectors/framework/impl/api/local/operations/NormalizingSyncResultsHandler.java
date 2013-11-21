@@ -19,19 +19,21 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.objects.SyncDelta;
-import org.identityconnectors.framework.common.objects.SyncResultsHandler;
+import org.identityconnectors.framework.common.objects.SyncToken;
+import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 
-public class NormalizingSyncResultsHandler implements SyncResultsHandler {
+public class NormalizingSyncResultsHandler implements SyncTokenResultsHandler {
 
-    private final SyncResultsHandler target;
+    private final SyncTokenResultsHandler target;
     private final ObjectNormalizerFacade normalizer;
 
-    public NormalizingSyncResultsHandler(SyncResultsHandler target,
+    public NormalizingSyncResultsHandler(SyncTokenResultsHandler target,
             ObjectNormalizerFacade normalizer) {
         Assertions.nullCheck(target, "target");
         Assertions.nullCheck(normalizer, "normalizer");
@@ -43,5 +45,10 @@ public class NormalizingSyncResultsHandler implements SyncResultsHandler {
     public boolean handle(SyncDelta delta) {
         SyncDelta normalized = normalizer.normalizeSyncDelta(delta);
         return target.handle(normalized);
+    }
+
+    @Override
+    public void handleResult(final SyncToken result) {
+        target.handleResult(result);
     }
 }

@@ -38,13 +38,13 @@
 <!--=======================================================-->
 
 <!ENTITY % exceptionTypes
-  "AlreadyExistsException | ConfigurationException | ConnectionBrokenException 
-  | ConnectionFailedException | ConnectorIOException | InvalidPasswordException 
+  "AlreadyExistsException | ConfigurationException | ConnectionBrokenException
+  | ConnectionFailedException | ConnectorIOException | InvalidPasswordException
   | UnknownUidException | InvalidCredentialException | PermissionDeniedException
   | ConnectorSecurityException | OperationTimeoutException | ConnectorException
   | RuntimeException | Exception | Throwable | PasswordExpiredException | IllegalArgumentException
   ">
-  
+
 <!ENTITY % messageTypes
   "HelloRequest | HelloResponse | OperationRequest | OperationResponseEnd |
    OperationResponsePart | OperationRequestMoreData | OperationRequestStopData |
@@ -57,7 +57,7 @@
   LessThanOrEqualFilter | NotFilter | OrFilter | StartsWithFilter |
   ContainsAllValuesFilter
   ">
-  
+
 <!ENTITY % attributeTypes
   "Attribute | Uid | Name">
 
@@ -73,11 +73,11 @@
 ObjectPoolConfiguration | ResultsHandlerConfiguration | ConfigurationProperty | ConfigurationProperties |
 APIConfiguration | ConnectorMessages | ConnectorKey | ConnectorInfo |
 UpdateApiOpType | AttributeInfo | ConnectorObject | ObjectClass |
-ObjectClassInfo | Schema | Script | ScriptContext | OperationOptions | 
+ObjectClassInfo | Schema | Script | ScriptContext | OperationOptions |
 OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 ">
-  
-  
+
+
 
 <!--=======================================================-->
 <!--=                                                     =-->
@@ -87,7 +87,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 
 
 <!ELEMENT MultiObject ((
-  %xmlObject; 
+  %xmlObject;
 )*)>
 
 
@@ -119,7 +119,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ELEMENT String (#PCDATA)>
 <!ELEMENT URI (#PCDATA)>
 <!ELEMENT File (#PCDATA)>
-<!ELEMENT BigDecimal EMPTY> 
+<!ELEMENT BigDecimal EMPTY>
 <!ATTLIST BigDecimal
     unscaled CDATA #REQUIRED
     scale CDATA #REQUIRED
@@ -131,14 +131,14 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ATTLIST Map
     caseInsensitive CDATA #IMPLIED
 >
-<!ELEMENT MapEntry ((%xmlObject;),(%xmlObject;))> 
+<!ELEMENT MapEntry ((%xmlObject;),(%xmlObject;))>
 <!ELEMENT Keys ((%xmlObject;)*)>
 <!ELEMENT List ((%xmlObject;)*)>
 <!ELEMENT Set ((%xmlObject;)*)>
 <!ATTLIST Set
     caseInsensitive CDATA #IMPLIED
 >
-<!ELEMENT Locale EMPTY> 
+<!ELEMENT Locale EMPTY>
 <!ATTLIST Locale
     language CDATA #IMPLIED
     country CDATA #IMPLIED
@@ -170,20 +170,20 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
     enableAttributesToGetSearchResultsHandler CDATA #IMPLIED
 >
 
-<!ELEMENT ConfigurationProperty (value,operations)> 
+<!ELEMENT ConfigurationProperty (value,operations)>
 <!ATTLIST ConfigurationProperty
     order CDATA #IMPLIED
     confidential CDATA #IMPLIED
     required CDATA #IMPLIED
-    name CDATA #REQUIRED  
+    name CDATA #REQUIRED
     helpMessageKey CDATA #REQUIRED
     displayMessageKey CDATA #REQUIRED
     groupMessageKey CDATA #REQUIRED
     type CDATA #REQUIRED
 >
-<!ELEMENT value (%xmlObject;)> 
+<!ELEMENT value (%xmlObject;)>
 <!ELEMENT operations (Class)*>
-<!ELEMENT ConfigurationProperties ((ConfigurationProperty)*)> 
+<!ELEMENT ConfigurationProperties ((ConfigurationProperty)*)>
 
 <!ELEMENT APIConfiguration (connectorPoolConfiguration,resultsHandlerConfiguration,ConfigurationProperties,timeoutMap,SupportedOperations)>
 <!ATTLIST APIConfiguration
@@ -196,7 +196,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ELEMENT SupportedOperations ((Class)*)>
 <!ELEMENT ConnectorMessages (catalogs)>
 <!ELEMENT catalogs (Map)>
-<!ELEMENT ConnectorKey EMPTY> 
+<!ELEMENT ConnectorKey EMPTY>
 <!ATTLIST ConnectorKey
     bundleName CDATA #REQUIRED
     bundleVersion CDATA #REQUIRED
@@ -213,107 +213,107 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!--= Common Objects                                      =-->
 <!--=                                                     =-->
 <!--=======================================================-->
-<!ELEMENT Attribute (Values)?> 
+<!ELEMENT Attribute (Values)?>
 <!ELEMENT Values ((%xmlObject;)*)>
 <!ATTLIST Attribute
     name CDATA #REQUIRED
 >
 
-<!ELEMENT Uid (#PCDATA)> 
-<!ELEMENT Name (#PCDATA)> 
+<!ELEMENT Uid (#PCDATA)>
+<!ELEMENT Name (#PCDATA)>
 
 
 
-<!ELEMENT UpdateApiOpType (#PCDATA)> 
+<!ELEMENT UpdateApiOpType (#PCDATA)>
 
-  
-<!ELEMENT AlreadyExistsException EMPTY> 
+
+<!ELEMENT AlreadyExistsException EMPTY>
 <!ATTLIST AlreadyExistsException
    message CDATA #IMPLIED
 >
-<!ELEMENT ConfigurationException EMPTY> 
+<!ELEMENT ConfigurationException EMPTY>
 <!ATTLIST ConfigurationException
    message CDATA #IMPLIED
 >
-<!ELEMENT ConnectionBrokenException EMPTY> 
+<!ELEMENT ConnectionBrokenException EMPTY>
 <!ATTLIST ConnectionBrokenException
    message CDATA #IMPLIED
 >
-<!ELEMENT ConnectionFailedException EMPTY> 
+<!ELEMENT ConnectionFailedException EMPTY>
 <!ATTLIST ConnectionFailedException
    message CDATA #IMPLIED
 >
-<!ELEMENT ConnectorIOException EMPTY> 
+<!ELEMENT ConnectorIOException EMPTY>
 <!ATTLIST ConnectorIOException
    message CDATA #IMPLIED
 >
-<!ELEMENT InvalidPasswordException EMPTY> 
+<!ELEMENT InvalidPasswordException EMPTY>
 <!ATTLIST InvalidPasswordException
    message CDATA #IMPLIED
 >
-<!ELEMENT PasswordExpiredException (Uid?)> 
+<!ELEMENT PasswordExpiredException (Uid?)>
 <!ATTLIST PasswordExpiredException
    message CDATA #IMPLIED
 >
-<!ELEMENT UnknownUidException EMPTY> 
+<!ELEMENT UnknownUidException EMPTY>
 <!ATTLIST UnknownUidException
    message CDATA #IMPLIED
 >
-<!ELEMENT InvalidCredentialException EMPTY> 
+<!ELEMENT InvalidCredentialException EMPTY>
 <!ATTLIST InvalidCredentialException
    message CDATA #IMPLIED
 >
-<!ELEMENT PermissionDeniedException EMPTY> 
+<!ELEMENT PermissionDeniedException EMPTY>
 <!ATTLIST PermissionDeniedException
    message CDATA #IMPLIED
 >
-<!ELEMENT ConnectorSecurityException EMPTY> 
+<!ELEMENT ConnectorSecurityException EMPTY>
 <!ATTLIST ConnectorSecurityException
    message CDATA #IMPLIED
 >
-<!ELEMENT OperationTimeoutException EMPTY> 
+<!ELEMENT OperationTimeoutException EMPTY>
 <!ATTLIST OperationTimeoutException
    message CDATA #IMPLIED
 >
-<!ELEMENT ConnectorException EMPTY> 
+<!ELEMENT ConnectorException EMPTY>
 <!ATTLIST ConnectorException
    message CDATA #IMPLIED
 >
-<!ELEMENT IllegalArgumentException EMPTY> 
+<!ELEMENT IllegalArgumentException EMPTY>
 <!ATTLIST IllegalArgumentException
    message CDATA #IMPLIED
 >
-<!ELEMENT RuntimeException EMPTY> 
+<!ELEMENT RuntimeException EMPTY>
 <!ATTLIST RuntimeException
    message CDATA #IMPLIED
 >
-<!ELEMENT Exception EMPTY> 
+<!ELEMENT Exception EMPTY>
 <!ATTLIST Exception
    message CDATA #IMPLIED
 >
-<!ELEMENT Throwable EMPTY> 
+<!ELEMENT Throwable EMPTY>
 <!ATTLIST Throwable
    message CDATA #IMPLIED
 >
 <!ELEMENT AttributeInfo (AttributeInfoFlag*)>
-<!ATTLIST AttributeInfo  
+<!ATTLIST AttributeInfo
    name CDATA #REQUIRED
    type CDATA #REQUIRED
 >
 <!ELEMENT AttributeInfoFlag EMPTY>
-<!ATTLIST AttributeInfoFlag 
+<!ATTLIST AttributeInfoFlag
    value ( REQUIRED | MULTIVALUED | NOT_CREATABLE | NOT_UPDATEABLE | NOT_READABLE | NOT_RETURNED_BY_DEFAULT ) #REQUIRED
 >
 <!ELEMENT ConnectorObject (ObjectClass,Attributes)>
 <!ELEMENT Attributes ((%attributeTypes;)*)>
 
 <!ELEMENT ObjectClass EMPTY>
-<!ATTLIST ObjectClass  
+<!ATTLIST ObjectClass
    type CDATA #REQUIRED
 >
 
 <!ELEMENT ObjectClassInfo (AttributeInfos)>
-<!ATTLIST ObjectClassInfo  
+<!ATTLIST ObjectClassInfo
    type CDATA #REQUIRED
    container CDATA #IMPLIED
 >
@@ -334,14 +334,14 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 >
 
 <!ELEMENT ScriptContext (scriptArguments,scriptText)>
-<!ATTLIST ScriptContext  
+<!ATTLIST ScriptContext
    scriptLanguage CDATA #REQUIRED
 >
 
 <!ELEMENT OperationOptions (options)>
 <!ELEMENT options (Map)>
 <!ELEMENT OperationOptionInfo EMPTY>
-<!ATTLIST OperationOptionInfo  
+<!ATTLIST OperationOptionInfo
    name CDATA #REQUIRED
    type CDATA #REQUIRED
 >
@@ -392,10 +392,11 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ELEMENT ConnectorInfos ((ConnectorInfo)*)>
 <!ELEMENT exception (%exceptionTypes;)>
 <!ELEMENT HelloResponse (exception,serverInfoMap,ConnectorInfos,ConnectorKeys)>
-<!ELEMENT OperationRequest (ConnectorKey,APIConfiguration,Arguments)>
+<!ELEMENT OperationRequest (ConnectorKey,Arguments)>
 <!ATTLIST OperationRequest
     operation CDATA #REQUIRED
     operationMethodName CDATA #REQUIRED
+    connectorFacadeKey CDATA #REQUIRED
 >
 <!ELEMENT Arguments ((%xmlObject;)*)>
 <!ELEMENT OperationResponseEnd EMPTY>

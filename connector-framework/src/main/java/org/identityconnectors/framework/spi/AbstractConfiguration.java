@@ -24,7 +24,6 @@ package org.identityconnectors.framework.spi;
 
 import org.identityconnectors.framework.common.objects.ConnectorMessages;
 
-
 /**
  * Convenient base-class for Configuration objects to extend.
  */

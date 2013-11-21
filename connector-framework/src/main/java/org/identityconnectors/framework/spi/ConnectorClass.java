@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.spi;
 
@@ -38,6 +39,13 @@ public @interface ConnectorClass {
      * The configuration class for a given connector.
      */
     Class<? extends Configuration> configurationClass();
+
+    /**
+     *
+     * @return {@code false} if same Configuration instance is used to
+     *         initialise each Connector instance otherwise {@code true}
+     */
+    boolean configurationStateless() default true;
 
     /**
      * The display name key. This must be a key in the message catalog.

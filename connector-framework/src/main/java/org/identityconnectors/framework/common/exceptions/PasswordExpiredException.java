@@ -26,7 +26,16 @@ import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
 import org.identityconnectors.framework.common.objects.Uid;
 
 /**
- * Thrown when a password credential is invalid.
+ * PasswordExpiredException signals that a user password has expired.
+ * <p>
+ * This exception is thrown by Connector when they determine that a password has
+ * expired. For example, a <code>Connector</code>, after successfully
+ * authenticating a user, may determine that the user's password has expired. In
+ * this case the <code>Connector</code> throws this exception to notify the
+ * application. The application can then take the appropriate steps to notify
+ * the user.
+ *
+ * @see javax.security.auth.login.CredentialExpiredException
  */
 public class PasswordExpiredException extends InvalidPasswordException {
 

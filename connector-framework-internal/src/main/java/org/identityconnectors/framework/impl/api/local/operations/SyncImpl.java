@@ -19,8 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
@@ -31,7 +34,9 @@ import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
 import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.common.objects.SyncToken;
+import org.identityconnectors.framework.spi.AttributeNormalizer;
 import org.identityconnectors.framework.spi.Connector;
+import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 
 public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
@@ -41,24 +46,40 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
     }
 
     @Override
-    public void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler,
-            OperationOptions options) {
-        // token is allowed to be null, objClass and handler must not be null
-        Assertions.nullCheck(objectClass, "objClass");
+    public SyncToken sync(final ObjectClass objectClass, final SyncToken token,
+            final SyncResultsHandler handler, OperationOptions options) {
+        Assertions.nullCheck(objectClass, "objectClass");
         Assertions.nullCheck(handler, "handler");
         // convert null into empty
         if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
+        final AtomicReference<SyncToken> result = new AtomicReference<SyncToken>(null);
+        SyncTokenResultsHandler handlerChain = new SyncTokenResultsHandler() {
+            @Override
+            public void handleResult(SyncToken token) {
+                result.compareAndSet(null, token);
+            }
+
+            @Override
+            public boolean handle(final SyncDelta delta) {
+                return handler.handle(delta);
+            }
+        };
+
         // add a handler in the chain to remove attributes
         String[] attrsToGet = options.getAttributesToGet();
         if (attrsToGet != null && attrsToGet.length > 0) {
-            handler = new AttributesToGetSyncResultsHandler(handler, attrsToGet);
+            handlerChain = new AttributesToGetSyncResultsHandler(handlerChain, attrsToGet);
         }
         // chain a normalizing results handler
-        final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
-        handler = new NormalizingSyncResultsHandler(handler, normalizer);
-        ((SyncOp) getConnector()).sync(objectClass, token, handler, options);
+        if (getConnector() instanceof AttributeNormalizer) {
+            handlerChain =
+                    new NormalizingSyncResultsHandler(handlerChain, getNormalizer(objectClass));
+        }
+
+        ((SyncOp) getConnector()).sync(objectClass, token, handlerChain, options);
+        return result.get();
     }
 
     @Override
@@ -71,23 +92,28 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
      * get.
      */
     public static class AttributesToGetSyncResultsHandler extends AttributesToGetResultsHandler
-            implements SyncResultsHandler {
+            implements SyncTokenResultsHandler {
 
-        private final SyncResultsHandler handler;
+        private final SyncTokenResultsHandler handler;
 
-        public AttributesToGetSyncResultsHandler(final SyncResultsHandler handler,
+        public AttributesToGetSyncResultsHandler(final SyncTokenResultsHandler handler,
                 String[] attrsToGet) {
             super(attrsToGet);
             this.handler = handler;
         }
 
         @Override
-        public boolean handle(SyncDelta delta) {
+        public boolean handle(final SyncDelta delta) {
             SyncDeltaBuilder bld = new SyncDeltaBuilder(delta);
             if (delta.getObject() != null) {
                 bld.setObject(reduceToAttrsToGet(delta.getObject()));
             }
             return handler.handle(bld.build());
+        }
+
+        @Override
+        public void handleResult(final SyncToken result) {
+            handler.handleResult(result);
         }
     }
 }

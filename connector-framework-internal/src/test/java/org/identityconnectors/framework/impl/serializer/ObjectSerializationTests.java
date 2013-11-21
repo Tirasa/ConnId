@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2011-2013 ForgeRock
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 
 package org.identityconnectors.framework.impl.serializer;
@@ -921,7 +921,7 @@ public class ObjectSerializationTests {
     public void testOperationRequest() {
         ConfigurationPropertiesImpl configProperties = new ConfigurationPropertiesImpl();
         configProperties.setProperties(new ArrayList<ConfigurationPropertyImpl>());
-        APIConfigurationImpl apiImpl = new APIConfigurationImpl();
+        APIConfigurationImpl apiImpl =  new APIConfigurationImpl();
         apiImpl.setConfigurationProperties(configProperties);
         List<Object> args = new ArrayList<Object>();
         args.add("my arg");
@@ -931,7 +931,7 @@ public class ObjectSerializationTests {
                     "my bundle",
                     "my version",
                 "my connector"),
-                apiImpl,
+                SerializerUtil.serializeBase64Object(apiImpl),
                 CreateApiOp.class,
                 "mymethodName",
                 args);
@@ -939,7 +939,7 @@ public class ObjectSerializationTests {
         assertEquals("my bundle", v2.getConnectorKey().getBundleName());
         assertEquals("my version", v2.getConnectorKey().getBundleVersion());
         assertEquals("my connector", v2.getConnectorKey().getConnectorName());
-        assertNotNull(v2.getConfiguration());
+        assertNotNull(v2.getConnectorFacadeKey());
         assertEquals(CreateApiOp.class, v2.getOperation());
         assertEquals("mymethodName", v2.getOperationMethodName());
         assertEquals(args, v2.getArguments());

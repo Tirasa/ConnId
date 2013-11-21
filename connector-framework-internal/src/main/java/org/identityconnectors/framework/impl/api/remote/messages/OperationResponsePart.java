@@ -19,8 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.remote.messages;
+
+import org.identityconnectors.framework.impl.api.remote.RemoteWrappedException;
 
 /**
  * Represents one part of a response. Most operations return just a single
@@ -28,15 +31,15 @@ package org.identityconnectors.framework.impl.api.remote.messages;
  * Search, which returns multiple parts.
  */
 public class OperationResponsePart implements Message {
-    private Throwable exception;
+    private RemoteWrappedException exception;
     private Object result;
 
     public OperationResponsePart(Throwable ex, Object result) {
-        exception = ex;
+        exception = RemoteWrappedException.wrap(ex);
         this.result = result;
     }
 
-    public Throwable getException() {
+    public RemoteWrappedException getException() {
         return exception;
     }
 

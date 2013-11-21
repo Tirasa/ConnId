@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -64,12 +65,13 @@ public class BufferedResultsProxy implements InvocationHandler {
 
     private static class BufferedResultsHandler extends Thread implements ObjectStreamHandler {
         private static final Object DONE = new Object();
-        private AtomicBoolean stopped = new AtomicBoolean(false);
+        private final AtomicBoolean stopped = new AtomicBoolean(false);
         private final Method method;
         private final Object target;
         private final Object[] arguments;
         private final long timeoutMillis;
         private final ArrayBlockingQueue<Object> buffer;
+        private Object result = null;
 
         public BufferedResultsHandler(Method method, Object target, Object[] arguments,
                 int bufferSize, long timeoutMillis) {
@@ -153,7 +155,7 @@ public class BufferedResultsProxy implements InvocationHandler {
         public void run() {
             try {
                 try {
-                    method.invoke(target, createActualArguments());
+                    result = method.invoke(target, createActualArguments());
                     buffer.put(DONE);
                 } catch (RuntimeException e) {
                     buffer.put(e);
@@ -203,6 +205,10 @@ public class BufferedResultsProxy implements InvocationHandler {
                 return obj;
             }
         }
+
+        private Object getResult() {
+            return result;
+        }
     }
 
     @Override
@@ -211,11 +217,6 @@ public class BufferedResultsProxy implements InvocationHandler {
         // do not buffer/timeout equals, hashCode, toString
         if (method.getDeclaringClass() == Object.class) {
             return method.invoke(target, arguments);
-        }
-
-        if (method.getReturnType() != void.class) {
-            throw new UnsupportedOperationException("We only support operations that return void "
-                    + method);
         }
 
         BufferedResultsHandler bufHandler =
@@ -271,7 +272,7 @@ public class BufferedResultsProxy implements InvocationHandler {
                 }
             }
         }
-
-        return null;
+        Object r = bufHandler.getResult();
+        return r;
     }
 }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -27,13 +28,15 @@ import java.util.Set;
 
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.SearchResult;
+import org.identityconnectors.framework.spi.SearchResultsHandler;
 
-public final class DuplicateFilteringResultsHandler implements ResultsHandler {
+public final class DuplicateFilteringResultsHandler implements SearchResultsHandler {
 
     // =======================================================================
     // Fields
     // =======================================================================
-    private final ResultsHandler handler;
+    private final SearchResultsHandler handler;
     private final Set<String> visitedUIDs = new HashSet<String>();
 
     private boolean stillHandling;
@@ -48,7 +51,7 @@ public final class DuplicateFilteringResultsHandler implements ResultsHandler {
      *            Producer to filter.
      *
      */
-    public DuplicateFilteringResultsHandler(ResultsHandler handler) {
+    public DuplicateFilteringResultsHandler(final SearchResultsHandler handler) {
         // there must be a producer..
         if (handler == null) {
             throw new IllegalArgumentException("Handler must not be null!");
@@ -66,6 +69,11 @@ public final class DuplicateFilteringResultsHandler implements ResultsHandler {
         }
         stillHandling = handler.handle(object);
         return stillHandling;
+    }
+
+    @Override
+    public void handleResult(final SearchResult result) {
+        handler.handleResult(result);
     }
 
     public boolean isStillHandling() {

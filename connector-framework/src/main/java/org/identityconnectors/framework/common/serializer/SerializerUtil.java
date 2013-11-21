@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.serializer;
 
@@ -29,6 +30,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.identityconnectors.common.Base64;
 import org.xml.sax.InputSource;
 
 /**
@@ -70,6 +72,32 @@ public final class SerializerUtil {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         BinaryObjectDeserializer des = fact.newBinaryDeserializer(in);
         return des.readObject();
+    }
+
+    /**
+     * Serializes the given object to Base64 string.
+     *
+     * @param object
+     *            The object to serialize
+     * @return The Base64 string
+     * @see ObjectSerializerFactory for a list of supported types
+     * @since 1.4
+     */
+    public static String serializeBase64Object(Object object) {
+        return Base64.encode(serializeBinaryObject(object));
+    }
+
+    /**
+     * Deserializes the given object from Base64 String.
+     *
+     * @param encdata
+     *            The string to deserialize
+     * @return The object
+     * @see ObjectSerializerFactory for a list of supported types
+     * @since 1.4
+     */
+    public static Object deserializeBase64Object(String encdata) {
+        return deserializeBinaryObject(Base64.decode(encdata));
     }
 
     /**

@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2011-2013 ForgeRock
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 
 package org.identityconnectors.framework.server.impl;
@@ -49,8 +49,6 @@ import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.exceptions.InvalidCredentialException;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
-import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
-import org.identityconnectors.framework.impl.api.AbstractConnectorInfo;
 import org.identityconnectors.framework.impl.api.ConnectorInfoManagerFactoryImpl;
 import org.identityconnectors.framework.impl.api.ObjectStreamHandler;
 import org.identityconnectors.framework.impl.api.StreamHandlerUtil;
@@ -324,12 +322,10 @@ public class ConnectionProcessor implements Runnable {
         if (info == null) {
             throw new ConnectorException("No such connector: " + request.getConnectorKey() + " ");
         }
-        APIConfigurationImpl config = request.getConfiguration();
+        String connectorFacadeKey = request.getConnectorFacadeKey();
 
-        // re-wire the configuration with its connector info
-        config.setConnectorInfo((AbstractConnectorInfo) info);
-
-        ConnectorFacade facade = ConnectorFacadeFactory.getInstance().newInstance(config);
+        ConnectorFacade facade =
+                ConnectorFacadeFactory.getManagedInstance().newInstance(info, connectorFacadeKey);
 
         return facade.getOperation(request.getOperation());
     }

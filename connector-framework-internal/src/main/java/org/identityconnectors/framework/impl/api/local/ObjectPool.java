@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2011-2013 ForgeRock
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 
 package org.identityconnectors.framework.impl.api.local;
@@ -382,7 +382,7 @@ public class ObjectPool<T> {
         synchronized (activeObjects) {
             PooledObject pooledConn =
                     new PooledObject((activeObjects.size() > 0) ? handler.makeObject() : handler
-                            .makeFirstObject());
+                            .makeObject());
             activeObjects.add(pooledConn);
             return pooledConn;
         }
@@ -401,7 +401,7 @@ public class ObjectPool<T> {
                 // Make sure the disposed object was the last item in the
                 // activeObjects
                 if (activeObjects.remove(entry) && activeObjects.isEmpty()) {
-                    handler.disposeLastObject(entry.getPooledObject());
+                    handler.disposeObject(entry.getPooledObject());
                 } else {
                     handler.disposeObject(entry.getPooledObject());
                 }

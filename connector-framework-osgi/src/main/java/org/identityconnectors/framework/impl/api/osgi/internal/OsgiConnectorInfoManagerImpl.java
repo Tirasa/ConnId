@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2013 ForgeRock Inc. All rights reserved.
+ * Copyright (c) 2010-2013 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The OSGi ConnectorInfoManager Implementation ...
  * <p/>
- * 
+ *
  * @author Laszlo Hordos
  * @since 1.1
  */
@@ -133,6 +133,26 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                 String connector = impl.getConnectorInfo().getConnectorKey().toString();
                 logger.error("Failed to create new connector facade: {}, {}", new Object[] {
                     connector, config }, ex);
+                throw ConnectorException.wrap(ex);
+            }
+        } else {
+            throw new ConnectorException("RemoteConnector not supported!");
+        }
+        return ret;
+    }
+
+    @Override
+    public ConnectorFacade newInstance(ConnectorInfo connectorInfo, String config) {
+        ConnectorFacade ret = null;
+        if (connectorInfo instanceof LocalConnectorInfoImpl) {
+            LocalConnectorInfoImpl localInfo = (LocalConnectorInfoImpl) connectorInfo;
+            try {
+                // create a new Provisioner..
+                ret = new LocalConnectorFacadeImpl(localInfo, config);
+            } catch (Exception ex) {
+                String connector = connectorInfo.getConnectorKey().toString();
+                logger.error("Failed to create new connector facade: {}, {}", new Object[] {
+                        connector, config }, ex);
                 throw ConnectorException.wrap(ex);
             }
         } else {

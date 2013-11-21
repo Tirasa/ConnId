@@ -22,15 +22,20 @@
  */
 package org.identityconnectors.framework.common.exceptions;
 
-import org.identityconnectors.framework.api.operations.CreateApiOp;
+import org.identityconnectors.framework.common.objects.Uid;
 
 /**
- * Thrown if {@link CreateApiOp} attempts to create an object that exists prior
- * to the method execution.
+ * AlreadyExistsException is thrown to indicate if
+ * {@link org.identityconnectors.framework.api.operations.CreateApiOp} attempts
+ * to create an object that exists prior to the method execution or
+ * {@link org.identityconnectors.framework.api.operations.UpdateApiOp} attempts
+ * to rename an object to that exists prior to the method execution.
  */
 public class AlreadyExistsException extends ConnectorException {
 
     private static final long serialVersionUID = 1L;
+
+    private Uid uid;
 
     /**
      * @see ConnectorException#ConnectorException()
@@ -58,5 +63,26 @@ public class AlreadyExistsException extends ConnectorException {
      */
     public AlreadyExistsException(String message, Throwable ex) {
         super(message, ex);
+    }
+
+    public Uid getUid() {
+        return uid;
+    }
+
+    /**
+     * Sets the Uid of existing Object.
+     *
+     * Connectors who throw this exception from their
+     * {@link org.identityconnectors.framework.spi.operations.CreateOp} or
+     * {@link org.identityconnectors.framework.spi.operations.UpdateOp} should
+     * set the object's Uid if available.
+     *
+     * @param uid
+     *            The uid.
+     * @return A reference to this.
+     */
+    public AlreadyExistsException initUid(Uid uid) {
+        this.uid = uid;
+        return this;
     }
 }

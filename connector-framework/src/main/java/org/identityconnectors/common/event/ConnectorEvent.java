@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 ForgeRock Inc. All rights reserved.
+ * Copyright (c) 2010-2013 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -37,7 +37,7 @@ import org.identityconnectors.framework.api.ConnectorKey;
  * <p/>
  *
  * @author Laszlo Hordos
- * @since 1.2
+ * @since 1.4
  */
 public class ConnectorEvent extends EventObject {
 

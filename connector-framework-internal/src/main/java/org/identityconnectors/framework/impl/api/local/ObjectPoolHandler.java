@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted  2012 ForgeRock Inc.
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 
 package org.identityconnectors.framework.impl.api.local;
@@ -29,24 +29,17 @@ import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
 public interface ObjectPoolHandler<T> {
 
     /**
-     * Validates, copies and updates the original {@code ObjectPoolConfiguration}.
+     * Validates, copies and updates the original
+     * {@code ObjectPoolConfiguration}.
      * <p/>
-     * This class can validate and if necessary it changes the {@code original} configuration.
+     * This class can validate and if necessary it changes the {@code original}
+     * configuration.
      *
      * @param original
-     *         custom configured instance.
+     *            custom configured instance.
      * @return new instance of the {@code original} config.
      */
     public ObjectPoolConfiguration validate(ObjectPoolConfiguration original);
-
-    /**
-     * Makes the first instance of the pool.
-     * <p/>
-     * The pool calls this method when the pool is empty.
-     *
-     * @return new instance of T.
-     */
-    public T makeFirstObject();
 
     /**
      * Makes a new instance of the pooled object.
@@ -79,14 +72,4 @@ public interface ObjectPoolHandler<T> {
      *            The "dropped" object.
      */
     public void disposeObject(T object);
-
-    /**
-     * Disposes the last object from the pool.
-     * <p/>
-     * The pool calls this method when the pool is empty.
-     *
-     * @param object
-     *            The "dropped" object.
-     */
-    public void disposeLastObject(T object);
 }

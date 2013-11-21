@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -29,10 +30,9 @@ import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 
-
 /**
- * OperationalContext - base class for operations that do not
- * require a connector instance.
+ * OperationalContext - base class for operations that do not require a
+ * connector instance.
  */
 public class OperationalContext {
 
@@ -46,16 +46,36 @@ public class OperationalContext {
      */
     private final APIConfigurationImpl apiConfiguration;
 
+    private volatile Configuration configuration;
 
+    /**
+     * Creates a new OperationalContext but it does not initiates the
+     * Configuration because the {@link #getConnectorInfo()} method must do it
+     * when it's called from a block where the classloader of the Thread is set
+     * to Connector.
+     *
+     * @param connectorInfo
+     * @param apiConfiguration
+     */
     public OperationalContext(final LocalConnectorInfoImpl connectorInfo,
             final APIConfigurationImpl apiConfiguration) {
         this.connectorInfo = connectorInfo;
         this.apiConfiguration = apiConfiguration;
+
     }
 
     public Configuration getConfiguration() {
-        return JavaClassProperties.createBean(this.apiConfiguration.getConfigurationProperties(),
-                connectorInfo.getConnectorConfigurationClass());
+        if (null == configuration) {
+            synchronized (this) {
+                if (null == configuration) {
+                    this.configuration =
+                            JavaClassProperties.createBean(apiConfiguration
+                                    .getConfigurationProperties(), connectorInfo
+                                    .getConnectorConfigurationClass());
+                }
+            }
+        }
+        return configuration;
     }
 
     protected LocalConnectorInfoImpl getConnectorInfo() {

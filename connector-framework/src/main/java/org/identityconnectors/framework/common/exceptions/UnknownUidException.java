@@ -28,6 +28,12 @@ import org.identityconnectors.framework.common.objects.Uid;
 /**
  * Thrown when a {@link Uid} that is specified as input to a connector operation
  * identifies no object on the target resource.
+ * <p/>
+ * When implementing {@code AuthenticateOp} this exception may be thrown by a
+ * Connector if it is unable to locate an account necessary to perform
+ * authentication.
+ *
+ * @see javax.security.auth.login.AccountNotFoundException
  */
 public class UnknownUidException extends InvalidCredentialException {
     private static final String MSG = "Object with Uid '%s' and ObjectClass '%s' does not exist!";

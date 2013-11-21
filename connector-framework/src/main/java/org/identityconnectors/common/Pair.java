@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2013 ConnId
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.common;
 
@@ -35,6 +36,32 @@ public class Pair<T1, T2> implements Map.Entry<T1, T2> {
     public T2 second;
 
     public Pair() {
+    }
+
+    /**
+     * <p>
+     * Obtains an immutable pair of from two objects inferring the generic
+     * types.
+     * </p>
+     *
+     * <p>
+     * This factory allows the pair to be created using inference to obtain the
+     * generic types.
+     * </p>
+     *
+     * @param <L>
+     *            the left element type
+     * @param <R>
+     *            the right element type
+     * @param left
+     *            the left element, may be null
+     * @param right
+     *            the right element, may be null
+     * @return a pair formed from the two parameters, not null
+     * @since 1.4
+     */
+    public static <L, R> Pair<L, R> of(final L left, final R right) {
+        return new Pair<L, R>(left, right);
     }
 
     public Pair(final T1 f, final T2 s) {

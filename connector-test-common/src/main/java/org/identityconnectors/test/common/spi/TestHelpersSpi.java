@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.test.common.spi;
 
@@ -29,6 +30,7 @@ import org.identityconnectors.framework.common.objects.ConnectorMessages;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
@@ -45,8 +47,8 @@ public interface TestHelpersSpi {
 
     public void fillConfiguration(Configuration config, Map<String, ? extends Object> configData);
 
-    public void search(SearchOp<?> search, final ObjectClass objectClass, final Filter filter,
-            ResultsHandler handler, OperationOptions options);
+    public SearchResult search(SearchOp<?> search, final ObjectClass objectClass,
+            final Filter filter, ResultsHandler handler, OperationOptions options);
 
     public ConnectorMessages createDummyMessages();
 

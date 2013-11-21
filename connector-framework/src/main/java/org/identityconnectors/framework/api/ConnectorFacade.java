@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.api;
 
@@ -52,6 +53,18 @@ import org.identityconnectors.framework.api.operations.ValidateApiOp;
 public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, UpdateApiOp,
         SchemaApiOp, AuthenticationApiOp, ResolveUsernameApiOp, GetApiOp, ValidateApiOp, TestApiOp,
         ScriptOnConnectorApiOp, ScriptOnResourceApiOp, SyncApiOp {
+
+    /**
+     * Gets the unique generated identifier of this ConnectorFacade.
+     *
+     * It's not guarantied that the equivalent configuration will generate the
+     * same configuration key. Always use the generated value and maintain it in
+     * the external application.
+     *
+     * @return identifier of this ConnectorFacade instance.
+     * @since 1.4
+     */
+    public String getConnectorFacadeKey();
 
     /**
      * Get the set of operations that this {@link ConnectorFacade} will support.

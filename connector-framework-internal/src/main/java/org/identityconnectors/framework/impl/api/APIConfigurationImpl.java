@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -116,6 +117,9 @@ public class APIConfigurationImpl implements APIConfiguration {
         supportedOperations = op;
     }
 
+    public boolean isSupportedOperation(Class<? extends APIOperation> api) {
+        return supportedOperations.contains(api);
+    }
 
     // =======================================================================
     // Interface Methods

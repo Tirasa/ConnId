@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -30,6 +31,7 @@ import java.util.Set;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.api.operations.GetApiOp;
+import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
@@ -232,18 +234,18 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
      * Makes things easier if you can trust the input.
      */
     public static void validateInput(final ObjectClass objectClass, final Uid uid,
-            final Set<Attribute> attrs, boolean isDelta) {
+            final Set<Attribute> replaceAttributes, boolean isDelta) {
         Assertions.nullCheck(uid, "uid");
         Assertions.nullCheck(objectClass, "objectClass");
-        Assertions.nullCheck(attrs, "attrs");
+        Assertions.nullCheck(replaceAttributes, "replaceAttributes");
         // check to make sure there's not a uid..
-        if (AttributeUtil.getUidAttribute(attrs) != null) {
-            throw new IllegalArgumentException("Parameter 'attrs' contains a uid.");
+        if (AttributeUtil.getUidAttribute(replaceAttributes) != null) {
+            throw new InvalidAttributeValueException("Parameter 'replaceAttributes' contains a uid.");
         }
         // check for things only valid during ADD/DELETE
         if (isDelta) {
-            for (Attribute attr : attrs) {
-                Assertions.nullCheck(attr, "attr");
+            for (Attribute attr : replaceAttributes) {
+                Assertions.nullCheck(attr, "replaceAttributes");
                 // make sure that none of the values are null..
                 if (attr.getValue() == null) {
                     throw new IllegalArgumentException("Can not add or remove a 'null' value.");

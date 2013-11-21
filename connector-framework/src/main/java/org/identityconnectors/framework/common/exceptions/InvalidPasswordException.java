@@ -24,6 +24,8 @@ package org.identityconnectors.framework.common.exceptions;
 
 /**
  * Thrown when a password credential is invalid.
+ *
+ * @see javax.security.auth.login.CredentialException
  */
 public class InvalidPasswordException extends InvalidCredentialException {
 
