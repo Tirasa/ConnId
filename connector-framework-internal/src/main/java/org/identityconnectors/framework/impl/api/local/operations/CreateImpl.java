@@ -68,7 +68,7 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
             options = new OperationOptionsBuilder().build();
         }
         // validate input..
-        Set<String> dups = new HashSet<String>();
+        final Set<String> dups = new HashSet<String>();
         for (Attribute attr : createAttributes) {
             if (dups.contains(attr.getName())) {
                 throw new IllegalArgumentException("Duplicated named attributes: " + attr.getName());
@@ -77,12 +77,11 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
             dups.add(attr.getName());
         }
 
-        Connector connector = getConnector();
+        final Connector connector = getConnector();
         final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
         // create the object..
-        final Set<Attribute> normalizedAttributes =
-                normalizer.normalizeAttributes(createAttributes);
-        Uid ret = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
+        final Set<Attribute> normalizedAttributes = normalizer.normalizeAttributes(createAttributes);
+        final Uid ret = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
         return (Uid) normalizer.normalizeAttribute(ret);
     }
 }
