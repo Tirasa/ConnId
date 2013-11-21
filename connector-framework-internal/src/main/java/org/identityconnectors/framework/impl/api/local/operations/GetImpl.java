@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -38,7 +39,6 @@ import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 
-
 /**
  * Uses {@link SearchOp} to find the object that is referenced by the
  * {@link Uid} provided.
@@ -52,25 +52,22 @@ public class GetImpl implements GetApiOp {
     }
 
     @Override
-    public ConnectorObject getObject(ObjectClass objectClass,
-            Uid uid,
-            OperationOptions options) {
-        Assertions.nullCheck(objectClass, "objClass");
+    public ConnectorObject getObject(ObjectClass objectClass, Uid uid, OperationOptions options) {
+        Assertions.nullCheck(objectClass, "objectClass");
         Assertions.nullCheck(uid, "uid");
-        //cast null as empty
-        if ( options == null ) {
+        // cast null as empty
+        if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
         final List<ConnectorObject> list = new ArrayList<ConnectorObject>();
         Filter filter = FilterBuilder.equalTo(uid);
-        op.search(objectClass,filter,
-                new ResultsHandler() {
-                    @Override
-                    public boolean handle(ConnectorObject obj) {
-                        list.add(obj);
-                        return false;
-                    }
-                },options);
+        op.search(objectClass, filter, new ResultsHandler() {
+            @Override
+            public boolean handle(ConnectorObject obj) {
+                list.add(obj);
+                return false;
+            }
+        }, options);
         return list.size() == 0 ? null : list.get(0);
     }
 }

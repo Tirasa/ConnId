@@ -33,7 +33,7 @@
     <version>1.4.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>connector-framework-internal</artifactId>    
+  <artifactId>connector-framework-internal</artifactId>
   <name>ConnId: Connector Framework Internal</name>
   <packaging>bundle</packaging>
 
@@ -90,7 +90,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>

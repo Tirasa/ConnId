@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -31,24 +32,21 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.ScriptOnResourceOp;
 
-public class ScriptOnResourceImpl extends ConnectorAPIOperationRunner
-        implements ScriptOnResourceApiOp {
+public class ScriptOnResourceImpl extends ConnectorAPIOperationRunner implements
+        ScriptOnResourceApiOp {
 
-    public ScriptOnResourceImpl(final ConnectorOperationalContext context,
-            final Connector connector) {
-        super(context,connector);
+    public ScriptOnResourceImpl(final ConnectorOperationalContext context, final Connector connector) {
+        super(context, connector);
     }
 
     @Override
-    public Object runScriptOnResource(ScriptContext request,
-            OperationOptions options) {
+    public Object runScriptOnResource(ScriptContext request, OperationOptions options) {
         Assertions.nullCheck(request, "request");
-        //convert null into empty
-        if ( options == null ) {
+        // convert null into empty
+        if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
-        Object rv
-           = ((ScriptOnResourceOp)getConnector()).runScriptOnResource(request, options);
+        Object rv = ((ScriptOnResourceOp) getConnector()).runScriptOnResource(request, options);
         return SerializerUtil.cloneObject(rv);
     }
 

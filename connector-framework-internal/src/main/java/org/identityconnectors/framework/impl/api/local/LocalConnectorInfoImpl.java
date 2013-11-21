@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local;
 
@@ -31,6 +32,7 @@ public class LocalConnectorInfoImpl extends AbstractConnectorInfo {
 
     private Class<? extends Connector> connectorClass;
     private Class<? extends Configuration> connectorConfigurationClass;
+    private boolean configurationStateless = true;
 
     public LocalConnectorInfoImpl() {
 
@@ -59,5 +61,13 @@ public class LocalConnectorInfoImpl extends AbstractConnectorInfo {
 
     public void setConnectorClass(Class<? extends Connector> clazz) {
         connectorClass = clazz;
+    }
+
+    public boolean isConfigurationStateless() {
+        return configurationStateless;
+    }
+
+    public void setConfigurationStateless(boolean configurationStateless) {
+        this.configurationStateless = configurationStateless;
     }
 }

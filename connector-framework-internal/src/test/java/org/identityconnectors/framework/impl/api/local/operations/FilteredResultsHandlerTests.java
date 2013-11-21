@@ -40,7 +40,7 @@ public class FilteredResultsHandlerTests {
         ConnectorObjectSearch data = new ConnectorObjectSearch(EXPECTED);
         ToListResultsHandler results = new ToListResultsHandler();
         data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(results,
-                new FilteredResultsHandler.PassThruFilter()), null);
+                new FilteredResultsHandler.PassThroughFilter()), null);
         int actual = 0;
         for (ConnectorObject obj : results.getObjects()) {
             // check that we limit expected values..

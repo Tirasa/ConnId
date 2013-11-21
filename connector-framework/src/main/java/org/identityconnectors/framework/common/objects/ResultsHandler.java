@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -29,14 +30,17 @@ package org.identityconnectors.framework.common.objects;
  * but may be used by other operations in the future.
  */
 public interface ResultsHandler {
+
     /**
-     * Call-back method to do whatever it is the caller wants to do with each
-     * {@link ConnectorObject} that is returned in the result of
-     * {@link org.identityconnectors.framework.api.operations.SearchApiOp}.
+     * Invoked each time a matching {@link ConnectorObject} is returned from a
+     * query request.
      *
-     * @param obj
-     *            each object return from the search.
-     * @return true if we should keep processing else false to cancel.
+     * @param connectorObject
+     *            The matching ConnectorObject.
+     * @return {@code true} if this handler should continue to be notified of
+     *         any remaining matching ConnectorObjects, or {@code false} if the
+     *         remaining ConnectorObjects should be skipped for some reason
+     *         (e.g. a client side size limit has been reached).
      *
      * @throws RuntimeException
      *             the implementor should throw a {@link RuntimeException} that
@@ -44,5 +48,5 @@ public interface ResultsHandler {
      *             problem during execution) that is serious enough to stop the
      *             iteration.
      */
-    boolean handle(final ConnectorObject obj);
+    boolean handle(final ConnectorObject connectorObject);
 }

@@ -19,12 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2011-2013 ForgeRock
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 
 package org.identityconnectors.framework.common.objects;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.identityconnectors.common.CollectionUtil;
@@ -117,6 +119,32 @@ public final class OperationOptions {
      * would normally be returned.
      */
     public static final String OP_ATTRIBUTES_TO_GET = "ATTRS_TO_GET";
+
+    /**
+     * An option to use with {@link SearchApiOp} that specifies an opaque cookie
+     * which is used by the connector to track its position in the set of query
+     * results.
+     */
+    public static final String OP_PAGED_RESULTS_COOKIE = "PAGED_RESULTS_COOKIE";
+
+    /**
+     * An option to use with {@link SearchApiOp} that specifies the index within
+     * the result set of the first result which should be returned.
+     */
+    public static final String OP_PAGED_RESULTS_OFFSET = "PAGED_RESULTS_OFFSET";
+
+    /**
+     * An option to use with {@link SearchApiOp} that specifies the requested
+     * page results page size.
+     */
+    public static final String OP_PAGE_SIZE = "PAGE_SIZE";
+
+    /**
+     * An option to use with {@link SearchApiOp} that specifies the sort keys
+     * which should be used for ordering the {@link ConnectorObject} returned by
+     * search request.
+     */
+    public static final String OP_SORT_KEYS = "SORT_KEYS";
 
     private final Map<String, Object> operationOptions;
 
@@ -213,4 +241,79 @@ public final class OperationOptions {
     public GuardedString getRunWithPassword() {
         return (GuardedString) operationOptions.get(OP_RUN_WITH_PASSWORD);
     }
+
+    /**
+     * Returns the opaque cookie which is used by the Connector to track its
+     * position in the set of query results. Paged results will be enabled if
+     * and only if the page size is non-zero.
+     * <p>
+     * The cookie must be {@code null} in the initial search request sent by the
+     * client. For subsequent search requests the client must include the cookie
+     * returned with the previous search result, until the resource provider
+     * returns a {@code null} cookie indicating that the final page of results
+     * has been returned.
+     *
+     * @return The opaque cookie which is used by the Connector to track its
+     *         position in the set of search results, or {@code null} if paged
+     *         results are not requested (when the page size is 0), or if the
+     *         first page of results is being requested (when the page size is
+     *         non-zero).
+     * @see #getPageSize()
+     * @see #getPagedResultsOffset()
+     * @since 1.4
+     */
+    String getPagedResultsCookie() {
+        return (String) operationOptions.get(OP_PAGED_RESULTS_COOKIE);
+    };
+
+    /**
+     * Returns the index within the result set of the first result which should
+     * be returned. Paged results will be enabled if and only if the page size
+     * is non-zero. If the parameter is not present or a value less than 1 is
+     * specified then then the page following the previous page returned will be
+     * returned. A value equal to or greater than 1 indicates that a specific
+     * page should be returned starting from the position specified.
+     *
+     * @return The index within the result set of the first result which should
+     *         be returned.
+     * @see #getPageSize()
+     * @see #getPagedResultsCookie()
+     * @since 1.4
+     */
+    int getPagedResultsOffset() {
+        return (Integer) operationOptions.get(OP_PAGED_RESULTS_OFFSET);
+    };
+
+    /**
+     * Returns the requested page results page size or {@code 0} if paged
+     * results are not required. For all paged result requests other than the
+     * initial request, a cookie should be provided with the search request. See
+     * {@link #getPagedResultsCookie()} for more information.
+     *
+     * @return The requested page results page size or {@code 0} if paged
+     *         results are not required.
+     * @see #getPagedResultsCookie()
+     * @see #getPagedResultsOffset()
+     * @since 1.4
+     */
+    int getPageSize() {
+        return (Integer) operationOptions.get(OP_PAGE_SIZE);
+    };
+
+    /**
+     * Returns the sort keys which should be used for ordering the
+     * {@link ConnectorObject}s returned by this search request.
+     *
+     * @return The sort keys which should be used for ordering the
+     *         {@link ConnectorObject}s returned by this search request (never
+     *         {@code null}).
+     * @since 1.4
+     */
+    List<SortKey> getSortKeys() {
+        if (operationOptions.get(OP_SORT_KEYS) instanceof List) {
+            return (List<SortKey>) operationOptions.get(OP_SORT_KEYS);
+        } else {
+            return Collections.emptyList();
+        }
+    };
 }

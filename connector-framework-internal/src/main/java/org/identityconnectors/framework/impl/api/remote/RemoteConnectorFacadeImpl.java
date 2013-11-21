@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.remote;
 
@@ -52,10 +53,26 @@ public class RemoteConnectorFacadeImpl extends AbstractConnectorFacade {
         remoteConfiguration.setTimeoutMap(new HashMap<Class<? extends APIOperation>, Integer>());
     }
 
+    public RemoteConnectorFacadeImpl(final RemoteConnectorInfoImpl connectorInfo,
+            String configuration) {
+        super(configuration, connectorInfo);
+        // clone since we're going to modify it
+        remoteConfiguration =
+                (APIConfigurationImpl) SerializerUtil.deserializeBase64Object(configuration);
+        // parent ref not included in the clone
+        remoteConfiguration.setConnectorInfo(connectorInfo);
+        // disable buffering and timeout on the remote end since we do it
+        // locally
+        remoteConfiguration.setProducerBufferSize(0);
+        remoteConfiguration.setTimeoutMap(new HashMap<Class<? extends APIOperation>, Integer>());
+    }
+
     @Override
     protected APIOperation getOperationImplementation(final Class<? extends APIOperation> api) {
         // add remote proxy
-        InvocationHandler handler = new RemoteOperationInvocationHandler(remoteConfiguration, api);
+        InvocationHandler handler =
+                new RemoteOperationInvocationHandler((RemoteConnectorInfoImpl) remoteConfiguration
+                        .getConnectorInfo(), getConnectorFacadeKey(), api);
         APIOperation proxy = newAPIOperationProxy(api, handler);
         // now wrap the proxy in the appropriate timeout proxy
         proxy = createTimeoutProxy(api, proxy);

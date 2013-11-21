@@ -4,7 +4,7 @@
     ====================
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2011-2013 ForgeRock Inc. All rights reserved.
+    Copyright (c) 2010-2013 ForgeRock AS. All rights reserved.
 
     The contents of this file are subject to the terms of the Common Development
     and Distribution License("CDDL") (the "License").  You may not use this file
@@ -33,7 +33,7 @@
     <version>1.4.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>connector-framework-contract</artifactId>    
+  <artifactId>connector-framework-contract</artifactId>
   <name>ConnId: Contract Tests</name>
 
   <dependencies>
@@ -47,19 +47,19 @@
       <artifactId>connector-framework-internal</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
     </dependency>
-    
+
     <!-- We need here testng to compile -->
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <scope>compile</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>

@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 ForgeRock Inc. All rights reserved.
+ * Copyright (c) 2013 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -23,17 +23,28 @@
 
 package org.identityconnectors.framework.spi;
 
+import org.identityconnectors.framework.common.objects.SyncResultsHandler;
+import org.identityconnectors.framework.common.objects.SyncToken;
+
 /**
- * An SharedPoolableConnector provides ThreadSafe access to shared resources
- * between different connector instances within the same
- * {@link org.identityconnectors.framework.impl.api.local.ObjectPool}.
- * <p/>
- * A connector instance can create a custom connection pool and share it with
- * the other instances withing the same pool.
+ * A SyncTokenResultsHandler is a Callback interface that an application
+ * implements in order to handle results from
+ * {@link org.identityconnectors.framework.api.operations.SyncApiOp} in a
+ * stream-processing fashion.
  *
  * @author Laszlo Hordos
- * @since 1.2
+ * @since 1.4
  */
-public interface SharedPoolableConnector extends PoolableConnector {
+public interface SyncTokenResultsHandler extends SyncResultsHandler {
+
+    /**
+     * Invoked when the request has completed successfully.
+     *
+     * @param result
+     *            The sync result indicating that no more resources are to be
+     *            returned and, if applicable, including information which
+     *            should be used for next sync requests.
+     */
+    public void handleResult(SyncToken result);
 
 }

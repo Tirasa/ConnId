@@ -19,12 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.api.operations;
 
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 
 public interface SearchApiOp extends APIOperation {
@@ -45,9 +47,10 @@ public interface SearchApiOp extends APIOperation {
      * @param options
      *            additional options that impact the way this operation is run.
      *            May be null.
+     * @return The query result or {@code null}.
      * @throws RuntimeException
      *             if there is problem during the processing of the results.
      */
-    public void search(final ObjectClass objectClass, final Filter filter,
+    public SearchResult search(final ObjectClass objectClass, final Filter filter,
             final ResultsHandler handler, final OperationOptions options);
 }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.remote.messages;
 
@@ -27,7 +28,6 @@ import java.util.List;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.api.operations.APIOperation;
-import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 
 /**
  * Sent to request an operation. Response will consist of one-or-more
@@ -43,7 +43,7 @@ public class OperationRequest implements Message {
     /**
      * The configuration information to use.
      */
-    private final APIConfigurationImpl configuration;
+    private final String configuration;
 
     /**
      * The operation to perform.
@@ -63,11 +63,11 @@ public class OperationRequest implements Message {
      */
     private final List<Object> arguments;
 
-    public OperationRequest(ConnectorKey key, APIConfigurationImpl apiConfiguration,
+    public OperationRequest(ConnectorKey key, String connectorFacadeKey,
             Class<? extends APIOperation> operation, String operationMethodName,
             List<Object> arguments) {
         connectorKey = key;
-        configuration = apiConfiguration;
+        configuration = connectorFacadeKey;
         this.operation = operation;
         this.operationMethodName = operationMethodName;
         this.arguments = CollectionUtil.newReadOnlyList(arguments);
@@ -77,7 +77,7 @@ public class OperationRequest implements Message {
         return connectorKey;
     }
 
-    public APIConfigurationImpl getConfiguration() {
+    public String getConnectorFacadeKey() {
         return configuration;
     }
 

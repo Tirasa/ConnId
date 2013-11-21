@@ -65,11 +65,6 @@ public class ObjectPoolTests {
         }
 
         @Override
-        public MyTestConnection makeFirstObject() {
-            return makeObject();
-        }
-
-        @Override
         public MyTestConnection makeObject() {
             _totalCreatedConnections++;
             MyTestConnection rv = new MyTestConnection();
@@ -86,11 +81,6 @@ public class ObjectPoolTests {
         @Override
         public void disposeObject(MyTestConnection object) {
             object.dispose();
-        }
-
-        @Override
-        public void disposeLastObject(MyTestConnection object) {
-            disposeObject(object);
         }
 
         public int getTotalCreatedConnections() {

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.remote;
 
@@ -32,7 +33,6 @@ import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.framework.api.RemoteFrameworkConnectionInfo;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.ObjectStreamHandler;
 import org.identityconnectors.framework.impl.api.StreamHandlerUtil;
 import org.identityconnectors.framework.impl.api.remote.messages.OperationRequest;
@@ -46,12 +46,14 @@ import org.identityconnectors.framework.impl.api.remote.messages.OperationRespon
  * Invocation handler for all of our operations
  */
 public class RemoteOperationInvocationHandler implements InvocationHandler {
-    private final APIConfigurationImpl configuration;
+    private final RemoteConnectorInfoImpl connectorInfo;
+    private final String connectorFacadeKey;
     private final Class<? extends APIOperation> operation;
 
-    public RemoteOperationInvocationHandler(final APIConfigurationImpl configuration,
-            final Class<? extends APIOperation> operation) {
-        this.configuration = configuration;
+    public RemoteOperationInvocationHandler(final RemoteConnectorInfoImpl connectorInfo,
+            String connectorFacadeKey,final Class<? extends APIOperation> operation) {
+        this.connectorInfo = connectorInfo;
+        this.connectorFacadeKey = connectorFacadeKey;
         this.operation = operation;
     }
 
@@ -69,12 +71,10 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
                 extractStreamHandler(method.getParameterTypes(), simpleMarshallArgs);
 
         // build the request object
-        RemoteConnectorInfoImpl connectorInfo =
-                (RemoteConnectorInfoImpl) configuration.getConnectorInfo();
         RemoteFrameworkConnectionInfo connectionInfo = connectorInfo.getRemoteConnectionInfo();
         OperationRequest request =
-                new OperationRequest(connectorInfo.getConnectorKey(), configuration, operation,
-                        method.getName(), simpleMarshallArgs);
+                new OperationRequest(connectorInfo.getConnectorKey(), connectorFacadeKey,
+                        operation, method.getName(), simpleMarshallArgs);
 
         // create the connection
         RemoteFrameworkConnection connection = null;
@@ -94,7 +94,7 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
             // finally return the actual return value
             OperationResponsePart response = (OperationResponsePart) connection.readObject();
             if (response.getException() != null) {
-                throw ConnectorException.wrap(response.getException());
+                throw response.getException();
             }
             return response.getResult();
         } finally {
@@ -117,7 +117,7 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
             if (response instanceof OperationResponsePart) {
                 OperationResponsePart part = (OperationResponsePart) response;
                 if (part.getException() != null) {
-                    throw ConnectorException.wrap(part.getException());
+                    throw part.getException();
                 }
                 Object object = part.getResult();
                 if (handleMore) {

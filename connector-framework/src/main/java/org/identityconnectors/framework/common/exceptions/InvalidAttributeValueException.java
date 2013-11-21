@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013 ForgeRock Inc. All rights reserved.
+ * Copyright (c) 2013 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -24,28 +24,34 @@
 package org.identityconnectors.framework.common.exceptions;
 
 /**
- * SchemaViolationException is thrown when a method in some ways violates the
- * schema. An example of schema violation is modifying attributes of an object
- * that violates the object's schema definition.
+ * InvalidAttributeValueException is thrown when an attempt is made to add to an
+ * attribute a value that conflicts with the attribute's schema definition.
+ *
+ * This could happen, for example, if attempting to add an attribute with no
+ * value when the attribute is required to have at least one value, or if
+ * attempting to add more than one value to a single valued-attribute, or if
+ * attempting to add a value that conflicts with the type of the attribute or if
+ * attempting to add a value that conflicts with the syntax of the attribute.
+ * <p>
  *
  * @author Laszlo Hordos
  * @since 1.4
  */
-public class SchemaViolationException extends ConnectorException {
+public class InvalidAttributeValueException extends ConnectorException {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructs a new SchemaViolationException exception with
+     * Constructs a new InvalidAttributeValueException exception with
      * <code>null</code> as its detail message. The cause is not initialized,
      * and may subsequently be initialized by a call to {@link #initCause}.
      */
-    public SchemaViolationException() {
+    public InvalidAttributeValueException() {
         super();
     }
 
     /**
-     * Constructs a new SchemaViolationException exception with the specified
+     * Constructs a new InvalidAttributeValueException exception with the specified
      * detail message. The cause is not initialized, and may subsequently be
      * initialized by a call to {@link #initCause}.
      *
@@ -54,12 +60,12 @@ public class SchemaViolationException extends ConnectorException {
      *            describes this particular exception and saved for later
      *            retrieval by the {@link #getMessage()} method.
      */
-    public SchemaViolationException(String message) {
+    public InvalidAttributeValueException(String message) {
         super(message);
     }
 
     /**
-     * Constructs a new SchemaViolationException exception with the specified
+     * Constructs a new InvalidAttributeValueException exception with the specified
      * cause and a detail message of
      * <tt>(cause==null ? null : cause.toString())</tt> (which typically
      * contains the class and detail message of <tt>cause</tt>). This
@@ -72,12 +78,12 @@ public class SchemaViolationException extends ConnectorException {
      *            permitted, and indicates that the cause is nonexistent or
      *            unknown.)
      */
-    public SchemaViolationException(Throwable cause) {
+    public InvalidAttributeValueException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a new SchemaViolationException exception with the specified
+     * Constructs a new InvalidAttributeValueException exception with the specified
      * detail message and cause.
      * <p>
      * Note that the detail message associated with <code>cause</code> is
@@ -93,7 +99,7 @@ public class SchemaViolationException extends ConnectorException {
      *            permitted, and indicates that the cause is nonexistent or
      *            unknown.)
      */
-    public SchemaViolationException(String message, Throwable cause) {
+    public InvalidAttributeValueException(String message, Throwable cause) {
         super(message, cause);
     }
 }

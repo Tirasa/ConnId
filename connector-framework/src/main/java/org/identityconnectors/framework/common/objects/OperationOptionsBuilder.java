@@ -19,11 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.identityconnectors.common.Assertions;
@@ -152,6 +154,64 @@ public final class OperationOptionsBuilder {
     public OperationOptionsBuilder setContainer(QualifiedUid container) {
         Assertions.nullCheck(container, "container");
         options.put(OperationOptions.OP_CONTAINER, container);
+        return this;
+    }
+
+    /**
+     * Convenience method to set
+     * {@link OperationOptions#OP_PAGED_RESULTS_COOKIE}
+     *
+     * @param pagedResultsCookie
+     *            The pagedResultsCookie. May not be null.
+     * @return A this reference to allow chaining
+     * @since 1.4
+     */
+    public OperationOptionsBuilder setPagedResultsCookie(String pagedResultsCookie) {
+        Assertions.nullCheck(pagedResultsCookie, "pagedResultsCookie");
+        options.put(OperationOptions.OP_PAGED_RESULTS_COOKIE, pagedResultsCookie);
+        return this;
+    }
+
+    /**
+     * Convenience method to set
+     * {@link OperationOptions#OP_PAGED_RESULTS_OFFSET}
+     *
+     * @param pagedResultsOffset
+     *            The pagedResultsOffset. May not be null.
+     * @return A this reference to allow chaining
+     * @since 1.4
+     */
+    public OperationOptionsBuilder setPagedResultsOffset(Integer pagedResultsOffset) {
+        Assertions.nullCheck(pagedResultsOffset, "pagedResultsOffset");
+        options.put(OperationOptions.OP_PAGED_RESULTS_OFFSET, pagedResultsOffset);
+        return this;
+    }
+
+    /**
+     * Convenience method to set {@link OperationOptions#OP_PAGE_SIZE}
+     *
+     * @param pageSize
+     *            The pageSize. May not be null.
+     * @return A this reference to allow chaining
+     * @since 1.4
+     */
+    public OperationOptionsBuilder setPageSize(Integer pageSize) {
+        Assertions.nullCheck(pageSize, "pageSize");
+        options.put(OperationOptions.OP_PAGE_SIZE, pageSize);
+        return this;
+    }
+
+    /**
+     * Convenience method to set {@link OperationOptions#OP_SORT_KEYS}
+     *
+     * @param sortKeys
+     *            The sort keys. May not be null.
+     * @return A this reference to allow chaining
+     * @since 1.4
+     */
+    public OperationOptionsBuilder setSortKeys(List<SortKey> sortKeys) {
+        Assertions.nullCheck(sortKeys, "sortKeys");
+        options.put(OperationOptions.OP_SORT_KEYS, sortKeys);
         return this;
     }
 

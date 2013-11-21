@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -78,11 +79,12 @@ public interface SyncApiOp extends APIOperation {
      * @param options
      *            Options that affect the way this operation is run. May be
      *            null.
+     * @return The sync token or {@code null}.
      * @throws IllegalArgumentException
      *             if {@code objectClass} or {@code handler} is null or if any
      *             argument is invalid.
      */
-    public void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler,
+    public SyncToken sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler,
             OperationOptions options);
 
     /**

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -26,11 +27,13 @@ import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.api.ConnectorFacadeFactory;
+import org.identityconnectors.framework.api.ConnectorInfo;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.api.local.ConnectorPoolManager;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorFacadeImpl;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorFacadeImpl;
+import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
 
 public class ConnectorFacadeFactoryImpl extends ConnectorFacadeFactory {
 
@@ -57,6 +60,25 @@ public class ConnectorFacadeFactoryImpl extends ConnectorFacadeFactory {
             }
         } else {
             ret = new RemoteConnectorFacadeImpl(impl);
+        }
+        return ret;
+    }
+
+    @Override
+    public ConnectorFacade newInstance(final ConnectorInfo connectorInfo, String config) {
+        ConnectorFacade ret = null;
+        if (connectorInfo instanceof LocalConnectorInfoImpl) {
+            try {
+                // create a new Provisioner.
+                ret = new LocalConnectorFacadeImpl((LocalConnectorInfoImpl) connectorInfo, config);
+
+            } catch (Exception ex) {
+                String connector = connectorInfo.getConnectorKey().toString();
+                LOG.error(ex, "Failed to create new connector facade: {0}, {1}", connector, config);
+                throw ConnectorException.wrap(ex);
+            }
+        } else if (connectorInfo instanceof RemoteConnectorInfoImpl) {
+            ret = new RemoteConnectorFacadeImpl((RemoteConnectorInfoImpl) connectorInfo, config);
         }
         return ret;
     }

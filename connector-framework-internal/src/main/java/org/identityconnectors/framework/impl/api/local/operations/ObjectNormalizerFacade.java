@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -66,7 +67,7 @@ public final class ObjectNormalizerFacade {
      * @param normalizer
      *            The normalizer. May be null.
      */
-    public ObjectNormalizerFacade(ObjectClass objectClass, AttributeNormalizer normalizer) {
+    public ObjectNormalizerFacade(final ObjectClass objectClass,final AttributeNormalizer normalizer) {
         Assertions.nullCheck(objectClass, "objectClass");
         this.objectClass = objectClass;
         this.normalizer = normalizer;

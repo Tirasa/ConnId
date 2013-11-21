@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -26,8 +27,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.identityconnectors.common.Assertions;
-import org.identityconnectors.framework.api.operations.CreateApiOp;
+import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
@@ -35,31 +37,34 @@ import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 
-
 public class CreateImpl extends ConnectorAPIOperationRunner implements
         org.identityconnectors.framework.api.operations.CreateApiOp {
 
     /**
      * Initializes the operation works.
      */
-    public CreateImpl(final ConnectorOperationalContext context,
-            final Connector connector) {
-        super(context,connector);
+    public CreateImpl(final ConnectorOperationalContext context, final Connector connector) {
+        super(context, connector);
     }
 
     /**
      * Calls the create method on the Connector side.
      *
-     * @see CreateApiOp#create(Set)
+     * @see CreateOp#create(org.identityconnectors.framework.common.objects.ObjectClass,
+     *      java.util.Set,
+     *      org.identityconnectors.framework.common.objects.OperationOptions)
      */
     @Override
-    public Uid create(final ObjectClass objectClass,
-            final Set<Attribute> createAttributes,
+    public Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes,
             OperationOptions options) {
-        Assertions.nullCheck(objectClass, "oclass");
-        Assertions.nullCheck(objectClass, "attributes");
-        //cast null as empty
-        if ( options == null ) {
+        Assertions.nullCheck(objectClass, "objectClass");
+        Assertions.nullCheck(createAttributes, "createAttributes");
+        // check to make sure there's not a uid..
+        if (AttributeUtil.getUidAttribute(createAttributes) != null) {
+            throw new InvalidAttributeValueException("Parameter 'createAttributes' contains a uid.");
+        }
+        // cast null as empty
+        if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
         // validate input..
@@ -73,12 +78,11 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
         }
 
         Connector connector = getConnector();
-        final ObjectNormalizerFacade normalizer =
-            getNormalizer(objectClass);
+        final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
         // create the object..
         final Set<Attribute> normalizedAttributes =
-            normalizer.normalizeAttributes(createAttributes);
-        Uid ret = ((CreateOp) connector).create(objectClass,normalizedAttributes,options);
-        return (Uid)normalizer.normalizeAttribute(ret);
+                normalizer.normalizeAttributes(createAttributes);
+        Uid ret = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
+        return (Uid) normalizer.normalizeAttribute(ret);
     }
 }

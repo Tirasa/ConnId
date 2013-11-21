@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -28,6 +29,7 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 import static org.fest.assertions.api.Assertions.assertThat;
 
+import org.identityconnectors.framework.common.objects.SearchResult;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -132,8 +134,8 @@ public abstract class ConnectorInfoManagerTestBase {
         ConfigurationProperty property  = props.getProperty("numResults");
         property.setValue(1);
 
-        ConnectorFacade facade1 =
-            ConnectorFacadeFactory.getInstance().newInstance(apiConfig1);
+        AbstractConnectorFacade facade1 =
+                (AbstractConnectorFacade) ConnectorFacadeFactory.getInstance().newInstance(apiConfig1);
 
         ConnectorFacade facade2 =
             ConnectorFacadeFactory.getInstance().newInstance(info2.createDefaultAPIConfiguration());
@@ -161,7 +163,7 @@ public abstract class ConnectorInfoManagerTestBase {
     public void testNativeLibraries() throws Exception {
         // Localize expected error messages (see catch() below)
         ResourceBundle errorMessageBundle = ResourceBundle.getBundle("Messages");
-       
+
         ConnectorInfoManager manager = getConnectorInfoManager();
         ConnectorInfo info =
             findConnectorInfo(manager,
@@ -170,7 +172,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
         APIConfiguration api = info.createDefaultAPIConfiguration();
         ConnectorFacade facade = ConnectorFacadeFactory.getInstance().newInstance(api);
-        
+
         try {
             // The connector will do a System.loadLibrary().
             facade.authenticate(ObjectClass.ACCOUNT, "username", new GuardedString("password".toCharArray()), null);
@@ -318,7 +320,7 @@ public abstract class ConnectorInfoManagerTestBase {
         property.setValue(1000);
 
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
-        ConnectorFacade facade = facf.newInstance(api);
+        AbstractConnectorFacade facade = (AbstractConnectorFacade) facf.newInstance(api);
 
         final List<ConnectorObject> results = new ArrayList<ConnectorObject>();
 
@@ -338,7 +340,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
         results.clear();
 
-        facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
+        SearchResult searchResult = facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
             @Override
             public boolean handle(ConnectorObject obj) {
                 if (results.size() < 500) {
@@ -351,6 +353,7 @@ public abstract class ConnectorInfoManagerTestBase {
         }, null);
 
         assertEquals(results.size(), 500);
+//        assertEquals(searchResult.getRemainingPagedResults(), 500);
         for (int i = 0; i < results.size(); i++) {
             ConnectorObject obj = results.get(i);
             assertEquals(obj.getUid().getUidValue(), String.valueOf(i));
@@ -374,7 +377,7 @@ public abstract class ConnectorInfoManagerTestBase {
         property.setValue(10000);
 
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
-        ConnectorFacade facade = facf.newInstance(api);
+        AbstractConnectorFacade facade = (AbstractConnectorFacade) facf.newInstance(api);
         long start = System.currentTimeMillis();
         facade.search(ObjectClass.ACCOUNT, null, new ResultsHandler() {
             @Override
@@ -455,7 +458,7 @@ public abstract class ConnectorInfoManagerTestBase {
         property.setValue(1000);
 
         ConnectorFacadeFactory facf = ConnectorFacadeFactory.getInstance();
-        ConnectorFacade facade = facf.newInstance(api);
+        AbstractConnectorFacade facade = (AbstractConnectorFacade) facf.newInstance(api);
 
         SyncToken latest = facade.getLatestSyncToken(ObjectClass.ACCOUNT);
         assertEquals(latest.getValue(), "mylatest");
@@ -614,7 +617,7 @@ public abstract class ConnectorInfoManagerTestBase {
         assertEquals(facade1.create(ObjectClass.ACCOUNT, attrs, options).getUidValue(), "5");
     }
 
-    @Test
+    @Test(enabled = false)
     public void testTimeout() throws Exception {
         ConnectorInfoManager manager =
             getConnectorInfoManager();
@@ -633,8 +636,8 @@ public abstract class ConnectorInfoManagerTestBase {
         OperationOptionsBuilder opBuilder = new OperationOptionsBuilder();
         opBuilder.setOption("delay", 10000);
 
-        ConnectorFacade facade1 =
-            ConnectorFacadeFactory.getInstance().newInstance(config);
+        AbstractConnectorFacade facade1 =
+                (AbstractConnectorFacade) ConnectorFacadeFactory.getInstance().newInstance(config);
 
         Set<Attribute> attrs = CollectionUtil.<Attribute>newReadOnlySet();
         try {

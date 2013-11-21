@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2011-2013 ForgeRock
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 
 package org.identityconnectors.framework.impl.serializer;
@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.api.operations.APIOperation;
-import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.remote.messages.EchoMessage;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloRequest;
@@ -67,7 +66,8 @@ class MessageHandlers {
         HANDLERS.add(new AbstractObjectSerializationHandler(HelloResponse.class, "HelloResponse") {
 
             public Object deserialize(final ObjectDecoder decoder) {
-                final Throwable exception = (Throwable) decoder.readObjectField("exception", null, null);
+                final Throwable exception =
+                        (Throwable) decoder.readObjectField("exception", null, null);
                 @SuppressWarnings("unchecked")
                 final Map<String, Object> serverInfo =
                         (Map<String, Object>) decoder.readObjectField("serverInfoMap", null, null);
@@ -97,17 +97,17 @@ class MessageHandlers {
                 final ConnectorKey connectorKey =
                         (ConnectorKey) decoder.readObjectField("ConnectorKey", ConnectorKey.class,
                                 null);
-                final APIConfigurationImpl configuration =
-                        (APIConfigurationImpl) decoder.readObjectField("APIConfiguration",
-                                APIConfigurationImpl.class, null);
+                final String connectorFacadeKey =
+                        decoder.readStringField("connectorFacadeKey", null);
                 @SuppressWarnings("unchecked")
                 final Class<? extends APIOperation> operation =
                         (Class) decoder.readClassField("operation", null);
-                final String operationMethodName = decoder.readStringField("operationMethodName", null);
+                final String operationMethodName =
+                        decoder.readStringField("operationMethodName", null);
                 @SuppressWarnings("unchecked")
                 final List<Object> arguments =
                         (List) decoder.readObjectField("Arguments", List.class, null);
-                return new OperationRequest(connectorKey, configuration, operation,
+                return new OperationRequest(connectorKey, connectorFacadeKey, operation,
                         operationMethodName, arguments);
             }
 
@@ -116,7 +116,7 @@ class MessageHandlers {
                 encoder.writeClassField("operation", val.getOperation());
                 encoder.writeStringField("operationMethodName", val.getOperationMethodName());
                 encoder.writeObjectField("ConnectorKey", val.getConnectorKey(), true);
-                encoder.writeObjectField("APIConfiguration", val.getConfiguration(), true);
+                encoder.writeStringField("connectorFacadeKey", val.getConnectorFacadeKey());
                 encoder.writeObjectField("Arguments", val.getArguments(), true);
             }
         });
@@ -136,7 +136,8 @@ class MessageHandlers {
                 "OperationResponsePart") {
 
             public Object deserialize(final ObjectDecoder decoder) {
-                final Throwable exception = (Throwable) decoder.readObjectField("exception", null, null);
+                final Throwable exception =
+                        (Throwable) decoder.readObjectField("exception", null, null);
                 final Object result = decoder.readObjectField("result", null, null);
 
                 return new OperationResponsePart(exception, result);

@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013 ForgeRock Inc. All rights reserved.
+ * Copyright (c) 2013 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -20,44 +20,40 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  */
-package org.identityconnectors.framework.common.objects;
 
-import org.identityconnectors.framework.common.exceptions.ConnectorException;
+package org.identityconnectors.framework.spi;
+
+import org.identityconnectors.framework.common.objects.SearchResult;
+import org.identityconnectors.framework.common.objects.ResultsHandler;
 
 /**
- * A completion handler for consuming the result of an asynchronous operation or
- * connection attempts.
+ * A SearchResultsHandler is a completion handler for consuming the results of a
+ * search request.
  * <p>
- * A result completion handler may be specified when performing asynchronous
+ * A search result completion handler may be specified when performing search
  * requests using a {@link org.identityconnectors.framework.api.ConnectorFacade}
- * object. The {@link #handleResult} method is invoked when the request
- * completes successfully. The {@link #handleError} method is invoked if the
- * request fails.
+ * object. The {@link #handle} method is invoked each time a matching
+ * {@link org.identityconnectors.framework.common.objects.ConnectorObject}
+ * resource is returned, followed by {@link #handleResult} indicating that no
+ * more ConnectorObject resources will be returned.
  * <p>
  * Implementations of these methods should complete in a timely manner so as to
  * avoid keeping the invoking thread from dispatching to other completion
  * handlers.
  *
- * @param <V>
- *            The type of result handled by this result handler.
- * @since 2.0
+ * @author Laszlo Hordos
+ * @since 1.4
  */
-public interface ResultHandler<V> {
+public interface SearchResultsHandler extends ResultsHandler {
 
     /**
-     * Invoked when the asynchronous request has failed.
-     *
-     * @param error
-     *            The resource exception indicating why the asynchronous request
-     *            has failed.
-     */
-    void handleError(ConnectorException error);
-
-    /**
-     * Invoked when the asynchronous request has completed successfully.
+     * Invoked when the request has completed successfully.
      *
      * @param result
-     *            The result of the asynchronous request.
+     *            The query result indicating that no more resources are to be
+     *            returned and, if applicable, including information which
+     *            should be used for subsequent paged results query requests.
      */
-    void handleResult(V result);
+    public void handleResult(SearchResult result);
+
 }
