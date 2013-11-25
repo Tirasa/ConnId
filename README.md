@@ -112,7 +112,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdUNIXBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/UNIX">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/UNIX">issues</a></td>
-  <td><img src="https://api.travis-ci.org/Tirasa/CConnIdUNIXBundle.png"/></td>
+  <td><img src="https://api.travis-ci.org/Tirasa/ConnIdUNIXBundle.png"/></td>
  </tr>
  </tbody>
 </table>
