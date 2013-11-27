@@ -75,7 +75,7 @@ public abstract class ConnectorFacadeFactory {
                 throw ConnectorException.wrap(e);
             }
         }
-        return instance;
+        return managedInstance;
     }
 
     /**

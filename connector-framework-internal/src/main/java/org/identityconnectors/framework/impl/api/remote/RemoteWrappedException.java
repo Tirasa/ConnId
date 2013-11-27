@@ -29,6 +29,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
 /**
@@ -102,9 +103,71 @@ public final class RemoteWrappedException extends ConnectorException {
     /**
      * @see org.identityconnectors.framework.common.exceptions.ConnectorException#ConnectorException(String)
      */
-    RemoteWrappedException(Map<String, Object> exception) {
+    RemoteWrappedException(final Map<String, Object> exception) {
         super((String) exception.get(FIELD_MESSAGE));
-        stackTrace = (String) exception.get(FIELD_STACK_TRACE);
+        this.exception = exception;
+        this.stackTrace = (String) exception.get(FIELD_STACK_TRACE);
+    }
+
+    public RemoteWrappedException(final String throwableClass, final String message,
+            final RemoteWrappedException cause, final String stackTrace) {
+        super(message);
+        exception = new HashMap<String, Object>(4);
+        exception.put(FIELD_CLASS, Assertions.blankChecked(throwableClass, "throwableClass"));
+        exception.put(FIELD_MESSAGE, message);
+        if (null != cause) {
+            exception.put(FIELD_CAUSE, cause.exception);
+        }
+        if (null != stackTrace) {
+            exception.put(FIELD_STACK_TRACE, stackTrace);
+        }
+        this.stackTrace = stackTrace;
+    }
+
+    /**
+     * Gets the class name of the original exception.
+     *
+     * This value is constructed by {@code throwable.getClass().getName()}.
+     *
+     * @return name of the original exception.
+     */
+    public String getExceptionClass() {
+        return (String) exception.get(FIELD_CLASS);
+    }
+
+    /**
+     * Checks if the exception is the expected class.
+     *
+     * @param expected
+     *            the expected throwable class.
+     * @return {@code true} if the class name are equals.
+     */
+    public boolean is(Class<? extends Throwable> expected) {
+        if (null == expected) {
+            return false;
+        }
+        String className = ((String) exception.get(FIELD_CLASS));
+        String classExpected = expected.getName();
+        return classExpected.equalsIgnoreCase(className);
+    }
+
+    /**
+     * Returns the cause of original throwable or {@code null} if the cause is
+     * nonexistent or unknown. (The cause is the throwable that caused the
+     * original throwable to get thrown.)
+     *
+     * @return the cause of this throwable or {@code null} if the cause is
+     *         nonexistent or unknown.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public RemoteWrappedException getCause() {
+        Object o = exception.get(FIELD_CAUSE);
+        if (o instanceof Map) {
+            return new RemoteWrappedException((Map<String, Object>) o);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -123,6 +186,10 @@ public final class RemoteWrappedException extends ConnectorException {
         } else {
             s.println(stackTrace);
         }
+    }
+
+    public String readStackTrace() {
+        return stackTrace;
     }
 
     /**
@@ -172,7 +239,7 @@ public final class RemoteWrappedException extends ConnectorException {
         HashMap<String, Object> exception = null;
         if (null != throwable) {
             exception = new HashMap<String, Object>(4);
-            exception.put(FIELD_CLASS, throwable.getClass());
+            exception.put(FIELD_CLASS, throwable.getClass().getName());
             exception.put(FIELD_MESSAGE, throwable.getMessage());
             if (null != throwable.getCause()) {
                 exception.put(FIELD_CAUSE, buildCause(throwable.getCause()));
@@ -185,7 +252,7 @@ public final class RemoteWrappedException extends ConnectorException {
     private static Map<String, Object> buildCause(Throwable throwable) {
         Map<String, Object> cause =
                 new HashMap<String, Object>(null != throwable.getCause() ? 3 : 2);
-        cause.put(FIELD_CLASS, throwable.getClass());
+        cause.put(FIELD_CLASS, throwable.getClass().getName());
         cause.put(FIELD_MESSAGE, throwable.getMessage());
         if (null != throwable.getCause()) {
             cause.put(FIELD_CAUSE, buildCause(throwable.getCause()));

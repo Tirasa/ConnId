@@ -126,7 +126,7 @@ public class ConnectorServerImpl extends ConnectorServer {
             startDate = null;
             listener = null;
         }
-        ConnectorFacadeFactory.getInstance().dispose();
+        ConnectorFacadeFactory.getManagedInstance().dispose();
     }
 
     @Override

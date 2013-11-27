@@ -25,6 +25,7 @@ package org.identityconnectors.framework.impl.api;
 import static org.identityconnectors.framework.common.objects.ObjectClass.ACCOUNT;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.GetApiOp;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
@@ -56,7 +58,6 @@ import org.identityconnectors.mockconnector.MockConnector;
 import org.identityconnectors.mockconnector.MockConnector.Call;
 import org.identityconnectors.mockconnector.MockUpdateConnector;
 import org.identityconnectors.test.common.TestHelpers;
-import static org.testng.Assert.fail;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -247,7 +248,7 @@ public class ConnectorFacadeTests {
         });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = InvalidAttributeValueException.class)
     public void createDuplicatAttributesPattern() {
         testCallPattern(new TestOperationPattern() {
             @Override

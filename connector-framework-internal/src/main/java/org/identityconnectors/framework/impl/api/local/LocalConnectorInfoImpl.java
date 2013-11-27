@@ -27,6 +27,7 @@ import org.identityconnectors.framework.impl.api.AbstractConnectorInfo;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
+import org.identityconnectors.framework.spi.PoolableConnector;
 
 public class LocalConnectorInfoImpl extends AbstractConnectorInfo {
 
@@ -69,5 +70,11 @@ public class LocalConnectorInfoImpl extends AbstractConnectorInfo {
 
     public void setConfigurationStateless(boolean configurationStateless) {
         this.configurationStateless = configurationStateless;
+    }
+
+    public boolean isConnectorPoolingSupported() {
+        // Hopefully the connectorClass do not need custom class loader to
+        // perform this check
+        return PoolableConnector.class.isAssignableFrom(connectorClass);
     }
 }

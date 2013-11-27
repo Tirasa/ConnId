@@ -41,13 +41,6 @@ public @interface ConnectorClass {
     Class<? extends Configuration> configurationClass();
 
     /**
-     *
-     * @return {@code false} if same Configuration instance is used to
-     *         initialise each Connector instance otherwise {@code true}
-     */
-    boolean configurationStateless() default true;
-
-    /**
      * The display name key. This must be a key in the message catalog.
      */
     String displayNameKey();

@@ -90,7 +90,11 @@ public class ConnectorPoolManager {
 
             this.apiConfiguration = apiConfiguration;
             localConnectorInfo = localInfo;
-            this.context = new OperationalContext(localInfo, apiConfiguration);
+            if (localConnectorInfo.isConfigurationStateless()) {
+                context = null;
+            } else {
+                this.context = new OperationalContext(localInfo, apiConfiguration);
+            }
         }
 
         @Override
@@ -114,7 +118,7 @@ public class ConnectorPoolManager {
                 if (PoolableConnector.class.isAssignableFrom(clazz)) {
 
                     Configuration config = null;
-                    if (localConnectorInfo.isConfigurationStateless()) {
+                    if (null == context) {
                         config =
                                 JavaClassProperties.createBean(apiConfiguration
                                         .getConfigurationProperties(), localConnectorInfo
@@ -156,6 +160,13 @@ public class ConnectorPoolManager {
                 object.dispose();
             } finally {
                 ThreadClassLoaderManager.getInstance().popClassLoader();
+            }
+        }
+
+        @Override
+        public void shutdown() {
+            if (null != context) {
+                context.dispose();
             }
         }
     }

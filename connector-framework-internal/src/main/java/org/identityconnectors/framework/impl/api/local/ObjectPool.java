@@ -353,12 +353,16 @@ public class ObjectPool<T> {
         // if there are any active objects still
         // going, leave them alone so they can return
         // gracefully
-        for (PooledObject entry = idleObjects.poll(); entry != null; entry = idleObjects.poll()) {
-            try {
-                dispose(entry);
-            } catch (InterruptedException e) {
-                LOG.error(e, "Failed to dispose PooledObject object");
+        try {
+            for (PooledObject entry = idleObjects.poll(); entry != null; entry = idleObjects.poll()) {
+                try {
+                    dispose(entry);
+                } catch (InterruptedException e) {
+                    LOG.error(e, "Failed to dispose PooledObject object");
+                }
             }
+        } finally {
+            handler.shutdown();
         }
     }
 

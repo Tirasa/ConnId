@@ -19,15 +19,17 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import org.identityconnectors.common.Pair;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
+import org.identityconnectors.framework.impl.api.local.ConnectorPoolManager;
 import org.identityconnectors.framework.impl.api.local.ObjectPool;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.PoolableConnector;
-
 
 /**
  * Simple structure to pass more variables through the constructor of
@@ -35,24 +37,40 @@ import org.identityconnectors.framework.spi.PoolableConnector;
  */
 public class ConnectorOperationalContext extends OperationalContext {
 
-
     /**
-     * Pool for Connectors
+     * Pool Key for Connectors
      */
-    private final ObjectPool<PoolableConnector> pool;
-
+    private ConnectorPoolManager.ConnectorPoolKey connectorPoolKey;
 
     public ConnectorOperationalContext(final LocalConnectorInfoImpl connectorInfo,
-            final APIConfigurationImpl apiConfiguration,
-            final ObjectPool<PoolableConnector> pool) {
-        super(connectorInfo,apiConfiguration);
-        this.pool = pool;
+            final APIConfigurationImpl apiConfiguration) {
+        super(connectorInfo, apiConfiguration);
     }
 
     public ObjectPool<PoolableConnector> getPool() {
-        return this.pool;
-    }
+        if (apiConfiguration.isConnectorPoolingSupported()) {
+            if (null == connectorPoolKey) {
+                Pair<ConnectorPoolManager.ConnectorPoolKey, ObjectPool<PoolableConnector>> pool =
+                        ConnectorPoolManager.getPool(apiConfiguration, connectorInfo);
 
+                connectorPoolKey = pool.getKey();
+                return pool.getValue();
+            } else {
+                ObjectPool<PoolableConnector> pool = ConnectorPoolManager.getPool(connectorPoolKey);
+                if (null == pool) {
+                    //
+                    Pair<ConnectorPoolManager.ConnectorPoolKey, ObjectPool<PoolableConnector>> poolPair =
+                            ConnectorPoolManager.getPool(apiConfiguration, connectorInfo);
+
+                    connectorPoolKey = poolPair.getKey();
+                    pool = poolPair.getValue();
+                }
+                return pool;
+            }
+        } else {
+            return null;
+        }
+    }
 
     public Class<? extends Connector> getConnectorClass() {
         return getConnectorInfo().getConnectorClass();

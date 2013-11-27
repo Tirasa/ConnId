@@ -953,7 +953,7 @@ public class ObjectSerializationTests {
     }
     @Test
     public void testOperationResponsePart() {
-        RuntimeException ex = new RuntimeException("foo");
+        RuntimeException ex = new RuntimeException("foo", new IllegalArgumentException("Cause"));
         OperationResponsePart v1 = new OperationResponsePart(ex,"bar");
         OperationResponsePart v2 = (OperationResponsePart)cloneObject(v1);
         assertNotNull(v2.getException());

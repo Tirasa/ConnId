@@ -24,9 +24,7 @@
 
 package org.identityconnectors.framework.common.objects;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.identityconnectors.common.CollectionUtil;
@@ -262,7 +260,7 @@ public final class OperationOptions {
      * @see #getPagedResultsOffset()
      * @since 1.4
      */
-    String getPagedResultsCookie() {
+    public String getPagedResultsCookie() {
         return (String) operationOptions.get(OP_PAGED_RESULTS_COOKIE);
     };
 
@@ -270,7 +268,7 @@ public final class OperationOptions {
      * Returns the index within the result set of the first result which should
      * be returned. Paged results will be enabled if and only if the page size
      * is non-zero. If the parameter is not present or a value less than 1 is
-     * specified then then the page following the previous page returned will be
+     * specified then the page following the previous page returned will be
      * returned. A value equal to or greater than 1 indicates that a specific
      * page should be returned starting from the position specified.
      *
@@ -280,7 +278,7 @@ public final class OperationOptions {
      * @see #getPagedResultsCookie()
      * @since 1.4
      */
-    int getPagedResultsOffset() {
+    public Integer getPagedResultsOffset() {
         return (Integer) operationOptions.get(OP_PAGED_RESULTS_OFFSET);
     };
 
@@ -296,7 +294,7 @@ public final class OperationOptions {
      * @see #getPagedResultsOffset()
      * @since 1.4
      */
-    int getPageSize() {
+    public Integer getPageSize() {
         return (Integer) operationOptions.get(OP_PAGE_SIZE);
     };
 
@@ -309,11 +307,8 @@ public final class OperationOptions {
      *         {@code null}).
      * @since 1.4
      */
-    List<SortKey> getSortKeys() {
-        if (operationOptions.get(OP_SORT_KEYS) instanceof List) {
-            return (List<SortKey>) operationOptions.get(OP_SORT_KEYS);
-        } else {
-            return Collections.emptyList();
-        }
+    @SuppressWarnings("unchecked")
+    public SortKey[] getSortKeys() {
+        return (SortKey[]) operationOptions.get(OP_SORT_KEYS);
     };
 }

@@ -117,12 +117,10 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
      */
     private final LocalConnectorInfoImpl connectorInfo;
 
-    private final ConnectorPoolManager.ConnectorPoolKey connectorPoolKey;
-
     /**
      * Shared OperationalContext for stateful facades
      */
-    private volatile ConnectorOperationalContext operationalContext;
+    private final ConnectorOperationalContext operationalContext;
 
     /**
      * Builds up the maps of supported operations and calls.
@@ -131,51 +129,36 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
             final APIConfigurationImpl apiConfiguration) {
         super(apiConfiguration);
         this.connectorInfo = connectorInfo;
-        if (connectorInfo.isConfigurationStateless()) {
+        if (connectorInfo.isConfigurationStateless()
+                && !connectorInfo.isConnectorPoolingSupported()) {
             operationalContext = null;
-            connectorPoolKey = null;
         } else {
-            Pair<ConnectorPoolManager.ConnectorPoolKey, ObjectPool<PoolableConnector>> pair =
-                    getPool();
-
             operationalContext =
-                    new ConnectorOperationalContext(connectorInfo, getAPIConfiguration(), pair
-                            .getValue());
-            connectorPoolKey = pair.getKey();
+                    new ConnectorOperationalContext(connectorInfo, getAPIConfiguration());
         }
     }
 
     public LocalConnectorFacadeImpl(final LocalConnectorInfoImpl connectorInfo, String configuration) {
         super(configuration, connectorInfo);
-
-        // //DUPLICATE
         this.connectorInfo = connectorInfo;
-        if (connectorInfo.isConfigurationStateless()) {
+        if (connectorInfo.isConfigurationStateless()
+                && !connectorInfo.isConnectorPoolingSupported()) {
             operationalContext = null;
-            connectorPoolKey = null;
         } else {
-            Pair<ConnectorPoolManager.ConnectorPoolKey, ObjectPool<PoolableConnector>> pair =
-                    getPool();
-
             operationalContext =
-                    new ConnectorOperationalContext(connectorInfo, getAPIConfiguration(), pair
-                            .getValue());
-            connectorPoolKey = pair.getKey();
+                    new ConnectorOperationalContext(connectorInfo, getAPIConfiguration());
         }
-        // //
+    }
 
+    public void dispose() {
+        if (null != operationalContext) {
+            operationalContext.dispose();
+        }
     }
 
     protected ConnectorOperationalContext getOperationalContext() {
-        if (connectorInfo.isConfigurationStateless()) {
-            Pair<ConnectorPoolManager.ConnectorPoolKey, ObjectPool<PoolableConnector>> pool =
-                    getPool();
-            return new ConnectorOperationalContext(connectorInfo, getAPIConfiguration(),
-                    null != pool ? pool.getValue() : null);
-        } else if (null == operationalContext) {
-            return new ConnectorOperationalContext(connectorInfo, getAPIConfiguration(),
-                    null != connectorPoolKey ? ConnectorPoolManager.getPool(connectorPoolKey)
-                            : null);
+        if (null == operationalContext) {
+            return new ConnectorOperationalContext(connectorInfo, getAPIConfiguration());
         }
         return operationalContext;
     }

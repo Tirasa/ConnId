@@ -71,7 +71,7 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
         final Set<String> dups = new HashSet<String>();
         for (Attribute attr : createAttributes) {
             if (dups.contains(attr.getName())) {
-                throw new IllegalArgumentException("Duplicated named attributes: " + attr.getName());
+                throw new InvalidAttributeValueException("Duplicated named attributes: " + attr.getName());
             }
             // add for the detection..s
             dups.add(attr.getName());
@@ -80,7 +80,8 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
         final Connector connector = getConnector();
         final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
         // create the object..
-        final Set<Attribute> normalizedAttributes = normalizer.normalizeAttributes(createAttributes);
+        final Set<Attribute> normalizedAttributes =
+                normalizer.normalizeAttributes(createAttributes);
         final Uid ret = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
         return (Uid) normalizer.normalizeAttribute(ret);
     }

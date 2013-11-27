@@ -72,4 +72,12 @@ public interface ObjectPoolHandler<T> {
      *            The "dropped" object.
      */
     public void disposeObject(T object);
+
+    /**
+     * Releases any allocated resources.
+     * <p/>
+     * Existing active objects will remain alive and be allowed to shutdown
+     * gracefully, but no more objects will be allocated.
+     */
+    public void shutdown();
 }

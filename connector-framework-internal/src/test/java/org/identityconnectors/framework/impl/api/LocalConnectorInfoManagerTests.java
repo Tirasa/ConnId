@@ -22,8 +22,6 @@
  */
 package org.identityconnectors.framework.impl.api;
 
-import org.testng.annotations.Test;
-import org.testng.Assert;
 import java.net.URL;
 import java.util.List;
 
@@ -33,6 +31,8 @@ import org.identityconnectors.framework.api.ConnectorInfoManager;
 import org.identityconnectors.framework.api.ConnectorInfoManagerFactory;
 import org.identityconnectors.framework.common.FrameworkUtilTestHelpers;
 import org.identityconnectors.framework.common.exceptions.ConfigurationException;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 
 public class LocalConnectorInfoManagerTests extends ConnectorInfoManagerTestBase {

@@ -22,6 +22,7 @@
     enclosed by brackets [] replaced by your own identifying information:
     "Portions Copyrighted [year] [name of copyright owner]"
     ====================
+    Portions Copyrighted 2010-2013 ForgeRock AS.
 
 -->
 
@@ -41,7 +42,9 @@
   "AlreadyExistsException | ConfigurationException | ConnectionBrokenException
   | ConnectionFailedException | ConnectorIOException | InvalidPasswordException
   | UnknownUidException | InvalidCredentialException | PermissionDeniedException
-  | ConnectorSecurityException | OperationTimeoutException | ConnectorException
+  | ConnectorSecurityException | OperationTimeoutException | InvalidAttributeValueException
+  | PreconditionRequiredException | PreconditionFailedException | RetryableException
+  | RemoteWrappedException | ConnectorException
   | RuntimeException | Exception | Throwable | PasswordExpiredException | IllegalArgumentException
   ">
 
@@ -220,6 +223,10 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 >
 
 <!ELEMENT Uid (#PCDATA)>
+<!ATTLIST Uid
+    uid CDATA #IMPLIED
+    revision CDATA #IMPLIED
+>
 <!ELEMENT Name (#PCDATA)>
 
 
@@ -274,6 +281,28 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ELEMENT OperationTimeoutException EMPTY>
 <!ATTLIST OperationTimeoutException
    message CDATA #IMPLIED
+>
+<!ELEMENT InvalidAttributeValueException EMPTY>
+<!ATTLIST InvalidAttributeValueException
+   message CDATA #IMPLIED
+>
+<!ELEMENT PreconditionFailedException EMPTY>
+<!ATTLIST PreconditionFailedException
+    message CDATA #IMPLIED
+>
+<!ELEMENT PreconditionRequiredException EMPTY>
+<!ATTLIST PreconditionRequiredException
+    message CDATA #IMPLIED
+>
+<!ELEMENT RetryableException EMPTY>
+<!ATTLIST RetryableException
+    message CDATA #IMPLIED
+>
+<!ELEMENT RemoteWrappedException (RemoteWrappedException?)>
+<!ATTLIST RemoteWrappedException
+   class CDATA #IMPLIED
+   message CDATA #IMPLIED
+   stackTrace CDATA #IMPLIED
 >
 <!ELEMENT ConnectorException EMPTY>
 <!ATTLIST ConnectorException
@@ -353,6 +382,10 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ELEMENT SyncDelta (SyncDeltaType,SyncToken,PreviousUid,Uid,ConnectorObject?)>
 
 <!ELEMENT PreviousUid (#PCDATA)>
+<!ATTLIST PreviousUid
+    uid CDATA #IMPLIED
+    revision CDATA #IMPLIED
+>
 
 <!ELEMENT QualifiedUid (ObjectClass,Uid)>
 
