@@ -74,7 +74,12 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
                 null != getOperationalContext() ? getOperationalContext()
                         .getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
 
-        Filter finalFilter = originalFilter;
+        Filter actualFilter = originalFilter;               // actualFilter is used for chaining filters - it points to the filter where new filters should be chained
+
+        if (hdlCfg.isEnableFilteredResultsHandler() && hdlCfg.isEnableCaseInsensitiveFilter() && actualFilter != null) {
+            ObjectNormalizerFacade caseNormalizer = new ObjectNormalizerFacade(objectClass, new CaseNormalizer());
+            actualFilter = new NormalizingFilter(actualFilter, caseNormalizer);
+        }
 
         if (hdlCfg.isEnableNormalizingResultsHandler()) {
             final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
@@ -82,19 +87,18 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             // filter handler)
             NormalizingResultsHandler normalizingHandler =
                     new NormalizingResultsHandler(handler, normalizer);
-            final Filter normalizedFilter = normalizer.normalizeFilter(originalFilter);
             // chain a filter handler..
             if (hdlCfg.isEnableFilteredResultsHandler()) {
                 // chain a filter handler..
+                final Filter normalizedFilter = normalizer.normalizeFilter(actualFilter);
                 handler = new FilteredResultsHandler(normalizingHandler, normalizedFilter);
-                finalFilter = normalizedFilter;
+                actualFilter = normalizedFilter;
             } else {
                 handler = normalizingHandler;
             }
         } else if (hdlCfg.isEnableFilteredResultsHandler()) {
             // chain a filter handler..
-            handler = new FilteredResultsHandler(handler, originalFilter);
-            finalFilter = originalFilter;
+            handler = new FilteredResultsHandler(handler, actualFilter);
         }
         // chain an attributes to get handler..
         if (hdlCfg.isEnableAttributesToGetSearchResultsHandler()) {
@@ -104,7 +108,7 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         final ResultsHandler handlerChain = handler;
 
         final AtomicReference<SearchResult> result = new AtomicReference<SearchResult>(null);
-        rawSearch(search, objectClass, finalFilter, new SearchResultsHandler() {
+        rawSearch(search, objectClass, actualFilter, new SearchResultsHandler() {
             @Override
             public void handleResult(final SearchResult searchResult) {
                 result.set(searchResult);
