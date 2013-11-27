@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.framework.common;
 
@@ -61,6 +62,7 @@ import org.identityconnectors.framework.api.operations.ValidateApiOp;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.QualifiedUid;
+import org.identityconnectors.framework.common.objects.SortKey;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.AuthenticateOp;
@@ -354,6 +356,10 @@ public final class FrameworkUtil {
         }
 
         if (QualifiedUid.class.isAssignableFrom(clazz)) {
+            return; // ok
+        }
+
+        if (SortKey.class.isAssignableFrom(clazz)){
             return; // ok
         }
 

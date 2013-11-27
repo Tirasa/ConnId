@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.testconnector;
 
@@ -29,14 +30,14 @@ import org.identityconnectors.framework.spi.ConfigurationProperty;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 
 public class TstConnectorConfig extends AbstractConfiguration {
-    private String _tstField;
-    private String _tst1Field;
+    private String tstField;
+    private String tst1Field;
 
-    private int _numResults;
+    private int numResults;
 
-    private boolean _failValidation;
+    private boolean failValidation;
 
-    private boolean _resetConnectionCount;
+    private boolean resetConnectionCount;
 
     public TstConnectorConfig() {
         TstConnector.checkClassLoader();
@@ -45,59 +46,59 @@ public class TstConnectorConfig extends AbstractConfiguration {
 
     public boolean getResetConnectionCount() {
         TstConnector.checkClassLoader();
-        return _resetConnectionCount;
+        return resetConnectionCount;
     }
 
     public void setResetConnectionCount( boolean count ) {
         TstConnector.checkClassLoader();
-        _resetConnectionCount = count;
+        resetConnectionCount = count;
     }
 
     @ConfigurationProperty(operations={SyncOp.class})
     public String getTstField() {
         TstConnector.checkClassLoader();
-        return _tstField;
+        return tstField;
     }
 
     public void setTstField(String value) {
         TstConnector.checkClassLoader();
-        _tstField = value;
+        tstField = value;
     }
 
     public String getTst1Field() {
         TstConnector.checkClassLoader();
-        return _tst1Field;
+        return tst1Field;
     }
 
     public void setTst1Field(String value) {
         TstConnector.checkClassLoader();
-        _tst1Field = value;
+        tst1Field = value;
     }
 
     public int getNumResults() {
         TstConnector.checkClassLoader();
-        return _numResults;
+        return numResults;
     }
 
     public void setNumResults(int numResults) {
         TstConnector.checkClassLoader();
-        _numResults = numResults;
+        this.numResults = numResults;
     }
 
     public boolean getFailValidation() {
         TstConnector.checkClassLoader();
-        return _failValidation;
+        return failValidation;
     }
 
     public void setFailValidation(boolean fail) {
         TstConnector.checkClassLoader();
-        _failValidation = fail;
+        failValidation = fail;
     }
 
     @Override
     public void validate() {
         TstConnector.checkClassLoader();
-        if (_failValidation) {
+        if (failValidation) {
             throw new ConnectorException("validation failed "+CurrentLocale.get().getLanguage());
         }
     }

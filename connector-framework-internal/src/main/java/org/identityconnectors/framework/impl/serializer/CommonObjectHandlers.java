@@ -243,14 +243,6 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<ConnectorException>(ConnectorException.class,
-                "ConnectorException") {
-
-            protected ConnectorException createException(final String message) {
-                return new ConnectorException(message);
-            }
-        });
-
         HANDLERS.add(new ThrowableHandler<InvalidAttributeValueException>(
                 InvalidAttributeValueException.class, "InvalidAttributeValueException") {
 
@@ -283,17 +275,40 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new AbstractObjectSerializationHandler(RemoteWrappedException.class, "RemoteWrappedException") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(RemoteWrappedException.class,
+                "RemoteWrappedException") {
 
             public Object deserialize(final ObjectDecoder decoder) {
+                String throwableClass =
+                        decoder.readStringField(RemoteWrappedException.FIELD_CLASS,
+                                ConnectorException.class.getName());
+                String message =
+                        decoder.readStringField(RemoteWrappedException.FIELD_MESSAGE, null);
+                RemoteWrappedException cause =
+                        (RemoteWrappedException) decoder.readObjectField("RemoteWrappedException", RemoteWrappedException.class,
+                                null);
+                String stackTrace =
+                        decoder.readStringField(RemoteWrappedException.FIELD_STACK_TRACE, null);
 
-
-                return null;
+                return new RemoteWrappedException(throwableClass, message, cause, stackTrace);
             }
 
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final RemoteWrappedException val = (RemoteWrappedException) object;
+                encoder.writeStringField(RemoteWrappedException.FIELD_CLASS, val
+                        .getExceptionClass());
+                encoder.writeStringField(RemoteWrappedException.FIELD_MESSAGE, val.getMessage());
+                encoder.writeObjectField("RemoteWrappedException", val.getCause(), true);
+                encoder.writeStringField(RemoteWrappedException.FIELD_STACK_TRACE, val
+                        .readStackTrace());
+            }
+        });
 
+        HANDLERS.add(new ThrowableHandler<ConnectorException>(ConnectorException.class,
+                "ConnectorException") {
+
+            protected ConnectorException createException(final String message) {
+                return new ConnectorException(message);
             }
         });
 
@@ -531,13 +546,19 @@ class CommonObjectHandlers {
 
         HANDLERS.add(new AbstractObjectSerializationHandler(Uid.class, "Uid") {
             public Object deserialize(final ObjectDecoder decoder) {
-                final String val = decoder.readStringContents();
-                return new Uid(val);
+                final String val = decoder.readStringField("uid", null);
+                final String revision = decoder.readStringField("revision", null);
+                if (null == revision) {
+                    return new Uid(val);
+                } else {
+                    return new Uid(val, revision);
+                }
             }
 
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final Uid val = (Uid) object;
-                encoder.writeStringContents(val.getUidValue());
+                encoder.writeStringField("uid", val.getUidValue());
+                encoder.writeStringField("revision", val.getRevision());
             }
         });
 

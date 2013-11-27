@@ -211,6 +211,20 @@ public final class OperationOptionsBuilder {
      */
     public OperationOptionsBuilder setSortKeys(List<SortKey> sortKeys) {
         Assertions.nullCheck(sortKeys, "sortKeys");
+        options.put(OperationOptions.OP_SORT_KEYS, sortKeys.toArray(new SortKey[sortKeys.size()]));
+        return this;
+    }
+
+    /**
+     * Convenience method to set {@link OperationOptions#OP_SORT_KEYS}
+     *
+     * @param sortKeys
+     *            The sort keys. May not be null.
+     * @return A this reference to allow chaining
+     * @since 1.4
+     */
+    public OperationOptionsBuilder setSortKeys(SortKey... sortKeys) {
+        Assertions.nullCheck(sortKeys, "sortKeys");
         options.put(OperationOptions.OP_SORT_KEYS, sortKeys);
         return this;
     }

@@ -92,6 +92,9 @@ public class ObjectPoolTests {
             _createBadConnection = v;
         }
 
+        @Override
+        public void shutdown() {
+        }
     }
 
     private class MyTestThread extends Thread {

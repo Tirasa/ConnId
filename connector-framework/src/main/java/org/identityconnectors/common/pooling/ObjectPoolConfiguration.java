@@ -134,25 +134,25 @@ public final class ObjectPoolConfiguration {
 
     public void validate() {
         if (minIdle < 0) {
-            throw new IllegalStateException("Min idle is less than zero.");
+            throw new IllegalArgumentException("Min idle is less than zero.");
         }
         if (maxObjects < 0) {
-            throw new IllegalStateException("Max active is less than zero.");
+            throw new IllegalArgumentException("Max active is less than zero.");
         }
         if (maxIdle < 0) {
-            throw new IllegalStateException("Max idle is less than zero.");
+            throw new IllegalArgumentException("Max idle is less than zero.");
         }
         if (maxWait < 0) {
-            throw new IllegalStateException("Max wait is less than zero.");
+            throw new IllegalArgumentException("Max wait is less than zero.");
         }
         if (minEvictableIdleTimeMillis < 0) {
-            throw new IllegalStateException("Min evictable idle time millis less than zero.");
+            throw new IllegalArgumentException("Min evictable idle time millis less than zero.");
         }
         if (minIdle > maxIdle) {
-            throw new IllegalStateException("Min idle is greater than max idle.");
+            throw new IllegalArgumentException("Min idle is greater than max idle.");
         }
         if (maxIdle > maxObjects) {
-            throw new IllegalStateException("Max idle is greater than max objects.");
+            throw new IllegalArgumentException("Max idle is greater than max objects.");
         }
     }
 

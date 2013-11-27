@@ -30,6 +30,7 @@ import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.api.ConnectorInfo;
+import org.identityconnectors.framework.impl.api.local.LocalConnectorFacadeImpl;
 
 public class ManagedConnectorFacadeFactoryImpl extends ConnectorFacadeFactoryImpl {
 
@@ -78,6 +79,15 @@ public class ManagedConnectorFacadeFactoryImpl extends ConnectorFacadeFactoryImp
     @Override
     public void dispose() {
         super.dispose();
+        for (ConnectorFacade facade : CACHE.values()) {
+            if (facade instanceof LocalConnectorFacadeImpl) {
+                try {
+                    ((LocalConnectorFacadeImpl) facade).dispose();
+                } catch (Exception e) {
+                    LOG.warn(e, "Failed to dispose facade: {0}", facade);
+                }
+            }
+        }
         CACHE.clear();
     }
 

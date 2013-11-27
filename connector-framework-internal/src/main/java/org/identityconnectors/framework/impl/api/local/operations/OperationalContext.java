@@ -23,6 +23,7 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.ResultsHandlerConfiguration;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.local.JavaClassProperties;
@@ -36,15 +37,17 @@ import org.identityconnectors.framework.spi.Connector;
  */
 public class OperationalContext {
 
+    private static final Log LOG = Log.getLog(OperationalContext.class);
+
     /**
      * ConnectorInfo
      */
-    private final LocalConnectorInfoImpl connectorInfo;
+    protected final LocalConnectorInfoImpl connectorInfo;
 
     /**
      * Contains the {@link Connector} {@link Configuration}.
      */
-    private final APIConfigurationImpl apiConfiguration;
+    protected final APIConfigurationImpl apiConfiguration;
 
     private volatile Configuration configuration;
 
@@ -64,6 +67,10 @@ public class OperationalContext {
 
     }
 
+    /*
+     * This method must be called when the Bundle ClassLoader is the Thread
+     * Context ClassLoader.
+     */
     public Configuration getConfiguration() {
         if (null == configuration) {
             synchronized (this) {
@@ -84,5 +91,20 @@ public class OperationalContext {
 
     public ResultsHandlerConfiguration getResultsHandlerConfiguration() {
         return new ResultsHandlerConfiguration(apiConfiguration.getResultsHandlerConfiguration());
+    }
+
+    public void dispose() {
+        if (configuration instanceof Configuration) {
+            // dispose it not supposed to throw, but just in case,
+            // catch the exception and log it so we know about it
+            // but don't let the exception prevent additional
+            // cleanup that needs to happen
+            try {
+                // ((StatefulConfiguration)config).dispose();
+            } catch (Exception e) {
+                // log this though
+                LOG.warn(e, null);
+            }
+        }
     }
 }

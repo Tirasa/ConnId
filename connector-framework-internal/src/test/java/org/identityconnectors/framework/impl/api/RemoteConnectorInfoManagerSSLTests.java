@@ -234,7 +234,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
                 new GuardedString("changeit".toCharArray()),
                 true,
                 CollectionUtil.newList(clientTrustManager),
-                60000);
+                0);
 
         ConnectorInfoManager manager = fact.getRemoteManager(connInfo);
 
