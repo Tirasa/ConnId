@@ -25,6 +25,8 @@
 # What is ConnId?
 Want to know more about ConnId? Check our [website](http://tirasa.github.com/ConnId/).
 
+<img src="https://api.travis-ci.org/Tirasa/ConnId.png"/>
+
 # Available connectors
 Download instructions at [this page](https://connid.atlassian.net/wiki/display/BASE/Downloads).
 
