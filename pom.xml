@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
 Copyright 2011-2013 Tirasa. All rights reserved.
 
@@ -227,41 +227,21 @@ enclosed by brackets [] replaced by your own identifying information:
       <plugin>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
-        <version>1.10.b1</version>
+        <version>1.9.0</version>
         <configuration>
-          <header>src/main/resources/header.txt</header>
+          <header>https://raw.github.com/Tirasa/ConnId/master/legal/COPYRIGHT</header>
           <strictCheck>true</strictCheck>
-          <failIfMissing>true</failIfMissing>
+          <failIfMissing>false</failIfMissing>
           <aggregate>true</aggregate>
           <useDefaultExcludes>true</useDefaultExcludes>
           <useDefaultMapping>true</useDefaultMapping>
-          <headerSections>
-            <headerSection>
-              <key>COPYRIGHT_SECTION</key>
-              <defaultValue>Copyright 2013 ConnId. All rights reserved.</defaultValue>
-              <ensureMatch>Copyright .*\. All rights reserved\.</ensureMatch>
-            </headerSection>
-            <headerSection>
-              <key>PORTIONS_COPYRIGHT_SECTION</key>
-              <defaultValue></defaultValue>
-              <ensureMatch>(.*^Portions Copyrighted .*)?</ensureMatch>
-            </headerSection>
-          </headerSections>
-          <headerDefinitions>
-            <headerDefinition>src/main/resources/java-single-star.xml</headerDefinition>
-          </headerDefinitions>
           <mapping>
             <md>XML_STYLE</md>
-            <java>JAVA-SINGLE-STAR</java>
-            <groovy>JAVA-SINGLE-STAR</groovy>
           </mapping>
           <excludes>
-            <exclude>**/LICENSE*</exclude>
-            <exclude>**/NOTICE*</exclude>
+            <exclude>legal/**</exclude>
             <exclude>**/*.pfx</exclude>
             <exclude>**/*.dll</exclude>
-            <exclude>**/*.so</exclude>
-            <exclude>**/*.jnilib</exclude>
             <exclude>nbactions.xml</exclude>
             <exclude>nb-configuration.xml</exclude>
             <exclude>**/META-INF/services/**</exclude>
@@ -275,6 +255,8 @@ enclosed by brackets [] replaced by your own identifying information:
             <exclude>.git/**</exclude>
             <exclude>.idea/**</exclude>
             <exclude>**/.*</exclude>
+            <exclude>src/main/resources/**</exclude>
+            <exclude>connector-server-zip/**</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -319,7 +301,7 @@ enclosed by brackets [] replaced by your own identifying information:
       </build>
     </profile>
   </profiles>
-    
+  
   <modules>
     <module>framework</module>
     <module>framework-internal</module>
