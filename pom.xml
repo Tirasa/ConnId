@@ -220,56 +220,52 @@ enclosed by brackets [] replaced by your own identifying information:
           <artifactId>maven-jetty-plugin</artifactId>
           <version>6.1.26</version>
         </plugin>
+        <plugin>
+          <groupId>com.mycila.maven-license-plugin</groupId>
+          <artifactId>maven-license-plugin</artifactId>
+          <inherited>false</inherited>
+          <version>1.9.0</version>
+          <configuration>
+            <header>https://raw.github.com/Tirasa/ConnId/master/legal/COPYRIGHT</header>
+            <strictCheck>true</strictCheck>
+            <failIfMissing>true</failIfMissing>
+            <aggregate>true</aggregate>
+            <useDefaultExcludes>true</useDefaultExcludes>
+            <useDefaultMapping>true</useDefaultMapping>
+            <mapping>
+              <md>XML_STYLE</md>
+            </mapping>
+            <excludes>
+              <exclude>legal/**</exclude>
+              <exclude>**/*.pfx</exclude>
+              <exclude>**/*.dll</exclude>
+              <exclude>nbactions.xml</exclude>
+              <exclude>nb-configuration.xml</exclude>
+              <exclude>**/META-INF/services/**</exclude>
+              <exclude>**/*.css</exclude>
+              <exclude>**/*.js</exclude>
+              <exclude>**/*.csv</exclude>
+              <exclude>**/maven-eclipse.xml</exclude>
+              <exclude>**/*.iml</exclude>
+              <exclude>**/*.log</exclude>
+              <exclude>.externalToolBuilders/**</exclude>
+              <exclude>.git/**</exclude>
+              <exclude>.idea/**</exclude>
+              <exclude>**/.*</exclude>
+            </excludes>
+          </configuration>
+          <executions>
+            <execution>
+              <id>check-headers</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
-    
-    <plugins>
-      <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <version>1.9.0</version>
-        <configuration>
-          <header>https://raw.github.com/Tirasa/ConnId/master/legal/COPYRIGHT</header>
-          <strictCheck>true</strictCheck>
-          <failIfMissing>false</failIfMissing>
-          <aggregate>true</aggregate>
-          <useDefaultExcludes>true</useDefaultExcludes>
-          <useDefaultMapping>true</useDefaultMapping>
-          <mapping>
-            <md>XML_STYLE</md>
-          </mapping>
-          <excludes>
-            <exclude>legal/**</exclude>
-            <exclude>**/*.pfx</exclude>
-            <exclude>**/*.dll</exclude>
-            <exclude>nbactions.xml</exclude>
-            <exclude>nb-configuration.xml</exclude>
-            <exclude>**/META-INF/services/**</exclude>
-            <exclude>**/*.css</exclude>
-            <exclude>**/*.js</exclude>
-            <exclude>**/*.csv</exclude>
-            <exclude>**/maven-eclipse.xml</exclude>
-            <exclude>**/*.iml</exclude>
-            <exclude>**/*.log</exclude>
-            <exclude>.externalToolBuilders/**</exclude>
-            <exclude>.git/**</exclude>
-            <exclude>.idea/**</exclude>
-            <exclude>**/.*</exclude>
-            <exclude>src/main/resources/**</exclude>
-            <exclude>connector-server-zip/**</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <id>check-headers</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 
   <profiles>

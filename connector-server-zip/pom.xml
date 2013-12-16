@@ -51,7 +51,7 @@
   <build>
     <finalName>connid-connector-server-java-${project.version}</finalName>
     
-    <plugins>  
+    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -70,7 +70,40 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin> 
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <configuration>
+          <header>https://raw.github.com/Tirasa/ConnId/master/legal/COPYRIGHT</header>
+          <strictCheck>true</strictCheck>
+          <failIfMissing>true</failIfMissing>
+          <aggregate>true</aggregate>
+          <useDefaultExcludes>true</useDefaultExcludes>
+          <useDefaultMapping>true</useDefaultMapping>
+          <mapping>
+            <md>XML_STYLE</md>
+          </mapping>
+          <excludes>
+            <exclude>**/bin/*.bat</exclude>
+            <exclude>**/bin/*.txt</exclude>
+            <exclude>**/conf/ConnectorServer.properties</exclude>
+            <exclude>**/conf/logging.properties</exclude>
+            <exclude>**/lib/logback.groovy</exclude>
+            <exclude>**/lib/logback.xml</exclude>
+            <exclude>**/assembly/zip.xml</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>check-headers</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>   
     </plugins>
   </build>
 </project>
