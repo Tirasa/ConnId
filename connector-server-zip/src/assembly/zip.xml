@@ -60,7 +60,7 @@
       <outputDirectory>/connid-connector-server/lib/framework</outputDirectory>
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
       <includes>
-        <include>org.identityconnectors.framework:*</include>
+        <include>org.connid:connector-framework*</include>
         <include>org.slf4j:*</include>
         <include>ch.qos.logback:*</include>
         <include>org.codehaus.groovy:groovy-all</include>
