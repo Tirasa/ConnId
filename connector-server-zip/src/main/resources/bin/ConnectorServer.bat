@@ -64,13 +64,9 @@ rem Only Java 6 supports wildcard (*)
 rem set CP="lib/*;lib/framework/*"
 
 rem setup the classpath
-set CP=lib\framework\connector-framework.jar
-set CP=%CP%;lib\framework\connector-framework-internal.jar
+set CP=lib\framework\connid-framework.jar
+set CP=%CP%;lib\framework\connid-framework-internal.jar
 set CP=%CP%;lib\framework\groovy-all.jar
-set CP=%CP%;lib\framework\icfl-over-slf4j.jar
-set CP=%CP%;lib\framework\slf4j-api.jar
-set CP=%CP%;lib\framework\logback-core.jar
-set CP=%CP%;lib\framework\logback-classic.jar
 
 echo %CP%
 
