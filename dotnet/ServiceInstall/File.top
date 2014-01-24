@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<DirectoryRef Id="TARGETDIR">
+			<Directory Id="ProgramFilesFolder" Name="PFiles">
+				<Directory Id="IdConn" Name="Identity Connectors">
+					<Directory Id="INSTALLDIR" Name="Connector Server" >
+					<Component Id="ConnectorServerService" Guid="8B1F7E82-46D7-4F88-A1FA-44FCBF7E684F" DiskId="1">
+						<ServiceInstall
+							Id="ConnectorServerServiceInstall"
+							Name="ConnectorServerService"
+							DisplayName="OpenICF Connector Server"
+							Type="ownProcess"
+							Start="auto"
+							ErrorControl="normal"
+							Description="OpenICF Connector Server"
+							Account="[SERVICEACCOUNT]"
+							Password="[SERVICEPASSWORD]">
+						</ServiceInstall>
+						<ServiceControl Id="StartConnectorServerService" Name="ConnectorServerService" Start="install" Wait="no" />
+						<ServiceControl Id="StopConnectorServerService" Name="ConnectorServerService" Stop="both" Wait="yes" Remove="uninstall" />

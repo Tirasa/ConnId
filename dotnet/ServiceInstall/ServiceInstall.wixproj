@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ====================
+  DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+  
+  Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.     
+  
+  The contents of this file are subject to the terms of the Common Development 
+  and Distribution License("CDDL") (the "License").  You may not use this file 
+  except in compliance with the License.
+  
+  You can obtain a copy of the License at 
+  http://IdentityConnectors.dev.java.net/legal/license.txt
+  See the License for the specific language governing permissions and limitations 
+  under the License. 
+  
+  When distributing the Covered Code, include this CDDL Header Notice in each file
+  and include the License file at identityconnectors/legal/license.txt.
+  If applicable, add the following below this CDDL Header, with the fields 
+  enclosed by brackets [] replaced by your own identifying information: 
+  "Portions Copyrighted [year] [name of copyright owner]"
+  ====================
+-->
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{1CBA8F74-050C-432B-8437-08BD13BDC684}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Package</OutputType>
+    <RootNamespace>ServiceInstall</RootNamespace>
+    <OutputName>ServiceInstall</OutputName>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <SupressIces>ICE45</SupressIces>
+    <OpenICFVersion>1.4.0.0-SNAPSHOT</OpenICFVersion>	
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>False</DebugSymbols>
+    <Optimize>True</Optimize>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <Import Project="$(WixTargetsPath)" />
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+  <ItemGroup>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>WixUIExtension</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+    <Compile Include="Files.wxs" />
+    <Compile Include="Setup.wxs" />
+  </ItemGroup>
+  <Import Project="ExtBuild.proj" />
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Name>Common</Name>
+      <Project>{f140e8da-52b4-4159-992a-9da10ea8eefb}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="..\FrameworkInternal\FrameworkInternal.csproj">
+      <Name>FrameworkInternal</Name>
+      <Project>{5b011775-b121-4eee-a410-ba2d2f5bfb8b}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="..\Framework\Framework.csproj">
+      <Name>Framework</Name>
+      <Project>{8b24461b-456a-4032-89a1-cd418f7b5b62}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="..\PowerShellScriptExecutorFactory\PowerShellScriptExecutorFactory.csproj">
+      <Name>PowerShellScriptExecutorFactory</Name>
+      <Project>{57754ffa-bb1f-4722-a2fa-70c4f27c6784}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="..\Service\Service.csproj">
+      <Name>Service</Name>
+      <Project>{a9d6374a-d51f-4fa3-8c02-5b1d23faa82e}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="..\ShellScriptExecutorFactory\ShellScriptExecutorFactory.csproj">
+      <Name>ShellScriptExecutorFactory</Name>
+      <Project>{4700690a-2d29-40a0-86ac-e5a9f71a479a}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+    <ProjectReference Include="..\TestCommon\TestCommon.csproj">
+      <Name>TestCommon</Name>
+      <Project>{e6a207d2-e083-41bf-b522-d9d3ec09323e}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
