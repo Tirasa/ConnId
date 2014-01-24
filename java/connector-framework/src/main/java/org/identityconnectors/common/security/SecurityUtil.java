@@ -156,4 +156,48 @@ public final class SecurityUtil {
         String inputHash = computeBase64SHA1Hash(input);
         return inputHash.equals(hash);
     }
+
+    /**
+     * Decrypts the value of a {@link GuardedString}.
+     *
+     * @param guardedString
+     *            the guarded string value.
+     * @return the clear string value.
+     * @since 1.4
+     */
+    public static String decrypt(GuardedString guardedString) {
+        final String[] clearText = new String[1];
+
+        GuardedString.Accessor accessor = new GuardedString.Accessor() {
+
+            public void access(char[] clearChars) {
+                clearText[0] = new String(clearChars);
+            }
+        };
+
+        guardedString.access(accessor);
+        return clearText[0];
+    }
+
+    /**
+     * Decrypts the value of a {@link GuardedByteArray}.
+     *
+     * @param guardedByteArray
+     *            the guarded byte array value.
+     * @return the clear byte array value.
+     * @since 1.4
+     */
+    public static byte[] decrypt(GuardedByteArray guardedByteArray) {
+        final byte[][] clearByte = new byte[1][];
+
+        GuardedByteArray.Accessor accessor = new GuardedByteArray.Accessor() {
+            public void access(byte[] clearBytes) {
+                clearByte[0] = clearBytes;
+            }
+        };
+
+        guardedByteArray.access(accessor);
+        return clearByte[0];
+    }
+
 }
