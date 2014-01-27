@@ -38,6 +38,8 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using Org.IdentityConnectors.Framework.Api;
+using System.Text;
+using System.Diagnostics;
 
 namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
 {
@@ -514,7 +516,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
     }
     #endregion
 
-    #region SearchAttributesToGetResultsHandler
+    #region SyncAttributesToGetResultsHandler
     public sealed class SyncAttributesToGetResultsHandler :
         AttributesToGetResultsHandler
     {
@@ -790,6 +792,87 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         {
             SyncDelta normalized = _normalizer.NormalizeSyncDelta(delta);
             return _target(normalized);
+        }
+    }
+    #endregion
+
+    #region CaseNormalizer
+    public sealed class CaseNormalizer : AttributeNormalizer
+    {
+        public static ObjectNormalizerFacade CreateCaseNormalizerFacade(ObjectClass oclass)
+        {
+            return new ObjectNormalizerFacade(oclass, new CaseNormalizer());
+        }
+
+        public ConnectorAttribute NormalizeAttribute(ObjectClass oclass, ConnectorAttribute attribute)
+        {
+//            Trace.TraceInformation("Starting CaseNormalizer.NormalizeAttribute({0}, {1})", oclass, attribute.GetDetails());
+            ConnectorAttribute rv = attribute;
+            bool converted = false;
+
+            IList<object> values = rv.Value;
+            if (values != null)
+            {
+                IList<object> newValues = new List<object>();
+
+                foreach (object value in values)
+                {
+                    if (value is string)
+                    {
+                        newValues.Add(((string)value).ToUpper());
+                        converted = true;
+                    }
+                    else 
+                    { 
+                        newValues.Add(value); 
+                    }
+                }
+
+                if (converted)          // only when something changed; to save a few cpu cycles...
+                {
+                    rv = ConnectorAttributeBuilder.Build(attribute.Name, newValues);
+                }
+            }
+
+//            Trace.TraceInformation("Finishing CaseNormalizer.NormalizeAttribute, converted = {0}, return value = {1}", converted, rv.GetDetails());
+            return rv;
+        }
+    }
+    #endregion
+
+    #region NormalizingFilter
+    /// <summary>
+    /// Proxy the filter to filter based on object normalized version.
+    /// Similar to ObjectNormalizerFacade.NormalizeFilter,
+    /// but this one DOES NOT expect that it gets object to be accepted/rejected
+    /// in normalized form - it normalizes the object just before deciding.
+    /// Currently used for case insensitive filtering.
+    /// </summary>
+    public sealed class NormalizingFilter : ExternallyChainedFilter
+    {
+        private readonly ObjectNormalizerFacade _normalizationFacade;
+
+        public NormalizingFilter(Filter filter, ObjectNormalizerFacade facade) : base(facade.NormalizeFilter(filter))
+        {
+            _normalizationFacade = facade;
+        }
+
+        /// <summary>
+        /// Return the decision based on normalized version of the object.
+        /// </summary>
+        /// <seealso cref="Filter.Accept(ConnectorObject)" />
+        public override bool Accept(ConnectorObject obj)
+        {
+            bool result = Filter.Accept(_normalizationFacade.NormalizeObject(obj));
+//            Trace.TraceInformation("NormalizingFilter.Accept returns {0} for {1}", result, obj.GetAttributeByName("__NAME__"));
+            return result;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder bld = new StringBuilder();
+            bld.Append("NORMALIZE USING ").Append(_normalizationFacade).Append(": ").Append(Filter);
+            return bld.ToString();
         }
     }
     #endregion
@@ -1114,7 +1197,14 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             ResultsHandlerConfiguration hdlCfg = null != GetOperationalContext() ?
                                 GetOperationalContext().getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
             ResultsHandler handlerChain = handler;
-            Filter finalFilter = originalFilter;
+            Filter actualFilter = originalFilter;       // actualFilter is used for chaining filters - it points to the filter where new filters should be chained
+
+            if (hdlCfg.EnableFilteredResultsHandler && hdlCfg.EnableCaseInsensitiveFilter && originalFilter != null)
+            {
+                Trace.TraceInformation("Creating case insensitive filter");
+                ObjectNormalizerFacade normalizer = CaseNormalizer.CreateCaseNormalizerFacade(oclass);
+                actualFilter = new NormalizingFilter(actualFilter, normalizer);
+            }
 
             if (hdlCfg.EnableNormalizingResultsHandler)
             {
@@ -1122,13 +1212,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 //chain a normalizing handler (must come before
                 //filter handler)
                 ResultsHandler normalizingHandler = new NormalizingResultsHandler(handler, normalizer).Handle;
-                Filter normalizedFilter = normalizer.NormalizeFilter(originalFilter);
                 // chain a filter handler..
                 if (hdlCfg.EnableFilteredResultsHandler)
                 {
                     // chain a filter handler..
+                    Filter normalizedFilter = normalizer.NormalizeFilter(actualFilter);
                     handlerChain = new FilteredResultsHandler(normalizingHandler, normalizedFilter).Handle;
-                    finalFilter = normalizedFilter;
+                    actualFilter = normalizedFilter;
                 }
                 else
                 {
@@ -1138,8 +1228,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             else if (hdlCfg.EnableFilteredResultsHandler)
             {
                 // chain a filter handler..
-                handlerChain = new FilteredResultsHandler(handlerChain, originalFilter).Handle;
-                finalFilter = originalFilter;
+                handlerChain = new FilteredResultsHandler(handlerChain, actualFilter).Handle;
             }
 
             //get the IList interface that this type implements
@@ -1163,7 +1252,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 handlerChain = new SearchAttributesToGetResultsHandler(
                     handlerChain, attrsToGet).Handle;
             }
-            searcher.RawSearch(GetConnector(), oclass, finalFilter, handlerChain, options);
+            searcher.RawSearch(GetConnector(), oclass, actualFilter, handlerChain, options);
         }
     }
     #endregion

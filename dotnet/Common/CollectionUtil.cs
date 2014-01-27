@@ -24,6 +24,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Org.IdentityConnectors.Common
 {
@@ -1024,6 +1025,33 @@ namespace Org.IdentityConnectors.Common
                 return o1.Equals(o2);
             }
         }
+
+        public static string Dump(ICollection<object> list)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (list != null)
+            {
+                bool first = true;
+                foreach (object o in list)
+                {
+                    if (first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        sb.Append(", ");
+                    }
+                    sb.Append(o);
+                }
+            }
+            else
+            {
+                sb.Append("(null)");
+            }
+            return sb.ToString();
+        }
+
 
     }
 

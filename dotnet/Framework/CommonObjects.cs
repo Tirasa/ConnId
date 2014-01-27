@@ -795,6 +795,31 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             bld.Append(map.ToString());
             return bld.ToString();
         }
+
+        private string Dump(IList<object> list)
+        {
+            StringBuilder sb = new StringBuilder();
+            bool first = true;
+            foreach (object o in list) 
+            {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.Append(", ");
+                }
+                sb.Append(o);
+            }
+            return sb.ToString();
+        }
+
+
+        public string GetDetails()
+        {
+            StringBuilder bld = new StringBuilder();
+            bld.Append("ConnectorAttribute: Name='").Append(Name).Append("', Value(s)='").Append(Dump(Value)).Append("'");
+            return bld.ToString();
+        }
+
     }
     #endregion
 
