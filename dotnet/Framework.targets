@@ -29,22 +29,22 @@
         <FrameworkDistDir>$(MSBuildProjectDirectory)\..\Dist</FrameworkDistDir>
         <!--FrameworkRootDir>$(MSBuildProjectDirectory)\..\..\</FrameworkRootDir-->
         <FrameworkRootDir>$(MSBuildProjectDirectory)</FrameworkRootDir>
+        <!--<REVISION>0</REVISION>-->
     </PropertyGroup>
 
     <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
 
-    <Target Name="SetRevision" Condition="'$(REVISION)' == ''">
-      <CreateProperty Value="$(REVISION)">
-        <Output TaskParameter="Value" PropertyName="Revision" />
-      </CreateProperty>
-    </Target>
-
     <Target Name="GenerateAssemblyInfo">
+        <Error
+            Text="The REVISION property must be set."
+            Condition="'$(REVISION)' == ''" />
+        <CreateProperty Value="$(REVISION)">
+            <Output TaskParameter="Value" PropertyName="Revision" />
+        </CreateProperty>
         <Version VersionFile="$(VersionFileIn)">
             <Output TaskParameter="Major" PropertyName="Major" />
             <Output TaskParameter="Minor" PropertyName="Minor" />
             <Output TaskParameter="Build" PropertyName="Build" />
-            <Output TaskParameter="Revision" PropertyName="Revision" />
         </Version>
         <WriteLinesToFile File="$(VersionFileOut)" Lines="$(Major).$(Minor).$(Build).$(Revision)" Overwrite="true" />
         <AssemblyInfo CodeLanguage="CS"  
