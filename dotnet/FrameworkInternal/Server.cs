@@ -709,14 +709,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
                 throw new Exception("No such connector: "
                                     + request.ConnectorKey);
             }
-            APIConfigurationImpl config =
-                request.Configuration;
-
-            //re-wire the configuration with its connector info
-            config.ConnectorInfo = (AbstractConnectorInfo)info;
+            String connectorFacadeKey = request.Configuration;
 
             ConnectorFacade facade =
-                ConnectorFacadeFactory.GetInstance().NewInstance(config);
+                ConnectorFacadeFactory.GetInstance().NewInstance(info, connectorFacadeKey);
 
             return facade.GetOperation(request.Operation);
         }

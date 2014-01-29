@@ -2274,14 +2274,14 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             }
             public override Object Deserialize(ObjectDecoder decoder)
             {
-                String str = decoder.ReadStringContents();
+                String str = decoder.ReadStringField("uid", null);
                 return new Uid(str);
             }
 
             public override void Serialize(Object obj, ObjectEncoder encoder)
             {
                 Uid val = (Uid)obj;
-                encoder.WriteStringContents(val.GetUidValue());
+                encoder.WriteStringField("uid", val.GetUidValue());
             }
         }
         private class ScriptHandler : AbstractObjectSerializationHandler
@@ -2779,8 +2779,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             {
                 ConnectorKey connectorKey =
                     (ConnectorKey)decoder.ReadObjectField("ConnectorKey", typeof(ConnectorKey), null);
-                APIConfigurationImpl configuration =
-                    (APIConfigurationImpl)decoder.ReadObjectField("APIConfiguration", typeof(APIConfigurationImpl), null);
+                String configuration =
+                    decoder.ReadStringField("connectorFacadeKey", null);
                 Type operation =
                     decoder.ReadClassField("operation", null);
                 string operationMethodName =
@@ -2804,8 +2804,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                                          val.OperationMethodName);
                 encoder.WriteObjectField("ConnectorKey",
                         val.ConnectorKey, true);
-                encoder.WriteObjectField("APIConfiguration",
-                        val.Configuration, true);
+                encoder.WriteStringField("connectorFacadeKey",
+                        val.Configuration);
                 encoder.WriteObjectField("Arguments",
                         val.Arguments, true);
             }

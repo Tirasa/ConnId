@@ -44,6 +44,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Diagnostics;
 using System.Text;
+using Org.IdentityConnectors.Framework.Common.Exceptions;
 
 namespace Org.IdentityConnectors.Framework.Impl.Api
 {
@@ -620,6 +621,18 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
         }
 
         /// <summary>
+        /// Builds up the maps of supported operations and calls.
+        /// </summary>
+        public AbstractConnectorFacade(String configuration, AbstractConnectorInfo connectorInfo)
+        {
+            Assertions.NullCheck(configuration, "configuration");
+            Assertions.NullCheck(connectorInfo, "connectorInfo");
+            _configuration = (APIConfigurationImpl)SerializerUtil.DeserializeBase64Object(configuration);
+            //parent ref not included in the clone
+            _configuration.ConnectorInfo = connectorInfo;
+        }
+
+        /// <summary>
         /// Return an instance of an API operation.
         /// </summary>
         /// <returns>
@@ -832,6 +845,24 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
             return ret;
         }
 
+        public override ConnectorFacade NewInstance(ConnectorInfo connectorInfo, String config) 
+        {
+            ConnectorFacade ret = null;
+            if (connectorInfo is LocalConnectorInfoImpl) 
+            {
+                try {
+                    // create a new Provisioner.
+                    ret = new LocalConnectorFacadeImpl((LocalConnectorInfoImpl) connectorInfo, config);
+                } catch (Exception ex) {
+                    String connector = connectorInfo.ConnectorKey.ToString();
+                    Trace.TraceError("Failed to create new connector facade: {1}, {2}: {0}", connector, config, ex);
+                    throw new ConnectorException(ex);
+                }
+            } else if (connectorInfo is RemoteConnectorInfoImpl) {
+                ret = new RemoteConnectorFacadeImpl((RemoteConnectorInfoImpl) connectorInfo, config);
+            }
+            return ret;
+        }
 
         /// <summary>
         /// Dispose of all object pools and other resources associated with this

@@ -609,6 +609,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
     /// </summary>
     public class LocalConnectorInfoImpl : AbstractConnectorInfo
     {
+        public LocalConnectorInfoImpl()
+        {
+            configurationStateless = true;
+        }
         public RemoteConnectorInfoImpl ToRemote()
         {
             RemoteConnectorInfoImpl rv = new RemoteConnectorInfoImpl();
@@ -620,6 +624,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
         }
         public SafeType<Connector> ConnectorClass { get; set; }
         public SafeType<Configuration> ConnectorConfigurationClass { get; set; }
+        public bool configurationStateless { get; set; }
     }
     #endregion
 
@@ -695,6 +700,16 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
         {
             this.connectorInfo = connectorInfo;
         }
+
+        /// <summary>
+        /// Builds up the maps of supported operations and calls.
+        /// </summary>
+        public LocalConnectorFacadeImpl(LocalConnectorInfoImpl connectorInfo, String apiConfiguration)
+            : base(apiConfiguration, connectorInfo)
+        {
+            this.connectorInfo = connectorInfo;
+        }
+
 
         // =======================================================================
         // ConnectorFacade Interface

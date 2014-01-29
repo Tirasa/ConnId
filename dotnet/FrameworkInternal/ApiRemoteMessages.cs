@@ -170,7 +170,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         /// <summary>
         /// The configuration information to use.
         /// </summary>
-        private readonly APIConfigurationImpl _configuration;
+        private readonly String _configuration;
 
         /// <summary>
         /// The operation to perform.
@@ -197,7 +197,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         private readonly IList<object> _arguments;
 
         public OperationRequest(ConnectorKey key,
-                APIConfigurationImpl apiConfiguration,
+                String apiConfiguration,
                 SafeType<APIOperation> operation,
                 string operationMethodName,
                 IList<Object> arguments)
@@ -217,7 +217,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
             }
         }
 
-        public APIConfigurationImpl Configuration
+        public String Configuration
         {
             get
             {

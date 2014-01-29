@@ -208,6 +208,16 @@ namespace Org.IdentityConnectors.Framework.Api
         /// <exception cref="ClassNotFoundException"></exception>
         public abstract ConnectorFacade NewInstance(APIConfiguration config);
 
+        /// <summary>
+        /// Get a new instance of <see cref="ConnectorFacade" />.
+        /// </summary>
+        /// <param name="connectorInfo">TODO add doc later</param>
+        /// <param name="config">all the configuration that the framework, connector, and pooling needs. It's a Base64 serialised APIConfiguration instance.</param>
+        /// <returns>
+        /// <see cref="ConnectorFacade" /> to call API operations against.</returns>
+        /// <exception cref="ClassNotFoundException"></exception>
+        /// since 1.4
+        public abstract ConnectorFacade NewInstance(ConnectorInfo connectorInfo, String config);
 
         /// <summary>
         /// Dispose of all connection pools, resources, etc.

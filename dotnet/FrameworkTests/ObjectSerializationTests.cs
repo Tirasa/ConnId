@@ -960,7 +960,7 @@ namespace FrameworkTests
                 OperationRequest(new ConnectorKey("my bundle",
                     "my version",
                 "my connector"),
-                    apiImpl,
+                    SerializerUtil.SerializeBase64Object(apiImpl),
                     SafeType<APIOperation>.Get<CreateApiOp>(),
                     "mymethodName",
                     args);

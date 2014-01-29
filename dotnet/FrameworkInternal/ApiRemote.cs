@@ -258,6 +258,14 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
         {
         }
 
+        /// <summary>
+        /// Builds up the maps of supported operations and calls.
+        /// </summary>
+        public RemoteConnectorFacadeImpl(RemoteConnectorInfoImpl connectorInfo, String configuration)
+            : base(configuration, connectorInfo)
+        {
+        }
+
         protected override APIOperation GetOperationImplementation(SafeType<APIOperation> api)
         {
             InvocationHandler handler = new RemoteOperationInvocationHandler(
@@ -309,7 +317,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
                 connectorInfo.RemoteConnectionInfo;
             OperationRequest request = new OperationRequest(
                     connectorInfo.ConnectorKey,
-                    _configuration,
+                    SerializerUtil.SerializeBase64Object(_configuration),               // TODO put this into constructor
                     _operation,
                     method.Name,
                     simpleMarshallArgs);
