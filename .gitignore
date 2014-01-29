@@ -1,14 +1,18 @@
-connector-server-zip/target/
-connector-framework/target/
-connector-framework-internal/target/
-connector-framework-contract/target/
-connector-framework-osgi/target/
-connector-test-common/target/
-slf4j-logging/target/
-testbundlev1/target/
-testbundlev2/target/
-testcommonv1/target/
-testcommonv2/target/
+java/connector-server-zip/target/
+java/connector-framework/target/
+java/connector-framework-internal/target/
+java/connector-framework-contract/target/
+java/connector-framework-osgi/target/
+java/connector-test-common/target/
+java/slf4j-logging/target/
+java/testbundlev1/target/
+java/testbundlev2/target/
+java/testcommonv1/target/
+java/testcommonv2/target/
+
+#IntelliJ IDEA stuff
+java/.idea/
+*.iml
 
 #Visual C# stuff
 
