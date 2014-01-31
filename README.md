@@ -82,6 +82,13 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://travis-ci.org/Tirasa/ConnIdFlatFileBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdFlatFileBundle.png"/></a></td>
  </tr>
  <tr>
+  <td>FreeIPA</td>
+  <td>https://github.com/Tirasa/ConnIdFreeIPABundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/FreeIPA">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/FREEIPA">issues</a></td>
+  <td><a href="https://travis-ci.org/Tirasa/ConnIdFreeIPABundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdFreeIPABundle.png"/></a></td>
+ </tr>
+ <tr>
   <td>Google Apps</td>
   <td>https://github.com/Tirasa/ConnIdGoogleAppsBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/Google+Apps">wiki</a></td>
