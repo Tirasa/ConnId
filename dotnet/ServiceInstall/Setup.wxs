@@ -7,7 +7,7 @@
 		UpgradeCode="2C19FE30-F6A7-482D-A50F-C1E64D34C024"
 		Manufacturer="ForgeRock">
 		<Package Description="Version: !(bind.FileVersion.Framework.dll)"
-			Comments="OpenICF Connector Server Installer"
+			Comments="ConnId Connector Server Installer"
 			InstallerVersion="200"
 			Compressed="yes"/>
 		<!--

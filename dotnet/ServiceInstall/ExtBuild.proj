@@ -72,7 +72,7 @@
     <GetAssemblyIdentity AssemblyFiles="..\Service\bin\$(Configuration)\Framework.dll">
       <Output TaskParameter="Assemblies" ItemName="FrameworkAssembly"/>
     </GetAssemblyIdentity>
-    <Copy SourceFiles="bin\$(Configuration)\ServiceInstall.msi" DestinationFiles="bin\$(Configuration)\openicf-$(OpenICFVersion)-dotnet.msi" />
+    <Copy SourceFiles="bin\$(Configuration)\ServiceInstall.msi" DestinationFiles="bin\$(Configuration)\connid-$(ConnIdVersion)-dotnet.msi" />
     <Copy SourceFiles="@(AllFiles)" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="@(PowerShellScriptExecutorFactoryFiles)" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="@(ShellScriptExecutorFactoryFiles)" DestinationFolder="bin\$(Configuration)\target" />
@@ -83,7 +83,7 @@
     <ItemGroup>
       <ZipFiles Include="bin\$(Configuration)\target\*.*" Exclude="*.zip" />
     </ItemGroup>
-    <Zip Files="@(ZipFiles)" WorkingDirectory="bin\$(Configuration)\target" ZipFileName="bin\$(Configuration)\openicf-$(OpenICFVersion)-dotnet.zip" />
+    <Zip Files="@(ZipFiles)" WorkingDirectory="bin\$(Configuration)\target" ZipFileName="bin\$(Configuration)\connid-$(ConnIdVersion)-dotnet.zip" />
   </Target>
 
   <Target Name="Clean">

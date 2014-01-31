@@ -9,11 +9,11 @@
 						<ServiceInstall
 							Id="ConnectorServerServiceInstall"
 							Name="ConnectorServerService"
-							DisplayName="OpenICF Connector Server"
+							DisplayName="ConnId Connector Server"
 							Type="ownProcess"
 							Start="auto"
 							ErrorControl="normal"
-							Description="OpenICF Connector Server"
+							Description="ConnId Connector Server"
 							Account="[SERVICEACCOUNT]"
 							Password="[SERVICEPASSWORD]">
 						</ServiceInstall>
