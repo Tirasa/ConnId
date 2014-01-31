@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -54,6 +55,12 @@ public final class ObjectClass {
      */
     public static final String GROUP_NAME = createSpecialName("GROUP");
 
+    /**
+     * This constant defines a specific {@linkplain #getObjectClassValue value
+     * of ObjectClass} that is reserved for {@link ObjectClass#ALL}.
+     */
+    public static final String ALL_NAME = createSpecialName("ALL");
+
     // =======================================================================
     // Create only after all other static initializers
     // =======================================================================
@@ -81,6 +88,17 @@ public final class ObjectClass {
      * <code>ConnectorObject</code> represents a group.
      */
     public static final ObjectClass GROUP = new ObjectClass(GROUP_NAME);
+
+    /**
+     * Represents all collections that contains any object.
+     * <p>
+     * This constant allowed to use in operation
+     * {@link org.identityconnectors.framework.spi.operations.SyncOp#getLatestSyncToken(ObjectClass)}
+     * and
+     * {@link org.identityconnectors.framework.spi.operations.SyncOp#sync(ObjectClass, SyncToken, SyncResultsHandler, OperationOptions)}
+     * any other operation throws {@link UnsupportedOperationException}
+     */
+    public static final ObjectClass ALL = new ObjectClass(ALL_NAME);
 
     private final String type;
 

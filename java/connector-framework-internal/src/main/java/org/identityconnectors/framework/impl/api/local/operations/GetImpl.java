@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2010-2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -54,6 +54,10 @@ public class GetImpl implements GetApiOp {
     @Override
     public ConnectorObject getObject(ObjectClass objectClass, Uid uid, OperationOptions options) {
         Assertions.nullCheck(objectClass, "objectClass");
+        if (ObjectClass.ALL.equals(objectClass)) {
+            throw new UnsupportedOperationException(
+                    "Operation is not allowed on __ALL__ object class");
+        }
         Assertions.nullCheck(uid, "uid");
         // cast null as empty
         if (options == null) {

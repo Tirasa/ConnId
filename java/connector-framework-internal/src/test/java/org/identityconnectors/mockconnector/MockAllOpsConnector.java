@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.mockconnector;
 
@@ -30,6 +31,8 @@ import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.ScriptContext;
+import org.identityconnectors.framework.common.objects.SyncResultsHandler;
+import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
@@ -40,13 +43,14 @@ import org.identityconnectors.framework.spi.operations.ResolveUsernameOp;
 import org.identityconnectors.framework.spi.operations.ScriptOnConnectorOp;
 import org.identityconnectors.framework.spi.operations.ScriptOnResourceOp;
 import org.identityconnectors.framework.spi.operations.SearchOp;
+import org.identityconnectors.framework.spi.operations.SyncOp;
 import org.identityconnectors.framework.spi.operations.TestOp;
 import org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
 
 public class MockAllOpsConnector extends MockConnector implements CreateOp, DeleteOp, UpdateOp,
         SearchOp<String>, UpdateAttributeValuesOp, AuthenticateOp, ResolveUsernameOp, TestOp,
-        ScriptOnConnectorOp, ScriptOnResourceOp {
+        ScriptOnConnectorOp, ScriptOnResourceOp , SyncOp {
 
     @Override
     public Object runScriptOnConnector(ScriptContext request, OperationOptions options) {
@@ -135,5 +139,18 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp, Dele
     @Override
     public void test() {
         addCall();
+    }
+
+    @Override
+    public void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler, OperationOptions options) {
+        assert objectClass != null && token != null && handler != null && options != null;
+        addCall(objectClass, token, handler, options);
+    }
+
+    @Override
+    public SyncToken getLatestSyncToken(ObjectClass objectClass) {
+        assert objectClass != null;
+        addCall(objectClass);
+        return new SyncToken(0);
     }
 }
