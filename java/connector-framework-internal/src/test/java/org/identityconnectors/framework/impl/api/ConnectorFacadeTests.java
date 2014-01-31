@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -49,6 +50,9 @@ import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.ScriptContextBuilder;
+import org.identityconnectors.framework.common.objects.SyncDelta;
+import org.identityconnectors.framework.common.objects.SyncResultsHandler;
+import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
@@ -201,6 +205,22 @@ public class ConnectorFacadeTests {
         });
     }
 
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void authenticateAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                facade.authenticate(ObjectClass.ALL, "dfadf", new GuardedString("fadfkj"
+                        .toCharArray()), null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                fail("Should not get here..");
+            }
+        });
+    }
+
     @Test
     public void resolveUsernameCallPattern() {
         testCallPattern(new TestOperationPattern() {
@@ -212,6 +232,21 @@ public class ConnectorFacadeTests {
             @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "resolveUsername");
+            }
+        });
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void resolveUsernameAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                facade.resolveUsername(ObjectClass.ALL, "dfadf", null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                fail("Should not get here..");
             }
         });
     }
@@ -239,6 +274,22 @@ public class ConnectorFacadeTests {
             public void makeCall(ConnectorFacade facade) {
                 Set<Attribute> attrs = new HashSet<Attribute>();
                 facade.create(null, attrs, null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                fail("Should not get here..");
+            }
+        });
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void createAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                Set<Attribute> attrs = CollectionUtil.<Attribute> newReadOnlySet();
+                facade.create(ObjectClass.ALL, attrs, null);
             }
 
             @Override
@@ -283,6 +334,23 @@ public class ConnectorFacadeTests {
         });
     }
 
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void updateAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                Set<Attribute> attrs = new HashSet<Attribute>();
+                attrs.add(AttributeBuilder.build("accountid"));
+                facade.update(ObjectClass.ALL, newUid(0), attrs, null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                fail("Should not get here..");
+            }
+        });
+    }
+
     @Test
     public void deleteCallPattern() {
         testCallPattern(new TestOperationPattern() {
@@ -294,6 +362,21 @@ public class ConnectorFacadeTests {
             @Override
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "delete");
+            }
+        });
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void deleteAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                facade.delete(ObjectClass.ALL, newUid(0), null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                fail("Should not get here..");
             }
         });
     }
@@ -322,6 +405,29 @@ public class ConnectorFacadeTests {
         });
     }
 
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void searchAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                // create an empty results handler..
+                ResultsHandler rh = new ResultsHandler() {
+                    @Override
+                    public boolean handle(ConnectorObject obj) {
+                        return true;
+                    }
+                };
+                // call the search method..
+                facade.search(ObjectClass.ALL, null, rh, null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                fail("Should not get here..");
+            }
+        });
+    }
+
     @Test
     public void getCallPattern() {
         testCallPattern(new TestOperationPattern() {
@@ -336,6 +442,95 @@ public class ConnectorFacadeTests {
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "createFilterTranslator");
                 assertEquals(calls.remove(0).getMethodName(), "executeQuery");
+            }
+        });
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void getAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                facade.getObject(ObjectClass.ALL, newUid(0), null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                fail("Should not get here..");
+            }
+        });
+    }
+
+    @Test
+    public void getLatestSyncTokenCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                facade.getLatestSyncToken(ObjectClass.ACCOUNT);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                assertEquals(calls.remove(0).getMethodName(), "getLatestSyncToken");
+            }
+        });
+    }
+
+    @Test
+    public void getLatestSyncTokenAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                facade.getLatestSyncToken(ObjectClass.ALL);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                assertEquals(calls.remove(0).getMethodName(), "getLatestSyncToken");
+            }
+        });
+    }
+
+    @Test
+    public void syncCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                // create an empty results handler..
+                // call the search method..
+                facade.sync(ObjectClass.ACCOUNT, new SyncToken(1), new SyncResultsHandler() {
+                    @Override
+                    public boolean handle(SyncDelta delta) {
+                        return true;
+                    }
+                }, null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                assertEquals(calls.remove(0).getMethodName(), "sync");
+            }
+        });
+    }
+
+    @Test
+    public void syncAllCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                // create an empty results handler..
+                // call the search method..
+                facade.sync(ObjectClass.ALL, new SyncToken(1), new SyncResultsHandler() {
+                    @Override
+                    public boolean handle(SyncDelta delta) {
+                        return true;
+                    }
+                }, null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                assertEquals(calls.remove(0).getMethodName(), "sync");
             }
         });
     }

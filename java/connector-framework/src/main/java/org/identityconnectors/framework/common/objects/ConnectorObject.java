@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -49,6 +50,9 @@ public final class ConnectorObject {
     public ConnectorObject(ObjectClass objectClass, Set<? extends Attribute> set) {
         if (objectClass == null) {
             throw new IllegalArgumentException("ObjectClass may not be null");
+        }
+        if (ObjectClass.ALL.equals(objectClass)) {
+            throw new IllegalArgumentException("Connector object class can not be type of __ALL__");
         }
         if (set == null || set.size() == 0) {
             throw new IllegalArgumentException("The set can not be null or empty.");

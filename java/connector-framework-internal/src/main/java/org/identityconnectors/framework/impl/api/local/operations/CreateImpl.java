@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2010-2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -58,6 +58,10 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
     public Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes,
             OperationOptions options) {
         Assertions.nullCheck(objectClass, "objectClass");
+        if (ObjectClass.ALL.equals(objectClass)) {
+            throw new UnsupportedOperationException(
+                    "Operation is not allowed on __ALL__ object class");
+        }
         Assertions.nullCheck(createAttributes, "createAttributes");
         // check to make sure there's not a uid..
         if (AttributeUtil.getUidAttribute(createAttributes) != null) {

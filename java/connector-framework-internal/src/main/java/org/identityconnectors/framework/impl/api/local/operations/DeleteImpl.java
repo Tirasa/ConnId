@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -43,13 +44,17 @@ public class DeleteImpl extends ConnectorAPIOperationRunner implements
     /**
      * Calls the delete method on the Connector side.
      *
-     * @see org.identityconnectors.framework.api.operations.CreateApiOp#create(java.util.Set)
+     * @see org.identityconnectors.framework.api.operations.CreateApiOp#create(org.identityconnectors.framework.common.objects.ObjectClass, java.util.Set, org.identityconnectors.framework.common.objects.OperationOptions)
      */
     @Override
     public void delete(final ObjectClass objectClass,
             final Uid uid,
             OperationOptions options) {
-        Assertions.nullCheck(objectClass, "objClass");
+        Assertions.nullCheck(objectClass, "objectClass");
+        if (ObjectClass.ALL.equals(objectClass)) {
+            throw new UnsupportedOperationException(
+                    "Operation is not allowed on __ALL__ object class");
+        }
         Assertions.nullCheck(uid, "uid");
         //cast null as empty
         if ( options == null ) {
