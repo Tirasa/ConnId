@@ -19,6 +19,7 @@
  *  enclosed by brackets [] replaced by your own identifying information: 
  *  "Portions Copyrighted [year] [name of copyright owner]"
  *  ====================
+ *  Portions Copyrighted 2014 ForgeRock AS.
  */
 
 using System;
@@ -183,6 +184,23 @@ namespace FrameworkTests
         }
 
         [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void AuthenticateAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    facade.Authenticate(ObjectClass.ALL, "dfadf", new GuardedString(), null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.Fail("Should not get here..");
+                }
+            });
+        }
+
+        [Test]
         public void ResolveUsernameCallPattern()
         {
             TestCallPattern(new TestOperationPattern()
@@ -194,6 +212,23 @@ namespace FrameworkTests
                 CheckCalls = calls =>
                 {
                     Assert.AreEqual("ResolveUsername", GetAndRemoveMethodName(calls));
+                }
+            });
+        }
+
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void ResolveUsernameAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    facade.ResolveUsername(ObjectClass.ALL, "dfadf", null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.Fail("Should not get here..");
                 }
             });
         }
@@ -225,6 +260,24 @@ namespace FrameworkTests
                 {
                     ICollection<ConnectorAttribute> attrs = new HashSet<ConnectorAttribute>();
                     facade.Create(null, attrs, null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.Fail("Should not get here..");
+                }
+            });
+        }
+
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void CreateAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    ICollection<ConnectorAttribute> attrs = CollectionUtil.NewReadOnlySet<ConnectorAttribute>();
+                    facade.Create(ObjectClass.ALL, attrs, null);
                 },
                 CheckCalls = calls =>
                 {
@@ -272,6 +325,25 @@ namespace FrameworkTests
         }
 
         [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void UpdateAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    ICollection<ConnectorAttribute> attrs = new HashSet<ConnectorAttribute>();
+                    attrs.Add(ConnectorAttributeBuilder.Build("accountid"));
+                    facade.Update(ObjectClass.ALL, NewUid(0), attrs, null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.Fail("Should not get here..");
+                }
+            });
+        }
+
+        [Test]
         public void DeleteCallPattern()
         {
             TestCallPattern(new TestOperationPattern()
@@ -283,6 +355,23 @@ namespace FrameworkTests
                 CheckCalls = calls =>
                 {
                     Assert.AreEqual("Delete", GetAndRemoveMethodName(calls));
+                }
+            });
+        }
+
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void DeleteAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    facade.Delete(ObjectClass.ALL, NewUid(0), null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.Fail("Should not get here..");
                 }
             });
         }
@@ -311,6 +400,29 @@ namespace FrameworkTests
         }
 
         [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void SearchAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    // create an empty results handler..
+                    ResultsHandler rh = obj =>
+                    {
+                        return true;
+                    };
+                    // call the search method..
+                    facade.Search(ObjectClass.ALL, null, rh, null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.Fail("Should not get here..");
+                }
+            });
+        }
+
+        [Test]
         public void GetCallPattern()
         {
             TestCallPattern(new TestOperationPattern()
@@ -325,6 +437,104 @@ namespace FrameworkTests
                 {
                     Assert.AreEqual("CreateFilterTranslator", GetAndRemoveMethodName(calls));
                     Assert.AreEqual("ExecuteQuery", GetAndRemoveMethodName(calls));
+                }
+            });
+        }
+
+        [Test]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void GetAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    // create an empty results handler..
+                    // call the search method..
+                    facade.GetObject(ObjectClass.ALL, NewUid(0), null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.Fail("Should not get here..");
+                }
+            });
+        }
+
+        [Test]
+        public virtual void GetLatestSyncTokenCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    // call the getLatestSyncToken method..
+                    facade.GetLatestSyncToken(ObjectClass.ALL);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.AreEqual("GetLatestSyncToken", GetAndRemoveMethodName(calls));
+                }
+            });
+        }
+
+        [Test]
+        public virtual void GetLatestSyncTokenAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    // call the getLatestSyncToken method..
+                    facade.GetLatestSyncToken(ObjectClass.ALL);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.AreEqual("GetLatestSyncToken", GetAndRemoveMethodName(calls));
+                }
+            });
+        }
+
+
+        [Test]
+        public virtual void SyncCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    // create an empty results handler..
+                    SyncResultsHandler rh = obj =>
+                    {
+                        return true;
+                    };
+                    // call the sync method..
+                    facade.Sync(ObjectClass.ACCOUNT, new SyncToken(1), rh, null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.AreEqual("Sync", GetAndRemoveMethodName(calls));
+                }
+            });
+        }
+
+        [Test]
+        public virtual void SyncAllCallPattern()
+        {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    // create an empty results handler..
+                    SyncResultsHandler rh = obj =>
+                    {
+                        return true;
+                    };
+                    // call the sync method..
+                    facade.Sync(ObjectClass.ALL, new SyncToken(1), rh, null);
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.AreEqual("Sync", GetAndRemoveMethodName(calls));
                 }
             });
         }

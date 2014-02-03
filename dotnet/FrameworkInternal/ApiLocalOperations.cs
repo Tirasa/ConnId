@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 
@@ -301,6 +302,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         public Uid Authenticate(ObjectClass objectClass, String username, GuardedString password, OperationOptions options)
         {
             Assertions.NullCheck(objectClass, "objectClass");
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
+            }
             Assertions.NullCheck(username, "username");
             Assertions.NullCheck(password, "password");
             //convert null into empty
@@ -332,6 +337,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         public Uid ResolveUsername(ObjectClass objectClass, String username, OperationOptions options)
         {
             Assertions.NullCheck(objectClass, "objectClass");
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
+            }
             Assertions.NullCheck(username, "username");
             //convert null into empty
             if (options == null)
@@ -360,9 +369,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// Calls the create method on the Connector side.
         /// </summary>
         /// <seealso cref="Org.IdentityConnectors.Framework.Api.Operations.CreateApiOp.Create" />
-        public Uid Create(ObjectClass oclass, ICollection<ConnectorAttribute> attributes, OperationOptions options)
+        public Uid Create(ObjectClass objectClass, ICollection<ConnectorAttribute> attributes, OperationOptions options)
         {
-            Assertions.NullCheck(oclass, "oclass");
+            Assertions.NullCheck(objectClass, "objectClass");
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
+            }
             Assertions.NullCheck(attributes, "attributes");
             //convert null into empty
             if (options == null)
@@ -378,16 +391,12 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 }
                 dups.Add(attr.Name);
             }
-            if (oclass == null)
-            {
-                throw new ArgumentException("Required attribute ObjectClass not found!");
-            }
             Connector connector = GetConnector();
-            ObjectNormalizerFacade normalizer = GetNormalizer(oclass);
+            ObjectNormalizerFacade normalizer = GetNormalizer(objectClass);
             ICollection<ConnectorAttribute> normalizedAttributes =
                 normalizer.NormalizeAttributes(attributes);
             // create the object..
-            Uid ret = ((CreateOp)connector).Create(oclass, attributes, options);
+            Uid ret = ((CreateOp)connector).Create(objectClass, attributes, options);
             return (Uid)normalizer.NormalizeAttribute(ret);
         }
     }
@@ -409,9 +418,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// Calls the delete method on the Connector side.
         /// </summary>
         /// <seealso cref="Org.IdentityConnectors.Framework.Api.Operations.CreateApiOp" />
-        public void Delete(ObjectClass objClass, Uid uid, OperationOptions options)
+        public void Delete(ObjectClass objectClass, Uid uid, OperationOptions options)
         {
-            Assertions.NullCheck(objClass, "objClass");
+            Assertions.NullCheck(objectClass, "objectClass");
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
+            }
             Assertions.NullCheck(uid, "uid");
             //convert null into empty
             if (options == null)
@@ -419,9 +432,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 options = new OperationOptionsBuilder().Build();
             }
             Connector connector = GetConnector();
-            ObjectNormalizerFacade normalizer = GetNormalizer(objClass);
+            ObjectNormalizerFacade normalizer = GetNormalizer(objectClass);
             // delete the object..
-            ((DeleteOp)connector).Delete(objClass,
+            ((DeleteOp)connector).Delete(objectClass,
                                           (Uid)normalizer.NormalizeAttribute(uid),
                                           options);
         }
@@ -685,9 +698,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             this.op = search;
         }
 
-        public ConnectorObject GetObject(ObjectClass objClass, Uid uid, OperationOptions options)
+        public ConnectorObject GetObject(ObjectClass objectClass, Uid uid, OperationOptions options)
         {
-            Assertions.NullCheck(objClass, "objClass");
+            Assertions.NullCheck(objectClass, "objectClass");
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
+            }
             Assertions.NullCheck(uid, "uid");
             //convert null into empty
             if (options == null)
@@ -696,7 +713,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
             Filter filter = FilterBuilder.EqualTo(uid);
             ResultAdapter adapter = new ResultAdapter();
-            op.Search(objClass, filter, new ResultsHandler(adapter.Handle), options);
+            op.Search(objectClass, filter, new ResultsHandler(adapter.Handle), options);
             return adapter.GetResult();
         }
     }
@@ -1184,9 +1201,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// <see cref="ResultsHandler" />.
         /// </summary>
         /// <seealso cref="Org.IdentityConnectors.Framework.Api.Operations.SearchApiOp.Search(ObjectClass, Filter, ResultsHandler, OperationOptions)" />
-        public void Search(ObjectClass oclass, Filter originalFilter, ResultsHandler handler, OperationOptions options)
+        public void Search(ObjectClass objectClass, Filter originalFilter, ResultsHandler handler, OperationOptions options)
         {
-            Assertions.NullCheck(oclass, "oclass");
+            Assertions.NullCheck(objectClass, "objectClass");
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
+            }
             Assertions.NullCheck(handler, "handler");
             //convert null into empty
             if (options == null)
@@ -1202,13 +1223,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             if (hdlCfg.EnableFilteredResultsHandler && hdlCfg.EnableCaseInsensitiveFilter && originalFilter != null)
             {
                 Trace.TraceInformation("Creating case insensitive filter");
-                ObjectNormalizerFacade normalizer = CaseNormalizer.CreateCaseNormalizerFacade(oclass);
+                ObjectNormalizerFacade normalizer = CaseNormalizer.CreateCaseNormalizerFacade(objectClass);
                 actualFilter = new NormalizingFilter(actualFilter, normalizer);
             }
 
             if (hdlCfg.EnableNormalizingResultsHandler)
             {
-                ObjectNormalizerFacade normalizer = GetNormalizer(oclass);
+                ObjectNormalizerFacade normalizer = GetNormalizer(objectClass);
                 //chain a normalizing handler (must come before
                 //filter handler)
                 ResultsHandler normalizingHandler = new NormalizingResultsHandler(handler, normalizer).Handle;
@@ -1252,7 +1273,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 handlerChain = new SearchAttributesToGetResultsHandler(
                     handlerChain, attrsToGet).Handle;
             }
-            searcher.RawSearch(GetConnector(), oclass, actualFilter, handlerChain, options);
+            searcher.RawSearch(GetConnector(), objectClass, actualFilter, handlerChain, options);
         }
     }
     #endregion
@@ -1476,13 +1497,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             return (Uid)normalizer.NormalizeAttribute(ret);
         }
 
-        public Uid AddAttributeValues(ObjectClass objclass,
+        public Uid AddAttributeValues(ObjectClass objectClass,
                 Uid uid,
                 ICollection<ConnectorAttribute> valuesToAdd,
                 OperationOptions options)
         {
             // validate all the parameters..
-            ValidateInput(objclass, uid, valuesToAdd, true);
+            ValidateInput(objectClass, uid, valuesToAdd, true);
             //cast null as empty
             if (options == null)
             {
@@ -1490,7 +1511,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
 
             ObjectNormalizerFacade normalizer =
-                GetNormalizer(objclass);
+                GetNormalizer(objectClass);
             uid = (Uid)normalizer.NormalizeAttribute(uid);
             valuesToAdd =
                 normalizer.NormalizeAttributes(valuesToAdd);
@@ -1500,24 +1521,24 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             {
                 UpdateAttributeValuesOp valueOp =
                     (UpdateAttributeValuesOp)op;
-                ret = valueOp.AddAttributeValues(objclass, uid, valuesToAdd, options);
+                ret = valueOp.AddAttributeValues(objectClass, uid, valuesToAdd, options);
             }
             else
             {
                 ICollection<ConnectorAttribute> replaceAttributes =
-                    FetchAndMerge(objclass, uid, valuesToAdd, true, options);
-                ret = op.Update(objclass, uid, replaceAttributes, options);
+                    FetchAndMerge(objectClass, uid, valuesToAdd, true, options);
+                ret = op.Update(objectClass, uid, replaceAttributes, options);
             }
             return (Uid)normalizer.NormalizeAttribute(ret);
         }
 
-        public Uid RemoveAttributeValues(ObjectClass objclass,
+        public Uid RemoveAttributeValues(ObjectClass objectClass,
                 Uid uid,
                 ICollection<ConnectorAttribute> valuesToRemove,
                 OperationOptions options)
         {
             // validate all the parameters..
-            ValidateInput(objclass, uid, valuesToRemove, true);
+            ValidateInput(objectClass, uid, valuesToRemove, true);
             //cast null as empty
             if (options == null)
             {
@@ -1525,7 +1546,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
 
             ObjectNormalizerFacade normalizer =
-                GetNormalizer(objclass);
+                GetNormalizer(objectClass);
             uid = (Uid)normalizer.NormalizeAttribute(uid);
             valuesToRemove =
                 normalizer.NormalizeAttributes(valuesToRemove);
@@ -1535,13 +1556,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             {
                 UpdateAttributeValuesOp valueOp =
                     (UpdateAttributeValuesOp)op;
-                ret = valueOp.RemoveAttributeValues(objclass, uid, valuesToRemove, options);
+                ret = valueOp.RemoveAttributeValues(objectClass, uid, valuesToRemove, options);
             }
             else
             {
                 ICollection<ConnectorAttribute> replaceAttributes =
-                    FetchAndMerge(objclass, uid, valuesToRemove, false, options);
-                ret = op.Update(objclass, uid, replaceAttributes, options);
+                    FetchAndMerge(objectClass, uid, valuesToRemove, false, options);
+                ret = op.Update(objectClass, uid, replaceAttributes, options);
             }
             return (Uid)normalizer.NormalizeAttribute(ret);
         }
@@ -1659,12 +1680,16 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// <summary>
         /// Makes things easier if you can trust the input.
         /// </summary>
-        public static void ValidateInput(ObjectClass objclass,
+        public static void ValidateInput(ObjectClass objectClass,
                 Uid uid,
                 ICollection<ConnectorAttribute> attrs, bool isDelta)
         {
             Assertions.NullCheck(uid, "uid");
-            Assertions.NullCheck(objclass, "objclass");
+            Assertions.NullCheck(objectClass, "objectClass");
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
+            }
             Assertions.NullCheck(attrs, "attrs");
             // check to make sure there's not a uid..
             if (ConnectorAttributeUtil.GetUidAttribute(attrs) != null)
