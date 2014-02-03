@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Security;
@@ -41,6 +42,7 @@ namespace Org.IdentityConnectors.Common.Security
     }
     #endregion
 
+    #region GuardedByteArray
     /// <summary>
     /// Secure byte array implementation that solves the problems associated with
     /// keeping confidential data as <code>byte[]</code>.
@@ -256,7 +258,9 @@ namespace Org.IdentityConnectors.Common.Security
         }
 
     }
+    #endregion
 
+    #region GuardedString
     /// <summary>
     /// Secure string implementation that solves the problems associated with
     /// keeping passwords as <code>java.lang.String</code>.
@@ -462,7 +466,7 @@ namespace Org.IdentityConnectors.Common.Security
         }
 
     }
-
+    #endregion
 
     #region AbstractUnmanagedArray
     public abstract class AbstractUnmanagedArray<T> : UnmanagedArray<T>
@@ -811,6 +815,49 @@ namespace Org.IdentityConnectors.Common.Security
         {
             string inputHash = ComputeBase64SHA1Hash(input);
             return inputHash.Equals(hash);
+        }
+
+        /// <summary>
+        /// Decrypts the value of a <seealso cref="GuardedString"/>.
+        /// </summary>
+        /// <param name="guardedString">
+        ///            the guarded string value. </param>
+        /// <returns> the clear string value.</returns>
+        /// <remarks>Since 1.4</remarks>
+        public static string Decrypt(GuardedString guardedString)
+        {
+            StringBuilder buf = new StringBuilder();
+            guardedString.Access(
+                                            array =>
+                                            {
+                                                for (int i = 0; i < array.Length; i++)
+                                                {
+                                                    buf.Append(array[i]);
+                                                }
+                                            });
+            return buf.ToString();
+        }
+
+        /// <summary>
+        /// Decrypts the value of a <seealso cref="GuardedByteArray"/>.
+        /// </summary>
+        /// <param name="guardedByteArray">
+        ///            the guarded byte array value. </param>
+        /// <returns> the clear byte array value.</returns>
+        /// <remarks>Since 1.4</remarks>
+        public static byte[] Decrypt(GuardedByteArray guardedByteArray)
+        {
+            byte[] result = null;
+            guardedByteArray.Access(
+                                            array =>
+                                            {
+                                                result = new byte[array.Length];
+                                                for (int i = 0; i < array.Length; i++)
+                                                {
+                                                    result[i] = array[i];
+                                                }
+                                            });
+            return result;
         }
     }
     #endregion
