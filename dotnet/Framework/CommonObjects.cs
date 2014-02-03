@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Security;
@@ -800,11 +801,14 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         {
             StringBuilder sb = new StringBuilder();
             bool first = true;
-            foreach (object o in list) 
+            foreach (object o in list)
             {
-                if (first) {
+                if (first)
+                {
                     first = false;
-                } else {
+                }
+                else
+                {
                     sb.Append(", ");
                 }
                 sb.Append(o);
@@ -1220,6 +1224,10 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             {
                 throw new ArgumentException("ObjectClass may not be null");
             }
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.ArgumentException("Connector object class can not be type of __ALL__");
+            }
             if (attrs == null || attrs.Count == 0)
             {
                 throw new ArgumentException("attrs cannot be empty or null.");
@@ -1319,7 +1327,23 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             AddAttribute(name);
         }
 
-        public ObjectClass ObjectClass { get; set; }
+        public ObjectClass ObjectClass
+        {
+            get
+            {
+                return ObjectClass;
+            }
+            set
+            {
+                if (ObjectClass.ALL.Equals(value))
+                {
+                    throw new System.ArgumentException("Connector object class can not be type of __ALL__");
+                }
+                ObjectClass = value;
+            }
+        }
+
+
 
         // =======================================================================
         // Clone basically..
@@ -2063,8 +2087,22 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
     #region ObjectClass
     public sealed class ObjectClass
     {
-        public static readonly String ACCOUNT_NAME = ObjectClassUtil.CreateSpecialName("ACCOUNT");
-        public static readonly String GROUP_NAME = ObjectClassUtil.CreateSpecialName("GROUP");
+        /// <summary>
+        /// This constant defines a specific {@link #getObjectClassValue value
+        /// of ObjectClass} that is reserved for <seealso cref="ObjectClass#ACCOUNT"/>.
+        /// </summary>
+        public static readonly string ACCOUNT_NAME = ObjectClassUtil.CreateSpecialName("ACCOUNT");
+
+        /// <summary>
+        /// This constant defines a specific {@link #getObjectClassValue value
+        /// of ObjectClass} that is reserved for <seealso cref="ObjectClass#GROUP"/>.
+        /// </summary>
+        public static readonly string GROUP_NAME = ObjectClassUtil.CreateSpecialName("GROUP");
+        /// <summary>
+        /// This constant defines a specific {@link #getObjectClassValue value
+        /// of ObjectClass} that is reserved for <seealso cref="ObjectClass#ALL"/>.
+        /// </summary>
+        public static readonly string ALL_NAME = ObjectClassUtil.CreateSpecialName("ALL");
         /// <summary>
         /// Denotes an account based object.
         /// </summary>
@@ -2073,6 +2111,17 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         /// Denotes a group based object.
         /// </summary>
         public static readonly ObjectClass GROUP = new ObjectClass(GROUP_NAME);
+        /// <summary>
+        /// Represents all collections that contains any object.
+        /// <para>
+        /// This constant allowed to use in operation
+        /// <seealso cref="org.identityconnectors.framework.spi.operations.SyncOp#getLatestSyncToken(ObjectClass)"/>
+        /// and
+        /// <seealso cref="org.identityconnectors.framework.spi.operations.SyncOp#sync(ObjectClass, SyncToken, SyncResultsHandler, OperationOptions)"/>
+        /// any other operation throws <seealso cref="UnsupportedOperationException"/>
+        /// </para>
+        /// </summary>
+        public static readonly ObjectClass ALL = new ObjectClass(ALL_NAME);
 
         private readonly String _type;
 
