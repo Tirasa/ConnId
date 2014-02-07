@@ -1329,18 +1329,18 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
 
         public ObjectClass ObjectClass
         {
-            get
-            {
+            get;
+            /*{
                 return ObjectClass;
-            }
-            set
-            {
+            }*/
+            set;
+            /*{
                 if (ObjectClass.ALL.Equals(value))
                 {
                     throw new System.ArgumentException("Connector object class can not be type of __ALL__");
                 }
                 ObjectClass = value;
-            }
+            }*/
         }
 
 
