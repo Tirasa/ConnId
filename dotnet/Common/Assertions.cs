@@ -19,8 +19,10 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
+using System.Diagnostics;
 
 namespace Org.IdentityConnectors.Common
 {
@@ -42,6 +44,7 @@ namespace Org.IdentityConnectors.Common
         /// message with the name of the parameter.</exception>
         public static void NullCheck(Object o, String param)
         {
+            Debug.Assert(StringUtil.IsNotBlank(param));
             if (o == null)
             {
                 throw new ArgumentNullException(String.Format(NULL_FORMAT, param));
@@ -62,6 +65,7 @@ namespace Org.IdentityConnectors.Common
         {
             // Avoid calling NullCheck() here to reuse code: it deepens the stack trace.
             // We want the exception to be thrown as close to the call site as possible.
+            Debug.Assert(StringUtil.IsNotBlank(param));
             if (o == null)
             {
                 throw new ArgumentNullException(String.Format(NULL_FORMAT, param));
@@ -79,6 +83,7 @@ namespace Org.IdentityConnectors.Common
         /// message with the name of the parameter.</exception>
         public static void BlankCheck(String o, String param)
         {
+            Debug.Assert(StringUtil.IsNotBlank(param));
             if (StringUtil.IsBlank(o))
             {
                 throw new ArgumentException(String.Format(BLANK_FORMAT, param));
@@ -98,6 +103,7 @@ namespace Org.IdentityConnectors.Common
         {
             // Avoid calling BlankCheck() here to reuse code: it deepens the stack trace.
             // We want the exception to be thrown as close to the call site as possible.
+            Debug.Assert(StringUtil.IsNotBlank(param));
             if (StringUtil.IsBlank(o))
             {
                 throw new ArgumentException(String.Format(BLANK_FORMAT, param));

@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2012 ForgeRock AS
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Net.Security;
-using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Sockets;
 using System.IO;
@@ -42,13 +41,11 @@ using Org.IdentityConnectors.Framework.Api;
 using Org.IdentityConnectors.Framework.Api.Operations;
 using Org.IdentityConnectors.Framework.Common.Objects;
 using Org.IdentityConnectors.Framework.Common.Exceptions;
-using Org.IdentityConnectors.Framework.Common.Objects.Filters;
 using Org.IdentityConnectors.Framework.Common.Serializer;
 using Org.IdentityConnectors.Framework.Server;
 using Org.IdentityConnectors.Framework.Impl.Api;
 using Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages;
 using Org.IdentityConnectors.Framework.Impl.Api.Local;
-using Org.IdentityConnectors.Framework.Impl.Api.Local.Operations;
 using Org.IdentityConnectors.Framework.Impl.Api.Remote;
 
 namespace Org.IdentityConnectors.Framework.Server
@@ -211,9 +208,9 @@ namespace Org.IdentityConnectors.Framework.Server
         }
 
         /// <summary>
-        /// Returns true iff we are to use SSL.
+        /// Returns true if we are to use SSL.
         /// </summary>
-        /// <returns>true iff we are to use SSL.</returns>
+        /// <returns>true if we are to use SSL.</returns>
         public bool UseSSL
         {
             get
@@ -295,20 +292,22 @@ namespace Org.IdentityConnectors.Framework.Server
         abstract public void Stop();
 
         /// <summary>
-        /// Return true iff the server is started.
+        /// Return true if the server is started.
         /// </summary>
         /// <remarks>
         /// Note that started is a
         /// logical state (start method has been called). It does not necessarily
         /// reflect the health of the server
         /// </remarks>
-        /// <returns>true iff the server is started.</returns>
+        /// <returns>true if the server is started.</returns>
         abstract public bool IsStarted();
     }
 }
 
 namespace Org.IdentityConnectors.Framework.Impl.Server
 {
+
+    #region ConnectionProcessor
     public class ConnectionProcessor
     {
         private class RemoteResultsHandler : ObjectStreamHandler
@@ -345,10 +344,6 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
                 catch (IOException e)
                 {
                     throw new BrokenConnectionException(e);
-                }
-                catch (Exception)
-                {
-                    throw;
                 }
             }
         }
@@ -709,10 +704,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
                 throw new Exception("No such connector: "
                                     + request.ConnectorKey);
             }
-            String connectorFacadeKey = request.Configuration;
+            String connectorFacadeKey = request.ConnectorFacadeKey;
 
             ConnectorFacade facade =
-                ConnectorFacadeFactory.GetInstance().NewInstance(info, connectorFacadeKey);
+                ConnectorFacadeFactory.GetManagedInstance().NewInstance(info, connectorFacadeKey);
 
             return facade.GetOperation(request.Operation);
         }
@@ -733,7 +728,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
         }
 
     }
+    #endregion
 
+    #region ConnectionListener
     class ConnectionListener
     {
         /// <summary>
@@ -904,7 +901,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
             }
         }
     }
+    #endregion
 
+    #region RequestStats
     internal class RequestStats
     {
         public RequestStats()
@@ -914,7 +913,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
         public long StartTimeMillis { get; set; }
         public long RequestID { get; set; }
     }
+    #endregion
 
+    #region ConnectorServerImpl
     public class ConnectorServerImpl : ConnectorServer
     {
 
@@ -1043,7 +1044,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
             ConnectorInfoManagerFactory.GetInstance().GetLocalManager();
             _requestCount = 0;
             /*
-             * the Java and .Net dates have a different starting point: zero milliseconds in Java corresponds to January 1, 1970, 00:00:00 GMT (aka “the epoch”). 
+             * the Java and .Net dates have a diferent starting point: zero milliseconds in Java corresponds to January 1, 1970, 00:00:00 GMT (aka “the epoch”). 
              * In .Net zero milliseconds* corresponds to 12:00 A.M., January 1, 0001 GMT. 
              * So the basic is to bridge over the reference points gap with adding (or substracting) the corresponding number of milliseconds 
              * such that zero milliseconds in .Net is mapped to -62135769600000L milliseconds in Java.
@@ -1081,7 +1082,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Server
                 _listener = null;
             }
             _startDate = 0;
-            ConnectorFacadeFactory.GetInstance().Dispose();
+            ConnectorFacadeFactory.GetManagedInstance().Dispose();
         }
     }
+    #endregion
 }

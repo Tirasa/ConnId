@@ -270,8 +270,6 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                     final LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
                     info.setConnectorClass(connectorClass.asSubclass(Connector.class));
                     info.setConnectorConfigurationClass(options.configurationClass());
-                    info.setConfigurationStateless(!StatefulConfiguration.class
-                            .isAssignableFrom(options.configurationClass()));
                     info.setConnectorDisplayNameKey(options.displayNameKey());
                     info.setConnectorCategoryKey(options.categoryKey());
                     info.setConnectorKey(new ConnectorKey(bundleInfo.getManifest().getBundleName(),

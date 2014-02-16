@@ -30,6 +30,7 @@ import org.identityconnectors.framework.impl.api.local.JavaClassProperties;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
+import org.identityconnectors.framework.spi.StatefulConfiguration;
 
 /**
  * OperationalContext - base class for operations that do not require a
@@ -94,13 +95,13 @@ public class OperationalContext {
     }
 
     public void dispose() {
-        if (configuration instanceof Configuration) {
+        if (configuration instanceof StatefulConfiguration) {
             // dispose it not supposed to throw, but just in case,
             // catch the exception and log it so we know about it
             // but don't let the exception prevent additional
             // cleanup that needs to happen
             try {
-                // ((StatefulConfiguration)config).dispose();
+                 ((StatefulConfiguration)configuration).release();
             } catch (Exception e) {
                 // log this though
                 LOG.warn(e, null);

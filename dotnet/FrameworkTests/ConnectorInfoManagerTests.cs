@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2012 ForgeRock AS
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
 using NUnit.Framework;
@@ -31,13 +31,14 @@ using Org.IdentityConnectors.Framework.Api;
 using Org.IdentityConnectors.Framework.Api.Operations;
 using Org.IdentityConnectors.Framework.Common.Exceptions;
 using Org.IdentityConnectors.Framework.Common.Objects;
+using Org.IdentityConnectors.Framework.Common.Objects.Filters;
+using Org.IdentityConnectors.Framework.Impl.Api.Remote;
+using ICF = Org.IdentityConnectors.Framework.Common.Objects;
 using Org.IdentityConnectors.Framework.Server;
 using Org.IdentityConnectors.Framework.Impl.Api;
 using Org.IdentityConnectors.Framework.Impl.Api.Local;
-using System.Security;
 using System.Threading;
 using System.Globalization;
-using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 namespace FrameworkTests
@@ -156,7 +157,7 @@ namespace FrameworkTests
                 FindConnectorInfo(manager,
                         "1.0.0.0",
                         "org.identityconnectors.testconnector.TstConnector");
-
+            Assert.IsNotNull(info);
             APIConfiguration api = info.CreateDefaultAPIConfiguration();
 
             ConfigurationProperties props = api.ConfigurationProperties;
@@ -208,8 +209,9 @@ namespace FrameworkTests
                  FindConnectorInfo(manager,
                  "1.0.0.0",
                  "org.identityconnectors.testconnector.TstConnector");
-
+            Assert.IsNotNull(info);
             APIConfiguration api = info.CreateDefaultAPIConfiguration();
+            api.ProducerBufferSize = 0;
 
             ConfigurationProperties props = api.ConfigurationProperties;
             ConfigurationProperty property = props.GetProperty("numResults");
@@ -222,14 +224,18 @@ namespace FrameworkTests
 
             IList<ConnectorObject> results = new List<ConnectorObject>();
 
-            facade.Search(ObjectClass.ACCOUNT, null,
-                          obj =>
-                          {
-                              results.Add(obj);
-                              return true;
-                          }, null);
+            SearchResult searchResult = facade.Search(ObjectClass.ACCOUNT, null, new ResultsHandler()
+            {
+                Handle =
+                    obj =>
+                    {
+                        results.Add(obj);
+                        return true;
+                    }
+            }, null);
 
             Assert.AreEqual(1000, results.Count);
+            Assert.AreEqual(0, searchResult.RemainingPagedResults);
             for (int i = 0; i < results.Count; i++)
             {
                 ConnectorObject obj = results[i];
@@ -239,21 +245,24 @@ namespace FrameworkTests
 
             results.Clear();
 
-            facade.Search(ObjectClass.ACCOUNT, null,
-                          obj =>
-                          {
-                              if (results.Count < 500)
-                              {
-                                  results.Add(obj);
-                                  return true;
-                              }
-                              else
-                              {
-                                  return false;
-                              }
-                          }, null);
+            searchResult = facade.Search(ObjectClass.ACCOUNT, null, new ResultsHandler()
+            {
+                Handle = obj =>
+                {
+                    if (results.Count < 500)
+                    {
+                        results.Add(obj);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }, null);
 
             Assert.AreEqual(500, results.Count);
+            Assert.IsTrue(500 == searchResult.RemainingPagedResults || 401 == searchResult.RemainingPagedResults);
             for (int i = 0; i < results.Count; i++)
             {
                 ConnectorObject obj = results[i];
@@ -280,8 +289,9 @@ namespace FrameworkTests
                 FindConnectorInfo(manager,
                         "1.0.0.0",
                         "org.identityconnectors.testconnector.TstConnector");
-
+            Assert.IsNotNull(info);
             APIConfiguration api = info.CreateDefaultAPIConfiguration();
+            api.ProducerBufferSize = 0;
 
             ConfigurationProperties props = api.ConfigurationProperties;
             ConfigurationProperty property = props.GetProperty("numResults");
@@ -296,10 +306,13 @@ namespace FrameworkTests
             Assert.AreEqual("mylatest", latest.Value);
             IList<SyncDelta> results = new List<SyncDelta>();
 
-            facade.Sync(ObjectClass.ACCOUNT, null, obj =>
+            facade.Sync(ObjectClass.ACCOUNT, null, new SyncResultsHandler()
             {
-                results.Add(obj);
-                return true;
+                Handle = obj =>
+                    {
+                        results.Add(obj);
+                        return true;
+                    }
             }, null);
 
             Assert.AreEqual(1000, results.Count);
@@ -313,19 +326,22 @@ namespace FrameworkTests
             results.Clear();
 
             facade.Sync(ObjectClass.ACCOUNT,
-                    null,
-                    obj =>
+                    null, new SyncResultsHandler()
                     {
-                        if (results.Count < 500)
+                        Handle = obj =>
                         {
-                            results.Add(obj);
-                            return true;
+                            if (results.Count < 500)
+                            {
+                                results.Add(obj);
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
                         }
-                        else
-                        {
-                            return false;
-                        }
-                    }, null);
+                    }
+                    , null);
 
             Assert.AreEqual(500, results.Count);
             for (int i = 0; i < results.Count; i++)
@@ -333,6 +349,31 @@ namespace FrameworkTests
                 SyncDelta obj = results[i];
                 Assert.AreEqual(i.ToString(),
                         obj.Uid.GetUidValue());
+            }
+        }
+
+        [Test]
+        public void TestSyncTokenResults()
+        {
+            foreach (ConnectorFacade facade in CreateStateFulFacades())
+            {
+                Uid uid = facade.Create(ObjectClass.ACCOUNT, CollectionUtil.NewReadOnlySet<ConnectorAttribute>(), null);
+
+                SyncToken latest = facade.GetLatestSyncToken(ObjectClass.ACCOUNT);
+                Assert.AreEqual(uid.GetUidValue(), latest.Value);
+
+                for (int i = 0; i < 10; i++)
+                {
+                    SyncToken lastToken = facade.Sync(ObjectClass.ACCOUNT, null, new SyncResultsHandler()
+                    {
+                        Handle = obj =>
+                        {
+                            return true;
+                        }
+                    }, null);
+                    Assert.IsNotNull(lastToken);
+                    Assert.AreEqual(lastToken.Value, latest.Value);
+                }
             }
         }
 
@@ -396,6 +437,7 @@ namespace FrameworkTests
                 FindConnectorInfo(manager,
                         "1.0.0.0",
                         "org.identityconnectors.testconnector.TstConnector");
+            Assert.IsNotNull(info);
             APIConfiguration api = info.CreateDefaultAPIConfiguration();
 
 
@@ -423,7 +465,7 @@ namespace FrameworkTests
             {
                 String SCRIPT =
                     "import org.identityconnectors.testconnector\n" +
-                    "TstConnector.getVersion()";
+                    "TstConnector.GetVersion()";
                 builder.ScriptText = (SCRIPT);
                 String result = (String)facade.RunScriptOnConnector(builder.Build(),
                         null);
@@ -465,6 +507,300 @@ namespace FrameworkTests
                 ConnectorAttribute attr = (ConnectorAttribute)facade.RunScriptOnConnector(builder.Build(), null);
                 Assert.AreEqual("myattr", attr.Name);
             }
+        }
+
+        [Test]
+        public void TestConnectorContext()
+        {
+            ConnectorPoolManager.Dispose();
+            ConnectorInfoManager manager = GetConnectorInfoManager();
+            ConnectorInfo info1 = FindConnectorInfo(manager, "1.0.0.0", "org.identityconnectors.testconnector.TstStatefulConnector");
+            Assert.IsNotNull(info1);
+
+            APIConfiguration config = info1.CreateDefaultAPIConfiguration();
+
+            config.ConnectorPoolConfiguration.MinIdle = 0;
+            config.ConnectorPoolConfiguration.MaxIdle = 0;
+
+            ConnectorFacade facade1 = ConnectorFacadeFactory.GetInstance().NewInstance(config);
+
+            ICollection<ConnectorAttribute> attrs = CollectionUtil.NewReadOnlySet<ConnectorAttribute>();
+            string uid = facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue();
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+
+            config = info1.CreateDefaultAPIConfiguration();
+            config.ConnectorPoolConfiguration.MinIdle = 1;
+            config.ConnectorPoolConfiguration.MaxIdle = 2;
+            facade1 = ConnectorFacadeFactory.GetInstance().NewInstance(config);
+            uid = facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue();
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+            Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+        }
+
+        [Test]
+        public void TestPagedSearch()
+        {
+            ConnectorPoolManager.Dispose();
+            ConnectorInfoManager manager = GetConnectorInfoManager();
+            ConnectorInfo info1 = FindConnectorInfo(manager, "1.0.0.0", "org.identityconnectors.testconnector.TstStatefulPoolableConnector");
+            Assert.IsNotNull(info1);
+
+            APIConfiguration config = info1.CreateDefaultAPIConfiguration();
+            config.ProducerBufferSize = 0;
+
+            config.ConnectorPoolConfiguration.MinIdle = 1;
+            config.ConnectorPoolConfiguration.MaxIdle = 2;
+
+            ConnectorFacade facade1 = ConnectorFacadeFactory.GetInstance().NewInstance(config);
+
+            OperationOptionsBuilder builder = new OperationOptionsBuilder();
+            builder.PageSize = 10;
+            builder.SetSortKeys(new ICF.SortKey(Name.NAME, true));
+
+            SearchResult searchResult = null;
+            ISet<Uid> UIDs = new HashSet<Uid>();
+
+            int iteration = 0;
+            do
+            {
+
+                if (null != searchResult)
+                {
+                    builder.PagedResultsCookie = searchResult.PagedResultsCookie;
+                }
+
+                int size = 0;
+                searchResult = facade1.Search(ObjectClass.ACCOUNT, null, new ResultsHandler()
+                {
+
+                    Handle = obj =>
+                    {
+                        if (size >= 10)
+                        {
+                            Assert.Fail("More then 10 objects was handled!");
+                        }
+                        size++;
+                        if (UIDs.Contains(obj.Uid))
+                        {
+                            Assert.Fail("Duplicate Entry in results");
+                        }
+                        return UIDs.Add(obj.Uid);
+                    }
+                }, builder.Build());
+                iteration++;
+                Assert.IsNotNull(searchResult);
+                Assert.AreEqual(searchResult.RemainingPagedResults, 100 - (iteration * 10));
+
+            } while (searchResult.PagedResultsCookie != null);
+
+            // Search with paged results offset
+
+            builder = new OperationOptionsBuilder();
+            builder.PageSize = 10;
+            builder.PagedResultsOffset = 5;
+            builder.SetSortKeys(new ICF.SortKey(Name.NAME, true));
+
+            searchResult = null;
+
+            UIDs.Clear();
+            Filter filter = FilterBuilder.EqualTo(ConnectorAttributeBuilder.BuildEnabled(true));
+
+            iteration = 0;
+            do
+            {
+
+                if (null != searchResult)
+                {
+                    builder.PagedResultsCookie = searchResult.PagedResultsCookie;
+                }
+
+                int size = 0;
+                searchResult = facade1.Search(ObjectClass.ACCOUNT, filter, new ResultsHandler()
+                {
+                    Handle = obj =>
+                    {
+                        if (size >= 10)
+                        {
+                            Assert.Fail("More then 10 objects was handled!");
+                        }
+                        size++;
+                        if (UIDs.Contains(obj.Uid))
+                        {
+                            Assert.Fail("Duplicate Entry in results");
+                        }
+                        return UIDs.Add(obj.Uid);
+                    }
+                }, builder.Build());
+                iteration++;
+                Assert.IsNotNull(searchResult);
+                Assert.AreEqual(searchResult.RemainingPagedResults, Math.Max(50 - (iteration * 15), 0));
+
+            } while (searchResult.PagedResultsCookie != null);
+        }
+
+        [Test]
+        public void TestTimeout()
+        {
+            ConnectorInfoManager manager = GetConnectorInfoManager();
+            ConnectorInfo info1 = FindConnectorInfo(manager, "1.0.0.0", "org.identityconnectors.testconnector.TstConnector");
+            Assert.IsNotNull(info1);
+
+            APIConfiguration config = info1.CreateDefaultAPIConfiguration();
+            config.SetTimeout(SafeType<APIOperation>.ForRawType(typeof(CreateApiOp)), 5000);
+            config.SetTimeout(SafeType<APIOperation>.ForRawType(typeof(SearchApiOp)), 5000);
+            ConfigurationProperties props = config.ConfigurationProperties;
+            ConfigurationProperty property = props.GetProperty("numResults");
+            // 1000 is several times the remote size between pauses
+            property.Value = 2;
+            OperationOptionsBuilder opBuilder = new OperationOptionsBuilder();
+            opBuilder.SetOption("delay", 10000);
+
+            ConnectorFacade facade1 = ConnectorFacadeFactory.GetInstance().NewInstance(config);
+
+            ICollection<ConnectorAttribute> attrs = CollectionUtil.NewReadOnlySet<ConnectorAttribute>();
+            try
+            {
+                facade1.Create(ObjectClass.ACCOUNT, attrs, opBuilder.Build()).GetUidValue();
+                Assert.Fail("expected timeout");
+            }
+            catch (OperationTimeoutException)
+            {
+                // expected
+            }
+            //catch (RemoteWrappedException e)
+            //{
+            //    Assert.IsTrue(e.Is(typeof(OperationTimeoutException)));
+            //}
+
+            try
+            {
+                facade1.Search(ObjectClass.ACCOUNT, null, new ResultsHandler()
+                {
+                    Handle = obj =>
+                    {
+                        return true;
+                    }
+                }, opBuilder.Build());
+                Assert.Fail("expected timeout");
+            }
+            catch (OperationTimeoutException)
+            {
+                // expected
+            }
+            //catch (RemoteWrappedException e)
+            //{
+            //    Assert.IsTrue(e.Is(typeof(OperationTimeoutException)));
+            //}
+        }
+
+        [Test]
+        public void TestMVCCControl()
+        {
+
+            foreach (ConnectorFacade facade in CreateStateFulFacades())
+            {
+
+
+                Uid uid = facade.Create(ObjectClass.ACCOUNT, CollectionUtil.NewReadOnlySet<ConnectorAttribute>(), null);
+
+
+                if (facade is LocalConnectorFacadeImpl)
+                {
+                    try
+                    {
+                        facade.Delete(ObjectClass.ACCOUNT, uid, null);
+                    }
+                    catch (PreconditionRequiredException)
+                    {
+                        // Expected
+                    }
+                    catch (Exception)
+                    {
+                        Assert.Fail("Expecting PreconditionRequiredException");
+                    }
+                    try
+                    {
+                        facade.Delete(ObjectClass.ACCOUNT, new Uid(uid.GetUidValue(), "0"), null);
+                    }
+                    catch (PreconditionFailedException)
+                    {
+                        // Expected
+                    }
+                    catch (Exception)
+                    {
+                        Assert.Fail("Expecting PreconditionFailedException");
+                    }
+                    facade.Delete(ObjectClass.ACCOUNT, new Uid(uid.GetUidValue(), uid.GetUidValue()), null);
+                }
+                else
+                {
+                    try
+                    {
+                        facade.Delete(ObjectClass.ACCOUNT, uid, null);
+                    }
+                    catch (RemoteWrappedException e)
+                    {
+                        if (!e.Is(typeof(PreconditionRequiredException)))
+                        {
+                            Assert.Fail("Expecting PreconditionRequiredException");
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Assert.Fail("Expecting RemoteWrappedException");
+                    }
+                    try
+                    {
+                        facade.Delete(ObjectClass.ACCOUNT, new Uid(uid.GetUidValue(), "0"), null);
+                    }
+                    catch (RemoteWrappedException e)
+                    {
+                        if (!e.Is(typeof(PreconditionFailedException)))
+                        {
+                            Assert.Fail("Expecting PreconditionFailedException");
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Assert.Fail("Expecting RemoteWrappedException");
+                    }
+                    facade.Delete(ObjectClass.ACCOUNT, new Uid(uid.GetUidValue(), uid.GetUidValue()), null);
+                }
+            }
+        }
+
+        public IList<ConnectorFacade> CreateStateFulFacades()
+        {
+            IList<ConnectorFacade> test = new List<ConnectorFacade>(2);
+
+            ConnectorInfoManager manager = GetConnectorInfoManager();
+            ConnectorInfo info = FindConnectorInfo(manager, "1.0.0.0", "org.identityconnectors.testconnector.TstStatefulConnector");
+            Assert.IsNotNull(info);
+
+            APIConfiguration config = info.CreateDefaultAPIConfiguration();
+
+            test.Add(ConnectorFacadeFactory.GetInstance().NewInstance(config));
+
+            info = FindConnectorInfo(manager, "1.0.0.0", "org.identityconnectors.testconnector.TstStatefulPoolableConnector");
+            Assert.IsNotNull(info);
+
+            config = info.CreateDefaultAPIConfiguration();
+
+            config.ConnectorPoolConfiguration.MinIdle = 0;
+            config.ConnectorPoolConfiguration.MaxIdle = 0;
+
+            test.Add(ConnectorFacadeFactory.GetInstance().NewInstance(config));
+
+            return test;
         }
 
         protected virtual ConnectorInfoManager GetConnectorInfoManager()

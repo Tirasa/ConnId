@@ -19,13 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Text;
 using System.Collections.Generic;
 using Org.IdentityConnectors.Common;
-using Org.IdentityConnectors.Framework.Common.Objects;
-using System.Diagnostics;
+
 namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
 {
     #region AbstractFilterTranslator

@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2012 ForgeRock AS
+ * Portions Copyrighted 2012-2014 ForgeRock AS
  */
 using System;
 using System.IO;
@@ -27,7 +27,6 @@ using System.Security;
 using System.Diagnostics;
 using System.Reflection;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Org.IdentityConnectors.Common.Security;
 using System.Threading;
 
@@ -88,7 +87,7 @@ namespace Org.IdentityConnectors.Common.Script.Shell
                 {
                     Trace.TraceInformation("About to execute script: {0}", _script);
                     // if there are any environment varibles set to false..
-                    process.StartInfo.UseShellExecute = arguments.Count == 0;
+                    process.StartInfo.UseShellExecute = false;//arguments.Count == 0;
                     // take out username and password if they're in the options.
                     foreach (KeyValuePair<string, object> kv in arguments)
                     {

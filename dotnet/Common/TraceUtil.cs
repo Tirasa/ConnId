@@ -44,9 +44,33 @@ namespace Org.IdentityConnectors.Common
             }
             if (e != null)
             {
-                builder.AppendLine(e.ToString());
+                ExceptionToString(builder, e, string.Empty);
+                //builder.AppendLine(e.ToString());
             }
             Trace.TraceError(builder.ToString());
+        }
+
+        public static void ExceptionToString(StringBuilder sb, Exception e, string indent)
+        {
+            if (indent == null)
+            {
+                indent = string.Empty;
+            }
+            else if (indent.Length > 0)
+            {
+                sb.AppendFormat("{0}Inner ", indent);
+            }
+
+            sb.AppendFormat("Exception :\n{0}Type: {1}", indent, e.GetType().FullName);
+            sb.AppendFormat("\n{0}Message: {1}", indent, e.Message);
+            sb.AppendFormat("\n{0}Source: {1}", indent, e.Source);
+            sb.AppendFormat("\n{0}Stacktrace: {1}", indent, e.StackTrace);
+
+            if (e.InnerException != null)
+            {
+                sb.Append("\n");
+                ExceptionToString(sb, e.InnerException, indent + "  ");
+            }
         }
     }
 }

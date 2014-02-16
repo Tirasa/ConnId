@@ -203,9 +203,4 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
         proxy = createLoggingProxy(api, proxy);
         return proxy;
     }
-
-    private Pair<ConnectorPoolManager.ConnectorPoolKey, ObjectPool<PoolableConnector>> getPool() {
-        return ConnectorPoolManager.getPool(getAPIConfiguration(), connectorInfo);
-    }
-
 }

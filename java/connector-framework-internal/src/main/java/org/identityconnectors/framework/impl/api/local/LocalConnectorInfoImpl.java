@@ -28,12 +28,12 @@ import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.PoolableConnector;
+import org.identityconnectors.framework.spi.StatefulConfiguration;
 
 public class LocalConnectorInfoImpl extends AbstractConnectorInfo {
 
     private Class<? extends Connector> connectorClass;
     private Class<? extends Configuration> connectorConfigurationClass;
-    private boolean configurationStateless = true;
 
     public LocalConnectorInfoImpl() {
 
@@ -65,11 +65,7 @@ public class LocalConnectorInfoImpl extends AbstractConnectorInfo {
     }
 
     public boolean isConfigurationStateless() {
-        return configurationStateless;
-    }
-
-    public void setConfigurationStateless(boolean configurationStateless) {
-        this.configurationStateless = configurationStateless;
+        return !StatefulConfiguration.class.isAssignableFrom(connectorConfigurationClass);
     }
 
     public boolean isConnectorPoolingSupported() {

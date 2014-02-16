@@ -153,10 +153,11 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             }
 
             ConnectorObject rv = builder.build();
-            if (!handler.handle(rv)) {
+            if (handler.handle(rv)) {
+                remaining--;
+            } else {
                 break;
             }
-            remaining--;
         }
 
         if (handler instanceof SearchResultsHandler) {

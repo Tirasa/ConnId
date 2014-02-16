@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Reflection;
@@ -32,6 +33,7 @@ using Org.IdentityConnectors.Framework.Spi.Operations;
 using Org.IdentityConnectors.Framework.Common.Objects;
 namespace Org.IdentityConnectors.Framework.Common
 {
+    #region FrameworkInternalBridge
     internal static class FrameworkInternalBridge
     {
         private static readonly Object LOCK = new Object();
@@ -60,7 +62,9 @@ namespace Org.IdentityConnectors.Framework.Common
 
         }
     }
+    #endregion
 
+    #region FrameworkUtil
     public static class FrameworkUtil
     {
         private static readonly IDictionary<SafeType<SPIOperation>, SafeType<APIOperation>> SPI_TO_API;
@@ -133,6 +137,8 @@ namespace Org.IdentityConnectors.Framework.Common
                 typeof(int?),
                 typeof(bool),
                 typeof(bool?),
+                typeof(byte),
+                typeof(byte?),
                 typeof(byte[]),
                 typeof(BigDecimal),
                 typeof(BigInteger),
@@ -203,6 +209,14 @@ namespace Org.IdentityConnectors.Framework.Common
         /// </description>
         /// </item>
         /// <item>
+        /// <description>byte
+        /// </description>
+        /// </item>
+        /// <item>
+        /// <description>byte?
+        /// </description>
+        /// </item>
+        /// <item>
         /// <description>byte[]
         /// </description>
         /// </item>
@@ -226,6 +240,14 @@ namespace Org.IdentityConnectors.Framework.Common
                 throw new ArgumentException(MSG);
             }
         }
+        /// <summary>
+        /// Determines if the class of the object is a supported attribute type. If
+        /// not it throws an <seealso cref="IllegalArgumentException"/>.
+        /// </summary>
+        /// <param name="value">
+        ///            The value to check or null. </param>
+        /// <exception cref="ArgumentException">
+        ///             If the class of the object is a supported attribute type. </exception>
         public static void CheckAttributeValue(Object value)
         {
             if (value != null)
@@ -353,6 +375,11 @@ namespace Org.IdentityConnectors.Framework.Common
                 return; //ok
             }
 
+            if (typeof(SortKey).IsAssignableFrom(clazz))
+            {
+                return; //ok
+            }
+
             String MSG = "ConfigurationOption type '+" + clazz.Name + "+' is not supported.";
             throw new ArgumentException(MSG);
         }
@@ -380,7 +407,9 @@ namespace Org.IdentityConnectors.Framework.Common
             return Assembly.GetExecutingAssembly().GetName().Version;
         }
     }
+    #endregion
 
+    #region VersionRange
     /// <summary>
     /// A version range is an interval describing a set of <seealso cref="Version versions"/>.
     /// <p/>
@@ -523,7 +552,7 @@ namespace Org.IdentityConnectors.Framework.Common
             empty = Empty0;
         }
 
-        public virtual Version Floor
+        public  Version Floor
         {
             get
             {
@@ -531,7 +560,7 @@ namespace Org.IdentityConnectors.Framework.Common
             }
         }
 
-        public virtual bool FloorInclusive
+        public  bool FloorInclusive
         {
             get
             {
@@ -539,7 +568,7 @@ namespace Org.IdentityConnectors.Framework.Common
             }
         }
 
-        public virtual Version Ceiling
+        public  Version Ceiling
         {
             get
             {
@@ -547,7 +576,7 @@ namespace Org.IdentityConnectors.Framework.Common
             }
         }
 
-        public virtual bool CeilingInclusive
+        public bool CeilingInclusive
         {
             get
             {
@@ -555,7 +584,7 @@ namespace Org.IdentityConnectors.Framework.Common
             }
         }
 
-        public virtual bool IsInRange(Version version)
+        public  bool IsInRange(Version version)
         {
             if (empty)
             {
@@ -578,7 +607,7 @@ namespace Org.IdentityConnectors.Framework.Common
         /// </summary>
         /// <returns> {@code true} if this version range contains only a single
         ///         version; {@code false} otherwise. </returns>
-        public virtual bool Exact
+        public  bool Exact
         {
             get
             {
@@ -628,7 +657,7 @@ namespace Org.IdentityConnectors.Framework.Common
         /// </summary>
         /// <returns> {@code true} if this version range is empty; {@code false}
         ///         otherwise. </returns>
-        public virtual bool Empty
+        public  bool Empty
         {
             get
             {
@@ -713,5 +742,5 @@ namespace Org.IdentityConnectors.Framework.Common
             }
         }
     }
-
+    #endregion
 }

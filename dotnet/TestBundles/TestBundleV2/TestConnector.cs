@@ -19,12 +19,10 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2012 ForgeRock AS
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using Org.IdentityConnectors.Common.Pooling;
 using Org.IdentityConnectors.Framework.Common.Objects;
 using Org.IdentityConnectors.Framework.Spi;
 using Org.IdentityConnectors.Framework.Spi.Operations;

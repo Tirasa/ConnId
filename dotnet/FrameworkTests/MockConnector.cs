@@ -311,7 +311,7 @@ namespace FrameworkTests
         {
             foreach (ConnectorObject obj in objects)
             {
-                if (!handler(obj))
+                if (!handler.Handle(obj))
                 {
                     break;
                 }

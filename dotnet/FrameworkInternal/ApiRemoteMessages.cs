@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ using Org.IdentityConnectors.Framework.Api;
 using Org.IdentityConnectors.Framework.Api.Operations;
 namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
 {
+    #region HelloRequest
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
@@ -69,7 +71,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
             return checkInfoLevel(CONNECTOR_INFO);
         }
     }
+    #endregion
 
+    #region HelloResponse
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
@@ -149,14 +153,18 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
             return null;
         }
     }
+    #endregion
 
+    #region Message
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
     public interface Message
     {
     }
+    #endregion
 
+    #region OperationRequest
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
@@ -170,7 +178,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         /// <summary>
         /// The configuration information to use.
         /// </summary>
-        private readonly String _configuration;
+        private readonly String _connectorFacadeKey;
 
         /// <summary>
         /// The operation to perform.
@@ -197,13 +205,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         private readonly IList<object> _arguments;
 
         public OperationRequest(ConnectorKey key,
-                String apiConfiguration,
+                String connectorFacadeKey,
                 SafeType<APIOperation> operation,
                 string operationMethodName,
                 IList<Object> arguments)
         {
             _connectorKey = key;
-            _configuration = apiConfiguration;
+            _connectorFacadeKey = connectorFacadeKey;
             _operation = operation;
             _operationMethodName = operationMethodName;
             _arguments = CollectionUtil.NewReadOnlyList<object>(arguments);
@@ -217,11 +225,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
             }
         }
 
-        public String Configuration
+        public String ConnectorFacadeKey
         {
             get
             {
-                return _configuration;
+                return _connectorFacadeKey;
             }
         }
 
@@ -249,7 +257,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
             }
         }
     }
+    #endregion
 
+    #region OperationRequestMoreData
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
@@ -259,7 +269,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         {
         }
     }
+    #endregion
 
+    #region OperationRequestStopData
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
@@ -269,7 +281,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         {
         }
     }
+    #endregion
 
+    #region OperationResponseEnd
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
@@ -279,22 +293,24 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         {
         }
     }
+    #endregion
 
+    #region OperationResponsePart
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
     public class OperationResponsePart : Message
     {
-        private Exception _exception;
+        private RemoteWrappedException _exception;
         private Object _result;
 
         public OperationResponsePart(Exception ex, Object result)
         {
-            _exception = ex;
+            _exception = RemoteWrappedException.Wrap(ex);
             _result = result;
         }
 
-        public Exception Exception
+        public RemoteWrappedException Exception
         {
             get
             {
@@ -310,7 +326,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
             }
         }
     }
+    #endregion
 
+    #region OperationResponsePause
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
@@ -320,7 +338,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
         {
         }
     }
+    #endregion
 
+    #region EchoMessage
     public class EchoMessage : Message
     {
         private object _object;
@@ -345,4 +365,5 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages
             }
         }
     }
+    #endregion
 }
