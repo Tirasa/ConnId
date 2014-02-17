@@ -19,10 +19,9 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
-using System.Reflection;
-using System.Globalization;
 using System.Collections.Generic;
 
 using Org.IdentityConnectors.Common.Security;
@@ -35,7 +34,7 @@ namespace Org.IdentityConnectors.Framework.Api.Operations
     /// Base interface for all API operations.
     /// </summary>
     public interface APIOperation
-    {
+    {        
     }
 
     public interface AuthenticationApiOp : APIOperation
@@ -132,14 +131,26 @@ namespace Org.IdentityConnectors.Framework.Api.Operations
     public interface SearchApiOp : APIOperation
     {
         /// <summary>
-        /// Search the resource for all objects that match the filter.
+        /// Search the resource for all objects that match the object class and
+        /// filter.
         /// </summary>
-        /// <param name="filter">Reduces the number of entries to only those that match the
-        /// <see cref="Filter" /> provided.</param>
-        /// <param name="handler">class responsible for working with the objects returned from
-        /// the search.</param>
-        /// <exception cref="Exception">iff there is problem during the processing of the results.</exception>
-        void Search(ObjectClass oclass, Filter filter, ResultsHandler handler, OperationOptions options);
+        /// <param name="objectClass">
+        ///            reduces the number of entries to only those that match the
+        ///            <seealso cref="ObjectClass"/> provided. </param>
+        /// <param name="filter">
+        ///            Reduces the number of entries to only those that match the
+        ///            <seealso cref="Filter"/> provided, if any. May be null. </param>
+        /// <param name="handler">
+        ///            class responsible for working with the objects returned from
+        ///            the search. </param>
+        /// <param name="options">
+        ///            additional options that impact the way this operation is run.
+        ///            May be null. </param>
+        /// <returns> The query result or {@code null}. </returns>
+        /// <exception cref="Exception">
+        ///             if there is problem during the processing of the results. </exception>
+        SearchResult Search(ObjectClass objectClass, Filter filter, ResultsHandler handler, OperationOptions options);
+
     }
 
     /// <summary>
@@ -241,7 +252,7 @@ namespace Org.IdentityConnectors.Framework.Api.Operations
                 OperationOptions options);
     }
     /// <summary>
-    /// Receive synchronization events from the resource.
+    /// Poll for synchronization events--i.e., native changes to target objects.
     /// </summary>
     /// <remarks>
     /// This will be supported by
@@ -251,26 +262,74 @@ namespace Org.IdentityConnectors.Framework.Api.Operations
     public interface SyncApiOp : APIOperation
     {
         /// <summary>
-        /// Perform a synchronization.
+        /// Request synchronization events--i.e., native changes to target objects.
+        /// <para>
+        /// This method will call the specified
+        /// <seealso cref="SyncResultsHandler#handle handler"/> once to pass back each
+        /// matching <seealso cref="SyncDelta synchronization event"/>. Once this method
+        /// returns, this method will no longer invoke the specified handler.
+        /// </para>
+        /// <para>
+        /// Each {@link SyncDelta#getToken() synchronization event contains a
+        /// token} that can be used to resume reading events <i>starting from that
+        /// point in the event stream</i>. In typical usage, a client will save the
+        /// token from the final synchronization event that was received from one
+        /// invocation of this {@code sync()} method and then pass that token into
+        /// that client's next call to this {@code sync()} method. This allows a
+        /// client to "pick up where he left off" in receiving synchronization
+        /// events. However, a client can pass the token from <i>any</i>
+        /// synchronization event into a subsequent invocation of this {@code sync()}
+        /// method. This will return synchronization events (that represent native
+        /// changes that occurred) immediately subsequent to the event from which the
+        /// client obtained the token.
+        /// </para>
+        /// <para>
+        /// A client that wants to read synchronization events "starting now" can
+        /// call <seealso cref="#getLatestSyncToken"/> and then pass that token into this
+        /// {@code sync()} method.
+        /// 
+        /// </para>
         /// </summary>
-        /// <param name="objClass">The object class to synchronize. Must not be null.</param>
-        /// <param name="token">The token representing the last token from the previous sync.
-        /// Should be null if this is the first sync for the given
-        /// resource.</param>
-        /// <param name="handler">The result handler Must not be null.</param>
-        /// <param name="options">additional options that impact the way this operation is run.
-        /// May be null.</param>
-        void Sync(ObjectClass objClass, SyncToken token,
-                SyncResultsHandler handler,
-                OperationOptions options);
+        /// <param name="objectClass">
+        ///            The class of object for which to return synchronization
+        ///            events. Must not be null. </param>
+        /// <param name="token">
+        ///            The token representing the last token from the previous sync.
+        ///            The {@code SyncResultsHandler} will return any number of
+        ///            <seealso cref="SyncDelta"/> objects, each of which contains a
+        ///            token. Should be {@code null} if this is the client's first
+        ///            call to the {@code sync()} method for this connector. </param>
+        /// <param name="handler">
+        ///            The result handler. Must not be null. </param>
+        /// <param name="options">
+        ///            Options that affect the way this operation is run. May be
+        ///            null. </param>
+        /// <returns> The sync token or {@code null}. </returns>
+        /// <exception cref="IllegalArgumentException">
+        ///             if {@code objectClass} or {@code handler} is null or if any
+        ///             argument is invalid. </exception>
+        SyncToken Sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler, OperationOptions options);
+
+
         /// <summary>
-        /// Returns the token corresponding to the latest sync delta.
+        /// Returns the token corresponding to the most recent synchronization event
+        /// for any instance of the specified object class.
+        /// <para>
+        /// An application that wants to receive synchronization events
+        /// "starting now" --i.e., wants to receive only native changes that occur
+        /// after this method is called-- should call this method and then pass the
+        /// resulting token into <seealso cref="#Sync the sync() method"/>.
+        /// 
+        /// </para>
         /// </summary>
-        /// <remarks>
+        ///   <remarks>
         /// This is to support applications that may wish to sync starting
         /// "now".
         /// </remarks>
-        /// <returns>The latest token or null if there is no sync data.</returns>
+        /// <param name="objectClass">
+        ///            the class of object for which to find the most recent
+        ///            synchronization event (if any). </param>
+        /// <returns> A token if synchronization events exist; otherwise {@code null}. </returns>
         SyncToken GetLatestSyncToken(ObjectClass objectClass);
     }
 

@@ -19,9 +19,10 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2012 ForgeRock AS
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -31,21 +32,17 @@ using System.Globalization;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Common.Proxy;
 using Org.IdentityConnectors.Framework.Api;
 using Org.IdentityConnectors.Framework.Api.Operations;
 using Org.IdentityConnectors.Framework.Common.Exceptions;
-using Org.IdentityConnectors.Framework.Common.Objects;
-using Org.IdentityConnectors.Framework.Common.Objects.Filters;
 using Org.IdentityConnectors.Framework.Common.Serializer;
-using Org.IdentityConnectors.Framework.Impl.Api;
-using Org.IdentityConnectors.Framework.Impl.Api.Local.Operations;
 using Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages;
-using System.Diagnostics;
+
 namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
 {
+    #region RemoteFrameworkConnection
     public class RemoteFrameworkConnection : IDisposable
     {
         private TcpClient _socket;
@@ -152,7 +149,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
             return _decoder.ReadObject();
         }
     }
+    #endregion
 
+    #region RemoteConnectorInfoImpl
     /// <summary>
     /// internal class, public only for unit tests
     /// </summary>
@@ -169,7 +168,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
         public RemoteFrameworkConnectionInfo RemoteConnectionInfo { get; set; }
 
     }
+    #endregion
 
+    #region RemoteConnectorInfoManagerImpl
     public class RemoteConnectorInfoManagerImpl : ConnectorInfoManager
     {
         private IList<ConnectorInfo> _connectorInfo;
@@ -247,49 +248,75 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
             }
         }
     }
+    #endregion
 
-    internal class RemoteConnectorFacadeImpl : AbstractConnectorFacade
+    #region RemoteConnectorFacadeImpl
+    /// <summary>
+    /// Implements all the methods of the facade
+    /// </summary>
+    public class RemoteConnectorFacadeImpl : AbstractConnectorFacade
     {
+
+        internal readonly string remoteConnectorFacadeKey;
+
         /// <summary>
         /// Builds up the maps of supported operations and calls.
         /// </summary>
         public RemoteConnectorFacadeImpl(APIConfigurationImpl configuration)
-            : base(configuration)
+            : base(GenerateRemoteConnectorFacadeKey(configuration), configuration.ConnectorInfo)
         {
+            // Restore the original configuration settings
+            GetAPIConfiguration().ProducerBufferSize = configuration.ProducerBufferSize;
+            GetAPIConfiguration().TimeoutMap = configuration.TimeoutMap;
+            remoteConnectorFacadeKey = ConnectorFacadeKey;
         }
 
-        /// <summary>
-        /// Builds up the maps of supported operations and calls.
-        /// </summary>
-        public RemoteConnectorFacadeImpl(RemoteConnectorInfoImpl connectorInfo, String configuration)
+        public RemoteConnectorFacadeImpl(RemoteConnectorInfoImpl connectorInfo, string configuration)
             : base(configuration, connectorInfo)
         {
+            remoteConnectorFacadeKey = GenerateRemoteConnectorFacadeKey(GetAPIConfiguration());
+        }
+
+        private static string GenerateRemoteConnectorFacadeKey(APIConfigurationImpl configuration)
+        {
+            APIConfigurationImpl copy = new APIConfigurationImpl(configuration);
+            copy.ProducerBufferSize = 0;
+            copy.TimeoutMap = new Dictionary<SafeType<APIOperation>, int>();
+            return SerializerUtil.SerializeBase64Object(copy);
         }
 
         protected override APIOperation GetOperationImplementation(SafeType<APIOperation> api)
         {
+            // add remote proxy
             InvocationHandler handler = new RemoteOperationInvocationHandler(
-                    GetAPIConfiguration(),
-                    api);
+                (RemoteConnectorInfoImpl)GetAPIConfiguration().ConnectorInfo, remoteConnectorFacadeKey, api);
             APIOperation proxy = NewAPIOperationProxy(api, handler);
-            // add logging..
+            // now wrap the proxy in the appropriate timeout proxy
+            proxy = CreateTimeoutProxy(api, proxy);
+            // add logging proxy
             proxy = CreateLoggingProxy(api, proxy);
+
             return proxy;
         }
     }
+    #endregion
 
+    #region RemoteOperationInvocationHandler
     /// <summary>
     /// Invocation handler for all of our operations
     /// </summary>
     public class RemoteOperationInvocationHandler : InvocationHandler
     {
-        private readonly APIConfigurationImpl _configuration;
+        private readonly RemoteConnectorInfoImpl _connectorInfo;
+        private readonly String _connectorFacadeKey;
         private readonly SafeType<APIOperation> _operation;
 
-        public RemoteOperationInvocationHandler(APIConfigurationImpl configuration,
+        public RemoteOperationInvocationHandler(RemoteConnectorInfoImpl connectorInfo,
+            String connectorFacadeKey,
                SafeType<APIOperation> operation)
         {
-            _configuration = configuration;
+            _connectorInfo = connectorInfo;
+            _connectorFacadeKey = connectorFacadeKey;
             _operation = operation;
         }
 
@@ -311,13 +338,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
                 ExtractStreamHandler(ReflectionUtil.GetParameterTypes(method), simpleMarshallArgs);
 
             //build the request object
-            RemoteConnectorInfoImpl connectorInfo =
-                (RemoteConnectorInfoImpl)_configuration.ConnectorInfo;
             RemoteFrameworkConnectionInfo connectionInfo =
-                connectorInfo.RemoteConnectionInfo;
+                _connectorInfo.RemoteConnectionInfo;
             OperationRequest request = new OperationRequest(
-                    connectorInfo.ConnectorKey,
-                    SerializerUtil.SerializeBase64Object(_configuration),               // TODO put this into constructor
+                    _connectorInfo.ConnectorKey, _connectorFacadeKey,
                     _operation,
                     method.Name,
                     simpleMarshallArgs);
@@ -434,4 +458,229 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Remote
             return rv;
         }
     }
+    #endregion
+
+    #region RemoteWrappedException
+    /// <summary>
+    /// RemoteWrappedException wraps every exception which are received from Remote
+    /// Connector Server.
+    /// <p/>
+    /// <b>This Exception is not allowed to use in Connectors!!!</b>
+    /// <p/>
+    /// 
+    /// 
+    /// 
+    /// This type of exception is not allowed to be serialise because this exception
+    /// represents any after deserialization.
+    /// 
+    /// This code example show how to get the remote stack trace and how to use the
+    /// same catches to handle the exceptions regardless its origin.
+    /// 
+    /// <pre>
+    /// <code>
+    ///  String stackTrace = null;
+    ///  try {
+    ///      try {
+    ///          facade.GetObject(ObjectClass.ACCOUNT, uid, null);
+    ///      } catch (RemoteWrappedException e) {
+    ///          stackTrace = e.StackTrace;
+    ///      }
+    ///  } catch (Throwable t) {
+    ///      
+    ///  }
+    /// <code>
+    /// </pre>
+    /// </summary>
+    /// <remarks>Since 1.4</remarks>
+    public sealed class RemoteWrappedException : ConnectorException
+    {
+        public const string FIELD_CLASS = "class";
+        public const string FIELD_MESSAGE = "message";
+        public const string FIELD_CAUSE = "cause";
+        public const string FIELD_STACK_TRACE = "stackTrace";
+
+        private readonly string stackTrace;
+
+        /// <summary>
+        /// <pre>
+        ///     <code>
+        ///         {
+        ///              "class": "org.identityconnectors.framework.common.exceptions.ConnectorIOException",
+        ///              "message": "Sample Error Message",
+        ///              "cause": {
+        ///                  "class": "java.net.SocketTimeoutException",
+        ///                  "message": "Sample Error Message",
+        ///                  "cause": {
+        ///                      "class": "edu.example.CustomException",
+        ///                      "message": "Sample Error Message"
+        ///                  }
+        ///              },
+        ///              "stackTrace": "full stack trace for logging"
+        ///          }
+        ///     </code>
+        /// </pre>
+        /// </summary>
+        private IDictionary<string, object> exception = null;
+
+        /// <seealso cref= org.identityconnectors.framework.common.exceptions.ConnectorException#ConnectorException(String) </seealso>
+        internal RemoteWrappedException(IDictionary<string, object> exception)
+            : base((string)exception[FIELD_MESSAGE])
+        {
+            this.exception = exception;
+            this.stackTrace = (string)exception[FIELD_STACK_TRACE];
+        }
+
+        public RemoteWrappedException(string throwableClass, string message, RemoteWrappedException cause, string stackTrace)
+            : base(message)
+        {
+            exception = new Dictionary<string, object>(4);
+            exception[FIELD_CLASS] = Assertions.BlankChecked(throwableClass, "throwableClass");
+            exception[FIELD_MESSAGE] = message;
+            if (null != cause)
+            {
+                exception[FIELD_CAUSE] = cause.exception;
+            }
+            if (null != stackTrace)
+            {
+                exception[FIELD_STACK_TRACE] = stackTrace;
+            }
+            this.stackTrace = stackTrace;
+        }
+
+        /// <summary>
+        /// Gets the class name of the original exception.
+        /// 
+        /// This value is constructed by {@code Exception.Type.FullName}.
+        /// </summary>
+        /// <returns> name of the original exception. </returns>
+        public string ExceptionClass
+        {
+            get
+            {
+                return (string)exception[FIELD_CLASS];
+            }
+        }
+
+        /// <summary>
+        /// Checks if the exception is the expected class.
+        /// </summary>
+        /// <param name="expected">
+        ///            the expected throwable class. </param>
+        /// <returns> {@code true} if the class name are equals. </returns>
+        public bool Is(Type expected)
+        {
+            if (null == expected)
+            {
+                return false;
+            }
+            string className = ((string)exception[FIELD_CLASS]);
+            //The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+            string classExpected = expected.FullName;
+            return classExpected.Equals(className, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns the cause of original throwable or {@code null} if the cause is
+        /// nonexistent or unknown. (The cause is the throwable that caused the
+        /// original throwable to get thrown.)
+        /// </summary>
+        /// <returns> the cause of this throwable or {@code null} if the cause is
+        ///         nonexistent or unknown. </returns>
+        public RemoteWrappedException Cause
+        {
+            get
+            {
+                object o = exception[FIELD_CAUSE];
+                if (o is IDictionary)
+                {
+                    return new RemoteWrappedException((IDictionary<string, object>)o);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public override string StackTrace
+        {
+            get
+            {
+                if (null == stackTrace)
+                {
+                    return base.StackTrace;
+                }
+                else
+                {
+                    return stackTrace;
+                }
+            }
+        }
+
+        public string ReadStackTrace()
+        {
+            return stackTrace;
+        }
+
+        /// <summary>
+        /// Wraps the Throwable into a RemoteWrappedException instance.
+        /// </summary>
+        /// <param name="ex">
+        ///            Exception to wrap or cast and return. </param>
+        /// <returns> a <code>RemoteWrappedException</code> that either <i>is</i> the
+        ///         specified exception or <i>contains</i> the specified exception. </returns>
+        public static RemoteWrappedException Wrap(Exception ex)
+        {
+            if (null == ex)
+            {
+                return null;
+            }
+            // don't bother to wrap a exception that is already a
+            // RemoteWrappedException.
+            if (ex is RemoteWrappedException)
+            {
+                return (RemoteWrappedException)ex;
+            }
+            return new RemoteWrappedException(convert(ex));
+        }
+
+        /// <summary>
+        /// Converts the throwable object to a new Map object that representing
+        /// itself.
+        /// </summary>
+        /// <param name="throwable">
+        ///            the {@code Throwable} to be converted </param>
+        /// <returns> the Map representing the throwable. </returns>
+        public static Dictionary<string, object> convert(Exception throwable)
+        {
+            Dictionary<string, object> exception = null;
+            if (null != throwable)
+            {
+                exception = new Dictionary<string, object>(4);
+                //The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+                exception[FIELD_CLASS] = throwable.GetType().FullName;
+                exception[FIELD_MESSAGE] = throwable.Message;
+                if (null != throwable.InnerException)
+                {
+                    exception[FIELD_CAUSE] = buildCause(throwable.InnerException);
+                }
+                exception[FIELD_STACK_TRACE] = throwable.StackTrace;
+            }
+            return exception;
+        }
+
+        private static IDictionary<string, object> buildCause(Exception throwable)
+        {
+            IDictionary<string, object> cause = new Dictionary<string, object>(null != throwable.InnerException ? 3 : 2);
+            //The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+            cause[FIELD_CLASS] = throwable.GetType().FullName;
+            cause[FIELD_MESSAGE] = throwable.Message;
+            if (null != throwable.InnerException)
+            {
+                cause[FIELD_CAUSE] = buildCause(throwable.InnerException);
+            }
+            return cause;
+        }
+    }
+    #endregion
 }

@@ -47,15 +47,30 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
 
     @Override
     public SyncToken sync(final ObjectClass objectClass, final SyncToken token,
-            final SyncResultsHandler handler, OperationOptions options) {
+            SyncResultsHandler handler, OperationOptions options) {
         Assertions.nullCheck(objectClass, "objectClass");
         Assertions.nullCheck(handler, "handler");
         // convert null into empty
         if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
+
+
+        // add a handler in the chain to remove attributes
+        String[] attrsToGet = options.getAttributesToGet();
+        if (attrsToGet != null && attrsToGet.length > 0) {
+            handler = new AttributesToGetSyncResultsHandler(handler, attrsToGet);
+        }
+        // chain a normalizing results handler
+        if (getConnector() instanceof AttributeNormalizer) {
+            handler =
+                    new NormalizingSyncResultsHandler(handler, getNormalizer(objectClass));
+        }
+
+        final SyncResultsHandler handlerChain = handler;
         final AtomicReference<SyncToken> result = new AtomicReference<SyncToken>(null);
-        SyncTokenResultsHandler handlerChain = new SyncTokenResultsHandler() {
+        //SyncTokenResultsHandler handlerChain =
+        ((SyncOp) getConnector()).sync(objectClass, token, new SyncTokenResultsHandler() {
             @Override
             public void handleResult(SyncToken token) {
                 result.compareAndSet(null, token);
@@ -63,22 +78,9 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
 
             @Override
             public boolean handle(final SyncDelta delta) {
-                return handler.handle(delta);
+                return handlerChain.handle(delta);
             }
-        };
-
-        // add a handler in the chain to remove attributes
-        String[] attrsToGet = options.getAttributesToGet();
-        if (attrsToGet != null && attrsToGet.length > 0) {
-            handlerChain = new AttributesToGetSyncResultsHandler(handlerChain, attrsToGet);
-        }
-        // chain a normalizing results handler
-        if (getConnector() instanceof AttributeNormalizer) {
-            handlerChain =
-                    new NormalizingSyncResultsHandler(handlerChain, getNormalizer(objectClass));
-        }
-
-        ((SyncOp) getConnector()).sync(objectClass, token, handlerChain, options);
+        }, options);
         return result.get();
     }
 
@@ -92,11 +94,11 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
      * get.
      */
     public static class AttributesToGetSyncResultsHandler extends AttributesToGetResultsHandler
-            implements SyncTokenResultsHandler {
+            implements SyncResultsHandler {
 
-        private final SyncTokenResultsHandler handler;
+        private final SyncResultsHandler handler;
 
-        public AttributesToGetSyncResultsHandler(final SyncTokenResultsHandler handler,
+        public AttributesToGetSyncResultsHandler(final SyncResultsHandler handler,
                 String[] attrsToGet) {
             super(attrsToGet);
             this.handler = handler;
@@ -109,11 +111,6 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
                 bld.setObject(reduceToAttrsToGet(delta.getObject()));
             }
             return handler.handle(bld.build());
-        }
-
-        @Override
-        public void handleResult(final SyncToken result) {
-            handler.handleResult(result);
         }
     }
 }

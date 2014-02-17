@@ -25,15 +25,16 @@ package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.objects.SyncDelta;
+import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 
-public class NormalizingSyncResultsHandler implements SyncTokenResultsHandler {
+public class NormalizingSyncResultsHandler implements SyncResultsHandler {
 
-    private final SyncTokenResultsHandler target;
+    private final SyncResultsHandler target;
     private final ObjectNormalizerFacade normalizer;
 
-    public NormalizingSyncResultsHandler(SyncTokenResultsHandler target,
+    public NormalizingSyncResultsHandler(SyncResultsHandler target,
             ObjectNormalizerFacade normalizer) {
         Assertions.nullCheck(target, "target");
         Assertions.nullCheck(normalizer, "normalizer");
@@ -45,10 +46,5 @@ public class NormalizingSyncResultsHandler implements SyncTokenResultsHandler {
     public boolean handle(SyncDelta delta) {
         SyncDelta normalized = normalizer.normalizeSyncDelta(delta);
         return target.handle(normalized);
-    }
-
-    @Override
-    public void handleResult(final SyncToken result) {
-        target.handleResult(result);
     }
 }

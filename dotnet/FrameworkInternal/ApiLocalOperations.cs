@@ -24,7 +24,6 @@
 using System;
 
 using Org.IdentityConnectors.Common;
-using Org.IdentityConnectors.Common.Pooling;
 using Org.IdentityConnectors.Common.Proxy;
 using Org.IdentityConnectors.Common.Script;
 using Org.IdentityConnectors.Common.Security;
@@ -171,9 +170,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
             object ret = null;
             Connector connector = null;
-            ObjectPool<PoolableConnector> pool = _context.GetPool();
+            ObjectPool<PoolableConnector> pool = _context.Pool;
             // get the connector class..
-            SafeType<Connector> connectorClazz = _context.GetConnectorClass();
+            SafeType<Connector> connectorClazz = _context.ConnectorClass;
             try
             {
                 // pooling is implemented get one..
@@ -186,7 +185,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                     // get a new instance of the connector..
                     connector = connectorClazz.CreateInstance();
                     // initialize the connector..
-                    connector.Init(_context.GetConfiguration());
+                    connector.Init(_context.Configuration);
                 }
                 APIOperationRunner runner =
                     (APIOperationRunner)_runnerImplConstructor.Invoke(new object[]{
@@ -221,7 +220,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                         }
                         catch (Exception e)
                         {
-                            //don't let pool exceptions propogate or mask
+                            //don't let pool exceptions propagate or mask
                             //other exceptions. do log it though.
                             TraceUtil.TraceException(null, e);
                         }
@@ -254,29 +253,60 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
     /// <summary>
     /// NOTE: internal class, public only for unit tests
     /// Simple structure to pass more variables through the constructor of
-    /// <see cref="APIOperationRunner" />.
+    /// <seealso cref="APIOperationRunner"/>.
     /// </summary>
     public class ConnectorOperationalContext : OperationalContext
     {
-        private readonly ObjectPool<PoolableConnector> _pool;
+        /// <summary>
+        /// Pool Key for Connectors
+        /// </summary>
+        private ConnectorPoolManager.ConnectorPoolKey connectorPoolKey;
 
-        public ConnectorOperationalContext(LocalConnectorInfoImpl connectorInfo,
-                APIConfigurationImpl apiConfiguration,
-                ObjectPool<PoolableConnector> pool)
+        public ConnectorOperationalContext(LocalConnectorInfoImpl connectorInfo, APIConfigurationImpl apiConfiguration)
             : base(connectorInfo, apiConfiguration)
         {
-            _pool = pool;
         }
 
-        public ObjectPool<PoolableConnector> GetPool()
+        public ObjectPool<PoolableConnector> Pool
         {
-            return _pool;
+            get
+            {
+                if (apiConfiguration.IsConnectorPoolingSupported)
+                {
+                    if (null == connectorPoolKey)
+                    {
+                        Pair<ConnectorPoolManager.ConnectorPoolKey, ObjectPool<PoolableConnector>> pool = ConnectorPoolManager.GetPool(apiConfiguration, connectorInfo);
+
+                        connectorPoolKey = pool.First;
+                        return pool.Second;
+                    }
+                    else
+                    {
+                        ObjectPool<PoolableConnector> pool = ConnectorPoolManager.GetPool(connectorPoolKey);
+                        if (null == pool)
+                        {
+                            //
+                            Pair<ConnectorPoolManager.ConnectorPoolKey, ObjectPool<PoolableConnector>> poolPair = ConnectorPoolManager.GetPool(apiConfiguration, connectorInfo);
+
+                            connectorPoolKey = poolPair.First;
+                            pool = poolPair.Second;
+                        }
+                        return pool;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
-
-        public SafeType<Connector> GetConnectorClass()
+        public SafeType<Connector> ConnectorClass
         {
-            return GetConnectorInfo().ConnectorClass;
+            get
+            {
+                return ConnectorInfo.ConnectorClass;
+            }
         }
 
     }
@@ -369,34 +399,40 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// Calls the create method on the Connector side.
         /// </summary>
         /// <seealso cref="Org.IdentityConnectors.Framework.Api.Operations.CreateApiOp.Create" />
-        public Uid Create(ObjectClass objectClass, ICollection<ConnectorAttribute> attributes, OperationOptions options)
+        public Uid Create(ObjectClass objectClass, ICollection<ConnectorAttribute> createAttributes, OperationOptions options)
         {
             Assertions.NullCheck(objectClass, "objectClass");
             if (ObjectClass.ALL.Equals(objectClass))
             {
                 throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
             }
-            Assertions.NullCheck(attributes, "attributes");
+            Assertions.NullCheck(createAttributes, "createAttributes");
+            // check to make sure there's not a uid..
+            if (ConnectorAttributeUtil.GetUidAttribute(createAttributes) != null)
+            {
+                throw new InvalidAttributeValueException("Parameter 'createAttributes' contains a uid.");
+            }
             //convert null into empty
             if (options == null)
             {
                 options = new OperationOptionsBuilder().Build();
             }
+            // validate input..
             HashSet<string> dups = new HashSet<string>();
-            foreach (ConnectorAttribute attr in attributes)
+            foreach (ConnectorAttribute attr in createAttributes)
             {
                 if (dups.Contains(attr.Name))
                 {
-                    throw new ArgumentException("Duplicate attribute name exists: " + attr.Name);
+                    throw new InvalidAttributeValueException("Duplicate attribute name exists: " + attr.Name);
                 }
                 dups.Add(attr.Name);
             }
             Connector connector = GetConnector();
             ObjectNormalizerFacade normalizer = GetNormalizer(objectClass);
             ICollection<ConnectorAttribute> normalizedAttributes =
-                normalizer.NormalizeAttributes(attributes);
+                normalizer.NormalizeAttributes(createAttributes);
             // create the object..
-            Uid ret = ((CreateOp)connector).Create(objectClass, attributes, options);
+            Uid ret = ((CreateOp)connector).Create(objectClass, normalizedAttributes, options);
             return (Uid)normalizer.NormalizeAttribute(ret);
         }
     }
@@ -520,11 +556,20 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             this._handler = handler;
         }
 
-        public bool Handle(ConnectorObject obj)
+        public ResultsHandler ResultsHandler
         {
-            // clone the object and reduce the attributes only the set of
-            // attributes.
-            return _handler(ReduceToAttrsToGet(obj));
+            get
+            {
+                return new ResultsHandler()
+                {
+                    Handle = obj =>
+                    {
+                        // clone the object and reduce the attributes only the set of
+                        // attributes.
+                        return _handler.Handle(ReduceToAttrsToGet(obj));
+                    }
+                };
+            }
         }
     }
     #endregion
@@ -549,17 +594,26 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             this._handler = handler;
         }
 
-        public bool Handle(SyncDelta delta)
+        public SyncResultsHandler SyncResultsHandler
         {
-            SyncDeltaBuilder bld = new SyncDeltaBuilder();
-            bld.Uid = delta.Uid;
-            bld.Token = delta.Token;
-            bld.DeltaType = delta.DeltaType;
-            if (delta.Object != null)
+            get
             {
-                bld.Object = ReduceToAttrsToGet(delta.Object);
+                return new SyncResultsHandler()
+                {
+                    Handle = delta =>
+                    {
+                        SyncDeltaBuilder bld = new SyncDeltaBuilder();
+                        bld.Uid = delta.Uid;
+                        bld.Token = delta.Token;
+                        bld.DeltaType = delta.DeltaType;
+                        if (delta.Object != null)
+                        {
+                            bld.Object = ReduceToAttrsToGet(delta.Object);
+                        }
+                        return _handler.Handle(bld.Build());
+                    }
+                };
             }
-            return _handler(bld.Build());
         }
     }
     #endregion
@@ -570,7 +624,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         // =======================================================================
         // Fields
         // =======================================================================
-        private readonly ResultsHandler _handler;
+        private readonly SearchResultsHandler _handler;
         private readonly HashSet<String> _visitedUIDs = new HashSet<String>();
 
         private bool _stillHandling;
@@ -582,7 +636,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// Filter chain for producers.
         /// </summary>
         /// <param name="producer">Producer to filter.</param>
-        public DuplicateFilteringResultsHandler(ResultsHandler handler)
+        public DuplicateFilteringResultsHandler(SearchResultsHandler handler)
         {
             // there must be a producer..
             if (handler == null)
@@ -592,18 +646,33 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             this._handler = handler;
         }
 
-        public bool Handle(ConnectorObject obj)
+        public SearchResultsHandler ResultsHandler
         {
-            String uid =
-                obj.Uid.GetUidValue();
-            if (!_visitedUIDs.Add(uid))
+            get
             {
-                //we've already seen this - don't pass it
-                //throw
-                return true;
+                return new SearchResultsHandler()
+                {
+                    Handle = obj =>
+                    {
+                        String uid =
+                    obj.Uid.GetUidValue();
+                        if (!_visitedUIDs.Add(uid))
+                        {
+                            //we've already seen this - don't pass it
+                            //throw
+                            return true;
+                        }
+                        _stillHandling = _handler.Handle(obj);
+                        return _stillHandling;
+                    },
+                    HandleResult = result =>
+                    {
+                        _handler.HandleResult(result);
+                    }
+
+                };
             }
-            _stillHandling = _handler(obj);
-            return _stillHandling;
+
         }
 
         public bool IsStillHandling
@@ -642,25 +711,34 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
             this.handler = handler;
             // use a default pass through filter..
-            this.filter = filter == null ? new PassThruFilter() : filter;
+            this.filter = filter == null ? new PassThroughFilter() : filter;
         }
 
-        public bool Handle(ConnectorObject obj)
+        public ResultsHandler ResultsHandler
         {
-            if (filter.Accept(obj))
+            get
             {
-                return handler(obj);
-            }
-            else
-            {
-                return true;
+                return new ResultsHandler
+                {
+                    Handle = obj =>
+                    {
+                        if (filter.Accept(obj))
+                        {
+                            return handler.Handle(obj);
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                };
             }
         }
 
         /// <summary>
-        /// Use a pass thru filter to use if a null filter is provided.
+        /// Use a pass through filter to use if a null filter is provided.
         /// </summary>
-        class PassThruFilter : Filter
+        class PassThroughFilter : Filter
         {
             public bool Accept(ConnectorObject obj)
             {
@@ -682,10 +760,19 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         private class ResultAdapter
         {
             private IList<ConnectorObject> _list = new List<ConnectorObject>();
-            public bool Handle(ConnectorObject obj)
+            public ResultsHandler ResultsHandler
             {
-                _list.Add(obj);
-                return false;
+                get
+                {
+                    return new ResultsHandler()
+                    {
+                        Handle = obj =>
+                        {
+                            _list.Add(obj);
+                            return false;
+                        }
+                    };
+                }
             }
             public ConnectorObject GetResult()
             {
@@ -713,7 +800,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
             Filter filter = FilterBuilder.EqualTo(uid);
             ResultAdapter adapter = new ResultAdapter();
-            op.Search(objectClass, filter, new ResultsHandler(adapter.Handle), options);
+            op.Search(objectClass, filter, adapter.ResultsHandler, options);
             return adapter.GetResult();
         }
     }
@@ -722,44 +809,96 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
     #region OperationalContext
     /// <summary>
     /// NOTE: internal class, public only for unit tests
-    /// OperationalContext - base class for operations that do not
-    /// require a connection.
+    /// OperationalContext - base class for operations that do not require a
+    /// connector instance.
     /// </summary>
     public class OperationalContext
     {
+
         /// <summary>
         /// ConnectorInfo
         /// </summary>
-        private readonly LocalConnectorInfoImpl connectorInfo;
+        protected internal readonly LocalConnectorInfoImpl connectorInfo;
 
         /// <summary>
         /// Contains the <see cref="Org.IdentityConnectors.Framework.Spi.Connector" /> <see cref="Org.IdentityConnectors.Framework.Spi.Configuration" />.
         /// </summary>
-        private readonly APIConfigurationImpl apiConfiguration;
+        protected internal readonly APIConfigurationImpl apiConfiguration;
 
+        private volatile Configuration configuration;
 
-        public OperationalContext(LocalConnectorInfoImpl connectorInfo,
-                APIConfigurationImpl apiConfiguration)
+        /// <summary>
+        /// Creates a new OperationalContext but it does not initiates the
+        /// Configuration because the <seealso cref="#getConnectorInfo()"/> method must do it
+        /// when it's called from a block where the classloader of the Thread is set
+        /// to Connector.
+        /// </summary>
+        /// <param name="connectorInfo"> </param>
+        /// <param name="apiConfiguration"> </param>
+        public OperationalContext(LocalConnectorInfoImpl connectorInfo, APIConfigurationImpl apiConfiguration)
         {
             this.connectorInfo = connectorInfo;
             this.apiConfiguration = apiConfiguration;
+
         }
 
-        public Configuration GetConfiguration()
+        /*
+         * This method must be called when the Bundle ClassLoader is the Thread
+         * Context ClassLoader.
+         */
+        public Configuration Configuration
         {
-            return CSharpClassProperties.CreateBean((ConfigurationPropertiesImpl)this.apiConfiguration.ConfigurationProperties,
+            get
+            {
+                if (null == configuration)
+                {
+                    lock (this)
+                    {
+                        if (null == configuration)
+                        {
+                            this.configuration = CSharpClassProperties.CreateBean((ConfigurationPropertiesImpl)this.apiConfiguration.ConfigurationProperties,
                     connectorInfo.ConnectorConfigurationClass);
+                        }
+                    }
+                }
+                return configuration;
+            }
         }
 
-        protected LocalConnectorInfoImpl GetConnectorInfo()
+        protected internal LocalConnectorInfoImpl ConnectorInfo
         {
-            return connectorInfo;
+            get
+            {
+                return connectorInfo;
+            }
         }
 
-
-        public ResultsHandlerConfiguration getResultsHandlerConfiguration()
+        public ResultsHandlerConfiguration ResultsHandlerConfiguration
         {
-            return apiConfiguration.ResultsHandlerConfiguration;
+            get
+            {
+                return new ResultsHandlerConfiguration(apiConfiguration.ResultsHandlerConfiguration);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (configuration is StatefulConfiguration)
+            {
+                // dispose it not supposed to throw, but just in case,
+                // catch the exception and log it so we know about it
+                // but don't let the exception prevent additional
+                // cleanup that needs to happen
+                try
+                {
+                    ((StatefulConfiguration)configuration).Release();
+                }
+                catch (Exception e)
+                {
+                    // log this though
+                    Trace.TraceWarning(e.Message);
+                }
+            }
         }
     }
     #endregion
@@ -779,13 +918,21 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             _normalizer = normalizer;
         }
 
-
-        public bool Handle(ConnectorObject obj)
+        public ResultsHandler ResultsHandler
         {
-            ConnectorObject normalized = _normalizer.NormalizeObject(obj);
-            return _target(normalized);
-        }
+            get
+            {
+                return new ResultsHandler()
+                {
 
+                    Handle = obj =>
+                    {
+                        ConnectorObject normalized = _normalizer.NormalizeObject(obj);
+                        return _target.Handle(normalized);
+                    }
+                };
+            }
+        }
     }
     #endregion
 
@@ -804,11 +951,20 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             _normalizer = normalizer;
         }
 
-
-        public bool Handle(SyncDelta delta)
+        public SyncResultsHandler SyncResultsHandler
         {
-            SyncDelta normalized = _normalizer.NormalizeSyncDelta(delta);
-            return _target(normalized);
+            get
+            {
+                return new SyncResultsHandler()
+                {
+
+                    Handle = delta =>
+                    {
+                        SyncDelta normalized = _normalizer.NormalizeSyncDelta(delta);
+                        return _target.Handle(normalized);
+                    }
+                };
+            }
         }
     }
     #endregion
@@ -823,7 +979,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
 
         public ConnectorAttribute NormalizeAttribute(ObjectClass oclass, ConnectorAttribute attribute)
         {
-//            Trace.TraceInformation("Starting CaseNormalizer.NormalizeAttribute({0}, {1})", oclass, attribute.GetDetails());
+            //            Trace.TraceInformation("Starting CaseNormalizer.NormalizeAttribute({0}, {1})", oclass, attribute.GetDetails());
             ConnectorAttribute rv = attribute;
             bool converted = false;
 
@@ -839,9 +995,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                         newValues.Add(((string)value).ToUpper());
                         converted = true;
                     }
-                    else 
-                    { 
-                        newValues.Add(value); 
+                    else
+                    {
+                        newValues.Add(value);
                     }
                 }
 
@@ -851,7 +1007,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 }
             }
 
-//            Trace.TraceInformation("Finishing CaseNormalizer.NormalizeAttribute, converted = {0}, return value = {1}", converted, rv.GetDetails());
+            //            Trace.TraceInformation("Finishing CaseNormalizer.NormalizeAttribute, converted = {0}, return value = {1}", converted, rv.GetDetails());
             return rv;
         }
     }
@@ -869,7 +1025,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
     {
         private readonly ObjectNormalizerFacade _normalizationFacade;
 
-        public NormalizingFilter(Filter filter, ObjectNormalizerFacade facade) : base(facade.NormalizeFilter(filter))
+        public NormalizingFilter(Filter filter, ObjectNormalizerFacade facade)
+            : base(facade.NormalizeFilter(filter))
         {
             _normalizationFacade = facade;
         }
@@ -881,7 +1038,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         public override bool Accept(ConnectorObject obj)
         {
             bool result = Filter.Accept(_normalizationFacade.NormalizeObject(obj));
-//            Trace.TraceInformation("NormalizingFilter.Accept returns {0} for {1}", result, obj.GetAttributeByName("__NAME__"));
+            //            Trace.TraceInformation("NormalizingFilter.Accept returns {0} for {1}", result, obj.GetAttributeByName("__NAME__"));
             return result;
         }
 
@@ -1150,6 +1307,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         private Assembly[] BuildReferenceList(Assembly assembly)
         {
             List<Assembly> list = new List<Assembly>();
+            foreach (var assemblyName in assembly.GetReferencedAssemblies())
+            {
+                list.Add(Assembly.Load(assemblyName));
+            }
             // Just add the connector itself.
             list.Add(assembly);
             return list.ToArray();
@@ -1201,7 +1362,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// <see cref="ResultsHandler" />.
         /// </summary>
         /// <seealso cref="Org.IdentityConnectors.Framework.Api.Operations.SearchApiOp.Search(ObjectClass, Filter, ResultsHandler, OperationOptions)" />
-        public void Search(ObjectClass objectClass, Filter originalFilter, ResultsHandler handler, OperationOptions options)
+        public SearchResult Search(ObjectClass objectClass, Filter originalFilter, ResultsHandler handler, OperationOptions options)
         {
             Assertions.NullCheck(objectClass, "objectClass");
             if (ObjectClass.ALL.Equals(objectClass))
@@ -1216,11 +1377,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
 
             ResultsHandlerConfiguration hdlCfg = null != GetOperationalContext() ?
-                                GetOperationalContext().getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
+                                GetOperationalContext().ResultsHandlerConfiguration : new ResultsHandlerConfiguration();
             ResultsHandler handlerChain = handler;
             Filter actualFilter = originalFilter;       // actualFilter is used for chaining filters - it points to the filter where new filters should be chained
 
-            if (hdlCfg.EnableFilteredResultsHandler && hdlCfg.EnableCaseInsensitiveFilter && originalFilter != null)
+            if (hdlCfg.EnableFilteredResultsHandler && hdlCfg.EnableCaseInsensitiveFilter && actualFilter != null)
             {
                 Trace.TraceInformation("Creating case insensitive filter");
                 ObjectNormalizerFacade normalizer = CaseNormalizer.CreateCaseNormalizerFacade(objectClass);
@@ -1232,13 +1393,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 ObjectNormalizerFacade normalizer = GetNormalizer(objectClass);
                 //chain a normalizing handler (must come before
                 //filter handler)
-                ResultsHandler normalizingHandler = new NormalizingResultsHandler(handler, normalizer).Handle;
+                ResultsHandler normalizingHandler = new NormalizingResultsHandler(handler, normalizer).ResultsHandler;
                 // chain a filter handler..
                 if (hdlCfg.EnableFilteredResultsHandler)
                 {
                     // chain a filter handler..
                     Filter normalizedFilter = normalizer.NormalizeFilter(actualFilter);
-                    handlerChain = new FilteredResultsHandler(normalizingHandler, normalizedFilter).Handle;
+                    handlerChain = new FilteredResultsHandler(normalizingHandler, normalizedFilter).ResultsHandler;
                     actualFilter = normalizedFilter;
                 }
                 else
@@ -1249,7 +1410,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             else if (hdlCfg.EnableFilteredResultsHandler)
             {
                 // chain a filter handler..
-                handlerChain = new FilteredResultsHandler(handlerChain, actualFilter).Handle;
+                handlerChain = new FilteredResultsHandler(handlerChain, actualFilter).ResultsHandler;
             }
 
             //get the IList interface that this type implements
@@ -1271,9 +1432,23 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             if (attrsToGet != null && attrsToGet.Length > 0 && hdlCfg.EnableAttributesToGetSearchResultsHandler)
             {
                 handlerChain = new SearchAttributesToGetResultsHandler(
-                    handlerChain, attrsToGet).Handle;
+                    handlerChain, attrsToGet).ResultsHandler;
             }
-            searcher.RawSearch(GetConnector(), objectClass, actualFilter, handlerChain, options);
+            SearchResult result = null;
+            SearchResultsHandler innreHandler = new SearchResultsHandler()
+            {
+                Handle = obj =>
+                {
+                    return handlerChain.Handle(obj);
+                },
+
+                HandleResult = obj =>
+                {
+                    result = obj;
+                }
+            };
+            searcher.RawSearch(GetConnector(), objectClass, actualFilter, innreHandler, options);
+            return result;
         }
     }
     #endregion
@@ -1297,7 +1472,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         void RawSearch(Object search,
                 ObjectClass oclass,
                 Filter filter,
-                ResultsHandler handler,
+                SearchResultsHandler handler,
                 OperationOptions options);
     }
     #endregion
@@ -1308,7 +1483,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         public void RawSearch(Object search,
                 ObjectClass oclass,
                 Filter filter,
-                ResultsHandler handler,
+                SearchResultsHandler handler,
                 OperationOptions options)
         {
             RawSearch((SearchOp<T>)search, oclass, filter, handler, options);
@@ -1330,14 +1505,14 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         public static void RawSearch(SearchOp<T> search,
                 ObjectClass oclass,
                 Filter filter,
-                ResultsHandler handler,
+                SearchResultsHandler handler,
                 OperationOptions options)
         {
-
             FilterTranslator<T> translator =
                 search.CreateFilterTranslator(oclass, options);
             IList<T> queries =
                 (IList<T>)translator.Translate(filter);
+
             if (queries.Count == 0)
             {
                 search.ExecuteQuery(oclass,
@@ -1346,13 +1521,12 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             else
             {
                 //eliminate dups if more than one
-                bool eliminateDups =
-                    queries.Count > 1;
+                bool eliminateDups = queries.Count > 1;
                 DuplicateFilteringResultsHandler dups = null;
                 if (eliminateDups)
                 {
                     dups = new DuplicateFilteringResultsHandler(handler);
-                    handler = dups.Handle;
+                    handler = dups.ResultsHandler;
                 }
                 foreach (T query in queries)
                 {
@@ -1384,31 +1558,44 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         {
         }
 
-        public void Sync(ObjectClass objClass, SyncToken token,
-                SyncResultsHandler handler,
-                OperationOptions options)
+        public SyncToken Sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler, OperationOptions options)
         {
             //token is allowed to be null, objClass and handler must not be null
-            Assertions.NullCheck(objClass, "objClass");
+            Assertions.NullCheck(objectClass, "objectClass");
             Assertions.NullCheck(handler, "handler");
-            //convert null into empty
+            // convert null into empty
             if (options == null)
             {
-                options = new OperationOptionsBuilder().Build();
+                options = (new OperationOptionsBuilder()).Build();
             }
+
             // add a handler in the chain to remove attributes
             string[] attrsToGet = options.AttributesToGet;
             if (attrsToGet != null && attrsToGet.Length > 0)
             {
-                handler = new SyncAttributesToGetResultsHandler(
-                    handler, attrsToGet).Handle;
+                handler = new SyncAttributesToGetResultsHandler(handler, attrsToGet).SyncResultsHandler;
             }
-            //chain a normalizing results handler
-            ObjectNormalizerFacade normalizer =
-                GetNormalizer(objClass);
-            handler = new NormalizingSyncResultsHandler(handler, normalizer).Handle;
-            ((SyncOp)GetConnector()).Sync(objClass, token, handler, options);
+            // chain a normalizing results handler
+            if (GetConnector() is AttributeNormalizer)
+            {
+                handler = new NormalizingSyncResultsHandler(handler, GetNormalizer(objectClass)).SyncResultsHandler;
+            }
+
+            SyncToken result = null;
+            ((SyncOp)GetConnector()).Sync(objectClass, token, new SyncTokenResultsHandler()
+            {
+                Handle = delta =>
+                {
+                    return handler.Handle(delta);
+                },
+                HandleResult = obj =>
+                {
+                    result = obj;
+                }
+            }, options);
+            return result;
         }
+
         public SyncToken GetLatestSyncToken(ObjectClass objectClass)
         {
             return ((SyncOp)GetConnector()).GetLatestSyncToken(objectClass);
@@ -1682,7 +1869,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// </summary>
         public static void ValidateInput(ObjectClass objectClass,
                 Uid uid,
-                ICollection<ConnectorAttribute> attrs, bool isDelta)
+                ICollection<ConnectorAttribute> replaceAttributes, bool isDelta)
         {
             Assertions.NullCheck(uid, "uid");
             Assertions.NullCheck(objectClass, "objectClass");
@@ -1690,9 +1877,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             {
                 throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
             }
-            Assertions.NullCheck(attrs, "attrs");
+            Assertions.NullCheck(replaceAttributes, "replaceAttributes");
             // check to make sure there's not a uid..
-            if (ConnectorAttributeUtil.GetUidAttribute(attrs) != null)
+            if (ConnectorAttributeUtil.GetUidAttribute(replaceAttributes) != null)
             {
                 throw new ArgumentException(
                         "Parameter 'attrs' contains a uid.");
@@ -1700,7 +1887,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             // check for things only valid during ADD/DELETE
             if (isDelta)
             {
-                foreach (ConnectorAttribute attr in attrs)
+                foreach (ConnectorAttribute attr in replaceAttributes)
                 {
                     Assertions.NullCheck(attr, "attr");
                     // make sure that none of the values are null..
@@ -1734,7 +1921,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
 
         public void Validate()
         {
-            GetOperationalContext().GetConfiguration().Validate();
+            GetOperationalContext().Configuration.Validate();
         }
     }
     #endregion

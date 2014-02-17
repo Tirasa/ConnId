@@ -30,10 +30,9 @@ using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Common.Security;
 using Org.IdentityConnectors.Framework.Api;
 using Org.IdentityConnectors.Framework.Api.Operations;
-using Org.IdentityConnectors.Framework.Common;
+using Org.IdentityConnectors.Framework.Common.Exceptions;
 using Org.IdentityConnectors.Framework.Common.Objects;
 using Org.IdentityConnectors.Framework.Spi;
-using Org.IdentityConnectors.Framework.Spi.Operations;
 using Org.IdentityConnectors.Test.Common;
 
 namespace FrameworkTests
@@ -287,8 +286,8 @@ namespace FrameworkTests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
-        public void createDuplicatConnectorAttributesPattern()
+        [ExpectedException(typeof(InvalidAttributeValueException))]
+        public void CreateDuplicatConnectorAttributesPattern()
         {
             TestCallPattern(new TestOperationPattern()
             {
@@ -384,9 +383,12 @@ namespace FrameworkTests
                 MakeCall = facade =>
                 {
                     // create an empty results handler..
-                    ResultsHandler rh = obj =>
+                    ResultsHandler rh = new ResultsHandler()
                     {
-                        return true;
+                        Handle = obj => {
+                            return true;
+                        }
+
                     };
                     // call the search method..
                     facade.Search(ObjectClass.ACCOUNT, null, rh, null);
@@ -408,9 +410,12 @@ namespace FrameworkTests
                 MakeCall = facade =>
                 {
                     // create an empty results handler..
-                    ResultsHandler rh = obj =>
+                    ResultsHandler rh = new ResultsHandler()
                     {
-                        return true;
+                        Handle = obj =>
+                            {
+                                return true;
+                            }
                     };
                     // call the search method..
                     facade.Search(ObjectClass.ALL, null, rh, null);
@@ -503,9 +508,12 @@ namespace FrameworkTests
                 MakeCall = facade =>
                 {
                     // create an empty results handler..
-                    SyncResultsHandler rh = obj =>
+                    SyncResultsHandler rh = new SyncResultsHandler()
                     {
-                        return true;
+                        Handle = obj =>
+                            {
+                                return true;
+                            }
                     };
                     // call the sync method..
                     facade.Sync(ObjectClass.ACCOUNT, new SyncToken(1), rh, null);
@@ -525,9 +533,12 @@ namespace FrameworkTests
                 MakeCall = facade =>
                 {
                     // create an empty results handler..
-                    SyncResultsHandler rh = obj =>
+                    SyncResultsHandler rh = new SyncResultsHandler()
                     {
-                        return true;
+                        Handle = obj =>
+                            {
+                                return true;
+                            }
                     };
                     // call the sync method..
                     facade.Sync(ObjectClass.ALL, new SyncToken(1), rh, null);

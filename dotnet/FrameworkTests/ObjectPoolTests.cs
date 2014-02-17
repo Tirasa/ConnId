@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Threading;
@@ -26,8 +27,6 @@ using NUnit.Framework;
 
 using Org.IdentityConnectors.Common.Pooling;
 using Org.IdentityConnectors.Framework.Common.Exceptions;
-using Org.IdentityConnectors.Framework.Common.Objects;
-using Org.IdentityConnectors.Framework.Spi;
 using Org.IdentityConnectors.Framework.Impl.Api.Local;
 
 namespace FrameworkTests
@@ -67,7 +66,7 @@ namespace FrameworkTests
             private bool _createBadConnection = false;
             private int _totalCreatedConnections = 0;
 
-            public MyTestConnection NewObject()
+            public MyTestConnection MakeObject()
             {
                 _totalCreatedConnections++;
                 MyTestConnection rv = new MyTestConnection();
@@ -100,6 +99,15 @@ namespace FrameworkTests
                 {
                     _createBadConnection = value;
                 }
+            }
+
+            public ObjectPoolConfiguration Validate(ObjectPoolConfiguration original)
+            {
+                return original;
+            }
+
+            public void Shutdown()
+            {
             }
         }
 

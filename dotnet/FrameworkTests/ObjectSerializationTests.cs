@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2012-2013 ForgeRock AS
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
 using System.IO;
@@ -27,10 +27,8 @@ using System.Text;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Security;
 using System.Linq;
 using System.Xml;
-using Org.IdentityConnectors.Framework.Impl.Serializer.Binary;
 using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Common.Pooling;
 using Org.IdentityConnectors.Common.Security;
@@ -44,7 +42,7 @@ using Org.IdentityConnectors.Framework.Common.Serializer;
 using Org.IdentityConnectors.Framework.Impl.Api;
 using Org.IdentityConnectors.Framework.Impl.Api.Remote;
 using Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages;
-using Org.IdentityConnectors.Framework.Impl.Serializer.Xml;
+
 namespace FrameworkTests
 {
     [TestFixture]
@@ -968,7 +966,7 @@ namespace FrameworkTests
             Assert.AreEqual("my bundle", v2.ConnectorKey.BundleName);
             Assert.AreEqual("my version", v2.ConnectorKey.BundleVersion);
             Assert.AreEqual("my connector", v2.ConnectorKey.ConnectorName);
-            Assert.IsNotNull(v2.Configuration);
+            Assert.IsNotNull(v2.ConnectorFacadeKey);
             Assert.AreEqual(SafeType<APIOperation>.Get<CreateApiOp>(), v2.Operation);
             Assert.AreEqual("mymethodName", v2.OperationMethodName);
             Assert.IsTrue(
@@ -986,7 +984,7 @@ namespace FrameworkTests
         [Test]
         public void TestOperationResponsePart()
         {
-            Exception ex = new Exception("foo");
+            Exception ex = new Exception("foo", new ArgumentException("Cause"));
             OperationResponsePart v1 = new OperationResponsePart(ex, "bar");
             OperationResponsePart v2 = (OperationResponsePart)CloneObject(v1);
             Assert.IsNotNull(v2.Exception);
