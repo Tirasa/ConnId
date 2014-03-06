@@ -799,6 +799,10 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
 
         private string Dump(IList<object> list)
         {
+            if (list == null)
+            {
+                return "(null)";
+            }
             StringBuilder sb = new StringBuilder();
             bool first = true;
             foreach (object o in list)
