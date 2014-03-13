@@ -19,13 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
 using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Framework.Common.Exceptions;
 using Org.IdentityConnectors.Framework.Common.Serializer;
-using Org.IdentityConnectors.Framework.Impl.Serializer;
 using System.IO;
 using System.Text;
 namespace Org.IdentityConnectors.Framework.Impl.Serializer.Binary
@@ -266,7 +266,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer.Binary
 
     internal class BinaryObjectEncoder : ObjectEncoder, BinaryObjectSerializer
     {
-        public const int ENCODING_VERSION = 1;
+        public const int ENCODING_VERSION = 2;
 
         public const int OBJECT_MAGIC = 0xFAFB;
 
@@ -312,6 +312,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer.Binary
         {
             _internalEncoder.StartField(fieldName);
             _internalEncoder.WriteBoolean(v);
+            _internalEncoder.EndField();
+        }
+
+        public void WriteByteContents(byte v)
+        {
+            _internalEncoder.StartAnonymousField();
+            _internalEncoder.WriteByte(v);
             _internalEncoder.EndField();
         }
 

@@ -36,43 +36,38 @@ import org.identityconnectors.framework.impl.api.AbstractConnectorFacade;
  */
 public class RemoteConnectorFacadeImpl extends AbstractConnectorFacade {
 
-    final APIConfigurationImpl remoteConfiguration;
+    final String remoteConnectorFacadeKey;
 
     /**
      * Builds up the maps of supported operations and calls.
      */
     public RemoteConnectorFacadeImpl(final APIConfigurationImpl configuration) {
-        super(configuration);
-        // clone since we're going to modify it
-        remoteConfiguration = (APIConfigurationImpl) SerializerUtil.cloneObject(configuration);
-        // parent ref not included in the clone
-        remoteConfiguration.setConnectorInfo(configuration.getConnectorInfo());
-        // disable buffering and timeout on the remote end since we do it
-        // locally
-        remoteConfiguration.setProducerBufferSize(0);
-        remoteConfiguration.setTimeoutMap(new HashMap<Class<? extends APIOperation>, Integer>());
+        super(generateRemoteConnectorFacadeKey(configuration), configuration.getConnectorInfo());
+        // Restore the original configuration settings
+        getAPIConfiguration().setProducerBufferSize(configuration.getProducerBufferSize());
+        getAPIConfiguration().setTimeoutMap(configuration.getTimeoutMap());
+        remoteConnectorFacadeKey = getConnectorFacadeKey();
     }
 
     public RemoteConnectorFacadeImpl(final RemoteConnectorInfoImpl connectorInfo,
             String configuration) {
         super(configuration, connectorInfo);
-        // clone since we're going to modify it
-        remoteConfiguration =
-                (APIConfigurationImpl) SerializerUtil.deserializeBase64Object(configuration);
-        // parent ref not included in the clone
-        remoteConfiguration.setConnectorInfo(connectorInfo);
-        // disable buffering and timeout on the remote end since we do it
-        // locally
-        remoteConfiguration.setProducerBufferSize(0);
-        remoteConfiguration.setTimeoutMap(new HashMap<Class<? extends APIOperation>, Integer>());
+        remoteConnectorFacadeKey = generateRemoteConnectorFacadeKey(getAPIConfiguration());
+    }
+
+    private static String generateRemoteConnectorFacadeKey(final APIConfigurationImpl configuration){
+        APIConfigurationImpl copy = new APIConfigurationImpl(configuration);
+        copy.setProducerBufferSize(0);
+        copy.setTimeoutMap(new HashMap<Class<? extends APIOperation>, Integer>());
+        return SerializerUtil.serializeBase64Object(copy);
     }
 
     @Override
     protected APIOperation getOperationImplementation(final Class<? extends APIOperation> api) {
         // add remote proxy
         InvocationHandler handler =
-                new RemoteOperationInvocationHandler((RemoteConnectorInfoImpl) remoteConfiguration
-                        .getConnectorInfo(), getConnectorFacadeKey(), api);
+                new RemoteOperationInvocationHandler((RemoteConnectorInfoImpl) getAPIConfiguration()
+                        .getConnectorInfo(), remoteConnectorFacadeKey, api);
         APIOperation proxy = newAPIOperationProxy(api, handler);
         // now wrap the proxy in the appropriate timeout proxy
         proxy = createTimeoutProxy(api, proxy);

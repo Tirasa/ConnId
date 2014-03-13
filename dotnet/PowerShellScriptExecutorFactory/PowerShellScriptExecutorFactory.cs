@@ -1,7 +1,7 @@
 ﻿/**
 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 *
-* Copyright (c) 2012 ForgeRock AS. All Rights Reserved
+* Copyright (c) 2012-2014 ForgeRock AS. All Rights Reserved
 *
 * The contents of this file are subject to the terms
 * of the Common Development and Distribution License
@@ -22,13 +22,12 @@
 * "Portions Copyrighted [year] [name of copyright owner]"
 *
 * 
-*  * Author: Gael Allioux
+* Author: Gael Allioux
 */
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Reflection;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;

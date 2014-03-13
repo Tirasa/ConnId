@@ -24,6 +24,8 @@
 package org.identityconnectors.framework.impl.api;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,6 +74,32 @@ public class APIConfigurationImpl implements APIConfiguration {
      * object. Set when returned from the parent
      */
     private transient AbstractConnectorInfo connectorInfo;
+
+    // =======================================================================
+    // Constructors
+    // =======================================================================
+
+    public APIConfigurationImpl() {
+    }
+
+    public APIConfigurationImpl(APIConfigurationImpl other) {
+        if (null != other.connectorPoolConfiguration) {
+            this.setConnectorPoolConfiguration(new ObjectPoolConfiguration(other.connectorPoolConfiguration));
+        }
+        if (null != other.resultsHandlerConfiguration) {
+            this.setResultsHandlerConfiguration(new ResultsHandlerConfiguration(other.resultsHandlerConfiguration));
+        }
+        this.isConnectorPoolingSupported = other.isConnectorPoolingSupported;
+        ConfigurationPropertiesImpl prop = new ConfigurationPropertiesImpl();
+        prop.setProperties(other.getConfigurationProperties().getProperties());
+        setConfigurationProperties(prop);
+
+        this.bufferSize = other.bufferSize;
+        this.timeoutMap = new HashMap<Class<? extends APIOperation>, Integer>( other.timeoutMap);
+        this.supportedOperations = new HashSet<Class<? extends APIOperation>>( other.supportedOperations);
+
+        this.connectorInfo = other.connectorInfo;
+    }
 
     // =======================================================================
     // Internal Methods

@@ -19,16 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Reflection;
-using System.Collections.Generic;
 using Org.IdentityConnectors.Common;
-using Org.IdentityConnectors.Common.Security;
-using Org.IdentityConnectors.Framework.Spi;
-using Org.IdentityConnectors.Framework.Api.Operations;
-using Org.IdentityConnectors.Framework.Spi.Operations;
-using Org.IdentityConnectors.Framework.Common.Objects;
+
 namespace Org.IdentityConnectors.Test.Common
 {
     internal static class FrameworkInternalBridge

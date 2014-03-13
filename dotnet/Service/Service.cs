@@ -19,19 +19,16 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Configuration;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceProcess;
-using System.Text;
 using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Framework.Server;
 

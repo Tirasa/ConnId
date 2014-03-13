@@ -40,7 +40,10 @@ public interface ResultsHandler {
      * @return {@code true} if this handler should continue to be notified of
      *         any remaining matching ConnectorObjects, or {@code false} if the
      *         remaining ConnectorObjects should be skipped for some reason
-     *         (e.g. a client side size limit has been reached).
+     *         (e.g. a client side size limit has been reached or the failed to
+     *         handle the last item). If returns {@code false} the last items
+     *         should be considers unhandled and in next page request it should
+     *         be the first item.
      *
      * @throws RuntimeException
      *             the implementor should throw a {@link RuntimeException} that

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 
@@ -147,35 +148,52 @@ namespace Org.IdentityConnectors.Common.Pooling
             }
         }
 
+        // =======================================================================
+        // Constructors
+        // =======================================================================
+
+        public ObjectPoolConfiguration()
+        {
+        }
+
+        public ObjectPoolConfiguration(ObjectPoolConfiguration other)
+        {
+            this.MaxObjects = other.MaxObjects;
+            this.MaxIdle = other.MaxIdle;
+            this.MaxWait = other.MaxWait;
+            this.MinEvictableIdleTimeMillis = other.MinEvictableIdleTimeMillis;
+            this.MinIdle = other.MinIdle;
+        }
+
         public void Validate()
         {
             if (_minIdle < 0)
             {
-                throw new InvalidOperationException("Min idle is less than zero.");
+                throw new ArgumentException("Min idle is less than zero.");
             }
             if (_maxObjects < 0)
             {
-                throw new InvalidOperationException("Max active is less than zero.");
+                throw new ArgumentException("Max active is less than zero.");
             }
             if (_maxIdle < 0)
             {
-                throw new InvalidOperationException("Max idle is less than zero.");
+                throw new ArgumentException("Max idle is less than zero.");
             }
             if (_maxWait < 0)
             {
-                throw new InvalidOperationException("Max wait is less than zero.");
+                throw new ArgumentException("Max wait is less than zero.");
             }
             if (_minEvictableIdleTimeMillis < 0)
             {
-                throw new InvalidOperationException("Min evictable idle time millis less than zero.");
+                throw new ArgumentException("Min evictable idle time millis less than zero.");
             }
             if (_minIdle > _maxIdle)
             {
-                throw new InvalidOperationException("Min idle is greater than max idle.");
+                throw new ArgumentException("Min idle is greater than max idle.");
             }
             if (_maxIdle > _maxObjects)
             {
-                throw new InvalidOperationException("Max idle is greater than max objects.");
+                throw new ArgumentException("Max idle is greater than max objects.");
             }
         }
 

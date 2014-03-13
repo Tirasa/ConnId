@@ -19,13 +19,10 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2012 ForgeRock AS
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
-using System.Globalization;
-using System.Collections.Generic;
 using Org.IdentityConnectors.Common;
-using Org.IdentityConnectors.Common.Pooling;
 using Org.IdentityConnectors.Framework.Common.Objects;
 using Org.IdentityConnectors.Framework.Spi.Operations;
 namespace Org.IdentityConnectors.Framework.Spi
@@ -371,6 +368,105 @@ namespace Org.IdentityConnectors.Framework.Spi
         /// </para>
         /// <exception cref="System.Exception">if the connector is no longer alive.</exception>
         void CheckAlive();
+    }
+    #endregion
+
+    #region SearchResultsHandler
+    /// <summary>
+    /// A SearchResultsHandler is a completion handler for consuming the results of a
+    /// search request.
+    /// <para>
+    /// A search result completion handler may be specified when performing search
+    /// requests using a <seealso cref="org.identityconnectors.framework.api.ConnectorFacade"/>
+    /// object. The <seealso cref="#handle"/> method is invoked each time a matching
+    /// <seealso cref="org.identityconnectors.framework.common.objects.ConnectorObject"/>
+    /// resource is returned, followed by <seealso cref="#handleResult"/> indicating that no
+    /// more ConnectorObject resources will be returned.
+    /// </para>
+    /// <para>
+    /// Implementations of these methods should complete in a timely manner so as to
+    /// avoid keeping the invoking thread from dispatching to other completion
+    /// handlers.
+    /// 
+    /// </para>
+    /// </summary>
+    /// <remarks>Since 1.4</remarks>
+    public class SearchResultsHandler : ResultsHandler
+    {
+
+        /// <summary>
+        /// Invoked when the request has completed successfully.
+        /// </summary>
+        /// <param name="result">
+        ///            The query result indicating that no more resources are to be
+        ///            returned and, if applicable, including information which
+        ///            should be used for subsequent paged results query requests. </param>
+        public Action<SearchResult> HandleResult;
+
+    }
+    #endregion
+
+    #region StatefulConfiguration
+    /// <summary>
+    /// A Stateful Configuration interface extends the default <seealso cref="Configuration"/>
+    /// and makes the framework keep the same instance.
+    /// <p/>
+    /// The default Configuration object instance is constructed every single time
+    /// before the <seealso cref="Connector#Init(Configuration)"/> is called. If the
+    /// configuration class implements this interface then the Framework keeps one
+    /// instance of Configuration and the <seealso cref="Connector#Init(Configuration)"/> is
+    /// called with the same instance. This requires extra caution because the
+    /// framework only guaranties to create one instance and set the properties
+    /// before it calls the <seealso cref="Connector#Init(Configuration)"/> on different
+    /// connector instances in multiple different threads at the same time. The
+    /// Connector developer must quarantine that the necessary resource
+    /// initialisation are thread-safe.
+    /// 
+    /// <p/>
+    /// If the connector implements the <seealso cref="PoolableConnector"/> then this
+    /// configuration is kept in the
+    /// <seealso cref="Org.IdentityConnectors.Framework.Impl.Api.Local.ConnectorPoolManager"/>
+    /// and when the
+    /// <seealso cref="Org.IdentityConnectors.Framework.Impl.Api.Local.ConnectorPoolManager#Dispose()"/>
+    /// calls the <seealso cref="#Release()"/> method. If the connector implements only the
+    /// <seealso cref="Connector"/> then this configuration is kept in the
+    /// <seealso cref="Org.IdentityConnectors.Framework.Impl.Api.ConnectorFacade"/> and the
+    /// application must take care of releasing.
+    /// 
+    /// </summary>
+    public interface StatefulConfiguration : Configuration
+    {
+
+        /// <summary>
+        /// Release any allocated resources.
+        /// </summary>
+        void Release();
+
+    }
+    #endregion
+
+    #region SyncTokenResultsHandler
+    /// <summary>
+    /// A SyncTokenResultsHandler is a Callback interface that an application
+    /// implements in order to handle results from
+    /// <seealso cref="org.identityconnectors.framework.api.operations.SyncApiOp"/> in a
+    /// stream-processing fashion.
+    /// 
+    /// </summary>
+    /// <remarks>Since 1.4</remarks>
+    public class SyncTokenResultsHandler : SyncResultsHandler
+    {
+
+        /// <summary>
+        /// Invoked when the request has completed successfully.
+        /// </summary>
+        /// <param name="result">
+        ///            The sync result indicating that no more resources are to be
+        ///            returned and, if applicable, including information which
+        ///            should be used for next sync requests. </param>
+        //void HandleResult(SyncToken result);
+        public Action<SyncToken> HandleResult;
+
     }
     #endregion
 }

@@ -30,6 +30,17 @@ import java.util.Map;
  */
 public final class ObjectPoolConfiguration {
 
+    public ObjectPoolConfiguration() {
+    }
+
+    public ObjectPoolConfiguration(ObjectPoolConfiguration other) {
+        this.setMaxObjects(other.getMaxObjects());
+        this.setMaxIdle(other.getMaxIdle());
+        this.setMaxWait(other.getMaxWait());
+        this.setMinEvictableIdleTimeMillis(other.getMinEvictableIdleTimeMillis());
+        this.setMinIdle(other.getMinIdle());
+    }
+
     /**
      * Max objects (idle+active).
      */

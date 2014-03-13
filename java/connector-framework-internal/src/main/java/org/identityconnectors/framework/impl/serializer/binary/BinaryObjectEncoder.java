@@ -48,7 +48,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
      * Version for the overall encoding - if we need to change anything in the
      * encoder, we will need to bump this and handle appropriately
      */
-    public static final int ENCODING_VERSION = 1;
+    public static final int ENCODING_VERSION = 2;
 
     public static final int OBJECT_MAGIC = 0xFAFB;
 

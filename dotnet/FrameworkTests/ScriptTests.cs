@@ -19,11 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Common.Script;
 using Org.IdentityConnectors.Framework.Common.Objects;
 using NUnit.Framework;
@@ -53,7 +53,7 @@ namespace FrameworkTests
             ScriptExecutorFactory factory = ScriptExecutorFactory.NewInstance("Shell");
             ScriptExecutor exe = factory.NewScriptExecutor(new Assembly[0], "echo bob", false);
             IDictionary<string, object> vals = new Dictionary<string, object>();
-            Assert.AreEqual(0, exe.Execute(vals));
+            Assert.AreEqual(0, ((IDictionary<string, object>)exe.Execute(vals))["exitCode"]);
         }
         [Test]
         [ExpectedException(typeof(ArgumentException))]

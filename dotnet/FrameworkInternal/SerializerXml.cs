@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
@@ -62,6 +63,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer.Xml
         public void WriteBooleanField(String fieldName, bool v)
         {
             WriteAttributeInternal(fieldName, EncodeBoolean(v));
+        }
+
+        public void WriteByteContents(byte v)
+        {
+            WriteStringContentsInternal(EncodeByte(v));
         }
 
         public void WriteByteArrayContents(byte[] v)
@@ -154,6 +160,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer.Xml
         internal static String EncodeBoolean(bool b)
         {
             return b.ToString();
+        }
+
+        private static String EncodeByte(byte singleByte)
+        {
+            return Convert.ToString(singleByte);
         }
 
         private static String EncodeByteArray(byte[] bytes)

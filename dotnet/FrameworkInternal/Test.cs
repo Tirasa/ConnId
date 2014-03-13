@@ -112,18 +112,38 @@ namespace Org.IdentityConnectors.Framework.Impl.Test
         /// <param name="handler">The result handler</param>
         /// <param name="options">The options - may be null - will
         /// be cast to an empty OperationOptions</param>
-        public void Search<T>(SearchOp<T> search,
-                ObjectClass oclass,
+        public SearchResult Search<T>(SearchOp<T> search,
+                ObjectClass objectClass,
                 Filter filter,
                 ResultsHandler handler,
                 OperationOptions options) where T : class
         {
+            Assertions.NullCheck(objectClass, "objectClass");
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                throw new System.NotSupportedException("Operation is not allowed on __ALL__ object class");
+            }
+            Assertions.NullCheck(handler, "handler");
+            //convert null into empty
             if (options == null)
             {
                 options = new OperationOptionsBuilder().Build();
             }
-            RawSearcherImpl<T>.RawSearch(
-                 search, oclass, filter, handler, options);
+
+            SearchResult result = null;
+            RawSearcherImpl<T>.RawSearch(search, objectClass, filter, new SearchResultsHandler()
+            {
+                Handle = obj =>
+                {
+                    return handler.Handle(obj);
+                },
+                HandleResult = obj =>
+                {
+                    result = obj;
+                }
+
+            }, options);
+            return result != null ? result : new SearchResult();
         }
 
         public ConnectorMessages CreateDummyMessages()

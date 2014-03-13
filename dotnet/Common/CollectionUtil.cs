@@ -219,10 +219,10 @@ namespace Org.IdentityConnectors.Common
         }
 
         /// <summary>
-        /// Returns true iff the collection is a case-insensitive set
+        /// Returns true if the collection is a case-insensitive set
         /// </summary>
         /// <param name="collection">The collection. May be null.</param>
-        /// <returns>true iff the collection is a case-insensitive set</returns>
+        /// <returns>true if the collection is a case-insensitive set</returns>
         public static bool IsCaseInsensitiveSet<T>(ICollection<T> collection)
         {
             if (collection is ReadOnlyCollection<T>)
@@ -252,10 +252,10 @@ namespace Org.IdentityConnectors.Common
         }
 
         /// <summary>
-        /// Returns true iff the collection is a case-insensitive map
+        /// Returns true if the collection is a case-insensitive map
         /// </summary>
         /// <param name="map">The map. May be null.</param>
-        /// <returns>true iff the collection is a case-insensitive map</returns>
+        /// <returns>true if the collection is a case-insensitive map</returns>
         public static bool IsCaseInsensitiveDictionary<K, V>(IDictionary<K, V> map)
         {
             if (map is ReadOnlyDictionary<K, V>)
@@ -328,7 +328,7 @@ namespace Org.IdentityConnectors.Common
         }
 
         /// <summary>
-        /// Returns true iff the two sets contain the same elements. This is only for
+        /// Returns true if the two sets contain the same elements. This is only for
         /// sets and dictionaries. Does not work for Lists or Arrays.
         /// </summary>
         /// <param name="collection1">The first collection</param>
@@ -460,40 +460,40 @@ namespace Org.IdentityConnectors.Common
 
 
         /// <summary>
-        /// Returns c or an empty collection iff c is null.
+        /// Returns c or an empty collection if c is null.
         /// </summary>
         /// <param name="c">The collection</param>
-        /// <returns>c or an empty collection iff c is null.</returns>
+        /// <returns>c or an empty collection if c is null.</returns>
         public static ICollection<T> NullAsEmpty<T>(ICollection<T> c)
         {
             return c ?? new HashSet<T>();
         }
 
         /// <summary>
-        /// Returns c or an empty collection iff c is null.
+        /// Returns c or an empty collection if c is null.
         /// </summary>
         /// <param name="c">The collection</param>
-        /// <returns>c or an empty collection iff c is null.</returns>
+        /// <returns>c or an empty collection if c is null.</returns>
         public static IDictionary<K, V> NullAsEmpty<K, V>(IDictionary<K, V> c)
         {
             return c ?? new Dictionary<K, V>();
         }
 
         /// <summary>
-        /// Returns c or an empty collection iff c is null.
+        /// Returns c or an empty collection if c is null.
         /// </summary>
         /// <param name="c">The collection</param>
-        /// <returns>c or an empty collection iff c is null.</returns>
+        /// <returns>c or an empty collection if c is null.</returns>
         public static IList<T> NullAsEmpty<T>(IList<T> c)
         {
             return c ?? new List<T>();
         }
 
         /// <summary>
-        /// Returns c or an empty array iff c is null.
+        /// Returns c or an empty array if c is null.
         /// </summary>
         /// <param name="c">The array</param>
-        /// <returns>c or an empty collection iff c is null.</returns>
+        /// <returns>c or an empty collection if c is null.</returns>
         public static T[] NullAsEmpty<T>(T[] c)
         {
             return c ?? new T[0];
@@ -918,7 +918,7 @@ namespace Org.IdentityConnectors.Common
         /// </remarks>
         /// <param name="o1">The first object. May be null.</param>
         /// <param name="o2">The second object. May be null.</param>
-        /// <returns>true iff the two objects are equal.</returns>
+        /// <returns>true if the two objects are equal.</returns>
         public new static bool Equals(Object o1, Object o2)
         {
             if (o1 == o2)

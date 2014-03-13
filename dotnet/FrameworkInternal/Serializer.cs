@@ -19,12 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2012 ForgeRock AS
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Security;
 using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Common.Pooling;
 using Org.IdentityConnectors.Common.Security;
@@ -39,7 +38,6 @@ using Org.IdentityConnectors.Framework.Impl.Api.Remote;
 using Org.IdentityConnectors.Framework.Impl.Api.Remote.Messages;
 using Org.IdentityConnectors.Framework.Impl.Serializer.Binary;
 using Org.IdentityConnectors.Framework.Impl.Serializer.Xml;
-using System.Linq;
 using System.Globalization;
 namespace Org.IdentityConnectors.Framework.Impl.Serializer
 {
@@ -307,6 +305,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
         void WriteDoubleContents(double v);
 
         /// <summary>
+        /// Writes the value in-line.
+        /// </summary>
+        void WriteByteContents(byte v);
+
+        /// <summary>
         /// Special case for byte [] that uses base64 encoding for XML
         /// </summary>
         void WriteByteArrayContents(byte[] v);
@@ -557,6 +560,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
         {
             HANDLERS.Add(new BooleanHandler(typeof(bool?), "Boolean"));
             HANDLERS.Add(new BooleanHandler(typeof(bool), "boolean"));
+            HANDLERS.Add(new ByteHandler(typeof(byte?), "Byte"));
+            HANDLERS.Add(new ByteHandler(typeof(byte), "byte"));
             HANDLERS.Add(new CharacterHandler(typeof(char?), "Character"));
             HANDLERS.Add(new CharacterHandler(typeof(char), "char"));
             HANDLERS.Add(new IntegerHandler(typeof(int?), "Integer"));
@@ -792,6 +797,24 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             {
                 BigInteger val = (BigInteger)obj;
                 encoder.WriteStringContents(val.Value);
+            }
+        }
+        private class ByteHandler : AbstractObjectSerializationHandler
+        {
+            public ByteHandler(Type objectType, String serialType)
+                : base(objectType, serialType)
+            {
+
+            }
+            public override Object Deserialize(ObjectDecoder decoder)
+            {
+                return decoder.ReadByteArrayContents();
+            }
+
+            public override void Serialize(Object obj, ObjectEncoder encoder)
+            {
+                byte val = (byte)obj;
+                encoder.WriteByteContents(val);
             }
         }
         private class ByteArrayHandler : AbstractObjectSerializationHandler
@@ -1702,11 +1725,16 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             HANDLERS.Add(new ConnectionBrokenExceptionHandler());
             HANDLERS.Add(new ConnectionFailedExceptionHandler());
             HANDLERS.Add(new ConnectorIOExceptionHandler());
+            HANDLERS.Add(new InvalidAttributeValueExceptionHandler());
             HANDLERS.Add(new PasswordExpiredExceptionHandler());
             HANDLERS.Add(new InvalidPasswordExceptionHandler());
             HANDLERS.Add(new UnknownUidExceptionHandler());
             HANDLERS.Add(new InvalidCredentialExceptionHandler());
             HANDLERS.Add(new PermissionDeniedExceptionHandler());
+            HANDLERS.Add(new PreconditionFailedExceptionHandler());
+            HANDLERS.Add(new PreconditionRequiredExceptionHandler());
+            HANDLERS.Add(new RemoteWrappedExceptionHandler());
+            HANDLERS.Add(new RetryableExceptionHandler());
             HANDLERS.Add(new ConnectorSecurityExceptionHandler());
             HANDLERS.Add(new OperationTimeoutExceptionHandler());
             HANDLERS.Add(new ConnectorExceptionHandler());
@@ -1719,6 +1747,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             HANDLERS.Add(new ConnectorObjectHandler());
             HANDLERS.Add(new NameHandler());
             HANDLERS.Add(new ObjectClassHandler());
+            HANDLERS.Add(new SearchResultHandler());
+            HANDLERS.Add(new SortKeyHandler());
             HANDLERS.Add(new ObjectClassInfoHandler());
             HANDLERS.Add(new SchemaHandler());
             HANDLERS.Add(new UidHandler());
@@ -1793,6 +1823,18 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             protected override ConnectorIOException CreateException(String msg)
             {
                 return new ConnectorIOException(msg);
+            }
+        }
+        private class InvalidAttributeValueExceptionHandler : AbstractExceptionHandler<InvalidAttributeValueException>
+        {
+            public InvalidAttributeValueExceptionHandler()
+                : base("InvalidAttributeValueException")
+            {
+
+            }
+            protected override InvalidAttributeValueException CreateException(String msg)
+            {
+                return new InvalidAttributeValueException(msg);
             }
         }
         private class PasswordExpiredExceptionHandler : AbstractExceptionHandler<PasswordExpiredException>
@@ -1907,6 +1949,70 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                 return new ConnectorException(msg);
             }
         }
+        private class PreconditionFailedExceptionHandler : AbstractExceptionHandler<PreconditionFailedException>
+        {
+            public PreconditionFailedExceptionHandler()
+                : base("PreconditionFailedException")
+            {
+
+            }
+            protected override PreconditionFailedException CreateException(String msg)
+            {
+                return new PreconditionFailedException(msg);
+            }
+        }
+        private class PreconditionRequiredExceptionHandler : AbstractExceptionHandler<PreconditionRequiredException>
+        {
+            public PreconditionRequiredExceptionHandler()
+                : base("PreconditionRequiredException")
+            {
+
+            }
+            protected override PreconditionRequiredException CreateException(String msg)
+            {
+                return new PreconditionRequiredException(msg);
+            }
+        }
+        private class RemoteWrappedExceptionHandler : AbstractObjectSerializationHandler
+        {
+            public RemoteWrappedExceptionHandler()
+                : base(typeof(RemoteWrappedException), "RemoteWrappedException")
+            {
+
+            }
+            public override Object Deserialize(ObjectDecoder decoder)
+            {
+                //The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+                string throwableClass = decoder.ReadStringField(RemoteWrappedException.FIELD_CLASS, typeof(ConnectorException).FullName);
+                string message = decoder.ReadStringField(RemoteWrappedException.FIELD_MESSAGE, null);
+                RemoteWrappedException cause = (RemoteWrappedException)decoder.ReadObjectField("RemoteWrappedException", typeof(RemoteWrappedException), null);
+                string stackTrace = decoder.ReadStringField(RemoteWrappedException.FIELD_STACK_TRACE, null);
+
+                return new RemoteWrappedException(throwableClass, message, cause, stackTrace);
+            }
+
+            public override void Serialize(Object obj, ObjectEncoder encoder)
+            {
+                RemoteWrappedException val = (RemoteWrappedException)obj;
+                encoder.WriteStringField(RemoteWrappedException.FIELD_CLASS, val.ExceptionClass);
+                encoder.WriteStringField(RemoteWrappedException.FIELD_MESSAGE, val.Message);
+                encoder.WriteObjectField("RemoteWrappedException", val.InnerException, true);
+                encoder.WriteStringField(RemoteWrappedException.FIELD_STACK_TRACE, val.ReadStackTrace());
+            }
+        }
+        private class RetryableExceptionHandler : AbstractExceptionHandler<RetryableException>
+        {
+            public RetryableExceptionHandler()
+                : base("RetryableException")
+            {
+
+            }
+            protected override RetryableException CreateException(String msg)
+            {
+                return RetryableException.Wrap(msg, (Exception)null);
+            }
+        }
+
         //RuntimeException, Exception, and Throwable
         //when going from Java to C#, these always become
         //Exception.
@@ -2274,14 +2380,20 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             }
             public override Object Deserialize(ObjectDecoder decoder)
             {
-                String str = decoder.ReadStringField("uid", null);
-                return new Uid(str);
+                String val = decoder.ReadStringField("uid", null);
+                String revision = decoder.ReadStringField("revision", null);
+                if (null == revision) {
+                    return new Uid(val);
+                } else {
+                    return new Uid(val, revision);
+                }
             }
 
             public override void Serialize(Object obj, ObjectEncoder encoder)
             {
                 Uid val = (Uid)obj;
                 encoder.WriteStringField("uid", val.GetUidValue());
+                encoder.WriteStringField("revision", val.Revision);
             }
         }
         private class ScriptHandler : AbstractObjectSerializationHandler
@@ -2354,6 +2466,44 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             {
                 OperationOptions val = (OperationOptions)obj;
                 encoder.WriteObjectField("options", val.Options, false);
+            }
+        }
+        private class SearchResultHandler : AbstractObjectSerializationHandler
+        {
+            public SearchResultHandler()
+                : base(typeof(SearchResult), "SearchResult")
+            {
+
+            }
+            public override Object Deserialize(ObjectDecoder decoder)
+            {
+                return new SearchResult(decoder.ReadStringField("pagedResultsCookie", null), decoder.ReadIntField("remainingPagedResults", -1));
+            }
+
+            public override void Serialize(Object obj, ObjectEncoder encoder)
+            {
+                SearchResult val = (SearchResult)obj;
+                encoder.WriteStringField("pagedResultsCookie", val.PagedResultsCookie);
+                encoder.WriteIntField("remainingPagedResults", val.RemainingPagedResults);
+            }
+        }
+        private class SortKeyHandler : AbstractObjectSerializationHandler
+        {
+            public SortKeyHandler()
+                : base(typeof(Org.IdentityConnectors.Framework.Common.Objects.SortKey), "SortKey")
+            {
+
+            }
+            public override Object Deserialize(ObjectDecoder decoder)
+            {
+                return new Org.IdentityConnectors.Framework.Common.Objects.SortKey(decoder.ReadStringField("field", null), decoder.ReadBooleanField("isAscending", true));
+            }
+
+            public override void Serialize(Object obj, ObjectEncoder encoder)
+            {
+                Org.IdentityConnectors.Framework.Common.Objects.SortKey val = (Org.IdentityConnectors.Framework.Common.Objects.SortKey)obj;
+                encoder.WriteStringField("field", val.Field);
+                encoder.WriteBooleanField("isAscending", val.AscendingOrder);
             }
         }
         private class OperationOptionInfoHandler : AbstractObjectSerializationHandler
@@ -2779,7 +2929,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             {
                 ConnectorKey connectorKey =
                     (ConnectorKey)decoder.ReadObjectField("ConnectorKey", typeof(ConnectorKey), null);
-                String configuration =
+                String connectorFacadeKey =
                     decoder.ReadStringField("connectorFacadeKey", null);
                 Type operation =
                     decoder.ReadClassField("operation", null);
@@ -2788,7 +2938,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                 IList<object> arguments = (IList<object>)
                     decoder.ReadObjectField("Arguments", typeof(IList<object>), null);
                 return new OperationRequest(connectorKey,
-                        configuration,
+                        connectorFacadeKey,
                         SafeType<APIOperation>.ForRawType(operation),
                         operationMethodName,
                         arguments);
@@ -2802,10 +2952,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                         val.Operation.RawType);
                 encoder.WriteStringField("operationMethodName",
                                          val.OperationMethodName);
-                encoder.WriteObjectField("ConnectorKey",
-                        val.ConnectorKey, true);
                 encoder.WriteStringField("connectorFacadeKey",
-                        val.Configuration);
+                        val.ConnectorFacadeKey);
+                encoder.WriteObjectField("ConnectorKey",
+                        val.ConnectorKey, true);                
                 encoder.WriteObjectField("Arguments",
                         val.Arguments, true);
             }

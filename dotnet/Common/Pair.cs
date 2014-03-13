@@ -19,39 +19,57 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
 
 namespace Org.IdentityConnectors.Common
 {
     /// <summary>
-    /// Represents a Pair of objects
+    /// Represents a Pair of objects.
     /// </summary>
     public class Pair<T1, T2>
     {
+
         public Pair()
         {
         }
 
-        public Pair(T1 first, T2 second)
+        /// <summary>
+        /// <para>
+        /// Obtains an immutable pair of from two objects inferring the generic
+        /// types.
+        /// </para>
+        /// 
+        /// <para>
+        /// This factory allows the pair to be created using inference to obtain the
+        /// generic types.
+        /// </para>
+        /// </summary>
+        /// @param <L>
+        ///            the left element type </param>
+        /// @param <R>
+        ///            the right element type </param>
+        /// <param name="left">
+        ///            the left element, may be null </param>
+        /// <param name="right">
+        ///            the right element, may be null </param>
+        /// <returns> a pair formed from the two parameters, not null </returns>
+        /// <remarks>Since 1.4</remarks>
+        public static Pair<L, R> Of<L, R>(L left, R right)
         {
-            First = first;
-            Second = second;
+            return new Pair<L, R>(left, right);
+        }
+
+        public Pair(T1 f, T2 s)
+        {
+            this.First = f;
+            this.Second = s;
         }
 
         public T1 First { get; set; }
         public T2 Second { get; set; }
 
-        public override bool Equals(object obj)
-        {
-            Pair<T1, T2> other = obj as Pair<T1, T2>;
-            if (other != null)
-            {
-                return Object.Equals(First, other.First) &&
-                    Object.Equals(Second, other.Second);
-            }
-            return false;
-        }
 
         public override int GetHashCode()
         {
@@ -67,9 +85,42 @@ namespace Org.IdentityConnectors.Common
             return rv;
         }
 
+        public new bool Equals(object o1, object o2)
+        {
+            if (o1 == null)
+            {
+                return o2 == null;
+            }
+            else if (o2 == null)
+            {
+                return false;
+            }
+            else
+            {
+                return o1.Equals(o2);
+            }
+        }
+
+        public bool Equals(Pair<T1, T2> obj)
+        {
+            Pair<T1, T2> other = obj as Pair<T1, T2>;
+            if (other != null)
+            {
+                return Object.Equals(First, other.First) &&
+                    Object.Equals(Second, other.Second);
+            }
+            return false;
+        }
+
+        public override bool Equals(object @object)
+        {
+            var other = @object as Pair<T1, T2>;
+            return other != null && Equals(other);
+        }
+
         public override string ToString()
         {
-            return "( " + First + ", " + Second + " )";
-        }
+            return "( " + this.First + ", " + this.Second + " )";
+        }        
     }
 }
