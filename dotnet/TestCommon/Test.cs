@@ -58,8 +58,10 @@ namespace Org.IdentityConnectors.Test.Common
             }
         }
 
-        public ResultsHandler ResultsHandler {
-            get {
+        public ResultsHandler ResultsHandler
+        {
+            get
+            {
                 return new ResultsHandler
                 {
                     Handle = obj =>
@@ -89,6 +91,15 @@ namespace Org.IdentityConnectors.Test.Common
                 Configuration config)
         {
             return GetSpi().CreateTestConfiguration(clazz, config);
+        }
+
+        /// <summary>
+        /// Method for convenient testing of local connectors.
+        /// </summary>
+        public static APIConfiguration CreateTestConfiguration(SafeType<Connector> clazz,
+            PropertyBag configData, string prefix)
+        {
+            return GetSpi().CreateTestConfiguration(clazz, configData, prefix);
         }
 
         /// <summary>

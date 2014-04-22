@@ -19,18 +19,22 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2010-2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.test;
 
+import static org.identityconnectors.framework.impl.api.local.LocalConnectorInfoManagerImpl.createDefaultAPIConfiguration;
+import static org.identityconnectors.framework.impl.api.local.LocalConnectorInfoManagerImpl.loadMessageCatalog;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.api.ConnectorKey;
-import org.identityconnectors.framework.common.FrameworkUtil;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ConnectorMessages;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
@@ -42,14 +46,17 @@ import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.ConfigurationPropertiesImpl;
+import org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl;
+import org.identityconnectors.framework.impl.api.ConnectorMessagesImpl;
 import org.identityconnectors.framework.impl.api.local.JavaClassProperties;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.local.operations.SearchImpl;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
-import org.identityconnectors.framework.spi.PoolableConnector;
+import org.identityconnectors.framework.spi.ConnectorClass;
 import org.identityconnectors.framework.spi.SearchResultsHandler;
 import org.identityconnectors.framework.spi.operations.SearchOp;
+import org.identityconnectors.test.common.PropertyBag;
 import org.identityconnectors.test.common.spi.TestHelpersSpi;
 
 public class TestHelpersImpl implements TestHelpersSpi {
@@ -69,18 +76,55 @@ public class TestHelpersImpl implements TestHelpersSpi {
         info.setConnectorKey(new ConnectorKey(clazz.getName() + ".bundle", "1.0", clazz.getName()));
         info.setMessages(createDummyMessages());
         try {
-            APIConfigurationImpl rv = new APIConfigurationImpl();
-            rv.setConnectorPoolingSupported(PoolableConnector.class.isAssignableFrom(clazz));
-            ConfigurationPropertiesImpl properties =
-                    JavaClassProperties.createConfigurationProperties(config);
-            rv.setConfigurationProperties(properties);
-            rv.setConnectorInfo(info);
-            rv.setSupportedOperations(FrameworkUtil.getDefaultSupportedOperations(clazz));
+            APIConfigurationImpl rv = createDefaultAPIConfiguration(info);
             info.setDefaultAPIConfiguration(rv);
             return rv;
         } catch (Exception e) {
             throw ConnectorException.wrap(e);
         }
+    }
+
+    /**
+     * Method for convenient testing of local connectors.
+     */
+    @Override
+    public APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
+            final Set<String> bundleContents, PropertyBag configData, String prefix) {
+        assert null != clazz;
+        ConnectorClass options = clazz.getAnnotation(ConnectorClass.class);
+        assert null != options;
+        final LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
+        info.setConnectorClass(clazz);
+        info.setConnectorConfigurationClass(options.configurationClass());
+        info.setConnectorDisplayNameKey(options.displayNameKey());
+        info.setConnectorCategoryKey(options.categoryKey());
+        info.setConnectorKey(new ConnectorKey(clazz.getName() + ".bundle", "1.0", clazz.getName()));
+        if (null == bundleContents || bundleContents.isEmpty()) {
+            info.setMessages(createDummyMessages());
+        } else {
+            ConnectorMessagesImpl messages =
+                    loadMessageCatalog(bundleContents, clazz.getClassLoader(), info
+                            .getConnectorClass());
+            info.setMessages(messages);
+        }
+
+        APIConfigurationImpl impl = createDefaultAPIConfiguration(info);
+        info.setDefaultAPIConfiguration(impl);
+
+        ConfigurationPropertiesImpl configProps = impl.getConfigurationProperties();
+
+        String fullPrefix = StringUtil.isBlank(prefix) ? null : prefix + ".";
+
+        for (ConfigurationPropertyImpl property : configProps.getProperties()) {
+            Object value =
+                    configData.getProperty(null != fullPrefix ? fullPrefix + property.getName()
+                            : property.getName(), (Class<Object>) property.getType(), property
+                            .getValue());
+            if (value != null) {
+                property.setValue(value);
+            }
+        }
+        return impl;
     }
 
     @Override

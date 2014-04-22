@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2010-2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.remote;
 
@@ -30,6 +30,7 @@ import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.AbstractConnectorFacade;
+import org.identityconnectors.framework.impl.api.LoggingProxy;
 
 /**
  * Implements all the methods of the facade
@@ -72,7 +73,9 @@ public class RemoteConnectorFacadeImpl extends AbstractConnectorFacade {
         // now wrap the proxy in the appropriate timeout proxy
         proxy = createTimeoutProxy(api, proxy);
         // add logging proxy
-        proxy = createLoggingProxy(api, proxy);
+        if (LoggingProxy.isLoggable()) {
+            proxy = createLoggingProxy(api, proxy);
+        }
 
         return proxy;
     }

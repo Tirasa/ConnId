@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
@@ -125,6 +126,34 @@ namespace Org.IdentityConnectors.Test.Common
                 return def;
             }
             return CastValue<T>(name);
+        }
+
+        /// <summary>
+        /// Gets a property value, returning a default value when no property with the specified name exists in the bag.
+        /// </summary>
+        /// <param name="name">The name of the property.</param>
+        /// <param name="type">The type of the property to get.</param>
+        /// <param name="def">The default value returned when no property with the specified name exists in the bag.</param>
+        /// <returns>The value of the property in bag cast to type <paramref name="type"/> or the default value <paramref name="def"/>;
+        /// the value might be <c>null</c>.</returns>
+        /// <exception cref="InvalidCastException">Thrown when the property exists, but its value is not of type <paramref name="type"/>.</exception>       
+        public dynamic GetProperty(string name, Type type, dynamic def)
+        {
+            if (!_bag.ContainsKey(name))
+            {
+                return Convert.ChangeType(def, type);
+            }
+            object value = _bag[name];
+            //if the value of the property is null then just return null, there is no need for type checking
+            if ((value != null) &&
+                !(value.GetType() == type))      //otherwise check if value is an instance of T
+            {
+                return Convert.ChangeType(value, type);
+                throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
+                                                             @"Property named ""{0}"" is of type ""{1}"" but expected type was ""{2}""",
+                                                             name, value.GetType(), type));
+            }
+            return value;
         }
 
         /// <summary>

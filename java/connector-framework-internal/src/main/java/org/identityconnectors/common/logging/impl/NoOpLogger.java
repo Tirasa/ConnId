@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.common.logging.impl;
 
@@ -42,11 +43,20 @@ public class NoOpLogger implements LogSpi {
             String message, Throwable ex) {
     }
 
+    public void log(Class<?> clazz, StackTraceElement method, Level level,
+                    String message, Throwable ex) {
+    }
+
     /**
      * Always returns <code>false</code> because there nothing to do.
      */
     @Override
     public boolean isLoggable(Class<?> clazz, Level level) {
+        return false;
+    }
+
+    @Override
+    public boolean needToInferCaller(Class<?> clazz, Level level) {
         return false;
     }
 }

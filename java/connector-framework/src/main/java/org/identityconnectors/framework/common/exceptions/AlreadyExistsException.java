@@ -33,7 +33,7 @@ import org.identityconnectors.framework.common.objects.Uid;
  */
 public class AlreadyExistsException extends ConnectorException {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     private Uid uid;
 

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.common.logging;
 
@@ -43,7 +44,28 @@ public interface LogSpi {
     public void log(Class<?> clazz, String method, Log.Level level, String message, Throwable ex);
 
     /**
+     * Log given the class, level, message, and exception.
+     *
+     * @param clazz
+     *            Class that logging.
+     * @param level
+     *            the level at which to log.
+     *
+     * @param message
+     *            optional message to send to the log.
+     * @param ex
+     *            optional exception at logging point.
+     *
+     */
+    public void log(Class<?> clazz, StackTraceElement caller, Log.Level level, String message, Throwable ex);
+
+    /**
      * Determines if the it should be logged based on Class and Level.
      */
     public boolean isLoggable(Class<?> clazz, Log.Level level);
+
+    /**
+     * Determines if {@link Log} need to infer caller based on Class and Level.
+     */
+    public boolean needToInferCaller(Class<?> clazz, Log.Level level);
 }

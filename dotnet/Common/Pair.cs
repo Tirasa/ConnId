@@ -70,6 +70,16 @@ namespace Org.IdentityConnectors.Common
         public T1 First { get; set; }
         public T2 Second { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            Pair<T1, T2> other = obj as Pair<T1, T2>;
+            if (other != null)
+            {
+                return Object.Equals(First, other.First) &&
+                    Object.Equals(Second, other.Second);
+            }
+            return false;
+        }
 
         public override int GetHashCode()
         {
@@ -83,39 +93,6 @@ namespace Org.IdentityConnectors.Common
                 rv ^= Second.GetHashCode();
             }
             return rv;
-        }
-
-        public new bool Equals(object o1, object o2)
-        {
-            if (o1 == null)
-            {
-                return o2 == null;
-            }
-            else if (o2 == null)
-            {
-                return false;
-            }
-            else
-            {
-                return o1.Equals(o2);
-            }
-        }
-
-        public bool Equals(Pair<T1, T2> obj)
-        {
-            Pair<T1, T2> other = obj as Pair<T1, T2>;
-            if (other != null)
-            {
-                return Object.Equals(First, other.First) &&
-                    Object.Equals(Second, other.Second);
-            }
-            return false;
-        }
-
-        public override bool Equals(object @object)
-        {
-            var other = @object as Pair<T1, T2>;
-            return other != null && Equals(other);
         }
 
         public override string ToString()

@@ -19,11 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2010-2014 ForgeRock AS.
  */
 package org.identityconnectors.test.common.spi;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.common.objects.ConnectorMessages;
@@ -35,6 +36,7 @@ import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SearchOp;
+import org.identityconnectors.test.common.PropertyBag;
 
 /**
  * Private use only, do not implement! Use the methods in
@@ -44,6 +46,9 @@ public interface TestHelpersSpi {
 
     public APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
             Configuration config);
+
+    public APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
+            final Set<String> bundleContents, final PropertyBag configData, String prefix);
 
     public void fillConfiguration(Configuration config, Map<String, ? extends Object> configData);
 

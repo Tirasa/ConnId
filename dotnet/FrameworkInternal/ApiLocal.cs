@@ -129,7 +129,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                     }
                     else
                     {
-                        config = _context.Configuration;
+                        config = _context.GetConfiguration();
                     }
 
                     connector = (PoolableConnector)clazz.CreateInstance();
@@ -181,40 +181,6 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
         /// <summary>
         /// Get a object pool for this connector if it supports connector pooling.
         /// </summary>
-        public static ObjectPool<PoolableConnector> GetPoolDELETE(APIConfigurationImpl impl,
-                LocalConnectorInfoImpl localInfo)
-        {
-            ObjectPool<PoolableConnector> pool = null;
-            // determine if this connector wants generic connector pooling..
-            if (impl.IsConnectorPoolingSupported)
-            {
-                ConnectorPoolKey key =
-                    new ConnectorPoolKey(
-                            impl.ConnectorInfo.ConnectorKey,
-                            (ConfigurationPropertiesImpl)impl.ConfigurationProperties,
-                            impl.ConnectorPoolConfiguration);
-
-                lock (_pools)
-                {
-                    // get the pool associated..
-                    pool = CollectionUtil.GetValue(_pools, key, null);
-                    // create a new pool if it doesn't exist..
-                    if (pool == null)
-                    {
-                        Trace.TraceInformation("Creating new pool: " +
-                                impl.ConnectorInfo.ConnectorKey);
-                        // this instance is strictly used for the pool..
-                        pool = new ObjectPool<PoolableConnector>(
-                                new ConnectorPoolHandler(impl, localInfo),
-                                impl.ConnectorPoolConfiguration);
-                        // add back to the map of _pools..
-                        _pools[key] = pool;
-                    }
-                }
-            }
-            return pool;
-        }
-
         private static Pair<ConnectorPoolKey, ObjectPool<PoolableConnector>> GetPool2(APIConfigurationImpl impl, LocalConnectorInfoImpl localInfo)
         {
             // determine if this connector wants generic connector pooling..
@@ -245,6 +211,26 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                      (ConfigurationPropertiesImpl)impl.ConfigurationProperties, impl.ConnectorPoolConfiguration), (ObjectPool<PoolableConnector>)null);
             }
             return Pair<ConnectorPoolKey, ObjectPool<PoolableConnector>>.Of((ConnectorPoolKey)null, (ObjectPool<PoolableConnector>)null);
+        }
+
+        public static void Dispose(ConnectorPoolKey connectorPoolKey)
+        {
+            lock (_pools)
+            {
+                ObjectPool<PoolableConnector> pool = null;
+                if (_pools.TryGetValue(connectorPoolKey, out pool))
+                {
+                    _pools.Remove(connectorPoolKey);
+                    try
+                    {
+                        pool.Shutdown();
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.TraceWarning("Failed to close pool: {0} Exception: {1}", pool, e);
+                    }
+                }
+            }
         }
 
         public static void Dispose()
@@ -405,6 +391,20 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
             IDictionary<string, PropertyInfo> rv =
                 new Dictionary<string, PropertyInfo>();
             PropertyInfo[] descriptors = config.RawType.GetProperties();
+            SortedSet<string> excludes = new SortedSet<string>();
+            // exclude connectorMessages since its part of the interface.
+            excludes.Add("ConnectorMessages");
+
+            bool filterUnsupported = false;
+            ConfigurationClassAttribute options = GetConfigurationOptions(config);
+            if (null != options)
+            {
+                foreach (string s in options.Ignore)
+                {
+                    excludes.Add(s);
+                }
+                filterUnsupported = options.SkipUnsupported;
+            }
             foreach (PropertyInfo descriptor in descriptors)
             {
                 String propName = descriptor.Name;
@@ -413,8 +413,13 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                     //if there's no setter, ignore it
                     continue;
                 }
-                if ("ConnectorMessages".Equals(propName))
+                if (excludes.Contains(propName))
                 {
+                    continue;
+                }
+                if (filterUnsupported && !FrameworkUtil.IsSupportedConfigurationType(descriptor.PropertyType))
+                {
+                    //Silently ignore if the property type is not supported
                     continue;
                 }
                 if (!descriptor.CanRead)
@@ -445,6 +450,25 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
             else
             {
                 return (ConfigurationPropertyAttribute)objs[0];
+            }
+        }
+
+        /// <summary>
+        /// Get the option from the property.
+        /// </summary>
+        private static ConfigurationClassAttribute GetConfigurationOptions(
+                SafeType<Configuration> configClass)
+        {
+            Object[] objs =
+                configClass.RawType.GetCustomAttributes(
+                    typeof(ConfigurationClassAttribute), true);
+            if (objs.Length == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return (ConfigurationClassAttribute)objs[0];
             }
         }
 
@@ -561,7 +585,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
             return rv;
         }
 
-        private APIConfigurationImpl
+        public static APIConfigurationImpl
         CreateDefaultAPIConfiguration(LocalConnectorInfoImpl localInfo)
         {
             SafeType<Connector> connectorClass =
@@ -588,7 +612,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
         /// </summary>
         /// <param name="assembly"></param>
         /// <returns></returns>
-        private CultureInfo[] GetLocalizedCultures(Assembly assembly)
+        private static CultureInfo[] GetLocalizedCultures(Assembly assembly)
         {
             FileInfo assemblyFile =
                new FileInfo(assembly.Location);
@@ -627,7 +651,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
             return temp.ToArray();
         }
 
-        private ConnectorMessagesImpl LoadMessages(Assembly assembly,
+        public static ConnectorMessagesImpl LoadMessages(Assembly assembly,
                                                    LocalConnectorInfoImpl info,
                                                    String[] nameBases)
         {

@@ -19,14 +19,17 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 
 using Org.IdentityConnectors.Common;
 using Org.IdentityConnectors.Framework.Api;
+using Org.IdentityConnectors.Framework.Common.Exceptions;
 using Org.IdentityConnectors.Framework.Impl.Api;
 using Org.IdentityConnectors.Framework.Impl.Api.Local;
 using Org.IdentityConnectors.Framework.Impl.Api.Local.Operations;
@@ -35,6 +38,7 @@ using Org.IdentityConnectors.Framework.Common.Objects;
 using Org.IdentityConnectors.Framework.Common.Objects.Filters;
 using Org.IdentityConnectors.Framework.Spi;
 using Org.IdentityConnectors.Framework.Spi.Operations;
+using Org.IdentityConnectors.Test.Common;
 using Org.IdentityConnectors.Test.Common.Spi;
 
 namespace Org.IdentityConnectors.Framework.Impl.Test
@@ -68,6 +72,78 @@ namespace Org.IdentityConnectors.Framework.Impl.Test
             info.DefaultAPIConfiguration = (
                     rv);
             return rv;
+        }
+
+        /// <summary>
+        /// Method for convenient testing of local connectors.
+        /// </summary>
+        public APIConfiguration CreateTestConfiguration(SafeType<Connector> connectorClass, PropertyBag configData, string prefix)
+        {
+            Debug.Assert(null != connectorClass);
+            Type rawConnectorClass = connectorClass.RawType;
+
+            Object[] attributes = connectorClass.RawType.GetCustomAttributes(
+                    typeof(ConnectorClassAttribute),
+                    false);
+            if (attributes.Length > 0)
+            {
+                ConnectorClassAttribute attribute =
+                    (ConnectorClassAttribute)attributes[0];
+
+                Assembly assembly = IOUtil.GetAssemblyContainingType(rawConnectorClass.FullName);
+
+                String fileName = assembly.Location;
+                SafeType<Configuration> connectorConfigurationClass = attribute.ConnectorConfigurationType;
+                if (connectorConfigurationClass == null)
+                {
+                    String MSG = ("File " + fileName +
+                                 " contains a ConnectorInfo attribute " +
+                                 "with no connector configuration class.");
+                    throw new ConfigurationException(MSG);
+                }
+                String connectorDisplayNameKey =
+                    attribute.ConnectorDisplayNameKey;
+                if (connectorDisplayNameKey == null)
+                {
+                    String MSG = ("File " + fileName +
+                                  " contains a ConnectorInfo attribute " +
+                                  "with no connector display name.");
+                    throw new ConfigurationException(MSG);
+                }
+                LocalConnectorInfoImpl rv = new LocalConnectorInfoImpl();
+                rv.ConnectorClass = connectorClass;
+                rv.ConnectorConfigurationClass = connectorConfigurationClass;
+                rv.ConnectorDisplayNameKey = connectorDisplayNameKey;
+                rv.ConnectorCategoryKey = attribute.ConnectorCategoryKey;
+                rv.ConnectorKey = (
+                   new ConnectorKey(rawConnectorClass.Name + ".bundle",
+                    "1.0",
+                    rawConnectorClass.Name)); ;
+                APIConfigurationImpl impl = LocalConnectorInfoManagerImpl.CreateDefaultAPIConfiguration(rv);
+                rv.DefaultAPIConfiguration = impl;
+                if (false)
+                {
+                    rv.Messages = CreateDummyMessages();
+                }
+                else
+                {
+                    rv.Messages = LocalConnectorInfoManagerImpl.LoadMessages(assembly, rv, attribute.MessageCatalogPaths);
+                }
+                ConfigurationPropertiesImpl configProps = (ConfigurationPropertiesImpl)impl.ConfigurationProperties;
+
+                string fullPrefix = StringUtil.IsBlank(prefix) ? null : prefix + ".";
+
+                foreach (ConfigurationPropertyImpl property in configProps.Properties)
+                {
+                    object value = configData.GetProperty(null != fullPrefix ? fullPrefix + property.Name : property.Name, property.ValueType, property.Value);
+                    if (value != null)
+                    {
+                        property.Value = value;
+                    }
+                }
+                return impl;
+            }
+            throw new ArgumentException("ConnectorClass does not define ConnectorClassAttribute");
         }
 
         public void FillConfiguration(Configuration config, IDictionary<string, object> configData)

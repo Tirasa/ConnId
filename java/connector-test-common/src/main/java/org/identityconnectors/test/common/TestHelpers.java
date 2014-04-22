@@ -19,17 +19,24 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.test.common;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
@@ -61,6 +68,26 @@ public final class TestHelpers {
     public static APIConfiguration createTestConfiguration(final Class<? extends Connector> clazz,
             final Configuration config) {
         return getSpi().createTestConfiguration(clazz, config);
+    }
+
+    /**
+     * Method for convenient testing of local connectors.
+     */
+    public static APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
+            final PropertyBag configData, String prefix) {
+        URL url = clazz.getClassLoader().getResource("");
+        Set<String> bundleContents = new HashSet<String>();
+
+        try {
+            URI relative = url.toURI();
+            for (File file : FileUtils.listFiles(new File(url.toURI()), TrueFileFilter.INSTANCE,
+                    TrueFileFilter.INSTANCE)) {
+                bundleContents.add(relative.relativize(file.toURI()).getPath());
+            }
+            return getSpi().createTestConfiguration(clazz, bundleContents, configData, prefix);
+        } catch (Exception e) {
+            throw ConnectorException.wrap(e);
+        }
     }
 
     /**
@@ -233,14 +260,58 @@ public final class TestHelpers {
             throw new IllegalStateException(
                     "Thread.currentThread().getContextClassLoader() is null, please set context ClassLoader");
         }
-        return getProperties(clazz, loader);
+        return getProperties(clazz, null, loader);
     }
 
-    static Map<?, ?> loadGroovyConfigFile(URL url) {
+    /**
+     * Loads Property bag for the specified class. The properties are loaded as
+     * classpath resources using the class argument as root prefix. Optional
+     * system property 'testConfig' is used to specify another configuration
+     * path for properties. The following algorithm is used to load the
+     * properties in bag
+     * <ul>
+     * <li><code>loader.getResource(prefix + "/config/config.groovy")</code></li>
+     * <li>
+     * <code>loader.getResource(prefix + "/config/" + cfg + "/config.groovy") </code>
+     * optionally where cfg is passed configuration</li>
+     * <li>
+     * <code> loader.getResource(prefix + "/config-private/config.groovy") </code>
+     * </li>
+     * <li>
+     * <code>loader.getResource(prefix + "/config-private/" + cfg + "/config.groovy") </code>
+     * optionally where cfg is passed configuration</li>
+     * </ul>
+     * Context classloader is used to load the resources.
+     *
+     * @param clazz
+     *            Class which FQN is used as root prefix for loading of
+     *            properties
+     * @param environment
+     *            Environment name (Optional)
+     * @return Bag of properties for specified class and optionally passed
+     *         configuration
+     * @throws IllegalStateException
+     *             if context classloader is null
+     */
+    public static PropertyBag getProperties(Class<?> clazz, String environment) {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null) {
+            throw new IllegalStateException(
+                    "Thread.currentThread().getContextClassLoader() is null, please set context ClassLoader");
+        }
+        return getProperties(clazz, environment, loader);
+    }
+
+    static Map<?, ?> loadGroovyConfigFile(URL url, String environment) {
         try {
             Class<?> slurper = Class.forName("groovy.util.ConfigSlurper");
             Class<?> configObject = Class.forName("groovy.util.ConfigObject");
-            Object slurpInstance = slurper.newInstance();
+            Object slurpInstance = null;
+            if (StringUtil.isBlank(environment)) {
+                slurpInstance = slurper.newInstance();
+            } else {
+                slurpInstance = slurper.getConstructor(String.class).newInstance(environment);
+            }
             Method parse = slurper.getMethod("parse", URL.class);
             Object config = parse.invoke(slurpInstance, url);
             Method toProps = configObject.getMethod("flatten");
@@ -252,42 +323,46 @@ public final class TestHelpers {
         }
     }
 
-    static PropertyBag getProperties(Class<?> clazz, ClassLoader loader) {
+    static PropertyBag getProperties(Class<?> clazz, String environment, ClassLoader loader) {
         synchronized (LOCK) {
-            PropertyBag bag = BAGS.get(clazz.getName());
+            String key =
+                    StringUtil.isBlank(environment) ? clazz.getName() : clazz.getName() + "/"
+                            + environment;
+            PropertyBag bag = BAGS.get(key);
             if (bag == null) {
-                bag = loadConnectorConfigurationAsResource(clazz.getName(), loader);
-                BAGS.put(clazz.getName(), bag);
+                bag = loadConnectorConfigurationAsResource(clazz.getName(), environment, loader);
+                BAGS.put(key, bag);
             }
             return bag;
         }
     }
 
-    static PropertyBag loadConnectorConfigurationAsResource(String prefix, ClassLoader loader) {
+    static PropertyBag loadConnectorConfigurationAsResource(String prefix, String environment,
+            ClassLoader loader) {
         Map<String, Object> ret = new HashMap<String, Object>();
         String cfg = System.getProperty("testConfig", null);
         // common public config file
         URL url = loader.getResource(prefix + "/config/config.groovy");
         if (url != null) {
-            appendProperties(ret, loadGroovyConfigFile(url));
+            appendProperties(ret, loadGroovyConfigFile(url, environment));
         }
         if (StringUtil.isNotBlank(cfg) && !"default".equals(cfg)) {
             // public config file specific for one particular configuration
             url = loader.getResource(prefix + "/config/" + cfg + "/config.groovy");
             if (url != null) {
-                appendProperties(ret, loadGroovyConfigFile(url));
+                appendProperties(ret, loadGroovyConfigFile(url, environment));
             }
         }
         // common private config file
         url = loader.getResource(prefix + "/config-private/config.groovy");
         if (url != null) {
-            appendProperties(ret, loadGroovyConfigFile(url));
+            appendProperties(ret, loadGroovyConfigFile(url, environment));
         }
         if (StringUtil.isNotBlank(cfg) && !"default".equals(cfg)) {
             // private config file specific for one particular configuration
             url = loader.getResource(prefix + "/config-private/" + cfg + "/config.groovy");
             if (url != null) {
-                appendProperties(ret, loadGroovyConfigFile(url));
+                appendProperties(ret, loadGroovyConfigFile(url, environment));
             }
         }
         return new PropertyBag(ret);

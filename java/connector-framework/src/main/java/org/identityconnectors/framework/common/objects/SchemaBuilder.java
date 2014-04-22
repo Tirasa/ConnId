@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -90,6 +91,45 @@ public final class SchemaBuilder {
     }
 
     /**
+     * Adds another ObjectClassInfo to the schema.
+     * 
+     * Also, adds this to the set of supported classes for every operation
+     * defined by the Connector.
+     * 
+     * @param objectClassInfo
+     * @param operations
+     *            The SPI operation which use supports this
+     *            {@code objectClassInfo}
+     * 
+     * @throws IllegalStateException
+     *             If already defined
+     */
+    public void defineObjectClass(ObjectClassInfo objectClassInfo,
+            Class<? extends SPIOperation>... operations) {
+        if (operations.length > 0) {
+            Assertions.nullCheck(objectClassInfo, "objectClassInfo");
+            if (declaredObjectClasses.contains(objectClassInfo)) {
+                throw new IllegalStateException("ObjectClass already defined: "
+                        + objectClassInfo.getType());
+            }
+            declaredObjectClasses.add(objectClassInfo);
+            for (Class<? extends SPIOperation> spi : operations) {
+                for (Class<? extends APIOperation> api : FrameworkUtil.spi2apis(spi)) {
+                    Set<ObjectClassInfo> oclasses = supportedObjectClassesByOperation.get(api);
+                    if (oclasses == null) {
+                        oclasses = new HashSet<ObjectClassInfo>();
+                        supportedObjectClassesByOperation.put(api, oclasses);
+                    }
+                    oclasses.add(objectClassInfo);
+                }
+            }
+
+        } else {
+            defineObjectClass(objectClassInfo);
+        }
+    }
+
+    /**
      * Adds another OperationOptionInfo to the schema. Also, adds this to the
      * set of supported options for every operation defined by the Connector.
      */
@@ -107,6 +147,42 @@ public final class SchemaBuilder {
                 supportedOptionsByOperation.put(op, oclasses);
             }
             oclasses.add(info);
+        }
+    }
+
+    /**
+     * Adds another OperationOptionInfo to the schema. Also, adds this to the
+     * set of supported options for operation defined.
+     * 
+     * @param operationOptionInfo
+     * @param operations
+     * 
+     * @throws IllegalStateException
+     *             If already defined
+     */
+    public void defineOperationOption(OperationOptionInfo operationOptionInfo,
+            Class<? extends SPIOperation>... operations) {
+        if (operations.length > 0) {
+            Assertions.nullCheck(operationOptionInfo, "info");
+            if (declaredOperationOptions.contains(operationOptionInfo)) {
+                throw new IllegalStateException("OperationOption already defined: "
+                        + operationOptionInfo.getName());
+            }
+            declaredOperationOptions.add(operationOptionInfo);
+            for (Class<? extends SPIOperation> spi : operations) {
+                for (Class<? extends APIOperation> op : FrameworkUtil
+                        .getDefaultSupportedOperations(connectorClass)) {
+                    Set<OperationOptionInfo> oclasses = supportedOptionsByOperation.get(op);
+                    if (oclasses == null) {
+                        oclasses = new HashSet<OperationOptionInfo>();
+                        supportedOptionsByOperation.put(op, oclasses);
+                    }
+                    oclasses.add(operationOptionInfo);
+                }
+            }
+
+        } else {
+            defineOperationOption(operationOptionInfo);
         }
     }
 
