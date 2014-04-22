@@ -34,7 +34,46 @@ import org.identityconnectors.common.Assertions;
  */
 public final class SortKey {
 
+    /**
+     * Creates a new ascending-order sort key for the provided field.
+     *
+     * @param field
+     *            The sort key field.
+     * @return A new ascending-order sort key.
+     * @throws IllegalArgumentException
+     *             If {@code field} is not a valid attribute name.
+     */
+    public static SortKey ascendingOrder(final String field) {
+        return new SortKey(field, true);
+    }
+
+    /**
+     * Creates a new descending-order sort key for the provided field.
+     *
+     * @param field
+     *            The sort key field.
+     * @return A new descending-order sort key.
+     * @throws IllegalArgumentException
+     *             If {@code field} is not a valid attribute name.
+     */
+    public static SortKey descendingOrder(final String field) {
+        return new SortKey(field, false);
+    }
+
+    /**
+     * Creates a new sort key having the same field as the provided key, but in
+     * reverse sort order.
+     *
+     * @param key
+     *            The sort key to be reversed.
+     * @return The reversed sort key.
+     */
+    public static SortKey reverseOrder(final SortKey key) {
+        return new SortKey(key.field, !key.isAscendingOrder);
+    }
+
     private final String field;
+
     private final boolean isAscendingOrder;
 
     public SortKey(final String field, final boolean isAscendingOrder) {
@@ -60,5 +99,19 @@ public final class SortKey {
      */
     public boolean isAscendingOrder() {
         return isAscendingOrder;
+    }
+
+    /**
+     * Returns the string representation of this sort key. It will be composed
+     * of a plus symbol, if the key is ascending, or a minus symbol, if the key
+     * is descending, followed by the field name.
+     *
+     * @return The string representation of this sort key.
+     */
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(isAscendingOrder ? '+' : '-');
+        builder.append(field);
+        return builder.toString();
     }
 }

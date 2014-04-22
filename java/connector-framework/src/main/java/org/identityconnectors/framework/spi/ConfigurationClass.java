@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2010-2013 ForgeRock AS. All rights reserved.
+ * Copyright (c) 2014 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -21,23 +21,32 @@
  * ====================
  */
 
-package org.identityconnectors.common.event;
+package org.identityconnectors.framework.spi;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * A ConnectorEventHandler receives notification when a connector bundle is
- * registered or unregistered.
+ * The {@link org.identityconnectors.framework.spi.Configuration} interface is traversed through reflection. This
+ * annotation provides a way to override the default "add all property" behaviour.
  *
  * @author Laszlo Hordos
  * @since 1.4
  */
-public interface ConnectorEventHandler {
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ConfigurationClass {
+
     /**
-     * Called by the
-     * {@link org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoManagerImpl}
-     * service to notify the listener of an event.
-     *
-     * @param event
-     *            The {@code ConnectorEvent} object.
+     * Silently skips properties with unsupported types.
      */
-    public void handleEvent(ConnectorEvent event);
+    public boolean skipUnsupported() default false;
+
+    /**
+     * List of properties which should be excluded from configuration properties.
+     */
+    public String[] ignore() default {};
 }

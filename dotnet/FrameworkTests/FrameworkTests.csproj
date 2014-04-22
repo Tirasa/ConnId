@@ -89,6 +89,7 @@
     <Compile Include="SafeTypeTest.cs" />
     <Compile Include="ScriptTests.cs" />
     <Compile Include="GuardedStringTests.cs" />
+    <Compile Include="StringUtilTests.cs" />
     <Compile Include="TestHelperTests.cs" />
     <Compile Include="TestUtil.cs" />
     <Compile Include="UpdateImplTests.cs" />

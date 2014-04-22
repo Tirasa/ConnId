@@ -220,6 +220,50 @@ namespace Org.IdentityConnectors.Framework.Spi
     }
     #endregion
 
+    #region ConfigurationrClassAttribute
+    /// <summary>
+    /// The <seealso cref="Org.IdentityConnectors.Framework.Spi.Configuration"/> interface is traversed through reflection. This
+    /// annotation provides a way to override the default "add all property" behaviour.
+    /// 
+    /// @since 1.4
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class ConfigurationClassAttribute : System.Attribute
+    {
+
+        private readonly Boolean _skipUnsupported;
+        private readonly String[] _ignore;
+
+        public ConfigurationClassAttribute(Boolean skipUnsupported, String[] ignore)
+        {
+            _skipUnsupported = skipUnsupported;
+            _ignore = ignore ?? new string[]{} ;
+        }
+
+        /// <summary>
+        /// Silently skips properties with unsupported types.
+        /// </summary>
+        public Boolean SkipUnsupported
+        {
+            get
+            {
+                return _skipUnsupported;
+            }
+        }
+
+        /// <summary>
+        /// List of properties which should be excluded from configuration properties..
+        /// </summary>
+        public string[] Ignore
+        {
+            get
+            {
+                return _ignore;
+            }
+        }
+    }
+    #endregion
+
     #region ConfigurationPropertyAttribute
     /// <summary>
     /// The <see cref="Configuration"/> interface is traversed through reflection. This

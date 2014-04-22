@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.test.common;
 
@@ -50,7 +51,7 @@ public class TestHelpersTest {
     public void testLoadGroovyConfigFileIssue393() {
         Map<?, ?> props =
                 TestHelpers.loadGroovyConfigFile(TestHelpersTest.class
-                        .getResource("properties.groovy"));
+                        .getResource("properties.groovy"), null);
         assertEquals(props.get("prop.integerclass"), Integer.class);
     }
 
@@ -60,10 +61,10 @@ public class TestHelpersTest {
         System.setProperty("testConfig", "myconfig");
         try {
             PropertyBag properties1 =
-                    TestHelpers.getProperties(DummyConnector.class, new ConfigClassLoader());
+                    TestHelpers.getProperties(DummyConnector.class, null, new ConfigClassLoader());
             checkProperties(properties1);
             PropertyBag properties2 =
-                    TestHelpers.getProperties(DummyConnector.class, new ConfigClassLoader());
+                    TestHelpers.getProperties(DummyConnector.class, null, new ConfigClassLoader());
             assertSame(properties1, properties2,
                     "TestHepers must create same PropertyBag for same connector");
         } finally {

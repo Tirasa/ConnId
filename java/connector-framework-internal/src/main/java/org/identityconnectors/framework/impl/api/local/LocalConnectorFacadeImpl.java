@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2010-2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local;
 
@@ -27,7 +27,6 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.identityconnectors.common.Pair;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
@@ -45,6 +44,7 @@ import org.identityconnectors.framework.api.operations.ValidateApiOp;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.AbstractConnectorFacade;
+import org.identityconnectors.framework.impl.api.LoggingProxy;
 import org.identityconnectors.framework.impl.api.local.operations.APIOperationRunner;
 import org.identityconnectors.framework.impl.api.local.operations.AuthenticationImpl;
 import org.identityconnectors.framework.impl.api.local.operations.ConnectorAPIOperationRunner;
@@ -65,7 +65,6 @@ import org.identityconnectors.framework.impl.api.local.operations.ThreadClassLoa
 import org.identityconnectors.framework.impl.api.local.operations.UpdateImpl;
 import org.identityconnectors.framework.impl.api.local.operations.ValidateImpl;
 import org.identityconnectors.framework.spi.Connector;
-import org.identityconnectors.framework.spi.PoolableConnector;
 
 /**
  * Implements all the methods of the facade.
@@ -200,7 +199,9 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
         // now wrap the proxy in the appropriate timeout proxy
         proxy = createTimeoutProxy(api, proxy);
         // wrap in a logging proxy..
-        proxy = createLoggingProxy(api, proxy);
+        if (LoggingProxy.isLoggable()) {
+            proxy = createLoggingProxy(api, proxy);
+        }
         return proxy;
     }
 }

@@ -223,7 +223,7 @@ public final class AttributeBuilder {
             }
             // add each value checking to make sure its correct
             for (Object v : values) {
-                FrameworkUtil.checkAttributeValue(v);
+                FrameworkUtil.checkAttributeValue(name, v);
                 value.add(v);
             }
         }

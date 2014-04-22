@@ -22,6 +22,7 @@
  * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
+using System.Collections;
 using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
@@ -143,7 +144,8 @@ namespace Org.IdentityConnectors.Framework.Common
                 typeof(BigDecimal),
                 typeof(BigInteger),
                 typeof(GuardedByteArray),
-                typeof(GuardedString)
+                typeof(GuardedString),
+                typeof(IDictionary<object, object>)
             );
 
         }
@@ -228,9 +230,13 @@ namespace Org.IdentityConnectors.Framework.Common
         /// <description>BigInteger
         /// </description>
         /// </item>
+        /// <item>
+        /// <description>IDictionary
+        /// </description>
+        /// </item>
         /// </list>
         /// </remarks>
-        /// <param name="clazz">type to check against the support list of types.</param>
+        /// <param name="type">type to check against the support list of types.</param>
         /// <exception cref="ArgumentException">iff the type is not on the supported list.</exception>
         public static void CheckAttributeType(Type type)
         {
@@ -252,7 +258,82 @@ namespace Org.IdentityConnectors.Framework.Common
         {
             if (value != null)
             {
-                CheckAttributeType(value.GetType());
+                CheckAttributeValue((String)null, value);
+            }
+        }
+        /// <summary>
+        /// Determines if the class of the object is a supported attribute type. If
+        /// not it throws an <seealso cref="IllegalArgumentException"/>.
+        /// </summary>
+        /// <param name="name">
+        ///            The name of the attribute to check </param>
+        /// <param name="value">
+        ///            The value to check or null. </param>
+        /// <exception cref="ArgumentException">
+        ///             If the class of the object is a supported attribute type. </exception>
+        public static void CheckAttributeValue(String name, Object value)
+        {
+
+            if (value != null)
+            {
+                if (value is IDictionary)
+                {
+                    CheckAttributeValue(new StringBuilder(name == null ? "?" : name), value);
+                }
+                else
+                {
+                    if (name == null)
+                    {
+                        CheckAttributeType(value.GetType());
+                    }
+                    else if (!IsSupportedAttributeType(value.GetType()))
+                    {
+                        throw new ArgumentException("Attribute ''" + name + "'' type ''" + value.GetType() + "'' is not supported.");
+                    }
+                }
+            }
+        }
+        private static void CheckAttributeValue(StringBuilder name, Object value)
+        {
+            if (value != null)
+            {
+                IDictionary dictionary = value as IDictionary;
+                if (dictionary != null)
+                {
+                    foreach (DictionaryEntry entry in dictionary)
+                    {
+                        object key = entry.Key;
+                        Object entryValue = entry.Value;
+                        if (key is string)
+                        {
+                            StringBuilder nameBuilder = (new StringBuilder(name.ToString())).Append('/').Append(key);
+                            if (entryValue is IList)
+                            {
+                                nameBuilder.Append("[*]");
+                                foreach (Object item in ((IList)entryValue))
+                                {
+                                    CheckAttributeValue(nameBuilder, item);
+                                }
+                            }
+                            else
+                            {
+                                CheckAttributeValue(nameBuilder, entryValue);
+                            }
+                        }
+                        else
+                        {
+                            throw new ArgumentException(
+                                "Map Attribute ''" + name + "'' must have String key, type ''" + key.GetType() + "'' is not supported.");
+                        }
+                    }
+                }
+                else
+                {
+                    if (!IsSupportedAttributeType(value.GetType()))
+                    {
+                        throw new ArgumentException("Attribute ''" + name + "'' type ''" + value.GetType() + "'' is not supported.");
+                    }
+                }
             }
         }
         public static ICollection<SafeType<APIOperation>> Spi2Apis(SafeType<SPIOperation> type)
@@ -331,7 +412,8 @@ namespace Org.IdentityConnectors.Framework.Common
         }
         public static bool IsSupportedAttributeType(Type clazz)
         {
-            return ATTR_SUPPORTED_TYPES.Contains(clazz);
+            return ATTR_SUPPORTED_TYPES.Contains(clazz) || null != ReflectionUtil.FindInHierarchyOf
+                    (typeof(IDictionary<,>), clazz);
         }
 
         /// <summary>

@@ -22,6 +22,7 @@
  * Portions Copyrighted 2012-2014 ForgeRock AS.
  */
 using System;
+using System.Collections;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -291,7 +292,6 @@ namespace FrameworkTests
                         "org.identityconnectors.testconnector.TstConnector");
             Assert.IsNotNull(info);
             APIConfiguration api = info.CreateDefaultAPIConfiguration();
-            api.ProducerBufferSize = 0;
 
             ConfigurationProperties props = api.ConfigurationProperties;
             ConfigurationProperty property = props.GetProperty("numResults");
@@ -544,6 +544,37 @@ namespace FrameworkTests
             Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
             Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
             Assert.AreEqual(facade1.Create(ObjectClass.ACCOUNT, attrs, null).GetUidValue(), uid);
+        }
+
+        [Test]
+        public void TestAttributeTypeMap()
+        {
+            ConnectorPoolManager.Dispose();
+            ConnectorInfoManager manager = GetConnectorInfoManager();
+            ConnectorInfo info1 = FindConnectorInfo(manager, "1.0.0.0", "org.identityconnectors.testconnector.TstStatefulConnector");
+            Assert.IsNotNull(info1);
+
+            APIConfiguration config = info1.CreateDefaultAPIConfiguration();
+
+            config.ConnectorPoolConfiguration.MinIdle = 0;
+            config.ConnectorPoolConfiguration.MaxIdle = 0;
+
+            ConnectorFacade facade = ConnectorFacadeFactory.GetInstance().NewInstance(config);
+
+            HashSet<ConnectorAttribute> createAttributes = new HashSet<ConnectorAttribute>();
+            IDictionary<string, object> mapAttribute = new Dictionary<string, object>();
+            mapAttribute["email"] = "foo@example.com";
+            mapAttribute["primary"] = true;
+            mapAttribute["usage"] = new List<String>() { "home", "work" };
+            createAttributes.Add(ConnectorAttributeBuilder.Build("emails", mapAttribute));
+
+            Uid uid = facade.Create(ObjectClass.ACCOUNT, createAttributes, null);
+            Assert.AreEqual(uid.GetUidValue(), "foo@example.com");
+
+            ConnectorObject co = facade.GetObject(ObjectClass.ACCOUNT, new Uid("0"), null);
+            object value = ConnectorAttributeUtil.GetSingleValue(co.GetAttributeByName("emails"));
+            Assert.IsTrue(value is IDictionary);
+            Assert.IsTrue(((IDictionary)value)["usage"] is IList);
         }
 
         [Test]

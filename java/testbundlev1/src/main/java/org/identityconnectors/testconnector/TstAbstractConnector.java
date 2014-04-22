@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2013 ForgeRock AS. All rights reserved.
+ * Copyright (c) 2013-2014 ForgeRock AS. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -27,7 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -35,6 +37,7 @@ import java.util.TreeSet;
 
 import org.identityconnectors.framework.common.exceptions.AlreadyExistsException;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.exceptions.PreconditionFailedException;
 import org.identityconnectors.framework.common.exceptions.PreconditionRequiredException;
 import org.identityconnectors.framework.common.objects.Attribute;
@@ -155,6 +158,13 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
             throw new ConnectorException("Test Exception");
         } else if (accessor.hasAttribute("exist") && accessor.findBoolean("exist")) {
             throw new AlreadyExistsException(accessor.getName().getNameValue());
+        } else if (accessor.hasAttribute("emails")) {
+            Object value = AttributeUtil.getSingleValue(accessor.find("emails"));
+            if (value instanceof Map) {
+                return new Uid((String) ((Map) value).get("email"));
+            } else {
+                throw new InvalidAttributeValueException("Expecting Map");
+            }
         }
         return new Uid(config.getGuid().toString());
     }
@@ -288,6 +298,11 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
             builder.setUid(String.valueOf(i));
             builder.setName(String.format("user%03d", i));
             builder.addAttribute(AttributeBuilder.buildEnabled(enabled));
+            Map<String, Object> mapAttribute = new HashMap<String, Object>();
+            mapAttribute.put("email", "foo@example.com");
+            mapAttribute.put("primary", true);
+            mapAttribute.put("usage", Arrays.asList("home", "work"));
+            builder.addAttribute(AttributeBuilder.build("emails", mapAttribute));
             ConnectorObject co = builder.build();
             collection.put(co.getName().getNameValue(), co);
             enabled = !enabled;

@@ -939,7 +939,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
                 // add each value checking to make sure its correct
                 foreach (Object v in values)
                 {
-                    FrameworkUtil.CheckAttributeValue(v);
+                    FrameworkUtil.CheckAttributeValue(Name, v);
                     _value.Add(v);
                 }
             }
@@ -3350,6 +3350,26 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         {
             return Build(OperationOptions.OP_CONTAINER, typeof(QualifiedUid));
         }
+
+        public static OperationOptionInfo BuildPagedResultsCookie()
+        {
+            return Build(OperationOptions.OP_PAGED_RESULTS_COOKIE);
+        }
+
+        public static OperationOptionInfo BuildPagedResultsOffset()
+        {
+            return Build(OperationOptions.OP_PAGED_RESULTS_OFFSET, typeof(int?));
+        }
+
+        public static OperationOptionInfo BuildPageSize()
+        {
+            return Build(OperationOptions.OP_PAGE_SIZE, typeof(int?));
+        }
+
+        public static OperationOptionInfo BuildSortKeys()
+        {
+            return Build(OperationOptions.OP_SORT_KEYS, typeof(SortKey));
+        }
     }
     #endregion
 
@@ -3755,7 +3775,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         /// the Connector.
         /// </remarks>
         /// <param name="info"></param>
-        /// <exception cref="IllegalStateException">If already defined</exception>
+        /// <exception cref="InvalidOperationException">If already defined</exception>
         public void DefineObjectClass(ObjectClassInfo info)
         {
             Assertions.NullCheck(info, "info");
@@ -3776,6 +3796,48 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
                     _supportedObjectClassesByOperation[op] = oclasses;
                 }
                 oclasses.Add(info);
+            }
+        }
+        /// <summary>
+        /// Adds another ObjectClassInfo to the schema.
+        /// 
+        /// Also, adds this to the set of supported classes for every operation
+        /// defined by the Connector.
+        /// </summary>
+        /// <param name="info"> </param>
+        /// <param name="operations">
+        ///            The SPI operation which use supports this
+        ///            {@code objectClassInfo}
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        ///             If already defined </exception>
+        public void DefineObjectClass(ObjectClassInfo info, params SafeType<SPIOperation>[] operations)
+        {
+            if (operations.Length > 0)
+            {
+                Assertions.NullCheck(info, "objectClassInfo");
+                if (_declaredObjectClasses.Contains(info))
+                {
+                    throw new InvalidOperationException("ObjectClass already defined: " + info.ObjectType);
+                }
+                _declaredObjectClasses.Add(info);
+                foreach (SafeType<SPIOperation> spi in operations)
+                {
+                    foreach (SafeType<APIOperation> op in FrameworkUtil.Spi2Apis(spi))
+                    {
+                        ICollection<ObjectClassInfo> oclasses = CollectionUtil.GetValue(_supportedObjectClassesByOperation, op, null);
+                        if (oclasses == null)
+                        {
+                            oclasses = new HashSet<ObjectClassInfo>();
+                            _supportedObjectClassesByOperation[op] = oclasses;
+                        }
+                        oclasses.Add(info);
+                    }
+                }
+            }
+            else
+            {
+                DefineObjectClass(info);
             }
         }
         /// <summary>
@@ -3806,6 +3868,45 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
                     _supportedOptionsByOperation[op] = oclasses;
                 }
                 oclasses.Add(info);
+            }
+        }
+        /// <summary>
+        /// Adds another OperationOptionInfo to the schema. Also, adds this to the
+        /// set of supported options for operation defined.
+        /// </summary>
+        /// <param name="info"> </param>
+        /// <param name="operations">
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        ///             If already defined </exception>
+        public void DefineOperationOption(OperationOptionInfo info, params SafeType<SPIOperation>[] operations)
+        {
+            if (operations.Length > 0)
+            {
+                Assertions.NullCheck(info, "info");
+                if (_declaredOperationOptions.Contains(info))
+                {
+                    throw new InvalidOperationException("OperationOption already defined: " + info.Name);
+                }
+                _declaredOperationOptions.Add(info);
+                foreach (SafeType<SPIOperation> spi in operations)
+                {
+                    foreach (SafeType<APIOperation> op in FrameworkUtil.GetDefaultSupportedOperations(_connectorClass))
+                    {
+                        ICollection<OperationOptionInfo> oclasses =
+                    CollectionUtil.GetValue(_supportedOptionsByOperation, op, null);
+                        if (oclasses == null)
+                        {
+                            oclasses = new HashSet<OperationOptionInfo>();
+                            _supportedOptionsByOperation[op] = oclasses;
+                        }
+                        oclasses.Add(info);
+                    }
+                }
+            }
+            else
+            {
+                DefineOperationOption(info);
             }
         }
 
@@ -4519,12 +4620,52 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         /// </summary>
         /// <returns> {@code true} if this sort key is in ascending order, or
         ///         {@code false} if it is in descending ord)er. </returns>
-        public bool AscendingOrder
+        public bool IsAscendingOrder()
         {
-            get
-            {
-                return _isAscendingOrder;
-            }
+            return _isAscendingOrder;
+        }
+
+        /// <summary>
+        ///     Creates a new ascending-order sort key for the provided field.
+        /// </summary>
+        /// <param name="field">
+        ///     The sort key field.
+        /// </param>
+        /// <returns> A new ascending-order sort key. </returns>
+        /// <exception cref="ArgumentException">
+        ///     If {@code field} is not a valid attribute name.
+        /// </exception>
+        public static SortKey AscendingOrder(string field)
+        {
+            return new SortKey(field, true);
+        }
+
+        /// <summary>
+        ///     Creates a new descending-order sort key for the provided field.
+        /// </summary>
+        /// <param name="field">
+        ///     The sort key field.
+        /// </param>
+        /// <returns> A new descending-order sort key. </returns>
+        /// <exception cref="ArgumentException">
+        ///     If {@code field} is not a valid attribute name.
+        /// </exception>
+        public static SortKey DescendingOrder(string field)
+        {
+            return new SortKey(field, false);
+        }
+
+        /// <summary>
+        ///     Creates a new sort key having the same field as the provided key, but in
+        ///     reverse sort order.
+        /// </summary>
+        /// <param name="key">
+        ///     The sort key to be reversed.
+        /// </param>
+        /// <returns> The reversed sort key. </returns>
+        public static SortKey ReverseOrder(SortKey key)
+        {
+            return new SortKey(key._field, !key._isAscendingOrder);
         }
     }
     #endregion

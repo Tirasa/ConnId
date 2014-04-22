@@ -29,6 +29,8 @@ namespace Org.IdentityConnectors.Common
     /// </summary>
     public static class DateTimeUtil
     {
+        private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);
+
         public static DateTime GetDateTimeFromUtcMillis(long dateTime)
         {
             return DateTime.FromFileTimeUtc(dateTime * 10000);
@@ -42,6 +44,11 @@ namespace Org.IdentityConnectors.Common
         public static long GetCurrentUtcTimeMillis()
         {
             return GetUtcTimeMillis(DateTime.Now);
+        }
+
+        public static long GetCurrentUnixTimeMillis()
+        {
+            return (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
         }
     }
 }

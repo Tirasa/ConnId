@@ -24,11 +24,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
 using Org.IdentityConnectors.Common;
-using Org.IdentityConnectors.Common.Script;
-using Org.IdentityConnectors.Framework.Common.Objects;
 using NUnit.Framework;
 
 namespace FrameworkTests
@@ -40,7 +37,7 @@ namespace FrameworkTests
     public class StringUtilTests
     {
         [Test]
-        public virtual void testIndexOfDigit()
+        public virtual void TestIndexOfDigit()
         {
             int test = 0;
             const string TEST0 = null;
@@ -48,18 +45,18 @@ namespace FrameworkTests
             const string TEST2 = "abac2dafj";
             const string TEST3 = "fa323jf4af";
 
-            test = StringUtil.indexOfDigit(TEST0);
-            assertEquals(test, -1);
-            test = StringUtil.indexOfDigit(TEST1);
-            assertEquals(test, -1);
-            test = StringUtil.indexOfDigit(TEST2);
-            assertEquals(test, 4);
-            test = StringUtil.indexOfDigit(TEST3);
-            assertEquals(test, 2);
+            test = StringUtil.IndexOfDigit(TEST0);
+            Assert.AreEqual(test, -1);
+            test = StringUtil.IndexOfDigit(TEST1);
+            Assert.AreEqual(test, -1);
+            test = StringUtil.IndexOfDigit(TEST2);
+            Assert.AreEqual(test, 4);
+            test = StringUtil.IndexOfDigit(TEST3);
+            Assert.AreEqual(test, 2);
         }
 
         [Test]
-        public virtual void testIndexOfNonDigit()
+        public virtual void TestIndexOfNonDigit()
         {
             int test = 0;
             const string TEST0 = null;
@@ -67,30 +64,30 @@ namespace FrameworkTests
             const string TEST2 = "21312a9320484";
             const string TEST3 = "32323aa323435";
 
-            test = StringUtil.indexOfNonDigit(TEST0);
-            assertEquals(test, -1);
-            test = StringUtil.indexOfNonDigit(TEST1);
-            assertEquals(test, -1);
-            test = StringUtil.indexOfNonDigit(TEST2);
-            assertEquals(test, 5);
-            test = StringUtil.indexOfNonDigit(TEST3);
-            assertEquals(test, 5);
+            test = StringUtil.IndexOfNonDigit(TEST0);
+            Assert.AreEqual(test, -1);
+            test = StringUtil.IndexOfNonDigit(TEST1);
+            Assert.AreEqual(test, -1);
+            test = StringUtil.IndexOfNonDigit(TEST2);
+            Assert.AreEqual(test, 5);
+            test = StringUtil.IndexOfNonDigit(TEST3);
+            Assert.AreEqual(test, 5);
         }
 
         [Test]
-        public virtual void testSubDigitString()
+        public virtual void TestSubDigitString()
         {
         }
 
         [Test]
-        public virtual void testStripXmlAttribute()
+        public virtual void TestStripXmlAttribute()
         {
             string[][] DATA = new string[][] { new string[] { null, null, null }, new string[] { "attr='fads'", "attr", "" }, new string[] { "at1='fasd' at1=''", "at1", "" } };
             string tst = null;
             for (int i = 0; i < DATA.Length; i++)
             {
-                tst = StringUtil.stripXmlAttribute(DATA[i][0], DATA[i][1]);
-                assertEquals(tst, DATA[i][2]);
+                tst = StringUtil.StripXmlAttribute(DATA[i][0], DATA[i][1]);
+                Assert.AreEqual(tst, DATA[i][2]);
             }
         }
 
@@ -98,27 +95,27 @@ namespace FrameworkTests
         /// Make sure it removes '\n'.
         /// </summary>
         [Test]
-        public virtual void testStripNewlines()
+        public virtual void TestStripNewlines()
         {
             string[][] TESTS = new string[][] { new string[] { null, null }, new string[] { "afdslf\n", "afdslf" }, new string[] { "afds\nfadkfj", "afdsfadkfj" }, new string[] { "afds \nfadkfj", "afds fadkfj" }, new string[] { "afds\n fadkfj", "afds fadkfj" } };
             string tmp;
             foreach (string[] data in TESTS)
             {
-                tmp = StringUtil.stripNewlines(data[0]);
-                assertEquals(tmp, data[1]);
+                tmp = StringUtil.StripNewlines(data[0]);
+                Assert.AreEqual(tmp, data[1]);
             }
         }
 
         [Test]
-        public virtual void testStripXmlComments()
+        public virtual void TestStripXmlComments()
         {
             string[][] DATA = new string[][] { new string[] { null, null }, new string[] { "<!--test1-->", "" }, new string[] { "test data", "test data" }, new string[] { "<!--test data", "<!--test data" }, new string[] { "test data-->", "test data-->" }, new string[] { "test data <!-- fasdkfj -->", "test data " }, new string[] { "<!-- fasdkfj --> test data", " test data" }, new string[] { "<!-- fasdkfj --> test data<!-- fadsom-->", " test data" } };
 
             string tst = null;
             for (int i = 0; i < DATA.Length; i++)
             {
-                tst = StringUtil.stripXmlComments(DATA[i][0]);
-                assertEquals(tst, DATA[i][1]);
+                tst = StringUtil.StripXmlComments(DATA[i][0]);
+                Assert.AreEqual(tst, DATA[i][1]);
             }
         }
 
@@ -126,17 +123,17 @@ namespace FrameworkTests
         /// Tests the <seealso cref="StringUtil#parseLine(String, char, char)"/> methods on the
         /// arguments provided.
         /// </summary>
-        internal static void parseLineTest(char textQ, char fieldD, IList<object> values)
+        internal static void ParseLineTest(char textQ, char fieldD, IList<object> values)
         {
-            string csv = createCSVLine(textQ, fieldD, values);
-            IList<string> parsedValues = StringUtil.parseLine(csv, fieldD, textQ);
-            assertEquals(parsedValues, toStringList(values));
+            string csv = CreateCSVLine(textQ, fieldD, values);
+            IList<string> parsedValues = StringUtil.ParseLine(csv, fieldD, textQ);
+            Assert.AreEqual(parsedValues, ToStringList(values));
         }
 
         /// <summary>
         /// Create a CSV line based on the values provided.
         /// </summary>
-        internal static string createCSVLine(char textQ, char fieldD, IList<object> values)
+        internal static string CreateCSVLine(char textQ, char fieldD, IList<object> values)
         {
             StringBuilder bld = new StringBuilder();
             bool first = true;
@@ -169,7 +166,7 @@ namespace FrameworkTests
         /// <summary>
         /// Converts a <seealso cref="List"/> of objects to a <seealso cref="List"/> of <seealso cref="String"/>s.
         /// </summary>
-        internal static IList<string> toStringList(IList<object> list)
+        internal static IList<string> ToStringList(IList<object> list)
         {
             IList<string> ret = new List<string>();
             foreach (object o in list)
@@ -179,23 +176,23 @@ namespace FrameworkTests
             return ret;
         }
 
-        internal static IList<object> randomList(Random r, int size, char[] invalid, char valid)
+        internal static IList<object> RandomList(Random r, int size, char[] invalid, char valid)
         {
             IList<object> ret = new List<object>();
             for (int i = 0; i < size; i++)
             {
                 object add;
-                if (r.nextBoolean())
+                if (r.Next(100) % 2 == 0)
                 {
                     add = r.Next();
                 }
-                else if (r.nextBoolean())
+                else if (r.Next(100) % 2 == 0)
                 {
                     add = r.NextDouble();
                 }
                 else
                 {
-                    string str = StringUtil.randomString(r, r.Next(30));
+                    string str = StringUtil.RandomString(r, r.Next(30));
                     foreach (char c in invalid)
                     {
                         // replace all w/ 'a'..
@@ -209,33 +206,19 @@ namespace FrameworkTests
         }
 
         [Test]
-        public virtual void testRandomString()
+        public virtual void TestRandomString()
         {
             // just execute it because it doesn't really matter..
-            string s = StringUtil.randomString();
-            assertTrue(s.Length < 257);
+            string s = StringUtil.RandomString();
+            Assert.IsTrue(s.Length < 257);
         }
 
         [Test]
         public virtual void testEndsWith()
         {
-            assertTrue(StringUtil.EndsWith("afdsf", 'f'));
-            assertFalse(StringUtil.EndsWith(null, 'f'));
-            assertFalse(StringUtil.EndsWith("fadsfkj", 'f'));
-        }
-
-        private static readonly string[] PROP_TEST = new string[] { "# Some comment", "prop1=SomeProp", "prop2=OtherProp" };
-
-        [Test]
-        public virtual void testToProperties()
-        {
-            StringPrintWriter wrt = new StringPrintWriter();
-            wrt.println(PROP_TEST);
-            wrt.flush();
-            string inp = wrt.String;
-            Properties prop = StringUtil.toProperties(inp);
-            assertEquals(prop.get("prop1"), "SomeProp");
-            assertEquals(prop.get("prop2"), "OtherProp");
+            Assert.IsTrue(StringUtil.EndsWith("afdsf", 'f'));
+            Assert.IsFalse(StringUtil.EndsWith(null, 'f'));
+            Assert.IsFalse(StringUtil.EndsWith("fadsfkj", 'f'));
         }
     }
 }

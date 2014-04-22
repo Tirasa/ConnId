@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information: 
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,56 @@ namespace FrameworkTests
             Assert.IsNull(value);
             // test illegal argument exception
             ConnectorAttributeUtil.GetSingleValue(ConnectorAttributeBuilder.Build("bob", 1, 2, 3));
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestDictionaryIntegerAttribute()
+        {
+            Dictionary<object, object> map = new Dictionary<object, object>();
+            map[1] = "NOK";
+
+            ConnectorAttributeBuilder bld = new ConnectorAttributeBuilder();
+            bld.AddValue(map);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentException))]
+        public void TestDictionaryShortAttribute()
+        {
+            Dictionary<object, object> map1 = new Dictionary<object, object>();
+            map1["string"] = "NOK";
+
+            Dictionary<object, object> map2 = new Dictionary<object, object>();
+            map2["map1"] = map1;
+            map2["list"] = new List<object> { 1, 2, 3, (short)5};
+
+            Dictionary<object, object> map3 = new Dictionary<object, object>();
+            map3["map2"] = map2;
+
+            Dictionary<object, object> map4 = new Dictionary<object, object>();
+            map4["map3"] = map3;
+
+            ConnectorAttributeBuilder.Build("map", map4);
+        }
+
+        [Test]
+        public void TestDictionaryAttribute()
+        {
+            Dictionary<object, object> map1 = new Dictionary<object, object>();
+            map1["string"] = "OK";
+
+            Dictionary<object, object> map2 = new Dictionary<object, object>();
+            map2["map1"] = map1;
+            map2["list"] = new List<int>{ 1, 2, 3};
+
+            Dictionary<object, object> map3 = new Dictionary<object, object>();
+            map3["map2"] = map2;
+
+            Dictionary<object, object> map4 = new Dictionary<object, object>();
+            map4["map3"] = map3;
+
+            ConnectorAttributeBuilder.Build("map", map4);
         }
     }
 }

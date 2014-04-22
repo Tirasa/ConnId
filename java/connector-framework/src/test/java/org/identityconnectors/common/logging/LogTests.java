@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.common.logging;
 
@@ -48,12 +49,26 @@ public class LogTests {
         }
 
         @Override
+        public boolean needToInferCaller(Class<?> clazz, Level level) {
+            return true;
+        }
+
+        @Override
         public void log(Class<?> clazz, String methodName, Level level, String message, Throwable ex) {
             _class = clazz;
             _level = level;
             _exception = ex;
             _message = message;
             _methodName = methodName;
+        }
+
+        @Override
+        public void log(Class<?> clazz, StackTraceElement caller, Level level, String message, Throwable ex) {
+            _class = clazz;
+            _level = level;
+            _exception = ex;
+            _message = message;
+            _methodName = null != caller ? caller.getMethodName() : "unknown";
         }
     }
 
