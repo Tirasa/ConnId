@@ -2503,7 +2503,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             {
                 Org.IdentityConnectors.Framework.Common.Objects.SortKey val = (Org.IdentityConnectors.Framework.Common.Objects.SortKey)obj;
                 encoder.WriteStringField("field", val.Field);
-                encoder.WriteBooleanField("isAscending", val.AscendingOrder);
+                encoder.WriteBooleanField("isAscending", val.IsAscendingOrder());
             }
         }
         private class OperationOptionInfoHandler : AbstractObjectSerializationHandler

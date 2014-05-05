@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.common.logging.impl;
 
@@ -31,6 +32,7 @@ import org.identityconnectors.common.logging.Log.Level;
 
 /**
  * Provider to integrate with the JDK logger.
+ *
  * @author Will Droste
  * @version $Revision $
  * @since 1.0
@@ -41,7 +43,8 @@ public class JDKLogger implements LogSpi {
 
     /**
      * Uses the JDK logger to log the message.
-     * @see LogSpi#log(Class, Level, String, Throwable)
+     *
+     * @see LogSpi#log(Class, String, Level, String, Throwable)
      */
     @Override
     public void log(Class<?> clazz, String methodName, Level level, String message, Throwable ex) {
@@ -57,11 +60,40 @@ public class JDKLogger implements LogSpi {
     }
 
     /**
+     * Uses the JDK logger to log the message.
+     *
+     * @see LogSpi#log(Class, StackTraceElement, Level, String, Throwable)
+     */
+    @Override
+    public void log(final Class<?> clazz, final StackTraceElement caller, final Level level,
+                    final String message, final Throwable ex) {
+        String methodName = null;
+        if (null != caller) {
+            // @formatter:off
+            methodName = caller.getMethodName() +
+                    (caller.isNativeMethod() ? "(Native Method)" :
+                     (caller.getFileName() != null && caller.getLineNumber() >= 0 ?
+                      "(" + caller.getFileName() + ":" + caller.getLineNumber() + ")" :
+                      (caller.getFileName() != null ? "(" + caller.getFileName() + ")" : "(Unknown Source)")));
+            // @formatter:on
+        } else {
+            methodName = "unknown";
+        }
+        log(clazz, methodName, level, message, ex);
+    }
+
+    /**
      * Use the internal JDK logger to determine if the level is worthy of logging.
      */
     @Override
     public boolean isLoggable(Class<?> clazz, Level level) {
         return getJDKLogger(clazz.getName()).isLoggable(getJDKLevel(level));
+    }
+
+    @Override
+    public boolean needToInferCaller(Class<?> clazz, Level level) {
+        // JDK Logger does it always so better to fetch the correct caller by ICF Log class.
+        return true;
     }
 
     /**

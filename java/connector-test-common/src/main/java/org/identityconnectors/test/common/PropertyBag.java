@@ -19,10 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.test.common;
 
+import java.lang.reflect.Array;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,13 +98,72 @@ public final class PropertyBag {
         if (value == null) {
             return null;
         }
+        return castValue(name, value, type);
+    }
+
+    private <T> T castValue(String name, Object value, Class<T> type) {
+        // This means the property value is null, so return null.
+        if (value == null) {
+            return null;
+        }
         if (!type.isInstance(value)) {
+            if (type.isArray() && value instanceof Collection) {
+                Collection<Object> collection = (Collection<Object>) value;
+                // return (T)
+                // collection.toArray((Object[])Array.newInstance(type.getComponentType(),
+                // collection.size()));
+
+                Object array = Array.newInstance(type.getComponentType(), collection.size());
+                int i = 0;
+                for (Object itemValue : collection) {
+                    Array.set(array, i++, castValue(name, itemValue, type.getComponentType()));
+                }
+                return (T) array;
+            } else if (type.isArray()) {
+                Object array = Array.newInstance(type.getComponentType(), 1);
+                Array.set(array, 0, castValue(name, value, type.getComponentType()));
+                return (T) array;
+            }
+
+            if (Byte.TYPE.equals(type) && value instanceof Byte) {
+                return (T) value;
+            } else if (Byte.class.equals(type) && Byte.TYPE.isInstance(value)) {
+                return (T) value;
+            } else if (Short.TYPE.equals(type) && value instanceof Short) {
+                return (T) value;
+            } else if (Short.class.equals(type) && Short.TYPE.isInstance(value)) {
+                return (T) value;
+            } else if (Integer.TYPE.equals(type) && value instanceof Integer) {
+                return (T) value;
+            } else if (Integer.class.equals(type) && Integer.TYPE.isInstance(value)) {
+                return (T) value;
+            } else if (Long.TYPE.equals(type) && value instanceof Long) {
+                return (T) value;
+            } else if (Long.class.equals(type) && Long.TYPE.isInstance(value)) {
+                return (T) value;
+            } else if (Float.TYPE.equals(type) && value instanceof Float) {
+                return (T) value;
+            } else if (Float.class.equals(type) && Float.TYPE.isInstance(value)) {
+                return (T) value;
+            } else if (Double.TYPE.equals(type) && value instanceof Double) {
+                return (T) value;
+            } else if (Double.class.equals(type) && Double.TYPE.isInstance(value)) {
+                return (T) value;
+            } else if (Boolean.TYPE.equals(type) && value instanceof Boolean) {
+                return (T) value;
+            } else if (Boolean.class.equals(type) && Boolean.TYPE.isInstance(value)) {
+                return (T) value;
+            } else if (Character.TYPE.equals(type) && value instanceof Character) {
+                return (T) value;
+            } else if (Character.class.equals(type) && Character.TYPE.isInstance(value)) {
+                return (T) value;
+            }
+
             throw new ClassCastException(MessageFormat.format(
                     "Property named \"{0}\" is of type \"{1}\" but expected type was \"{2}\"",
                     name, value.getClass(), type));
         }
         return type.cast(value);
-
     }
 
     /**

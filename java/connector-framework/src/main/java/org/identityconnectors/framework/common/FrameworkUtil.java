@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2010-2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common;
 
@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -255,6 +256,7 @@ public final class FrameworkUtil {
         ATTR_SUPPORTED_TYPES.add(BigInteger.class);
         ATTR_SUPPORTED_TYPES.add(GuardedByteArray.class);
         ATTR_SUPPORTED_TYPES.add(GuardedString.class);
+        ATTR_SUPPORTED_TYPES.add(Map.class);
     }
 
     public static Set<Class<? extends Object>> getAllSupportedAttributeTypes() {
@@ -269,7 +271,7 @@ public final class FrameworkUtil {
      * @return true if the type is on the supported list otherwise false.
      */
     public static boolean isSupportedAttributeType(final Class<?> clazz) {
-        return ATTR_SUPPORTED_TYPES.contains(clazz);
+        return ATTR_SUPPORTED_TYPES.contains(clazz) || Map.class.isAssignableFrom(clazz);
     }
 
     /**
@@ -295,6 +297,7 @@ public final class FrameworkUtil {
      * <li>byte[].class</li>
      * <li>BigDecimal.class</li>
      * <li>BigInteger.class</li>
+     * <li>Map.class</li>
      * </ul>
      *
      * @param clazz
@@ -321,6 +324,61 @@ public final class FrameworkUtil {
     public static void checkAttributeValue(Object value) {
         if (value != null) {
             checkAttributeType(value.getClass());
+        }
+    }
+
+    /**
+     * Determines if the class of the object is a supported attribute type. If
+     * not it throws an {@link IllegalArgumentException}.
+     *
+     * @param name
+     *            The name of the attribute to check
+     * @param value
+     *            The value to check or null.
+     * @throws IllegalArgumentException
+     *             If the class of the object is a supported attribute type.
+     */
+    public static void checkAttributeValue(String name, Object value) {
+        if (value instanceof Map) {
+            checkAttributeValue(new StringBuilder(name == null ? "?" : name), value);
+        } else if (value != null) {
+            if (name == null) {
+                checkAttributeType(value.getClass());
+            } else if (!FrameworkUtil.isSupportedAttributeType(value.getClass())) {
+                throw new IllegalArgumentException(MessageFormat.format(
+                        "Attribute ''{0}'' type ''{1}'' is not supported.", name, value.getClass()));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void checkAttributeValue(StringBuilder name, Object value) {
+        if (value instanceof Map) {
+            for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet()) {
+                final Object key = entry.getKey();
+                final Object entryValue = entry.getValue();
+                if (key instanceof String) {
+                    StringBuilder nameBuilder = new StringBuilder(name).append('/').append(key);
+                    if (entryValue instanceof Collection) {
+                        nameBuilder.append("[*]");
+                        for (Object item : ((Collection) entryValue)) {
+                            checkAttributeValue(nameBuilder, item);
+                        }
+                    } else {
+                        checkAttributeValue(nameBuilder, entryValue);
+                    }
+                } else {
+                    throw new IllegalArgumentException(
+                            MessageFormat
+                                    .format("Map Attribute ''{0}'' must have String key, type ''{1}'' is not supported.",
+                                            name, null != key ? key.getClass() : "null"));
+                }
+            }
+        } else if (value != null) {
+            if (!FrameworkUtil.isSupportedAttributeType(value.getClass())) {
+                throw new IllegalArgumentException(MessageFormat.format(
+                        "Attribute ''{0}'' type ''{1}'' is not supported.", name, value.getClass()));
+            }
         }
     }
 

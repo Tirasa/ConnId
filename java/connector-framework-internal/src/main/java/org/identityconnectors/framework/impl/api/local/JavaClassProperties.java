@@ -19,10 +19,9 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local;
-
-import static org.identityconnectors.framework.common.FrameworkUtil.isSupportedConfigurationType;
 
 import java.beans.BeanInfo;
 import java.beans.IndexedPropertyDescriptor;
@@ -37,7 +36,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
+import org.identityconnectors.common.ReflectionUtil;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.FrameworkUtil;
@@ -46,8 +47,11 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.impl.api.ConfigurationPropertiesImpl;
 import org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl;
 import org.identityconnectors.framework.spi.Configuration;
+import org.identityconnectors.framework.spi.ConfigurationClass;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 import org.identityconnectors.framework.spi.operations.SPIOperation;
+
+import static org.identityconnectors.framework.common.FrameworkUtil.isSupportedConfigurationType;
 
 /**
  * Class for translating from a Java class to ConfigurationProperties and from
@@ -220,19 +224,46 @@ public class JavaClassProperties {
     private static final String MSG_SETTER =
             "Found setter ''{0}'' but not the corresponding getter.";
 
+    protected static final String GROOVY_LANG_GROOVY_OBJECT = "groovy.lang.GroovyObject";
+
     private static Map<String, PropertyDescriptor> getFilteredProperties(
             Class<? extends Configuration> config) throws Exception {
         Map<String, PropertyDescriptor> rv = new HashMap<String, PropertyDescriptor>();
         BeanInfo info = Introspector.getBeanInfo(config);
         PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+        Set<String> excludes = new TreeSet<String>();
+        // exclude connectorMessages since its part of the interface.
+        excludes.add("connectorMessages");
+
+        for (Class<?> c : ReflectionUtil.getAllInterfaces(config)) {
+            if (c.getName().equals(GROOVY_LANG_GROOVY_OBJECT)) {
+                // exclude metaClass and property from GroovyObject Class.
+                excludes.add("metaClass");
+                //excludes.add("property");
+                break;
+            }
+        }
+
+        boolean filterUnsupported = false;
+        ConfigurationClass options = config.getAnnotation(ConfigurationClass.class);
+        if (null != options) {
+            for (String s : options.ignore()) {
+                excludes.add(s);
+            }
+            filterUnsupported = options.skipUnsupported();
+        }
+
         for (PropertyDescriptor descriptor : descriptors) {
             String propName = descriptor.getName();
             if (descriptor.getWriteMethod() == null) {
                 // if there's no setter, ignore it
                 continue;
             }
-            if ("connectorMessages".equals(propName)) {
-                // exclude setLocale since its part of the interface..
+            if (excludes.contains(propName)) {
+                continue;
+            }
+            if (filterUnsupported && !isSupportedConfigurationType(descriptor.getPropertyType())) {
+                //Silently ignore if the property type is not supported
                 continue;
             }
             if (descriptor.getReadMethod() == null) {

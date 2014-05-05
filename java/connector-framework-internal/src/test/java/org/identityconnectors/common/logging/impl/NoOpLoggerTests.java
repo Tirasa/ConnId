@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.common.logging.impl;
 
@@ -40,6 +41,6 @@ public class NoOpLoggerTests {
             assertFalse(logSpi.isLoggable(String.class, level));
         }
         // hopefully this will throw a NPE if someone changes it..
-        logSpi.log(null, null, null, null, null);
+        logSpi.log(null, (String)null, null, null, null);
     }
 }

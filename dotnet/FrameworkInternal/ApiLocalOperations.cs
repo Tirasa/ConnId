@@ -172,7 +172,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             Connector connector = null;
             ObjectPool<PoolableConnector> pool = _context.Pool;
             // get the connector class..
-            SafeType<Connector> connectorClazz = _context.ConnectorClass;
+            SafeType<Connector> connectorClazz = _context.GetConnectorClass();
             try
             {
                 // pooling is implemented get one..
@@ -185,7 +185,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                     // get a new instance of the connector..
                     connector = connectorClazz.CreateInstance();
                     // initialize the connector..
-                    connector.Init(_context.Configuration);
+                    connector.Init(_context.GetConfiguration());
                 }
                 APIOperationRunner runner =
                     (APIOperationRunner)_runnerImplConstructor.Invoke(new object[]{
@@ -301,11 +301,18 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
         }
 
-        public SafeType<Connector> ConnectorClass
+        public SafeType<Connector> GetConnectorClass()
         {
-            get
+            return GetConnectorInfo().ConnectorClass;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            if (null != connectorPoolKey)
             {
-                return ConnectorInfo.ConnectorClass;
+                ConnectorPoolManager.Dispose(connectorPoolKey);
+                connectorPoolKey = null;
             }
         }
 
@@ -818,12 +825,12 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// <summary>
         /// ConnectorInfo
         /// </summary>
-        protected internal readonly LocalConnectorInfoImpl connectorInfo;
+        protected readonly LocalConnectorInfoImpl connectorInfo;
 
         /// <summary>
         /// Contains the <see cref="Org.IdentityConnectors.Framework.Spi.Connector" /> <see cref="Org.IdentityConnectors.Framework.Spi.Configuration" />.
         /// </summary>
-        protected internal readonly APIConfigurationImpl apiConfiguration;
+        protected readonly APIConfigurationImpl apiConfiguration;
 
         private volatile Configuration configuration;
 
@@ -839,49 +846,42 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         {
             this.connectorInfo = connectorInfo;
             this.apiConfiguration = apiConfiguration;
-
         }
 
         /*
          * This method must be called when the Bundle ClassLoader is the Thread
          * Context ClassLoader.
          */
-        public Configuration Configuration
+        public Configuration GetConfiguration()
         {
-            get
+
+            if (null == configuration)
             {
-                if (null == configuration)
+                lock (this)
                 {
-                    lock (this)
+                    if (null == configuration)
                     {
-                        if (null == configuration)
-                        {
-                            this.configuration = CSharpClassProperties.CreateBean((ConfigurationPropertiesImpl)this.apiConfiguration.ConfigurationProperties,
-                    connectorInfo.ConnectorConfigurationClass);
-                        }
+                        this.configuration = CSharpClassProperties.CreateBean((ConfigurationPropertiesImpl)this.apiConfiguration.ConfigurationProperties,
+                connectorInfo.ConnectorConfigurationClass);
                     }
                 }
-                return configuration;
             }
+            return configuration;
         }
 
-        protected internal LocalConnectorInfoImpl ConnectorInfo
+        protected LocalConnectorInfoImpl GetConnectorInfo()
         {
-            get
-            {
-                return connectorInfo;
-            }
+
+            return connectorInfo;
+
         }
 
-        public ResultsHandlerConfiguration ResultsHandlerConfiguration
+        public ResultsHandlerConfiguration getResultsHandlerConfiguration()
         {
-            get
-            {
-                return new ResultsHandlerConfiguration(apiConfiguration.ResultsHandlerConfiguration);
-            }
+            return new ResultsHandlerConfiguration(apiConfiguration.ResultsHandlerConfiguration);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             if (configuration is StatefulConfiguration)
             {
@@ -891,7 +891,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 // cleanup that needs to happen
                 try
                 {
-                    ((StatefulConfiguration)configuration).Release();
+                    StatefulConfiguration config = (StatefulConfiguration)configuration;
+                    configuration = null;
+                    config.Release();   
                 }
                 catch (Exception e)
                 {
@@ -1377,7 +1379,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
 
             ResultsHandlerConfiguration hdlCfg = null != GetOperationalContext() ?
-                                GetOperationalContext().ResultsHandlerConfiguration : new ResultsHandlerConfiguration();
+                                GetOperationalContext().getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
             ResultsHandler handlerChain = handler;
             Filter actualFilter = originalFilter;       // actualFilter is used for chaining filters - it points to the filter where new filters should be chained
 
@@ -1512,7 +1514,6 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 search.CreateFilterTranslator(oclass, options);
             IList<T> queries =
                 (IList<T>)translator.Translate(filter);
-
             if (queries.Count == 0)
             {
                 search.ExecuteQuery(oclass,
@@ -1921,7 +1922,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
 
         public void Validate()
         {
-            GetOperationalContext().Configuration.Validate();
+            GetOperationalContext().GetConfiguration().Validate();
         }
     }
     #endregion

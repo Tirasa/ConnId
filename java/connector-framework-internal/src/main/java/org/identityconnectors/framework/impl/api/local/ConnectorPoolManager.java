@@ -233,6 +233,19 @@ public class ConnectorPoolManager {
         return Pair.of(null, null);
     }
 
+    public static void dispose(final ConnectorPoolKey connectorPoolKey) {
+        synchronized (POOLS) {
+            ObjectPool<PoolableConnector> pool = POOLS.remove(connectorPoolKey);
+            if (null != pool) {
+                try {
+                    pool.shutdown();
+                } catch (Exception e) {
+                    LOG.warn(e, "Failed to close pool: {0}", pool);
+                }
+            }
+        }
+    }
+
     public static void dispose() {
         synchronized (POOLS) {
             // close each pool..

@@ -76,4 +76,12 @@ public class ConnectorOperationalContext extends OperationalContext {
         return getConnectorInfo().getConnectorClass();
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (null != connectorPoolKey) {
+            ConnectorPoolManager.dispose(connectorPoolKey);
+            connectorPoolKey = null;
+        }
+    }
 }

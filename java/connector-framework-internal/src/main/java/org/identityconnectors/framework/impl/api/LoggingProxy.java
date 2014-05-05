@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -58,7 +59,7 @@ public class LoggingProxy implements InvocationHandler {
             return method.invoke(target, args);
         }
         final String methodName = method.getName();
-        if (LOG.isLoggable(LOG_LEVEL)) {
+        if (isLoggable()) {
             StringBuilder bld = new StringBuilder();
             bld.append("Enter: ").append(method.getName()).append('(');
             for (int i = 0; args != null && i < args.length; i++) {
@@ -74,7 +75,7 @@ public class LoggingProxy implements InvocationHandler {
         // invoke the method
         try {
             Object ret = method.invoke(target, args);
-            if (LOG.isLoggable(LOG_LEVEL)) {
+            if (isLoggable()) {
                 LOG.log(op, methodName, LOG_LEVEL, "Return: " + ret, null);
             }
             return ret;
@@ -97,5 +98,9 @@ public class LoggingProxy implements InvocationHandler {
                 throw ConnectorException.wrap(root);
             }
         }
+    }
+
+    public static boolean isLoggable() {
+        return LOG.isLoggable(LOG_LEVEL);
     }
 }

@@ -58,8 +58,10 @@ public class ConnectorFacadeFactoryImpl extends ConnectorFacadeFactory {
                 LOG.error(ex, "Failed to create new connector facade: {0}, {1}", connector, config);
                 throw ConnectorException.wrap(ex);
             }
-        } else {
+        } else if (connectorInfo instanceof RemoteConnectorInfoImpl) {
             ret = new RemoteConnectorFacadeImpl(impl);
+        } else {
+            throw new IllegalArgumentException("Unknown ConnectorInfo type");
         }
         return ret;
     }
@@ -79,6 +81,8 @@ public class ConnectorFacadeFactoryImpl extends ConnectorFacadeFactory {
             }
         } else if (connectorInfo instanceof RemoteConnectorInfoImpl) {
             ret = new RemoteConnectorFacadeImpl((RemoteConnectorInfoImpl) connectorInfo, config);
+        } else {
+            throw new IllegalArgumentException("Unknown ConnectorInfo type");
         }
         return ret;
     }

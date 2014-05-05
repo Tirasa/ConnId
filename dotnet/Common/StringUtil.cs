@@ -370,36 +370,6 @@ namespace Org.IdentityConnectors.Common
         }
 
         /// <summary>
-        /// Returns a properties object w/ the key/value pairs parsed from the string
-        /// passed in.
-        /// </summary>
-        public static Dictionary<string, string> ToProperties(String input)
-        {
-            Dictionary<string, string> ret = new Dictionary<string, string>(0);
-            // make sure there's a value present..
-            if (IsNotBlank(input))
-            {
-                try
-                {
-                    ret = input.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Select(value => value.Split('=')).ToDictionary(pair => pair[0], pair => pair[1]);
-                }
-                catch (IndexOutOfRangeException ex)
-                {
-                    // don't stop the runtime exception
-                    // if the text isn't in the right format
-                    throw ex;
-                }
-                catch (ArgumentException ex)
-                {
-                    // if there are duplicate keys
-                    // throw the error..
-                    throw ex;
-                }
-            }
-            return ret;
-        }
-
-        /// <summary>
         /// Simple variable replacement internally using regular expressions.
         /// 
         /// <pre>
@@ -417,7 +387,7 @@ namespace Org.IdentityConnectors.Common
         ///            Value to replace the variable with. </param>
         /// <returns> String will all the variables replaced with the value.
         /// </returns>
-        /// <exception cref="IllegalArgumentException">
+        /// <exception cref="ArgumentException">
         ///             if o is null, var is blank, or val is null. </exception>
         public static string ReplaceVariable(string o, string variable, string val)
         {
@@ -425,7 +395,7 @@ namespace Org.IdentityConnectors.Common
             {
                 if (o == null || IsBlank(variable) || val == null)
                 {
-                    throw new System.ArgumentException();
+                    throw new ArgumentException();
                 }
                 string regex = VAR_REG_EX_START + variable + VAR_REG_EX_END;
                 string value = Regex.Escape(val);
@@ -438,7 +408,7 @@ namespace Org.IdentityConnectors.Common
                 bld.Append(" var: ").Append(variable);
                 bld.Append(" val: ").Append(val);
                 bld.Append(" o: ").Append(o);
-                throw new System.ArgumentException(bld.ToString());
+                throw new ArgumentException(bld.ToString());
             }
         }
         private const string VAR_REG_EX_START = "\\$\\{";
@@ -604,7 +574,7 @@ namespace Org.IdentityConnectors.Common
         /// </summary>
         public static string RandomString()
         {
-            return RandomString(new Random((int)DateTime.Now.Ticks));
+            return RandomString(new Random());
         }
 
         /// <summary>
