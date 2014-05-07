@@ -1173,21 +1173,21 @@ namespace FrameworkTests
         private String DecryptToString(GuardedString str)
         {
             StringBuilder buf = new StringBuilder();
-            str.Access(
+            str.Access(new GuardedString.LambdaAccessor(
                                             array =>
                                             {
                                                 for (int i = 0; i < array.Length; i++)
                                                 {
                                                     buf.Append(array[i]);
                                                 }
-                                            });
+                                            }));
             return buf.ToString();
         }
 
         private byte[] DecryptToByteArray(GuardedByteArray bytes)
         {
             byte[] result = null;
-            bytes.Access(
+            bytes.Access(new GuardedByteArray.LambdaAccessor(
                                             array =>
                                             {
                                                 result = new byte[array.Length];
@@ -1195,7 +1195,7 @@ namespace FrameworkTests
                                                 {
                                                     result[i] = array[i];
                                                 }
-                                            });
+                                            }));
             return result;
         }
 

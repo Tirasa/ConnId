@@ -74,16 +74,39 @@ namespace Org.IdentityConnectors.Common.Security
     /// </remarks>
     public sealed class GuardedByteArray : IDisposable
     {
-        /// <summary>
-        /// This method will be called with the clear text of the byte array.
-        /// </summary>
-        /// <remarks>
-        /// After the call the clearBytes array will be automatically zeroed
-        /// out, thus keeping the window of potential exposure to a bare-minimum.
-        /// </remarks>
-        /// <param name="clearChars"></param>
-        public delegate void Accessor(UnmanagedArray<byte> clearBytes);
 
+        /// <summary>
+        /// Callback interface for those times that it is necessary to access the
+        /// clear text of the guarded bytes.
+        /// </summary>
+        public interface Accessor
+        {
+
+            /// <summary>
+            /// This method will be called with the clear text of the byte array.
+            /// </summary>
+            /// <remarks>
+            /// After the call the clearBytes array will be automatically zeroed
+            /// out, thus keeping the window of potential exposure to a bare-minimum.
+            /// </remarks>
+            /// <param name="clearBytes"></param>
+            void Access(UnmanagedArray<byte> clearBytes);
+        }
+
+        public class LambdaAccessor : Accessor
+        {
+            private readonly Action<UnmanagedArray<byte>> _accessor;
+
+            public LambdaAccessor(Action<UnmanagedArray<byte>> accessor)
+            {
+                _accessor = accessor;
+            }
+
+            public void Access(UnmanagedArray<byte> clearBytes)
+            {
+                _accessor(clearBytes);
+            }
+        }
 
         private SecureString _target;
         private String _base64SHA1Hash;
@@ -128,7 +151,7 @@ namespace Org.IdentityConnectors.Common.Security
         {
             using (SecureStringToByteArrayAdapter adapter = new SecureStringToByteArrayAdapter(_target))
             {
-                accessor(adapter);
+                accessor.Access(adapter);
             }
         }
 
@@ -140,7 +163,7 @@ namespace Org.IdentityConnectors.Common.Security
         /// appended, and then it will be re-encrypted.
         /// </remarks>
         /// <param name="b">The byte to append.</param>
-        /// <exception cref="IllegalStateException">If the byte array is read-only</exception>
+        /// <exception cref="InvalidOperationException">If the byte array is read-only</exception>
         /// <exception cref="IllegalStateException">If the byte array has been disposed</exception>
         public void AppendByte(byte b)
         {
@@ -251,10 +274,10 @@ namespace Org.IdentityConnectors.Common.Security
 
         private void ComputeHash()
         {
-            Access(array =>
+            Access(new LambdaAccessor(array =>
             {
                 _base64SHA1Hash = SecurityUtil.ComputeBase64SHA1Hash(array);
-            });
+            }));
         }
 
     }
@@ -292,16 +315,39 @@ namespace Org.IdentityConnectors.Common.Security
     /// </remarks>
     public sealed class GuardedString : IDisposable
     {
-        /// <summary>
-        /// This method will be called with the clear text of the string.
-        /// </summary>
-        /// <remarks>
-        /// After the call the clearChars array will be automatically zeroed
-        /// out, thus keeping the window of potential exposure to a bare-minimum.
-        /// </remarks>
-        /// <param name="clearChars"></param>
-        public delegate void Accessor(UnmanagedArray<char> clearChars);
 
+        /// <summary>
+        /// Callback interface for those times that it is necessary to access the
+        /// clear text of the secure string.
+        /// </summary>
+        public interface Accessor
+        {
+
+            /// <summary>
+            /// This method will be called with the clear text of the string.
+            /// </summary>
+            /// <remarks>
+            /// After the call the clearChars array will be automatically zeroed
+            /// out, thus keeping the window of potential exposure to a bare-minimum.
+            /// </remarks>
+            /// <param name="clearChars"></param>
+            void Access(UnmanagedArray<char> clearChars);
+        }
+
+        public class LambdaAccessor : Accessor
+        {
+            private readonly Action<UnmanagedArray<char>> _accessor;
+
+            public LambdaAccessor(Action<UnmanagedArray<char>> accessor)
+            {
+                _accessor = accessor;
+            }
+
+            public void Access(UnmanagedArray<char> clearBytes)
+            {
+                _accessor(clearBytes);
+            }
+        }
 
         private SecureString _target;
         private String _base64SHA1Hash;
@@ -340,7 +386,7 @@ namespace Org.IdentityConnectors.Common.Security
         {
             using (SecureStringAdapter adapter = new SecureStringAdapter(_target))
             {
-                accessor(adapter);
+                accessor.Access(adapter);
             }
         }
 
@@ -459,10 +505,10 @@ namespace Org.IdentityConnectors.Common.Security
 
         private void ComputeHash()
         {
-            Access(array =>
+            Access(new LambdaAccessor(array =>
             {
                 _base64SHA1Hash = SecurityUtil.ComputeBase64SHA1Hash(array);
-            });
+            }));
         }
 
     }
@@ -827,14 +873,14 @@ namespace Org.IdentityConnectors.Common.Security
         public static string Decrypt(GuardedString guardedString)
         {
             StringBuilder buf = new StringBuilder();
-            guardedString.Access(
+            guardedString.Access(new GuardedString.LambdaAccessor(
                                             array =>
                                             {
                                                 for (int i = 0; i < array.Length; i++)
                                                 {
                                                     buf.Append(array[i]);
                                                 }
-                                            });
+                                            }));
             return buf.ToString();
         }
 
@@ -848,7 +894,7 @@ namespace Org.IdentityConnectors.Common.Security
         public static byte[] Decrypt(GuardedByteArray guardedByteArray)
         {
             byte[] result = null;
-            guardedByteArray.Access(
+            guardedByteArray.Access(new GuardedByteArray.LambdaAccessor(
                                             array =>
                                             {
                                                 result = new byte[array.Length];
@@ -856,7 +902,7 @@ namespace Org.IdentityConnectors.Common.Security
                                                 {
                                                     result[i] = array[i];
                                                 }
-                                            });
+                                            }));
             return result;
         }
     }

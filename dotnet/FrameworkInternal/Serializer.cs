@@ -1175,7 +1175,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             public override void Serialize(Object obj, ObjectEncoder encoder)
             {
                 GuardedByteArray str = (GuardedByteArray)obj;
-                str.Access(
+                str.Access(new GuardedByteArray.LambdaAccessor(
                      clearBytes =>
                      {
                          byte[] encryptedBytes = null;
@@ -1188,7 +1188,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                          {
                              SecurityUtil.Clear(encryptedBytes);
                          }
-                     });
+                     }));
             }
         }
 
@@ -1233,7 +1233,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             public override void Serialize(Object obj, ObjectEncoder encoder)
             {
                 GuardedString str = (GuardedString)obj;
-                str.Access(
+                str.Access( new GuardedString.LambdaAccessor(
                      clearChars =>
                      {
                          UnmanagedArray<byte> clearBytes = null;
@@ -1252,7 +1252,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                              }
                              SecurityUtil.Clear(encryptedBytes);
                          }
-                     });
+                     }));
             }
         }
     }

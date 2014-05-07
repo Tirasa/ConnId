@@ -55,11 +55,11 @@ namespace FrameworkTests
                 GuardedByteArray gba = new GuardedByteArray();
                 gba = (GuardedByteArray)SerializerUtil.CloneObject(gba);
                 gba.AppendByte(i);
-                gba.Access(clearChars =>
+                gba.Access(new GuardedByteArray.LambdaAccessor(clearChars =>
                 {
                     int v = (byte)clearChars[0];
                     Assert.AreEqual(expected, v);
-                });
+                }));
 
             }
         }
@@ -87,7 +87,7 @@ namespace FrameworkTests
         private byte[] DecryptToByteArray(GuardedByteArray str)
         {
             byte[] result = null;
-            str.Access(
+            str.Access(new GuardedByteArray.LambdaAccessor(
                                             array =>
                                             {
                                                 result = new byte[array.Length];
@@ -95,7 +95,7 @@ namespace FrameworkTests
                                                 {
                                                     result[i] = array[i];
                                                 }
-                                            });
+                                            }));
             return result;
         }
     }
