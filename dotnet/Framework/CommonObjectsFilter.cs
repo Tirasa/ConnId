@@ -774,6 +774,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
             return Left.Accept(obj) && Right.Accept(obj);
         }
 
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitAndFilter(p, Left, Right);
+        }
+
         public override string ToString()
         {
             StringBuilder bld = new StringBuilder();
@@ -817,6 +822,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
             return obj.GetAttributeByName(_attribute.Name) != null;
         }
         public abstract bool Accept(ConnectorObject obj);
+        public abstract R Accept<R, P>(FilterVisitor<R, P> v, P p);
     }
     #endregion
 
@@ -883,6 +889,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
             Right = right;
         }
         public abstract bool Accept(ConnectorObject obj);
+        public abstract R Accept<R, P>(FilterVisitor<R, P> v, P p);
     }
     #endregion
 
@@ -897,6 +904,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
         public override bool Accept(String value)
         {
             return value.Contains(GetValue());
+        }
+
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitContainsFilter(p, GetName(), GetValue());
         }
 
         public override string ToString()
@@ -919,6 +931,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
         public override bool Accept(String value)
         {
             return value.EndsWith(GetValue());
+        }
+
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitEndsWithFilter(p, GetName(), GetValue());
         }
 
         public override string ToString()
@@ -962,6 +979,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
             return ret;
         }
 
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitEqualsFilter(p, GetAttribute().Name, GetAttribute().Value);
+        }
+
         public override string ToString()
         {
             StringBuilder bld = new StringBuilder();
@@ -975,7 +997,225 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
     #region Filter
     public interface Filter
     {
+        /// <summary>
+        /// Determines whether the specified <seealso cref="ConnectorObject"/> matches this
+        /// filter.
+        /// </summary>
+        /// <param name="obj">
+        ///            - The specified ConnectorObject. </param>
+        /// <returns> {@code true} if the object matches (that is, satisfies all
+        ///         selection criteria of) this filter; otherwise {@code false}. </returns>
         bool Accept(ConnectorObject obj);
+
+        /// <summary>
+        /// Applies a {@code FilterVisitor} to this {@code Filter}.
+        /// </summary>
+        /// <param name="R">
+        ///            The return type of the visitor's methods. </param>
+        /// <param name="P">
+        ///            The type of the additional parameters to the visitor's
+        ///            methods. </param>
+        /// <param name="v">
+        ///            The filter visitor. </param>
+        /// <param name="p">
+        ///            Optional additional visitor parameter. </param>
+        /// <returns> A result as specified by the visitor.
+        /// @since 1.4 </returns>
+        R Accept<R, P>(FilterVisitor<R, P> v, P p);
+    }
+    #endregion
+
+    #region FilterVisitor
+    /// <summary>
+    /// A visitor of {@code Filter}s, in the style of the visitor design
+    /// pattern.
+    /// <para>
+    /// Classes implementing this interface can query filters in a type-safe manner.
+    /// When a visitor is passed to a filter's accept method, the corresponding visit
+    /// method most applicable to that filter is invoked.
+    /// 
+    /// </para>
+    /// </summary>
+    /// @param <R>
+    ///            The return type of this visitor's methods. Use
+    ///            <seealso cref="java.lang.Void"/> for visitors that do not need to return
+    ///            results. </param>
+    /// @param <P>
+    ///            The type of the additional parameter to this visitor's methods.
+    ///            Use <seealso cref="java.lang.Void"/> for visitors that do not need an
+    ///            additional parameter.
+    /// </param>
+    /// <remarks>since 1.4</remarks>
+    public interface FilterVisitor<R, P>
+    {
+
+        /// <summary>
+        /// Visits an {@code and} filter.
+        /// <para>
+        /// <b>Implementation note</b>: for the purposes of matching, an empty
+        /// sub-filters should always evaluate to {@code true}.
+        /// 
+        /// </para>
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="left">
+        ///            The left sub-filter. </param>
+        /// <param name="right">
+        ///            The right sub-filter. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitAndFilter(P p, Filter left, Filter right);
+
+        /// <summary>
+        /// Visits a {@code contains} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A name of the attribute within ConnectorObject to be compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitContainsFilter(P p, string name, string valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code containsAll} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A name of the attribute within ConnectorObject to be compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitContainsAllFilter(P p, string name, IList<object> valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code equality} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A name of the attribute within ConnectorObject to be compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitEqualsFilter(P p, string name, IList<object> valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code comparison} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A name of the attribute within ConnectorObject to be compared. </param>
+        /// <param name="filter">
+        ///            The original filter. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitExtendedFilter(P p, string name, Filter filter, IList<object> valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code greater than} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A name of the attribute within ConnectorObject to be compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitGreaterThanFilter(P p, string name, object valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code greater than or equal to} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A name of the attribute within ConnectorObject to be compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitGreaterThanOrEqualToFilter(P p, string name, object valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code less than} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A name of the attribute within ConnectorObject to be compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitLessThanFilter(P p, string name, object valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code less than or equal to} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A name of the attribute within ConnectorObject to be compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitLessThanOrEqualToFilter(P p, string name, object valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code not} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="subFilter">
+        ///            The sub-filter. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitNotFilter(P p, Filter subFilter);
+
+        /// <summary>
+        /// Visits an {@code or} filter.
+        /// <para>
+        /// <b>Implementation note</b>: for the purposes of matching, an empty
+        /// sub-filters should always evaluate to {@code false}.
+        /// 
+        /// </para>
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="left">
+        ///            The left sub-filter. </param>
+        /// <param name="right">
+        ///            The right sub-filter. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitOrFilter(P p, Filter left, Filter right);
+
+        /// <summary>
+        /// Visits a {@code starts with} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A pointer to the attribute within ConnectorObject to be
+        ///            compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitStartsWithFilter(P p, string name, string valueAssertion);
+
+        /// <summary>
+        /// Visits a {@code ends with} filter.
+        /// </summary>
+        /// <param name="p">
+        ///            A visitor specified parameter. </param>
+        /// <param name="name">
+        ///            A pointer to the attribute within ConnectorObject to be
+        ///            compared. </param>
+        /// <param name="valueAssertion">
+        ///            The value assertion. </param>
+        /// <returns> Returns a visitor specified result. </returns>
+        R VisitEndsWithFilter(P p, string name, string valueAssertion);
     }
     #endregion
 
@@ -1156,6 +1396,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
             return IsPresent(obj) && this.Compare(obj) > 0;
         }
 
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitGreaterThanFilter(p, GetName(), GetValue());
+        }
+
         public override string ToString()
         {
             StringBuilder bld = new StringBuilder();
@@ -1185,6 +1430,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
         public override bool Accept(ConnectorObject obj)
         {
             return IsPresent(obj) && this.Compare(obj) >= 0;
+        }
+
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitGreaterThanOrEqualToFilter(p, GetName(), GetValue());
         }
 
         public override string ToString()
@@ -1218,6 +1468,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
             return IsPresent(obj) && this.Compare(obj) < 0;
         }
 
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitLessThanFilter(p, GetName(), GetValue());
+        }
+
         public override string ToString()
         {
             StringBuilder bld = new StringBuilder();
@@ -1247,6 +1502,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
         public override bool Accept(ConnectorObject obj)
         {
             return IsPresent(obj) && this.Compare(obj) <= 0;
+        }
+
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitLessThanOrEqualToFilter(p, GetName(), GetValue());
         }
 
         public override string ToString()
@@ -1294,6 +1554,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
             return !_filter.Accept(obj);
         }
 
+        public R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitNotFilter(p, Filter);
+        }
+
         public override string ToString()
         {
             StringBuilder bld = new StringBuilder();
@@ -1321,6 +1586,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
         public override bool Accept(ConnectorObject obj)
         {
             return Left.Accept(obj) || Right.Accept(obj);
+        }
+
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitOrFilter(p, Left, Right);
         }
 
         public override string ToString()
@@ -1388,6 +1658,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
             return value.StartsWith(GetValue());
         }
 
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitStartsWithFilter(p, GetName(), GetValue());
+        }
+
         public override string ToString()
         {
             StringBuilder bld = new StringBuilder();
@@ -1450,7 +1725,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
     public class ContainsAllValuesFilter : AttributeFilter
     {
         private readonly string _name;
-        private readonly ICollection<object> _values;
+        private readonly IList<object> _values;
 
         public ContainsAllValuesFilter(ConnectorAttribute attr)
             : base(attr)
@@ -1479,6 +1754,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
                 }
             }
             return rv;
+        }
+
+        public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
+        {
+            return v.VisitContainsAllFilter(p, _name, _values);
         }
     }
     #endregion
@@ -1512,6 +1792,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
         }
 
         public abstract bool Accept(ConnectorObject obj);
+        public abstract R Accept<R, P>(FilterVisitor<R, P> v, P p);
     }
 
     #endregion

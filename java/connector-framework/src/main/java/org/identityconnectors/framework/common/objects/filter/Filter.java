@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -41,4 +42,21 @@ public interface Filter {
      *         selection criteria of) this filter; otherwise {@code false}.
      */
     boolean accept(ConnectorObject obj);
+
+    /**
+     * Applies a {@code FilterVisitor} to this {@code Filter}.
+     *
+     * @param <R>
+     *            The return type of the visitor's methods.
+     * @param <P>
+     *            The type of the additional parameters to the visitor's
+     *            methods.
+     * @param v
+     *            The filter visitor.
+     * @param p
+     *            Optional additional visitor parameter.
+     * @return A result as specified by the visitor.
+     * @since 1.4
+     */
+    <R, P> R accept(FilterVisitor<R, P> v, P p);
 }
