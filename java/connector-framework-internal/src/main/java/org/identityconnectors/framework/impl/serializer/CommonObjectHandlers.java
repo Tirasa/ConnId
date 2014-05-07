@@ -692,6 +692,7 @@ class CommonObjectHandlers {
                         null));
                 builder.setPreviousUid((Uid) decoder
                         .readObjectField("PreviousUid", Uid.class, null));
+                builder.setObjectClass((ObjectClass) decoder.readObjectField("ObjectClass", ObjectClass.class, null));
                 builder.setUid((Uid) decoder.readObjectField("Uid", Uid.class, null));
                 builder.setObject((ConnectorObject) decoder.readObjectField("ConnectorObject",
                         ConnectorObject.class, null));
@@ -703,6 +704,7 @@ class CommonObjectHandlers {
                 encoder.writeObjectField("SyncDeltaType", val.getDeltaType(), true);
                 encoder.writeObjectField("SyncToken", val.getToken(), true);
                 encoder.writeObjectField("PreviousUid", val.getPreviousUid(), true);
+                encoder.writeObjectField("ObjectClass", val.getObjectClass(), true);
                 encoder.writeObjectField("Uid", val.getUid(), true);
                 encoder.writeObjectField("ConnectorObject", val.getObject(), true);
             }

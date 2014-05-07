@@ -4681,6 +4681,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         private readonly SyncToken _token;
         private readonly SyncDeltaType _deltaType;
         private readonly Uid _previousUid;
+        private readonly ObjectClass _objectClass;
         private readonly Uid _uid;
         private readonly ConnectorObject _object;
 
@@ -4689,10 +4690,12 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         /// </summary>
         /// <param name="token">The token. Must not be null.</param>
         /// <param name="deltaType">The delta. Must not be null.</param>
+        /// <param name="previousUid">The previousUid. Can be null.</param>
+        /// <param name="objectClass">The objectClass. Can be null.</param>
         /// <param name="uid">The uid. Must not be null.</param>
-        /// <param name="object">The object that has changed. May be null for delete.</param>
+        /// <param name="obj">The object that has changed. May be null for delete.</param>
         internal SyncDelta(SyncToken token, SyncDeltaType deltaType,
-                Uid previousUid, Uid uid,
+                Uid previousUid, ObjectClass objectClass, Uid uid,
                 ConnectorObject obj)
         {
             Assertions.NullCheck(token, "token");
@@ -4700,9 +4703,9 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             Assertions.NullCheck(uid, "uid");
 
             //do not allow previous Uid for anything else than create or update
-            if (previousUid != null && deltaType == SyncDeltaType.DELETE)
+            if (previousUid != null && (deltaType == SyncDeltaType.DELETE || deltaType == SyncDeltaType.CREATE))
             {
-                throw new ArgumentException("The previous Uid can only be specified for create or update.");
+                throw new ArgumentException("The previous Uid can only be specified for create_or_update or udate.");
             }
 
             //only allow null object for delete
@@ -4720,11 +4723,16 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
                 {
                     throw new ArgumentException("Uid does not match that of the object.");
                 }
+                if (!objectClass.Equals(obj.ObjectClass))
+                {
+                    throw new ArgumentException("ObjectClass does not match that of the object.");
+                }
             }
 
             _token = token;
             _deltaType = deltaType;
             _previousUid = previousUid;
+            _objectClass = objectClass;
             _uid = uid;
             _object = obj;
 
@@ -4746,6 +4754,22 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             get
             {
                 return _previousUid;
+            }
+        }
+
+        /// <summary>
+        /// If the change described by this <code>SyncDelta.DELETE</code> and the
+        /// deleted object value is <code>null</code>, this method returns the
+        /// ObjectClass of the deleted object. If operation syncs
+        /// <seealso cref="Org.IdentityConnectors.Framework.Common.Objects.ObjectClass#ALL"/>
+        /// this must be set, otherwise this method can return <code>null</code>.
+        /// </summary>
+        /// <returns> the ObjectClass of the deleted object. </returns>
+        public ObjectClass ObjectClass
+        {
+            get
+            {
+                return _objectClass;
             }
         }
 
@@ -4809,6 +4833,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             values["Token"] = _token;
             values["DeltaType"] = _deltaType;
             values["PreviousUid"] = _previousUid;
+            values["ObjectClass"] = _objectClass;
             values["Uid"] = _uid;
             values["Object"] = _object;
             return values.ToString();
@@ -4816,7 +4841,21 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
 
         public override int GetHashCode()
         {
-            return _uid.GetHashCode();
+            unchecked
+            {
+                int hashCode = (_token != null ? _token.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (int)_deltaType;
+                hashCode = (hashCode * 397) ^ (_previousUid != null ? _previousUid.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_objectClass != null ? _objectClass.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_uid != null ? _uid.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_object != null ? _object.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+
+        private bool Equals(SyncDelta other)
+        {
+            return Equals(_token, other._token) && _deltaType == other._deltaType && Equals(_previousUid, other._previousUid) && Equals(_objectClass, other._objectClass) && Equals(_uid, other._uid) && Equals(_object, other._object);
         }
 
         public override bool Equals(Object o)
@@ -4840,6 +4879,17 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
                     }
                 }
                 else if (!_previousUid.Equals(other._previousUid))
+                {
+                    return false;
+                }
+                if (_objectClass == null)
+                {
+                    if (other._objectClass != null)
+                    {
+                        return false;
+                    }
+                }
+                else if (!_objectClass.Equals(other._objectClass))
                 {
                     return false;
                 }
@@ -4874,6 +4924,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         private SyncToken _token;
         private SyncDeltaType _deltaType;
         private Uid _previousUid;
+        private ObjectClass _objectClass;
         private Uid _uid;
         private ConnectorObject _object;
 
@@ -4895,6 +4946,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             _token = delta.Token;
             _deltaType = delta.DeltaType;
             _previousUid = delta.PreviousUid;
+            _objectClass = delta.ObjectClass;
             _uid = delta.Uid;
             _object = delta.Object;
         }
@@ -4948,6 +5000,23 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         }
 
         /// <summary>
+        /// Returns the <code>ObjectClass</code> of Deleted object.
+        /// </summary>
+        /// <returns>the <code>ObjectClass</code> of Deleted object.</returns>
+        public ObjectClass ObjectClass
+        {
+            get
+            {
+                return _objectClass;
+            }
+            set
+            {
+                _objectClass = value;
+            }
+        }
+
+
+        /// <summary>
         /// Returns the <code>Uid</code> of the object that changed.
         /// </summary>
         /// <remarks>
@@ -4988,6 +5057,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
                 if (value != null)
                 {
                     _uid = value.Uid;
+                    _objectClass = value.ObjectClass;
                 }
             }
         }
@@ -5018,7 +5088,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         /// </remarks>
         public SyncDelta Build()
         {
-            return new SyncDelta(_token, _deltaType, _previousUid, _uid, _object);
+            return new SyncDelta(_token, _deltaType, _previousUid, _objectClass, _uid, _object);
         }
     }
     #endregion

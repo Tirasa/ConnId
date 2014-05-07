@@ -1101,6 +1101,22 @@ namespace FrameworkTests
             Assert.AreEqual(new SyncToken("mytoken"), v2.Token);
             Assert.AreEqual(SyncDeltaType.CREATE_OR_UPDATE, v2.DeltaType);
             Assert.AreEqual(v1, v2);
+
+            builder = new SyncDeltaBuilder();
+            builder.DeltaType = SyncDeltaType.DELETE;
+            builder.Token = new SyncToken("mytoken");
+            builder.ObjectClass = ObjectClass.ACCOUNT;
+            builder.Uid = new Uid("foo");
+            v1 = builder.Build();
+            v2 = (SyncDelta)CloneObject(v1);
+            Assert.AreEqual(ObjectClass.ACCOUNT, v2.ObjectClass);
+            Assert.AreEqual(new Uid("foo"), v2.Uid);
+            Assert.AreEqual(new SyncToken("mytoken"), v2.Token);
+            Assert.AreEqual(SyncDeltaType.DELETE, v2.DeltaType);
+            Assert.AreEqual(v1, v2);
+
+
+
         }
 
         [Test]
