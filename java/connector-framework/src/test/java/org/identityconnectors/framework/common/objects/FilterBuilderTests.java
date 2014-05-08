@@ -27,6 +27,7 @@ import static org.testng.Assert.assertTrue;
 
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
+import org.identityconnectors.framework.common.objects.filter.FilterVisitor;
 import org.testng.annotations.Test;
 
 public class FilterBuilderTests {
@@ -254,12 +255,20 @@ public class FilterBuilderTests {
         public boolean accept(ConnectorObject obj) {
             return true;
         }
+
+        public <R, P> R accept(FilterVisitor<R, P> v, P p) {
+            return v.visitExtendedFilter(p, null, this, null);
+        }
     }
 
     static class FalseFilter implements Filter {
         @Override
         public boolean accept(ConnectorObject obj) {
             return false;
+        }
+
+        public <R, P> R accept(FilterVisitor<R, P> v, P p) {
+            return v.visitExtendedFilter(p, null, this, null);
         }
     }
 }

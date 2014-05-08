@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -39,6 +40,7 @@ public final class SyncDelta {
     private final SyncToken token;
     private final SyncDeltaType deltaType;
     private final Uid previousUid;
+    private final ObjectClass objectClass;
     private final Uid uid;
     private final ConnectorObject connectorObject;
 
@@ -54,16 +56,16 @@ public final class SyncDelta {
      * @param object
      *            The object that has changed. May be null for delete.
      */
-    SyncDelta(SyncToken token, SyncDeltaType deltaType, Uid previousUid, Uid uid,
-            ConnectorObject object) {
+    SyncDelta(SyncToken token, SyncDeltaType deltaType, Uid previousUid, ObjectClass objectClass,
+            Uid uid, ConnectorObject object) {
         Assertions.nullCheck(token, "token");
         Assertions.nullCheck(deltaType, "deltaType");
         Assertions.nullCheck(uid, "uid");
 
         // do not allow previous Uid for anything else than create or update
-        if (previousUid != null && deltaType == SyncDeltaType.DELETE) {
+        if (previousUid != null && (deltaType == SyncDeltaType.DELETE || deltaType == SyncDeltaType.CREATE)) {
             throw new IllegalArgumentException(
-                    "The previous Uid can only be specified for create or update.");
+                    "The previous Uid can only be specified for create_or_update or update.");
         }
 
         // only allow null object for delete
@@ -76,10 +78,14 @@ public final class SyncDelta {
         if (object != null && !uid.equals(object.getUid())) {
             throw new IllegalArgumentException("Uid does not match that of the object.");
         }
+        if (object != null && !objectClass.equals(object.getObjectClass())) {
+            throw new IllegalArgumentException("ObjectClass does not match that of the object.");
+        }
 
         this.token = token;
         this.deltaType = deltaType;
         this.previousUid = previousUid;
+        this.objectClass = objectClass;
         this.uid = uid;
         connectorObject = object;
     }
@@ -95,6 +101,19 @@ public final class SyncDelta {
      */
     public Uid getPreviousUid() {
         return previousUid;
+    }
+
+    /**
+     * If the change described by this <code>SyncDelta.DELETE</code> and the
+     * deleted object value is <code>null</code>, this method returns the
+     * ObjectClass of the deleted object. If operation syncs
+     * {@link org.identityconnectors.framework.common.objects.ObjectClass#ALL}
+     * this must be set, otherwise this method can return <code>null</code>.
+     *
+     * @return the ObjectClass of the deleted object.
+     */
+    public ObjectClass getObjectClass() {
+        return objectClass;
     }
 
     /**
@@ -140,6 +159,7 @@ public final class SyncDelta {
         values.put("Token", token);
         values.put("DeltaType", deltaType);
         values.put("PreviousUid", previousUid);
+        values.put("ObjectClass", objectClass);
         values.put("Uid", uid);
         values.put("Object", connectorObject);
         return values.toString();
@@ -147,7 +167,13 @@ public final class SyncDelta {
 
     @Override
     public int hashCode() {
-        return uid.hashCode();
+        int result = token.hashCode();
+        result = 31 * result + deltaType.hashCode();
+        result = 31 * result + (previousUid != null ? previousUid.hashCode() : 0);
+        result = 31 * result + (objectClass != null ? objectClass.hashCode() : 0);
+        result = 31 * result + uid.hashCode();
+        result = 31 * result + (connectorObject != null ? connectorObject.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -167,11 +193,20 @@ public final class SyncDelta {
             } else if (!previousUid.equals(other.previousUid)) {
                 return false;
             }
+            if (objectClass == null) {
+                if (other.objectClass != null) {
+                    return false;
+                }
+            } else if (!objectClass.equals(other.objectClass)) {
+                return false;
+            }
             if (!uid.equals(other.uid)) {
                 return false;
             }
-            if (connectorObject == null && other.connectorObject != null) {
-                return false;
+            if (connectorObject == null) {
+                if (other.connectorObject != null) {
+                    return false;
+                }
             } else if (!connectorObject.equals(other.connectorObject)) {
                 return false;
             }

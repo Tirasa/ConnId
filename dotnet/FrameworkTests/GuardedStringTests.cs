@@ -60,11 +60,11 @@ namespace FrameworkTests
                 GuardedString gs = new GuardedString();
                 gs = (GuardedString)SerializerUtil.CloneObject(gs);
                 gs.AppendChar(c);
-                gs.Access(clearChars =>
+                gs.Access(new GuardedString.LambdaAccessor(clearChars =>
                 {
                     int v = (int)clearChars[0];
                     Assert.AreEqual(expected, v);
-                });
+                }));
 
             }
         }
@@ -91,14 +91,14 @@ namespace FrameworkTests
         private String DecryptToString(GuardedString str)
         {
             StringBuilder buf = new StringBuilder();
-            str.Access(
+            str.Access(new GuardedString.LambdaAccessor(
                                             array =>
                                             {
                                                 for (int i = 0; i < array.Length; i++)
                                                 {
                                                     buf.Append(array[i]);
                                                 }
-                                            });
+                                            }));
             return buf.ToString();
         }
     }

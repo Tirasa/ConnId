@@ -22,7 +22,7 @@
     enclosed by brackets [] replaced by your own identifying information:
     "Portions Copyrighted [year] [name of copyright owner]"
     ====================
-    Portions Copyrighted 2010-2013 ForgeRock AS.
+    Portions Copyrighted 2010-2014 ForgeRock AS.
 
 -->
 
@@ -376,10 +376,10 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 >
 <!ELEMENT SyncDeltaType EMPTY>
 <!ATTLIST SyncDeltaType
-   value ( CREATE_OR_UPDATE | DELETE ) #REQUIRED
+   value ( CREATE | UPDATE | CREATE_OR_UPDATE | DELETE ) #REQUIRED
 >
 <!ELEMENT SyncToken (value)>
-<!ELEMENT SyncDelta (SyncDeltaType,SyncToken,PreviousUid,Uid,ConnectorObject?)>
+<!ELEMENT SyncDelta (SyncDeltaType,SyncToken,PreviousUid?,ObjectClass?,Uid,ConnectorObject?)>
 
 <!ELEMENT PreviousUid (#PCDATA)>
 <!ATTLIST PreviousUid

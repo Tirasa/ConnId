@@ -22,6 +22,7 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import org.identityconnectors.framework.common.objects.filter.FilterVisitor;
 import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -185,6 +186,10 @@ public class SearchImplTests {
         @Override
         public boolean accept(ConnectorObject obj) {
             return true;
+        }
+
+        public <R, P> R accept(FilterVisitor<R, P> v, P p) {
+            return v.visitExtendedFilter(p, null, this, null);
         }
 
         public List<List<ConnectorObject>> getObjects() {

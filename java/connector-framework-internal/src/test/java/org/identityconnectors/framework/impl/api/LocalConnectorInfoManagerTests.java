@@ -38,15 +38,18 @@ import org.testng.annotations.Test;
 public class LocalConnectorInfoManagerTests extends ConnectorInfoManagerTestBase {
 
     /**
-     * Tests that the framework refuses to load a bundle that requests
-     * a framework version newer than the one present.
+     * Tests that the framework refuses to load a bundle that requests a
+     * framework version newer than the one present.
      */
     @Test(priority = -1)
     public void testCheckVersion() throws Exception {
-        // The test bundles require framework 1.0, so pretend the framework is older.
+        // The test bundles require framework 1.0, so pretend the framework is
+        // older.
         FrameworkUtilTestHelpers.setFrameworkVersion(Version.parse("0.5"));
         try {
-            getConnectorInfoManager();
+            List<URL> urls = getTestBundles();
+            Assert.assertFalse(urls.isEmpty());
+            ConnectorInfoManagerFactory.getInstance().getLocalManager(urls.get(0));
             Assert.fail();
         } catch (ConfigurationException e) {
             if (!e.getMessage().contains("unrecognized framework version")) {
@@ -57,6 +60,7 @@ public class LocalConnectorInfoManagerTests extends ConnectorInfoManagerTestBase
 
     /**
      * To be overridden by subclasses to get different ConnectorInfoManagers
+     *
      * @return
      * @throws Exception
      */

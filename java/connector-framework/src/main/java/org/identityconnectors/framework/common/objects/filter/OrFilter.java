@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -40,6 +41,10 @@ public final class OrFilter extends CompositeFilter {
     @Override
     public boolean accept(ConnectorObject obj) {
         return this.getLeft().accept(obj) || this.getRight().accept(obj);
+    }
+
+    public <R, P> R accept(FilterVisitor<R, P> v, P p) {
+        return v.visitOrFilter(p, getLeft(), getRight());
     }
 
     @Override

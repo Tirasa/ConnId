@@ -1101,6 +1101,22 @@ namespace FrameworkTests
             Assert.AreEqual(new SyncToken("mytoken"), v2.Token);
             Assert.AreEqual(SyncDeltaType.CREATE_OR_UPDATE, v2.DeltaType);
             Assert.AreEqual(v1, v2);
+
+            builder = new SyncDeltaBuilder();
+            builder.DeltaType = SyncDeltaType.DELETE;
+            builder.Token = new SyncToken("mytoken");
+            builder.ObjectClass = ObjectClass.ACCOUNT;
+            builder.Uid = new Uid("foo");
+            v1 = builder.Build();
+            v2 = (SyncDelta)CloneObject(v1);
+            Assert.AreEqual(ObjectClass.ACCOUNT, v2.ObjectClass);
+            Assert.AreEqual(new Uid("foo"), v2.Uid);
+            Assert.AreEqual(new SyncToken("mytoken"), v2.Token);
+            Assert.AreEqual(SyncDeltaType.DELETE, v2.DeltaType);
+            Assert.AreEqual(v1, v2);
+
+
+
         }
 
         [Test]
@@ -1157,21 +1173,21 @@ namespace FrameworkTests
         private String DecryptToString(GuardedString str)
         {
             StringBuilder buf = new StringBuilder();
-            str.Access(
+            str.Access(new GuardedString.LambdaAccessor(
                                             array =>
                                             {
                                                 for (int i = 0; i < array.Length; i++)
                                                 {
                                                     buf.Append(array[i]);
                                                 }
-                                            });
+                                            }));
             return buf.ToString();
         }
 
         private byte[] DecryptToByteArray(GuardedByteArray bytes)
         {
             byte[] result = null;
-            bytes.Access(
+            bytes.Access(new GuardedByteArray.LambdaAccessor(
                                             array =>
                                             {
                                                 result = new byte[array.Length];
@@ -1179,7 +1195,7 @@ namespace FrameworkTests
                                                 {
                                                     result[i] = array[i];
                                                 }
-                                            });
+                                            }));
             return result;
         }
 

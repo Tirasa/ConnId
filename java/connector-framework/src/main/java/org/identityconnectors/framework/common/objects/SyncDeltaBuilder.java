@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -29,6 +30,7 @@ public final class SyncDeltaBuilder {
     private SyncToken syncToken;
     private SyncDeltaType deltaType;
     private Uid previousUid;
+    private ObjectClass objectClass;
     private Uid uid;
     private ConnectorObject connectorObject;
 
@@ -51,6 +53,7 @@ public final class SyncDeltaBuilder {
         deltaType = delta.getDeltaType();
         connectorObject = delta.getObject();
         previousUid = delta.getPreviousUid();
+        objectClass = delta.getObjectClass();
         uid = delta.getUid();
     }
 
@@ -109,8 +112,30 @@ public final class SyncDeltaBuilder {
      * @param previousUid
      *            The Uid of the object before the change.
      */
-    public void setPreviousUid(Uid previousUid) {
+    public SyncDeltaBuilder setPreviousUid(Uid previousUid) {
         this.previousUid = previousUid;
+        return this;
+    }
+
+    /**
+     * Gets the ObjectClass of the object that deleted.
+     *
+     * @return The ObjectClass of the object that deleted.
+     */
+    public ObjectClass getObjectClass() {
+        return objectClass;
+    }
+
+    /**
+     * Sets the ObjectClass of the object that deleted. Note that this is
+     * implicitly set when you call {@link #setObject(ConnectorObject)}.
+     *
+     * @param objectClass
+     *            The ObjectClass of the object that changed.
+     */
+    public SyncDeltaBuilder setObjectClass(ObjectClass objectClass) {
+        this.objectClass = objectClass;
+        return this;
     }
 
     /**
@@ -154,6 +179,7 @@ public final class SyncDeltaBuilder {
         connectorObject = object;
         if (object != null) {
             uid = object.getUid();
+            objectClass = object.getObjectClass();
         }
         return this;
     }
@@ -170,6 +196,6 @@ public final class SyncDeltaBuilder {
      * </ol>
      */
     public SyncDelta build() {
-        return new SyncDelta(syncToken, deltaType, previousUid, uid, connectorObject);
+        return new SyncDelta(syncToken, deltaType, previousUid, objectClass, uid, connectorObject);
     }
 }

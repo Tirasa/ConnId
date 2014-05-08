@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -34,6 +35,10 @@ public final class GreaterThanOrEqualFilter extends ComparableAttributeFilter {
     @Override
     public boolean accept(ConnectorObject obj) {
         return isPresent(obj) && this.compare(obj) >= 0;
+    }
+
+    public <R, P> R accept(FilterVisitor<R, P> v, P p) {
+        return v.visitGreaterThanOrEqualToFilter(p, getName(), getValue());
     }
 
     @Override

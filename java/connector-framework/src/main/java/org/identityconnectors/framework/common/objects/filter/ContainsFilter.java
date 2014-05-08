@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -33,6 +34,10 @@ public final class ContainsFilter extends StringFilter {
     @Override
     public boolean accept(String value) {
         return value.contains(getValue());
+    }
+
+    public <R, P> R accept(FilterVisitor<R, P> v, P p) {
+        return v.visitContainsFilter(p, getName(), getValue());
     }
 
     @Override
