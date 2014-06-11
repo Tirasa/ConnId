@@ -116,6 +116,7 @@ public class TestHelpersImpl implements TestHelpersSpi {
         String fullPrefix = StringUtil.isBlank(prefix) ? null : prefix + ".";
 
         for (ConfigurationPropertyImpl property : configProps.getProperties()) {
+            @SuppressWarnings("unchecked")
             Object value =
                     configData.getProperty(null != fullPrefix ? fullPrefix + property.getName()
                             : property.getName(), (Class<Object>) property.getType(), property

@@ -101,6 +101,7 @@ public final class PropertyBag {
         return castValue(name, value, type);
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T castValue(String name, Object value, Class<T> type) {
         // This means the property value is null, so return null.
         if (value == null) {
@@ -108,12 +109,12 @@ public final class PropertyBag {
         }
         if (!type.isInstance(value)) {
             if (type.isArray() && value instanceof Collection) {
-                Collection<Object> collection = (Collection<Object>) value;
+                final Collection<Object> collection = (Collection<Object>) value;
                 // return (T)
                 // collection.toArray((Object[])Array.newInstance(type.getComponentType(),
                 // collection.size()));
 
-                Object array = Array.newInstance(type.getComponentType(), collection.size());
+                final Object array = Array.newInstance(type.getComponentType(), collection.size());
                 int i = 0;
                 for (Object itemValue : collection) {
                     Array.set(array, i++, castValue(name, itemValue, type.getComponentType()));

@@ -346,6 +346,7 @@ public final class AttributeUtil {
      *             if the attribute is a multi-valued (rather than
      *             single-valued).
      */
+    @SuppressWarnings("unchecked")
     public static Map<String, Object> getMapValue(final Attribute attr) {
         final Object obj = getSingleValue(attr);
         return obj == null ? null : (Map<String, Object>) obj;
