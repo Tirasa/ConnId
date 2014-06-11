@@ -23,14 +23,29 @@
  */
 package org.identityconnectors.framework.common.objects.filter;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
+import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 public final class OrFilter extends CompositeFilter {
+
+    /**
+     * Left side of a composite based filter.
+     */
+    private LinkedList<Filter> subFilters;
+
     /**
      * Takes the result of the left and right filter and ORs them.
      */
     public OrFilter(Filter left, Filter right) {
-        super(left, right);
+        this(CollectionUtil.newList(left, right));
+    }
+
+    public OrFilter(Collection<Filter> filters) {
+        super(null, null);
+        subFilters = new LinkedList(filters);
     }
 
     /**
@@ -39,18 +54,55 @@ public final class OrFilter extends CompositeFilter {
      * @see Filter#accept(ConnectorObject)
      */
     @Override
-    public boolean accept(ConnectorObject obj) {
-        return this.getLeft().accept(obj) || this.getRight().accept(obj);
+    public boolean accept(final ConnectorObject obj) {
+        boolean result = false;
+        for (final Filter subFilter : subFilters) {
+            result = subFilter.accept(obj);
+            if (result) {
+                break;
+            }
+        }
+        return result;
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
-        return v.visitOrFilter(p, getLeft(), getRight());
+        return v.visitOrFilter(p, this);
+    }
+
+    @Override
+    public Filter getLeft() {
+        return subFilters.getFirst();
+    }
+
+    @Override
+    public Filter getRight() {
+        if (subFilters.size() > 2) {
+            LinkedList<Filter> right = new LinkedList<Filter>(subFilters);
+            right.removeFirst();
+            return new AndFilter(right);
+        } else if (subFilters.size() == 2 ){
+            return subFilters.getLast();
+        } else {
+            return null;
+        }
+    }
+
+    public Collection<Filter> getFilters() {
+        return CollectionUtil.asReadOnlyList(subFilters);
     }
 
     @Override
     public String toString() {
-        StringBuilder bld = new StringBuilder();
-        bld.append("OR: ").append(getLeft()).append(", ").append(getRight());
-        return bld.toString();
+        StringBuilder builder = new StringBuilder().append('(');
+        boolean isFirst = true;
+        for (final Filter subFilter : subFilters) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                builder.append(" or ");
+            }
+            builder.append(subFilter);
+        }
+        return builder.append(')').toString();
     }
 }

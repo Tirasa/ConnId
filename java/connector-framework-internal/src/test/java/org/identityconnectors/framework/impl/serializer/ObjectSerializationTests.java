@@ -295,6 +295,13 @@ public class ObjectSerializationTests {
     }
 
     @Test
+    public void testByte() throws Exception {
+        Byte  v1 = 51;
+        Byte  v2 = (Byte)cloneObject(v1);
+        assertEquals(v1, v2);
+    }
+
+    @Test
     public void testClasses() throws Exception {
         assertEquals(int.class,
                 cloneObject(int.class));

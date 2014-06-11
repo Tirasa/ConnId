@@ -19,10 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -32,6 +34,7 @@ import java.util.Set;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
+import org.identityconnectors.common.security.GuardedByteArray;
 import org.identityconnectors.common.security.GuardedString;
 
 /**
@@ -53,7 +56,7 @@ public final class AttributeUtil {
      * @return null if the value is null otherwise the string value for the
      *         attribute.
      * @throws ClassCastException
-     *             if the object in the attribute is not an string.
+     *             if the object in the attribute is not a string.
      * @throws IllegalArgumentException
      *             if the attribute is a multi-valued (rather than
      *             single-valued).
@@ -64,15 +67,54 @@ public final class AttributeUtil {
     }
 
     /**
+     * Get the character value from the specified (single-valued) attribute.
+     *
+     * @param attr
+     *            Attribute from which to retrieve the character value.
+     * @return null if the value is null otherwise the character value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a character.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public static Character getCharacterValue(final Attribute attr) {
+        final Object obj = getSingleValue(attr);
+        return obj == null ? null : (Character) obj;
+    }
+
+    /**
+     * Get the {@link GuardedByteArray} value from the specified (single-valued)
+     * attribute.
+     *
+     * @param attr
+     *            Attribute from which to retrieve the guarded byte array value.
+     * @return null if the value is null otherwise the guarded byte array value
+     *         for the attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a GuardedByteArray.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public static GuardedByteArray getGuardedByteArrayValue(final Attribute attr) {
+        final Object obj = getSingleValue(attr);
+        return obj == null ? null : (GuardedByteArray) obj;
+    }
+
+    /**
      * Get the {@link GuardedString} value from the specified (single-valued)
      * attribute.
      *
      * @param attr
-     *            Attribute from which to retrieve the string value.
-     * @return null if the value is null otherwise the string value for the
-     *         attribute.
+     *            Attribute from which to retrieve the guarded string value.
+     * @return null if the value is null otherwise the guarded string value for
+     *         the attribute.
      * @throws ClassCastException
-     *             if the object in the attribute is not an GuardedString.
+     *             if the object in the attribute is not a GuardedString.
      * @throws IllegalArgumentException
      *             if the attribute is a multi-valued (rather than
      *             single-valued).
@@ -96,6 +138,52 @@ public final class AttributeUtil {
     public static String getAsStringValue(final Attribute attr) {
         final Object obj = getSingleValue(attr);
         return obj == null ? null : obj.toString();
+    }
+
+    /**
+     * Get the byte value from the specified (single-valued) attribute.
+     *
+     * @param attr
+     *            Attribute from which to retrieve the byte value.
+     * @return null if the value is null otherwise the byte value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a byte.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public static Byte getByteValue(final Attribute attr) {
+        final Object obj = getSingleValue(attr);
+        return obj == null ? null : (Byte) obj;
+    }
+
+    /**
+     * Get the byte array value from the specified (single-valued) attribute.
+     *
+     * @param attr
+     *            Attribute from which to retrieve the byte array value.
+     * @return null if the value is null otherwise the byte array value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a byte array.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public static Byte[] getByteArrayValue(final Attribute attr) {
+        final Object obj = getSingleValue(attr);
+        if (obj instanceof byte[]) {
+            Byte[] copy = new Byte[((byte[]) obj).length];
+            for (int idx = 0; idx < ((byte[]) obj).length; ++idx) {
+                copy[idx] = ((byte[]) obj)[idx];
+            }
+            return copy;
+        } else {
+            return obj == null ? null : (Byte[]) obj;
+        }
     }
 
     /**
@@ -124,7 +212,7 @@ public final class AttributeUtil {
      * @return null if the value is null otherwise the long value for the
      *         attribute.
      * @throws ClassCastException
-     *             if the object in the attribute is not an long.
+     *             if the object in the attribute is not a long.
      * @throws IllegalArgumentException
      *             if the attribute is a multi-valued (rather than
      *             single-valued).
@@ -132,6 +220,25 @@ public final class AttributeUtil {
     public static Long getLongValue(final Attribute attr) {
         final Object obj = getSingleValue(attr);
         return obj == null ? null : (Long) obj;
+    }
+
+    /**
+     * Get the float value from the specified (single-valued) attribute.
+     *
+     * @param attr
+     *            Attribute from which to retrieve the float value.
+     * @return null if the value is null otherwise the float value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a float.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public static Float getFloatValue(final Attribute attr) {
+        final Object obj = getSingleValue(attr);
+        return obj == null ? null : (Float) obj;
     }
 
     /**
@@ -143,7 +250,7 @@ public final class AttributeUtil {
      * @return null if the value is null otherwise the date value for the
      *         attribute.
      * @throws ClassCastException
-     *             if the object in the attribute is not an long.
+     *             if the object in the attribute is not a long.
      * @throws IllegalArgumentException
      *             if the attribute is a multi-valued (rather than
      *             single-valued).
@@ -154,14 +261,14 @@ public final class AttributeUtil {
     }
 
     /**
-     * Get the integer value from the specified (single-valued) attribute.
+     * Get the double value from the specified (single-valued) attribute.
      *
      * @param attr
-     *            Attribute from which to retrieve the integer value.
-     * @return null if the value is null otherwise the integer value for the
+     *            Attribute from which to retrieve the double value.
+     * @return null if the value is null otherwise the double value for the
      *         attribute.
      * @throws ClassCastException
-     *             if the object in the attribute is not an integer.
+     *             if the object in the attribute is not a double.
      * @throws IllegalArgumentException
      *             if the attribute is a multi-valued (rather than
      *             single-valued)..
@@ -179,7 +286,7 @@ public final class AttributeUtil {
      * @return null if the value is null otherwise the big decimal value for the
      *         attribute.
      * @throws ClassCastException
-     *             if the object in the attribute is not an big decimal.
+     *             if the object in the attribute is not a big decimal.
      * @throws IllegalArgumentException
      *             if the attribute is a multi-valued (rather than
      *             single-valued).
@@ -187,6 +294,25 @@ public final class AttributeUtil {
     public static BigDecimal getBigDecimalValue(final Attribute attr) {
         final Object obj = getSingleValue(attr);
         return obj == null ? null : (BigDecimal) obj;
+    }
+
+    /**
+     * Get the big integer value from the specified (single-valued) attribute.
+     *
+     * @param attr
+     *            Attribute from which to retrieve the big integer value.
+     * @return null if the value is null otherwise the big integer value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a big integer.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public static BigInteger getBigIntegerValue(final Attribute attr) {
+        final Object obj = getSingleValue(attr);
+        return obj == null ? null : (BigInteger) obj;
     }
 
     /**
@@ -205,6 +331,24 @@ public final class AttributeUtil {
     public static Boolean getBooleanValue(final Attribute attr) {
         final Object obj = getSingleValue(attr);
         return obj == null ? null : (Boolean) obj;
+    }
+
+    /**
+     * Get the map value from the specified (single-valued) attribute.
+     *
+     * @param attr
+     *            Attribute from which to retrieve the map value.
+     * @return null if the value is null otherwise the map value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not an {@link Map}.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     */
+    public static Map<String, Object> getMapValue(final Attribute attr) {
+        final Object obj = getSingleValue(attr);
+        return obj == null ? null : (Map<String, Object>) obj;
     }
 
     /**
@@ -354,8 +498,8 @@ public final class AttributeUtil {
      *
      * @param attr
      *            {@link Attribute} to test for against.
-     * @return true if the attribute value is a {@link Uid},
-     *         {@link ObjectClass} or one of the {@link OperationalAttributes}.
+     * @return true if the attribute value is a {@link Uid}, {@link ObjectClass}
+     *         or one of the {@link OperationalAttributes}.
      * @throws NullPointerException
      *             if the attribute parameter is null.
      */
@@ -370,8 +514,8 @@ public final class AttributeUtil {
      *
      * @param attr
      *            {@link AttributeInfo} to test for against.
-     * @return true if the attribute value is a {@link Uid},
-     *         {@link ObjectClass} or one of the {@link OperationalAttributes}.
+     * @return true if the attribute value is a {@link Uid}, {@link ObjectClass}
+     *         or one of the {@link OperationalAttributes}.
      * @throws NullPointerException
      *             if the attribute parameter is null.
      */

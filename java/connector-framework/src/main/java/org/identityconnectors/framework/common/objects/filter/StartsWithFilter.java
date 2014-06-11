@@ -37,7 +37,7 @@ public final class StartsWithFilter extends StringFilter {
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
-        return v.visitStartsWithFilter(p, getName(), getValue());
+        return v.visitStartsWithFilter(p, this);
     }
 
     @Override

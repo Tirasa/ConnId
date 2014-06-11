@@ -37,7 +37,7 @@ public final class EndsWithFilter extends StringFilter {
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
-        return v.visitEndsWithFilter(p, getName(), getValue());
+        return v.visitEndsWithFilter(p, this);
     }
 
     @Override

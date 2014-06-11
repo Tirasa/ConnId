@@ -54,11 +54,11 @@ namespace Org.IdentityConnectors.Framework.Spi
     /// </description>
     /// </item>
     /// <item>
-    /// <description>The attributes passed to <see cref="AdvancedUpdateOp" />.
+    /// <description>The attributes passed to <see cref="UpdateOp" />.
     /// </description>
     /// </item>
     /// <item>
-    /// <description>The <code>Uid</code> returned from <see cref="AdvancedUpdateOp" />.
+    /// <description>The <code>Uid</code> returned from <see cref="UpdateOp" />.
     /// </description>
     /// </item>
     /// <item>
@@ -109,7 +109,7 @@ namespace Org.IdentityConnectors.Framework.Spi
     /// name of the property and can be used to display the property in a view. The <code>help</code>
     /// message holds the description of the property. The names of the two keys can be overridden
     /// through the <code>ConfigurationProperty</code> annotation.
-    /// <para>
+    /// </para>
     /// </summary>
     public interface Configuration
     {
@@ -409,7 +409,8 @@ namespace Org.IdentityConnectors.Framework.Spi
         /// <para>
         /// This method can be called often. Implementations should do their
         /// best to keep this method fast.
-        /// </para>
+        /// </para>        
+        /// </summary>
         /// <exception cref="System.Exception">if the connector is no longer alive.</exception>
         void CheckAlive();
     }
@@ -423,7 +424,7 @@ namespace Org.IdentityConnectors.Framework.Spi
     /// A search result completion handler may be specified when performing search
     /// requests using a <seealso cref="org.identityconnectors.framework.api.ConnectorFacade"/>
     /// object. The <seealso cref="#handle"/> method is invoked each time a matching
-    /// <seealso cref="org.identityconnectors.framework.common.objects.ConnectorObject"/>
+    /// <seealso cref="Org.identityconnectors.framework.common.objects.ConnectorObject"/>
     /// resource is returned, followed by <seealso cref="#handleResult"/> indicating that no
     /// more ConnectorObject resources will be returned.
     /// </para>

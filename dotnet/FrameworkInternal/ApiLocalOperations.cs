@@ -253,7 +253,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
     /// <summary>
     /// NOTE: internal class, public only for unit tests
     /// Simple structure to pass more variables through the constructor of
-    /// <seealso cref="APIOperationRunner"/>.
+    /// <see cref="APIOperationRunner" />.
     /// </summary>
     public class ConnectorOperationalContext : OperationalContext
     {
@@ -754,7 +754,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
 
             public R Accept<R, P>(FilterVisitor<R, P> v, P p)
             {
-                return v.VisitExtendedFilter(p, null, this, null);
+                return v.VisitExtendedFilter(p, this);
             }
         }
     }
@@ -1051,7 +1051,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
 
         public override R Accept<R, P>(FilterVisitor<R, P> v, P p)
         {
-            return v.VisitExtendedFilter(p, null, this, null);
+            return v.VisitExtendedFilter(p, this);
         }
 
         public override string ToString()
@@ -1574,19 +1574,18 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             //token is allowed to be null, objClass and handler must not be null
             Assertions.NullCheck(objectClass, "objectClass");
             Assertions.NullCheck(handler, "handler");
-            // convert null into empty
+            //convert null into empty
             if (options == null)
             {
-                options = (new OperationOptionsBuilder()).Build();
+                options = new OperationOptionsBuilder().Build();
             }
-
             // add a handler in the chain to remove attributes
             string[] attrsToGet = options.AttributesToGet;
             if (attrsToGet != null && attrsToGet.Length > 0)
             {
                 handler = new SyncAttributesToGetResultsHandler(handler, attrsToGet).SyncResultsHandler;
             }
-            // chain a normalizing results handler
+            //chain a normalizing results handler
             if (GetConnector() is AttributeNormalizer)
             {
                 handler = new NormalizingSyncResultsHandler(handler, GetNormalizer(objectClass)).SyncResultsHandler;

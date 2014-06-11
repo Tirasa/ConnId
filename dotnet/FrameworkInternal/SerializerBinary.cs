@@ -766,6 +766,12 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer.Binary
             return _internalDecoder.ReadByteArray();
         }
 
+        public byte ReadByteContents()
+        {
+            _internalDecoder.StartAnonymousField(0);
+            return _internalDecoder.ReadByte();
+        }
+
         public Type ReadClassContents()
         {
             _internalDecoder.StartAnonymousField(0);

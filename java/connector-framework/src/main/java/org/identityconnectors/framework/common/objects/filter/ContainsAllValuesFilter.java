@@ -65,6 +65,6 @@ public class ContainsAllValuesFilter extends AttributeFilter {
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
-        return v.visitContainsAllFilter(p, getName(), getAttribute().getValue());
+        return v.visitContainsAllValuesFilter(p, this);
     }
 }

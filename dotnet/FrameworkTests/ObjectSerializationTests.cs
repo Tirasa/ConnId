@@ -228,6 +228,14 @@ namespace FrameworkTests
         }
 
         [Test]
+        public void TestByte()
+        {
+            byte v1 = 51;
+            byte v2 = (byte)CloneObject(v1);
+            Assert.AreEqual(v1, v2);
+        }
+
+        [Test]
         public void TestClasses()
         {
             Assert.AreEqual(typeof(bool),

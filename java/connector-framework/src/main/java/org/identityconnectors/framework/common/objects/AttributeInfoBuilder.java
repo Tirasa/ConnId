@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -268,5 +269,35 @@ public final class AttributeInfoBuilder {
      */
     public static AttributeInfo build(String name) {
         return build(name, String.class);
+    }
+
+    /**
+     * Convenience method to create a new AttributeInfoBuilder.
+     *
+     * Equivalent to: <code>new AttributeInfoBuilder(name, String.class)</code>
+     *
+     * @param name
+     *            The name of the attribute
+     * @return The attribute info builder with predefined name and type value.
+     * @since 1.4
+     */
+    public static AttributeInfoBuilder define(String name) {
+        return new AttributeInfoBuilder(name, String.class);
+    }
+
+    /**
+     * Convenience method to create a new AttributeInfoBuilder.
+     *
+     * Equivalent to: <code>new AttributeInfoBuilder(name, type)</code>
+     *
+     * @param name
+     *            The name of the attribute
+     * @param type
+     *            The type of the attribute
+     * @return The attribute info builder with predefined name and type value.
+     * @since 1.4
+     */
+    public static AttributeInfoBuilder define(String name, Class<?> type) {
+        return new AttributeInfoBuilder(name, type);
     }
 }

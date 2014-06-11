@@ -55,7 +55,7 @@ public class Activator implements BundleActivator {
     /**
      *
      */
-    private ServiceRegistration<?> connectorInfoManager;
+    private ServiceRegistration connectorInfoManager;
 
     @SuppressWarnings("unchecked")
     @Override

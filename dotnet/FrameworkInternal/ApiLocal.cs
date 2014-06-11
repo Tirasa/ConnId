@@ -298,7 +298,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                     }
                     if (!StringUtil.IsBlank(options.GroupMessageKey))
                     {
-                        displKey = options.GroupMessageKey;
+                        grpKey = options.GroupMessageKey;
                     }
                     // determine the order..
                     order = options.Order;
@@ -718,7 +718,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
     /// Internal class, public only for unit tests
     /// </summary>
     public class LocalConnectorInfoImpl : AbstractConnectorInfo
-    {       
+    {
         public RemoteConnectorInfoImpl ToRemote()
         {
             RemoteConnectorInfoImpl rv = new RemoteConnectorInfoImpl();
