@@ -280,14 +280,16 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                         info.setMessages(messages);
                         info.setDefaultAPIConfiguration(createDefaultAPIConfiguration(info));
                         rv.add(info);
+                        LOG.info("Add ConnectorInfo {0} to Local Connector Info Manager from {1}",
+                                info.getConnectorKey(), bundleInfo.getOriginalLocation());
                     } catch (final NoClassDefFoundError e) {
-                        LOG.warn(
-                                e,
-                                "Unable to load configuration class {0} from bundle {1}. Class will be ignored and will not be listed in list of connectors.",
-                                options.configurationClass(), bundleInfo.getOriginalLocation());
+                        LOG.warn(LOG.isOk() ?
+                                e : null,
+                                "Unable to load configuration class of connector {0} from bundle {1}. Class will be ignored and will not be listed in list of connectors.",
+                                connectorClass, bundleInfo.getOriginalLocation());
                     } catch (final TypeNotPresentException e) {
-                        LOG.warn(
-                                e,
+                        LOG.warn(LOG.isOk() ?
+                                 e : null,
                                 "Unable to load configuration class of connector {0} from bundle {1}. Class will be ignored and will not be listed in list of connectors.",
                                 connectorClass, bundleInfo.getOriginalLocation());
                     }
@@ -397,7 +399,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
         if (paths == null || paths.length == 0) {
             final String pkage = ReflectionUtil.getPackage(connector);
             final String messageCatalog = pkage + ".Messages";
-            paths = new String[] { messageCatalog };
+            paths = new String[]{messageCatalog};
         }
         for (int i = 0; i < paths.length; i++) {
             paths[i] = paths[i].replace('.', '/');

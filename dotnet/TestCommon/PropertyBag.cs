@@ -22,9 +22,14 @@
  * Portions Copyrighted 2014 ForgeRock AS.
  */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Security;
 using Org.IdentityConnectors.Common;
+using Org.IdentityConnectors.Common.Security;
+using Org.IdentityConnectors.Framework.Common.Objects;
 
 namespace Org.IdentityConnectors.Test.Common
 {
@@ -103,7 +108,7 @@ namespace Org.IdentityConnectors.Test.Common
             {
                 throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
                                                              @"Property named ""{0}"" is of type ""{1}"" but expected type was ""{2}""",
-                                                             name, value.GetType(), typeof (T)));
+                                                             name, value.GetType(), typeof(T)));
             }
 
             return (T)value;
@@ -148,12 +153,191 @@ namespace Org.IdentityConnectors.Test.Common
             if ((value != null) &&
                 !(value.GetType() == type))      //otherwise check if value is an instance of T
             {
-                return Convert.ChangeType(value, type);
-                throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
-                                                             @"Property named ""{0}"" is of type ""{1}"" but expected type was ""{2}""",
-                                                             name, value.GetType(), type));
+                if (type.IsArray)
+                {
+                    var listType = typeof(List<>);
+                    var constructedListType = listType.MakeGenericType(type.GetElementType());
+                    var instance = (IList)Activator.CreateInstance(constructedListType);
+
+                    var listValue = value as List<string>;
+                    if (listValue != null)
+                    {
+                        listValue.ForEach(o => instance.Add(ConvertFromString(o, type.GetElementType())));
+                    }
+                    else
+                    {
+                        var singleSource = value as string;
+                        if (singleSource != null)
+                        {
+                            instance.Add(ConvertFromString(singleSource, type.GetElementType()));
+                        }
+                        else
+                        {
+                            throw new NotSupportedException("The conversion cannot be performed.");
+                        }
+                    }
+
+                    object newValue = Activator.CreateInstance(type, new object[] { instance.Count });
+
+                    instance.CopyTo((Array)newValue, 0);
+                    return newValue;
+
+                    //   return Convert.ChangeType(value, type);
+                    //   var newValue = Activator.CreateInstance(type, new object[] {1});
+                    //   return Array.ConvertAll(new string[] {value}, null);
+
+                }
+                else
+                {
+                    if (value is ICollection)
+                    {
+                        throw new InvalidCastException(string.Format(CultureInfo.InvariantCulture,
+                                                            @"Property named ""{0}"" is of type ""{1}"" but expected type was ""{2}""",
+                                                            name, value.GetType(), type));
+                    }
+                    else
+                    {
+                        // Convert simple value
+                        return ConvertFromString((String)value, type);
+                    }
+                }
             }
             return value;
+        }
+
+        private object ConvertFromString(string sourceValue, Type target)
+        {
+
+            if (typeof(string) == target)
+            {
+                return Convert.ChangeType(sourceValue, target);
+            }
+            else if (typeof(long) == target)
+            {
+                return Convert.ChangeType(sourceValue, target);
+            }
+            else if (typeof(long?) == target)
+            {
+                if (StringUtil.IsBlank(sourceValue))
+                {
+                    return null;
+                }
+                else
+                {
+                    return Convert.ChangeType(sourceValue, typeof(long));
+                }
+            }
+            else if (typeof(char) == target)
+            {
+                return Convert.ChangeType(sourceValue, target);
+            }
+            else if (typeof(char?) == target)
+            {
+                if (StringUtil.IsBlank(sourceValue))
+                {
+                    return null;
+                }
+                else
+                {
+                    return Convert.ChangeType(sourceValue, typeof(char));
+                }
+            }
+            else if (typeof(double) == target)
+            {
+                return Convert.ChangeType(sourceValue, target);
+            }
+            else if (typeof(double?) == target)
+            {
+                if (StringUtil.IsBlank(sourceValue))
+                {
+                    return null;
+                }
+                else
+                {
+                    return Convert.ChangeType(sourceValue, typeof(double));
+                }
+            }
+            else if (typeof(float) == target)
+            {
+                return Convert.ChangeType(sourceValue, target);
+            }
+            else if (typeof(float?) == target)
+            {
+                if (StringUtil.IsBlank(sourceValue))
+                {
+                    return null;
+                }
+                else
+                {
+                    return Convert.ChangeType(sourceValue, typeof(float));
+                }
+            }
+            else if (typeof(int) == target)
+            {
+                return Convert.ChangeType(sourceValue, target);
+            }
+            else if (typeof(int?) == target)
+            {
+                if (StringUtil.IsBlank(sourceValue))
+                {
+                    return null;
+                }
+                else
+                {
+                    return Convert.ChangeType(sourceValue, typeof(int));
+                }
+            }
+            else if (typeof(bool) == target)
+            {
+                return Convert.ChangeType(sourceValue, target);
+            }
+            else if (typeof(bool?) == target)
+            {
+                if (StringUtil.IsBlank(sourceValue))
+                {
+                    return null;
+                }
+                else
+                {
+                    return Convert.ChangeType(sourceValue, typeof(bool));
+                }
+            }
+            else if (typeof(Uri) == target)
+            {
+                return new Uri(sourceValue);
+            }
+            else if (typeof(FileName) == target)
+            {
+                return new FileName(sourceValue);
+            }
+            else if (typeof(GuardedByteArray) == target)
+            {
+                var result = new GuardedByteArray();
+                System.Text.Encoding.UTF8.GetBytes(sourceValue).ToList().ForEach(result.AppendByte);
+                return result;
+            }
+            else if (typeof(GuardedString) == target)
+            {
+                var result = new GuardedString();
+                sourceValue.ToCharArray().ToList().ForEach(result.AppendChar);
+                return result;
+            }
+            else if (typeof(Script) == target)
+            {
+
+                int i = sourceValue.IndexOf('|');
+                if (i > 0 && i < sourceValue.Length)
+                {
+                    var scriptLanguage = sourceValue.Substring(0, i);
+                    var scriptText = sourceValue.Substring(i + 1);
+                    return new ScriptBuilder { ScriptLanguage = scriptLanguage, ScriptText = scriptText }.Build();
+                }
+                else
+                {
+                    throw new FormatException("Expected format is 'ScriptLanguage|ScriptText'");
+                }
+            }
+            throw new NotSupportedException("The conversion cannot be performed.");
         }
 
         /// <summary>

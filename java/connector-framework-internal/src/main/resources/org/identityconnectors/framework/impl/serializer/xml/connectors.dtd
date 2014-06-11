@@ -68,7 +68,8 @@
   "null | Array | Boolean | boolean | Character | char | Integer |
   int | Long | long | Float | float | Double | double | String |
   URI | File | BigDecimal | BigInteger | ByteArray | Class |
-  Map | List | Set | Locale | GuardedByteArray | GuardedString
+  Map | List | Set | Locale | GuardedByteArray | GuardedString |
+  Byte | byte
   ">
 
 <!ENTITY % xmlObject
@@ -113,6 +114,8 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ELEMENT char (#PCDATA)>
 <!ELEMENT Integer (#PCDATA)>
 <!ELEMENT int (#PCDATA)>
+<!ELEMENT Byte (#PCDATA)>
+<!ELEMENT byte (#PCDATA)>
 <!ELEMENT Long (#PCDATA)>
 <!ELEMENT long (#PCDATA)>
 <!ELEMENT Float (#PCDATA)>

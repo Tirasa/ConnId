@@ -19,16 +19,21 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.identityconnectors.common.CollectionUtil;
+import org.identityconnectors.common.security.GuardedByteArray;
 import org.identityconnectors.common.security.GuardedString;
 
 /**
@@ -142,6 +147,19 @@ public class AttributesAccessor {
     }
 
     /**
+     * Get the name of attributes this Accessor was created with.
+     *
+     * @return new Case Insensitive ReadOnly Set of attribute name the access
+     *         has access to.
+     * @since 1.4
+     */
+    public Set<String> listAttributeNames() {
+        Set<String> names = CollectionUtil.newCaseInsensitiveSet();
+        names.addAll(attributeMap.keySet());
+        return Collections.unmodifiableSet(names);
+    }
+
+    /**
      * Determines if the set as the attribute specified.
      *
      * @param name
@@ -168,6 +186,25 @@ public class AttributesAccessor {
     public String findString(String name) {
         Attribute a = find(name);
         return a == null ? null : AttributeUtil.getStringValue(a);
+    }
+
+    /**
+     * Get the character value from the specified (single-valued) attribute.
+     *
+     * @param name
+     *            Attribute from which to retrieve the character value.
+     * @return null if the value is null otherwise the character value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a character.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public Character findCharacter(String name) {
+        Attribute a = find(name);
+        return a == null ? null : AttributeUtil.getCharacterValue(a);
     }
 
     /**
@@ -226,14 +263,14 @@ public class AttributesAccessor {
     }
 
     /**
-     * Get the integer value from the specified (single-valued) attribute.
+     * Get the double value from the specified (single-valued) attribute.
      *
      * @param name
-     *            Attribute from which to retrieve the integer value.
-     * @return null if the value is null otherwise the integer value for the
+     *            Attribute from which to retrieve the double value.
+     * @return null if the value is null otherwise the double value for the
      *         attribute.
      * @throws ClassCastException
-     *             if the object in the attribute is not an integer.
+     *             if the object in the attribute is not a double.
      * @throws IllegalArgumentException
      *             if the attribute is a multi-valued (rather than
      *             single-valued)..
@@ -241,6 +278,25 @@ public class AttributesAccessor {
     public Double findDouble(String name) {
         Attribute a = find(name);
         return a == null ? null : AttributeUtil.getDoubleValue(a);
+    }
+
+    /**
+     * Get the float value from the specified (single-valued) attribute.
+     *
+     * @param name
+     *            Attribute from which to retrieve the float value.
+     * @return null if the value is null otherwise the float value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a float.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public Float findFloat(String name) {
+        Attribute a = find(name);
+        return a == null ? null : AttributeUtil.getFloatValue(a);
     }
 
     /**
@@ -277,5 +333,121 @@ public class AttributesAccessor {
     public Boolean findBoolean(String name) {
         Attribute a = find(name);
         return a == null ? null : AttributeUtil.getBooleanValue(a);
+    }
+
+    /**
+     * Get the byte value from the specified (single-valued) attribute.
+     *
+     * @param name
+     *            Attribute from which to retrieve the byte value.
+     * @return null if the value is null otherwise the byte value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a byte.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public Byte findByte(String name) {
+        Attribute a = find(name);
+        return a == null ? null : AttributeUtil.getByteValue(a);
+    }
+
+    /**
+     * Get the byte array value from the specified (single-valued) attribute.
+     *
+     * @param name
+     *            Attribute from which to retrieve the byte array value.
+     * @return null if the value is null otherwise the byte array value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a byte.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public Byte[] findByteArray(String name) {
+        Attribute a = find(name);
+        return a == null ? null : AttributeUtil.getByteArrayValue(a);
+    }
+
+    /**
+     * Get the big integer value from the specified (single-valued) attribute.
+     *
+     * @param name
+     *            Attribute from which to retrieve the big integer value.
+     * @return null if the value is null otherwise the big integer value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a big integer.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public BigInteger findBigInteger(String name) {
+        Attribute a = find(name);
+        return a == null ? null : AttributeUtil.getBigIntegerValue(a);
+    }
+
+    /**
+     * Get the guarded byte array value from the specified (single-valued)
+     * attribute.
+     *
+     * @param name
+     *            Attribute from which to retrieve the guarded byte array value.
+     * @return null if the value is null otherwise the guarded byte array value
+     *         for the attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a guarded byte array.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public GuardedByteArray findGuardedByteArray(String name) {
+        Attribute a = find(name);
+        return a == null ? null : AttributeUtil.getGuardedByteArrayValue(a);
+    }
+
+    /**
+     * Get the guarded string value from the specified (single-valued)
+     * attribute.
+     *
+     * @param name
+     *            Attribute from which to retrieve the guarded string value.
+     * @return null if the value is null otherwise the guarded string value for
+     *         the attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a guarded string.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public GuardedString findGuardedString(String name) {
+        Attribute a = find(name);
+        return a == null ? null : AttributeUtil.getGuardedStringValue(a);
+    }
+
+    /**
+     * Get the map value from the specified (single-valued) attribute.
+     *
+     * @param name
+     *            Attribute from which to retrieve the map value.
+     * @return null if the value is null otherwise the map value for the
+     *         attribute.
+     * @throws ClassCastException
+     *             if the object in the attribute is not a map.
+     * @throws IllegalArgumentException
+     *             if the attribute is a multi-valued (rather than
+     *             single-valued).
+     * @since 1.4
+     */
+    public Map findMap(String name) {
+        Attribute a = find(name);
+        return a == null ? null : AttributeUtil.getMapValue(a);
     }
 }

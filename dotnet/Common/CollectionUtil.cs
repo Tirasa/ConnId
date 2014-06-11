@@ -502,16 +502,51 @@ namespace Org.IdentityConnectors.Common
         /// <summary>
         /// Given a collection of values a key function, builds a dictionary
         /// </summary>
-        /// <param name="values">List of values</param>
-        /// <param name="keyFunction">Key function, mapping from key to value</param>
+        /// <param name="k0">List of values</param>
+        /// <param name="v0">Key function, mapping from key to value</param>
         /// <returns>The dictionay</returns>
         public static IDictionary<TKey, TValue> NewDictionary<TKey, TValue>(
-            TKey k1,
-            TValue v1)
+            TKey k0,
+            TValue v0)
         {
             IDictionary<TKey, TValue> rv = new Dictionary<TKey, TValue>();
-            rv[k1] = v1;
+            rv[k0] = v0;
             return rv;
+        }
+
+        public static IDictionary<T, K> NewDictionary<T, K>(T k0, K v0, T k1, K v1)
+        {
+            IDictionary<T, K> map = NewDictionary(k0, v0);
+            map[k1] = v1;
+            return map;
+        }
+
+        public static IDictionary<T, K> NewDictionary<T, K>(T k0, K v0, T k1, K v1, T k2, K v2)
+        {
+            IDictionary<T, K> map = NewDictionary(k0, v0, k1, v1);
+            map[k2] = v2;
+            return map;
+        }
+
+        public static IDictionary<T, K> NewDictionary<T, K>(T k0, K v0, T k1, K v1, T k2, K v2, T k3, K v3)
+        {
+            IDictionary<T, K> map = NewDictionary(k0, v0, k1, v1, k2, v2);
+            map[k3] = v3;
+            return map;
+        }
+
+        public static IDictionary<T, K> NewDictionary<T, K>(T k0, K v0, T k1, K v1, T k2, K v2, T k3, K v3, T k4, K v4)
+        {
+            IDictionary<T, K> map = NewDictionary(k0, v0, k1, v1, k2, v2, k3, v3);
+            map[k4] = v4;
+            return map;
+        }
+
+        public static IDictionary<T, K> NewDictionary<T, K>(T k0, K v0, T k1, K v1, T k2, K v2, T k3, K v3, T k4, K v4, T k5, K v5)
+        {
+            IDictionary<T, K> map = NewDictionary(k0, v0, k1, v1, k2, v2, k3, v3, k4, v4);
+            map[k5] = v5;
+            return map;
         }
 
         /// <summary>

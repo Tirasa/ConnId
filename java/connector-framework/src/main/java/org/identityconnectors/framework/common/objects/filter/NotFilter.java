@@ -57,7 +57,7 @@ public final class NotFilter implements Filter {
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
-        return v.visitNotFilter(p, getFilter());
+        return v.visitNotFilter(p, this);
     }
 
     @Override
