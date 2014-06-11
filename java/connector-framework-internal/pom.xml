@@ -4,7 +4,7 @@
     ====================
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright 2013 ConnId. All rights reserved.
+    Copyright 2014 ConnId. All rights reserved.
 
     The contents of this file are subject to the terms of the Common Development
     and Distribution License("CDDL") (the "License").  You may not use this file
@@ -28,7 +28,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.connid</groupId>
+    <groupId>net.tirasa.connid</groupId>
     <artifactId>connid</artifactId>
     <version>1.4.0.0-SNAPSHOT</version>
   </parent>
@@ -39,7 +39,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.connid</groupId>
+      <groupId>net.tirasa.connid</groupId>
       <artifactId>connector-framework</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -52,7 +52,7 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.connid</groupId>
+      <groupId>net.tirasa.connid</groupId>
       <artifactId>connector-test-common</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
@@ -70,7 +70,7 @@
       <artifactId>fest-assert-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.connid</groupId>
+      <groupId>net.tirasa.connid</groupId>
       <artifactId>connector-framework</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
@@ -78,13 +78,13 @@
     </dependency>
     <!-- Force to build the test bundles before -->
     <dependency>
-      <groupId>org.connid</groupId>
+      <groupId>net.tirasa.connid</groupId>
       <artifactId>testbundlev1</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.connid</groupId>
+      <groupId>net.tirasa.connid</groupId>
       <artifactId>testbundlev2</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
@@ -100,7 +100,7 @@
         <configuration>
           <instructions>
             <Main-Class>org.identityconnectors.framework.server.Main</Main-Class>
-            <Fragment-Host>org.connid.connector-framework</Fragment-Host>
+            <Fragment-Host>net.tirasa.connid.connector-framework</Fragment-Host>
           </instructions>
         </configuration>
       </plugin>
@@ -118,11 +118,11 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.connid</groupId>
+                  <groupId>net.tirasa.connid</groupId>
                   <artifactId>testbundlev1</artifactId>
                 </artifactItem>
                 <artifactItem>
-                  <groupId>org.connid</groupId>
+                  <groupId>net.tirasa.connid</groupId>
                   <artifactId>testbundlev2</artifactId>
                 </artifactItem>
               </artifactItems>
