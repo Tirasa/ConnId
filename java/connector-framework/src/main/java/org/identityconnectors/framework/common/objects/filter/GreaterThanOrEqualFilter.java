@@ -38,7 +38,7 @@ public final class GreaterThanOrEqualFilter extends ComparableAttributeFilter {
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
-        return v.visitGreaterThanOrEqualToFilter(p, getName(), getValue());
+        return v.visitGreaterThanOrEqualFilter(p, this);
     }
 
     @Override

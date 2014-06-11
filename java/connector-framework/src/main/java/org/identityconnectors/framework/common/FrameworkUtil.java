@@ -323,7 +323,7 @@ public final class FrameworkUtil {
      */
     public static void checkAttributeValue(Object value) {
         if (value != null) {
-            checkAttributeType(value.getClass());
+            checkAttributeValue((String) null, value);
         }
     }
 
@@ -417,7 +417,7 @@ public final class FrameworkUtil {
             return; // ok
         }
 
-        if (SortKey.class.isAssignableFrom(clazz)){
+        if (SortKey.class.isAssignableFrom(clazz)) {
             return; // ok
         }
 

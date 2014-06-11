@@ -72,7 +72,7 @@ public final class EqualsFilter extends AttributeFilter {
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
-        return v.visitEqualsFilter(p, getName(), getAttribute().getValue());
+        return v.visitEqualsFilter(p, this);
     }
 
     @Override

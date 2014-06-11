@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.Pair;
 import org.identityconnectors.common.ReflectionUtil;
 import org.identityconnectors.common.StringUtil;
+import org.identityconnectors.common.Version;
 import org.identityconnectors.common.event.ConnectorEvent;
 import org.identityconnectors.common.event.ConnectorEventHandler;
 import org.identityconnectors.common.event.ConnectorEventPublisher;
@@ -246,7 +248,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
             List<ManifestEntry> manifestEnties) {
         List<ConnectorInfo> rv = new ArrayList<ConnectorInfo>();
         Enumeration<URL> classFiles = parsed.findEntries("/", "*.class", true);
-        Enumeration<URL> propertyFiles = parsed.findEntries("/", "*.properties", true);
+        List<URL> propertyFiles = Collections.list(parsed.findEntries("/", "*.properties", true));
 
         String frameworkVersion = null;
         String bundleName = null;
@@ -260,6 +262,14 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
             } else if (ConnectorManifestScanner.ATT_BUNDLE_VERSION.equals(entry.getKey())) {
                 bundleVersion = entry.getValue();
             }
+        }
+
+        if (FrameworkUtil.getFrameworkVersion().compareTo(Version.parse(frameworkVersion)) < 0) {
+            String message =
+                    "Bundle " + parsed.getLocation() + " requests an unrecognized framework version "
+                            + frameworkVersion + " but available is "
+                            + FrameworkUtil.getFrameworkVersion().getVersion();
+            throw new ConfigurationException(message);
         }
 
         if (StringUtil.isBlank(bundleName) || StringUtil.isBlank(bundleVersion)) {
@@ -289,15 +299,15 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
 
             if (connectorClass != null && options != null) {
                 if (!Connector.class.isAssignableFrom(connectorClass)) {
-                    String message =
-                            "Class " + connectorClass + " does not implement "
-                                    + Connector.class.getName();
-                    throw new ConfigurationException(message);
+                    throw new ConfigurationException("Class " + connectorClass
+                            + " does not implement " + Connector.class.getName());
                 }
-                LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
+                final LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
                 info.setConnectorClass(connectorClass.asSubclass(Connector.class));
+                try {
                 info.setConnectorConfigurationClass(options.configurationClass());
                 info.setConnectorDisplayNameKey(options.displayNameKey());
+                info.setConnectorCategoryKey(options.categoryKey());
                 info.setConnectorKey(new ConnectorKey(bundleName, bundleVersion, connectorClass
                         .getName()));
                 ConnectorMessagesImpl messages =
@@ -305,6 +315,15 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                 info.setMessages(messages);
                 info.setDefaultAPIConfiguration(createDefaultAPIConfiguration(info));
                 rv.add(info);
+                } catch (final NoClassDefFoundError e) {
+                    logger.warn(
+                            "Unable to load configuration class of connector {} from bundle {}. Class will be ignored and will not be listed in list of connectors.",
+                            logger.isDebugEnabled() ? new Object[]{connectorClass, parsed.getLocation(),e} : new Object[]{connectorClass, parsed.getLocation()});
+                } catch (final TypeNotPresentException e) {
+                    logger.warn(
+                            "Unable to load configuration class of connector {} from bundle {}. Class will be ignored and will not be listed in list of connectors.",
+                            logger.isDebugEnabled() ? new Object[]{connectorClass, parsed.getLocation(),e} : new Object[]{connectorClass, parsed.getLocation()});
+                }
             }
         }
         return rv;
@@ -335,7 +354,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         }
     }
 
-    private ConnectorMessagesImpl loadMessageCatalog(Enumeration<URL> propertyFiles, Bundle loader,
+    private ConnectorMessagesImpl loadMessageCatalog(List<URL> propertyFiles, Bundle loader,
             Class<? extends Connector> connector) {
         try {
             final String[] prefixes = getBundleNamePrefixes(connector);
@@ -344,8 +363,8 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
             // iterate last to first so that first one wins
             for (int i = prefixes.length - 1; i >= 0; i--) {
                 String prefix = prefixes[i];
-                while (propertyFiles.hasMoreElements()) {
-                    String path = propertyFiles.nextElement().getFile();
+                for (URL propertyFile : propertyFiles) {
+                    String path = propertyFile.getFile();
                     if (path.startsWith(prefix)) {
                         String localeStr = path.substring(prefix.length());
                         if (localeStr.endsWith(suffix)) {

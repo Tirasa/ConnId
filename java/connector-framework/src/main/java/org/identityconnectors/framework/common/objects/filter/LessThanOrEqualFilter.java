@@ -44,7 +44,7 @@ public final class LessThanOrEqualFilter extends ComparableAttributeFilter {
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
-        return v.visitLessThanOrEqualToFilter(p, getName(), getValue());
+        return v.visitLessThanOrEqualFilter(p, this);
     }
 
     @Override

@@ -186,6 +186,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
         /// <summary>
         /// reads the value in-line.
         /// </summary>
+        byte ReadByteContents();
+
+        /// <summary>
+        /// reads the value in-line.
+        /// </summary>
         byte[] ReadByteArrayContents();
 
         /// <summary>
@@ -808,7 +813,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
             }
             public override Object Deserialize(ObjectDecoder decoder)
             {
-                return decoder.ReadByteArrayContents();
+                return decoder.ReadByteContents();
             }
 
             public override void Serialize(Object obj, ObjectEncoder encoder)

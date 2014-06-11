@@ -23,11 +23,8 @@
 
 package org.identityconnectors.framework.common.objects.filter;
 
-import java.util.List;
-
 /**
- * A visitor of {@code Filter}s, in the style of the visitor design
- * pattern.
+ * A visitor of {@code Filter}s, in the style of the visitor design pattern.
  * <p>
  * Classes implementing this interface can query filters in a type-safe manner.
  * When a visitor is passed to a filter's accept method, the corresponding visit
@@ -53,131 +50,110 @@ public interface FilterVisitor<R, P> {
      *
      * @param p
      *            A visitor specified parameter.
-     * @param left
-     *            The left sub-filter.
-     * @param right
-     *            The right sub-filter.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitAndFilter(P p, Filter left, Filter right);
+    R visitAndFilter(P p, AndFilter filter);
 
     /**
      * Visits a {@code contains} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A name of the attribute within ConnectorObject to be compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitContainsFilter(P p, String name, String valueAssertion);
+    R visitContainsFilter(P p, ContainsFilter filter);
 
     /**
      * Visits a {@code containsAll} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A name of the attribute within ConnectorObject to be compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitContainsAllFilter(P p, String name, List<Object> valueAssertion);
+    R visitContainsAllValuesFilter(P p, ContainsAllValuesFilter filter);
 
     /**
      * Visits a {@code equality} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A name of the attribute within ConnectorObject to be compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitEqualsFilter(P p, String name, List<Object> valueAssertion);
-
+    R visitEqualsFilter(P p, EqualsFilter filter);
 
     /**
      * Visits a {@code comparison} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A name of the attribute within ConnectorObject to be compared.
      * @param filter
-     *            The original filter.
-     * @param valueAssertion
-     *            The value assertion.
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitExtendedFilter(P p, String name, Filter filter, List<Object> valueAssertion);
+    R visitExtendedFilter(P p, Filter filter);
 
     /**
      * Visits a {@code greater than} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A name of the attribute within ConnectorObject to be compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitGreaterThanFilter(P p, String name, Object valueAssertion);
+    R visitGreaterThanFilter(P p, GreaterThanFilter filter);
 
     /**
      * Visits a {@code greater than or equal to} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A name of the attribute within ConnectorObject to be compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitGreaterThanOrEqualToFilter(P p, String name, Object valueAssertion);
+    R visitGreaterThanOrEqualFilter(P p, GreaterThanOrEqualFilter filter);
 
     /**
      * Visits a {@code less than} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A name of the attribute within ConnectorObject to be compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitLessThanFilter(P p, String name, Object valueAssertion);
+    R visitLessThanFilter(P p, LessThanFilter filter);
 
     /**
      * Visits a {@code less than or equal to} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A name of the attribute within ConnectorObject to be compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitLessThanOrEqualToFilter(P p, String name, Object valueAssertion);
+    R visitLessThanOrEqualFilter(P p, LessThanOrEqualFilter filter);
 
     /**
      * Visits a {@code not} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param subFilter
-     *            The sub-filter.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitNotFilter(P p, Filter subFilter);
+    R visitNotFilter(P p, NotFilter filter);
 
     /**
      * Visits an {@code or} filter.
@@ -187,40 +163,32 @@ public interface FilterVisitor<R, P> {
      *
      * @param p
      *            A visitor specified parameter.
-     * @param left
-     *            The left sub-filter.
-     * @param right
-     *            The right sub-filter.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitOrFilter(P p, Filter left, Filter right);
+    R visitOrFilter(P p, OrFilter filter);
 
     /**
      * Visits a {@code starts with} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A pointer to the attribute within ConnectorObject to be
-     *            compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitStartsWithFilter(P p, String name, String valueAssertion);
+    R visitStartsWithFilter(P p, StartsWithFilter filter);
 
     /**
      * Visits a {@code ends with} filter.
      *
      * @param p
      *            A visitor specified parameter.
-     * @param name
-     *            A pointer to the attribute within ConnectorObject to be
-     *            compared.
-     * @param valueAssertion
-     *            The value assertion.
+     * @param filter
+     *            The visited filter.
      * @return Returns a visitor specified result.
      */
-    R visitEndsWithFilter(P p, String name, String valueAssertion);
+    R visitEndsWithFilter(P p, EndsWithFilter filter);
 
 }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.impl.api.local;
 
@@ -46,6 +47,19 @@ class BundleClassLoader extends URLClassLoader {
     public BundleClassLoader(final List<URL> urls, final Map<String, String> nativeLibs, final ClassLoader parent) {
         super(urls.toArray(new URL[urls.size()]), parent);
         this.nativeLibs = newReadOnlyMap(nativeLibs);
+    }
+
+    /**
+     * Overrides <code>super.getResource()</code>, to change loading model to
+     * child-first and to restrict access to certain classes.
+     */
+    @Override
+    public URL getResource(String name) {
+        URL url = findResource(name);
+        if (url == null) {
+            url = super.getResource(name);
+        }
+        return url;
     }
 
     /**

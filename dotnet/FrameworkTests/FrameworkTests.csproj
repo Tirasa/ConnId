@@ -165,4 +165,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Org.IdentityConnectors.TestConnector.FakeConnector\config\myconfig\config.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Org.IdentityConnectors.TestConnector.FakeConnector\config\converter\config.xml" />
+  </ItemGroup>
 </Project>

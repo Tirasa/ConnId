@@ -19,8 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects.filter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
@@ -373,6 +379,42 @@ public final class FilterBuilder {
     }
 
     /**
+     * Creates a new "AND" filter using the provided list of sub-filters.
+     * <p>
+     * Creating a new "AND" filter with a {@code null} or empty list of
+     * sub-filters is equivalent to calling "alwaysTrue".
+     *
+     * @param subFilters
+     *            The list of sub-filters, may be empty or {@code null}.
+     * @return The newly created "AND" filter.
+     */
+    public static Filter and(final Collection<Filter> subFilters) {
+        switch (subFilters.size()) {
+            case 0:
+                return null;
+            case 1:
+                return subFilters.iterator().next();
+            default:
+                return new AndFilter(new ArrayList<Filter>(subFilters));
+        }
+    }
+
+    /**
+     * Creates a new "AND" filter using the provided list of sub-filters.
+     * <p>
+     * Creating a new "AND" filter with a {@code null} or empty list of
+     * sub-filters is equivalent to calling "alwaysTrue".
+     *
+     * @param subFilters
+     *            The list of sub-filters, may be empty or {@code null}.
+     * @return The newly created "AND" filter.
+     */
+    public static Filter and(final Filter... subFilters) {
+        return and(Arrays.asList(subFilters));
+    }
+
+
+    /**
      * Logically "OR" together the two specified instances of {@link Filter}.
      * The resulting <i>disjunct</i> <code>Filter</code> is true if and only if
      * at least one of the specified filters is true.
@@ -386,6 +428,42 @@ public final class FilterBuilder {
     public static Filter or(final Filter leftHandSide, final Filter rightHandSide) {
         return new OrFilter(leftHandSide, rightHandSide);
     }
+
+    /**
+     * Creates a new "OR" filter using the provided list of sub-filters.
+     * <p>
+     * Creating a new "OR" filter with a {@code null} or empty list of
+     * sub-filters is equivalent to  "alwaysTrue".
+     *
+     * @param subFilters
+     *            The list of sub-filters, may be empty or {@code null}.
+     * @return The newly created {@code or} filter.
+     */
+    public static Filter or(final Collection<Filter> subFilters) {
+        switch (subFilters.size()) {
+            case 0:
+                return null;
+            case 1:
+                return subFilters.iterator().next();
+            default:
+                return new OrFilter(new ArrayList<Filter>(subFilters));
+        }
+    }
+
+    /**
+     * Creates a new "OR" filter using the provided list of sub-filters.
+     * <p>
+     * Creating a new "OR" filter with a {@code null} or empty list of
+     * sub-filters is equivalent to  "alwaysTrue".
+     *
+     * @param subFilters
+     *            The list of sub-filters, may be empty or {@code null}.
+     * @return The newly created {@code or} filter.
+     */
+    public static Filter or(final Filter... subFilters) {
+        return or(Arrays.asList(subFilters));
+    }
+
 
     /**
      * Logically negate the specified {@link Filter}. The resulting

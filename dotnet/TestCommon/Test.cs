@@ -355,11 +355,11 @@ namespace Org.IdentityConnectors.Test.Common
         /// <param name="assembly">The assembly, that contains the configuration resources.</param>
         /// <returns>Bag of properties for the specified <paramref name="type"/>.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the root directory of the private configuration cannot be determined.</exception>
-        private static PropertyBag LoadProperties(Type type, Assembly assembly)
+        static PropertyBag LoadProperties(Type type, Assembly assembly)
         {
             string bagName = type.FullName;
             string configFilePath = string.Empty;
-            IDictionary<string, string> properties = null;
+            IDictionary<string, object> properties = null;
             var ret = new Dictionary<string, object>();
 
             //load the general public properties file
@@ -418,9 +418,9 @@ namespace Org.IdentityConnectors.Test.Common
         /// </summary>
         /// <param name="filePath">The config file path.</param>
         /// <returns>A property name-value pair collection representing the configuration.</returns>
-        private static IDictionary<string, string> LoadConfigurationFromFile(string filePath)
+        private static IDictionary<string, object> LoadConfigurationFromFile(string filePath)
         {
-            IDictionary<string, string> properties = null;
+            IDictionary<string, object> properties = null;
             try
             {
                 if (File.Exists(filePath))
@@ -448,9 +448,9 @@ namespace Org.IdentityConnectors.Test.Common
         /// <param name="assembly">The assembly, that contains the resource.</param>
         /// <param name="configResName">The name of the resource.</param>
         /// <returns>A property name-value pair collection representing the configuration.</returns>
-        private static IDictionary<string, string> LoadConfigurationFromResource(Assembly assembly, string configResName)
+        private static IDictionary<string, object> LoadConfigurationFromResource(Assembly assembly, string configResName)
         {
-            IDictionary<string, string> properties = null;
+            IDictionary<string, object> properties = null;
             try
             {
                 //the default namespace with which the resource name starts is not known, therefore
@@ -503,9 +503,9 @@ namespace Org.IdentityConnectors.Test.Common
         /// </remarks>
         /// <exception cref="InvalidOperationException">Thrown when the XSD used for validating the configuration is not found in the manifest.</exception>
         /// <exception cref="XmlSchemaValidationException">Thrown when the <paramref name="configStream"/> contains XML that does not adhere to the schema.</exception>
-        internal static IDictionary<string, string> ReadConfiguration(Stream configStream)
+        internal static IDictionary<string, object> ReadConfiguration(Stream configStream)
         {
-            var properties = new Dictionary<string, string>();
+            var properties = new Dictionary<string, object>();
             //validate the XML configuration against the XSD
             var schemaSet = new XmlSchemaSet();
             var schemaStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Org.IdentityConnectors.Test.Common.config.xsd");
@@ -536,7 +536,26 @@ namespace Org.IdentityConnectors.Test.Common
                         string xmlValue = reader.GetAttribute("value");
                         if (!StringUtil.IsBlank(name) && xmlValue != null)
                         {
-                            properties[name] = xmlValue;
+                            if (properties.ContainsKey(name))
+                            {
+                                var value = properties[name];
+                                if (value is ICollection<string>)
+                                {
+                                    (value as ICollection<string>).Add(xmlValue);
+                                }
+                                else
+                                {
+                                    var collectionValue = new List<string>();
+                                    collectionValue.Add((string)properties[name]);
+                                    collectionValue.Add(xmlValue);
+                                    properties[name] = collectionValue;
+                                }
+                            }
+                            else
+                            {
+                                properties[name] = xmlValue;
+                            }
+
                         }
                     }
                 }
