@@ -58,7 +58,8 @@ public class SLF4JLog implements LogSpi {
                 ((LocationAwareLogger) logger).log(null, clazz.getName(), getLogLevel(level), message, null, ex);
             } else {
                 //StringBuilder sb = new StringBuilder(METHOD).append(methodName).append("\t").append(message);
-                StringBuilder sb = new StringBuilder(message).append('\t').append(METHOD).append(methodName);
+                StringBuilder sb =
+                        new StringBuilder(null == message ? "" : message).append('\t').append(METHOD).append(methodName);
                 ((LocationAwareLogger) logger).log(null, clazz.getName(), getLogLevel(level), sb
                         .toString(), null, ex);
             }
@@ -67,7 +68,10 @@ public class SLF4JLog implements LogSpi {
             if (StringUtil.isNotBlank(methodName)){
                 sb.append(methodName).append('\t');
             }
-            sb.append(MESSAGE).append(message);
+            sb.append(MESSAGE);
+            if (null != message) {
+                sb.append(message);
+            }
             // uses different call if the exception is not null..
             if (Level.OK.equals(level)) {
                 if (ex == null) {

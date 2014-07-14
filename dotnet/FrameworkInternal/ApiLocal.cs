@@ -280,9 +280,9 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                     GetPropertyOptions(desc);
                 // use the options to set internal properties..
                 int order = 0;
-                String helpKey = name + ".help";
-                String displKey = name + ".display";
-                string grpKey = name + ".group";
+                String helpKey = "help_" + name;
+                String displKey = "display_" +name;
+                string grpKey = "group_" + name;
                 bool confidential = false;
                 bool required = false;
                 if (options != null)
@@ -533,6 +533,10 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
                         (ConnectorClassAttribute)attributes[0];
                     LocalConnectorInfoImpl info =
                         CreateConnectorInfo(assembly, type, attribute);
+                    UriBuilder uri = new UriBuilder(assembly.CodeBase);
+                    Trace.TraceInformation("Add ConnectorInfo {0} to Local Connector Info Manager from {1}",
+                                info.ConnectorKey, Uri.UnescapeDataString(uri.Path));
+
                     rv.Add(info);
                 }
             }
