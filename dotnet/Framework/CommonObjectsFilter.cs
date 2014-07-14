@@ -885,6 +885,17 @@ namespace Org.IdentityConnectors.Framework.Common.Objects.Filters
         }
 
         /// <summary>
+        /// Name of the attribute to find in the <seealso cref="ConnectorObject"/>.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return GetAttribute().Name;
+            }
+        }
+
+        /// <summary>
         /// Determines if the attribute provided is present in the
         /// <see cref="ConnectorObject" />.
         /// </summary>

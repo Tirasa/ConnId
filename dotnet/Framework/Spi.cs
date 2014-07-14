@@ -103,8 +103,8 @@ namespace Org.IdentityConnectors.Framework.Spi
     /// </para>
     /// <para>  
     /// Each property corresponds to two entries in a resource named <code>Messages</code>:
-    /// <code>[Property].display</code> and <code>[Property].help</code>. For example,
-    /// <code>hostname.help</code> and <code>hostname.display</code> would be the keys
+    /// <code>display_[Property]</code> and <code>help_[Property]</code>. For example,
+    /// <code>help_hostname</code> and <code>display_helphostname</code> would be the keys
     /// corresponding to a <code>hostname</code> property. The <code>display</code> message is the display
     /// name of the property and can be used to display the property in a view. The <code>help</code>
     /// message holds the description of the property. The names of the two keys can be overridden
