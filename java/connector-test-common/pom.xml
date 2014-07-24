@@ -37,6 +37,10 @@
     
   <name>ConnId: Common Test Library</name>
 
+  <properties>
+    <parent.path>${basedir}/..</parent.path>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>net.tirasa.connid</groupId>

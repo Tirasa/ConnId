@@ -36,5 +36,9 @@
   <artifactId>testcommonv1</artifactId>
     
   <name>ConnId: Test Common V1</name>
+
+  <properties>
+    <parent.path>${basedir}/..</parent.path>
+  </properties>
     
 </project>

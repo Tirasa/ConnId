@@ -36,6 +36,10 @@
   <artifactId>connector-server-zip</artifactId>    
   <name>ConnId: Connector Server (zip assembly)</name>
     
+  <properties>
+    <parent.path>${basedir}/..</parent.path>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>net.tirasa.connid</groupId>

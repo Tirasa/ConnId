@@ -36,6 +36,10 @@
   <artifactId>connector-framework-contract</artifactId>
   <name>ConnId: Contract Tests</name>
 
+  <properties>
+    <parent.path>${basedir}/..</parent.path>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>net.tirasa.connid</groupId>

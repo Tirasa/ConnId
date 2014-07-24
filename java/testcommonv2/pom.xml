@@ -37,4 +37,8 @@
     
   <name>ConnId: Test Common V2</name>
     
+  <properties>
+    <parent.path>${basedir}/..</parent.path>
+  </properties>
+    
 </project>

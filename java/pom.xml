@@ -83,6 +83,8 @@
   </mailingLists>
     
   <properties>
+    <parent.path>${basedir}</parent.path>
+
     <groovy-all.version>2.3.2</groovy-all.version>
 
     <logback.version>1.1.2</logback.version>
@@ -278,7 +280,7 @@
         <artifactId>maven-license-plugin</artifactId>
         <version>1.10.b1</version>
         <configuration>
-          <header>src/main/resources/header.txt</header>
+          <header>${parent.path}/src/main/resources/header.txt</header>
           <strictCheck>true</strictCheck>
           <failIfMissing>true</failIfMissing>
           <aggregate>true</aggregate>
@@ -297,7 +299,7 @@
             </headerSection>
           </headerSections>
           <headerDefinitions>
-            <headerDefinition>src/main/resources/java-single-star.xml</headerDefinition>
+            <headerDefinition>${parent.path}/src/main/resources/java-single-star.xml</headerDefinition>
           </headerDefinitions>
           <mapping>
             <md>XML_STYLE</md>
