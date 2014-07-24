@@ -75,7 +75,7 @@
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
         <configuration>
-          <header>https://raw.github.com/Tirasa/ConnId/master/legal/COPYRIGHT</header>
+          <header>https://raw.github.com/Tirasa/ConnId/1_3_X/legal/COPYRIGHT</header>
           <strictCheck>true</strictCheck>
           <failIfMissing>true</failIfMissing>
           <aggregate>true</aggregate>
