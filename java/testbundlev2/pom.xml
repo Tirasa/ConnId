@@ -30,7 +30,7 @@
   <parent>
     <groupId>net.tirasa.connid</groupId>
     <artifactId>connid</artifactId>
-    <version>1.4.0.0</version>
+    <version>1.4.0.1-SNAPSHOT</version>
   </parent>
   
   <artifactId>testbundlev2</artifactId>
