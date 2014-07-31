@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    ====================
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright 2014 ConnId. All rights reserved.
+
+    The contents of this file are subject to the terms of the Common Development
+    and Distribution License("CDDL") (the "License").  You may not use this file
+    except in compliance with the License.
+
+    You can obtain a copy of the License at
+    http://opensource.org/licenses/cddl1.php
+    See the License for the specific language governing permissions and limitations
+    under the License.
+
+    When distributing the Covered Code, include this CDDL Header Notice in each file
+    and include the License file at http://opensource.org/licenses/cddl1.php.
+    If applicable, add the following below this CDDL Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyrighted [year] [name of copyright owner]"
+    ====================
+
+-->
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 
+                              http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <id>bin</id>
+  <baseDirectory>/</baseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>/connid-connector-server/</outputDirectory>
+      <fileMode>754</fileMode>
+      <includes>
+        <include>**/*.sh</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>/connid-connector-server/</outputDirectory>
+      <lineEnding>windows</lineEnding>
+      <includes>
+        <include>**/*.bat</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${basedir}/src/main/resources</directory>
+      <outputDirectory>/connid-connector-server/</outputDirectory>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <useProjectArtifact>false</useProjectArtifact>
+      <outputDirectory>/connid-connector-server/lib/framework</outputDirectory>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <includes>
+        <include>net.tirasa.connid:connector-framework*</include>
+        <include>org.slf4j:*</include>
+        <include>ch.qos.logback:*</include>
+        <include>org.codehaus.groovy:groovy-all</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+</assembly>

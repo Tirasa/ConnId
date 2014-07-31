@@ -1,0 +1,556 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="connectors.dtd" xml:space="preserve">
+    <value>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+
+&lt;!--=======================================================--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--= DTD for Connector Objects                           =--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--=======================================================--&gt;
+
+&lt;!--=======================================================--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--= All XML Objects                                     =--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--=======================================================--&gt;
+
+&lt;!ENTITY % exceptionTypes
+  "AlreadyExistsException | ConfigurationException | ConnectionBrokenException
+  | ConnectionFailedException | ConnectorIOException | InvalidPasswordException
+  | UnknownUidException | InvalidCredentialException | PermissionDeniedException
+  | ConnectorSecurityException | OperationTimeoutException | InvalidAttributeValueException
+  | PreconditionRequiredException | PreconditionFailedException | RetryableException
+  | RemoteWrappedException | ConnectorException
+  | RuntimeException | Exception | Throwable | PasswordExpiredException | IllegalArgumentException
+  "&gt;
+
+&lt;!ENTITY % messageTypes
+  "HelloRequest | HelloResponse | OperationRequest | OperationResponseEnd |
+   OperationResponsePart | OperationRequestMoreData | OperationRequestStopData |
+   OperationResponsePause | EchoMessage
+  "&gt;
+
+&lt;!ENTITY % filterTypes
+  "AndFilter | ContainsFilter | EndsWithFilter | EqualsFilter |
+  GreaterThanFilter | GreaterThanOrEqualFilter | LessThanFilter |
+  LessThanOrEqualFilter | NotFilter | OrFilter | StartsWithFilter |
+  ContainsAllValuesFilter
+  "&gt;
+
+&lt;!ENTITY % attributeTypes
+  "Attribute | Uid | Name"&gt;
+
+&lt;!ENTITY % primitiveTypes
+  "null | Array | Boolean | boolean | Character | char | Integer |
+  int | Long | long | Float | float | Double | double | String |
+  URI | File | BigDecimal | BigInteger | ByteArray | Class |
+  Map | List | Set | Locale | GuardedByteArray | GuardedString |
+  Byte | byte
+  "&gt;
+
+&lt;!ENTITY % xmlObject
+  "%primitiveTypes; | %exceptionTypes; | %messageTypes; | %filterTypes; | %attributeTypes; |
+ObjectPoolConfiguration | ResultsHandlerConfiguration | ConfigurationProperty | ConfigurationProperties |
+APIConfiguration | ConnectorMessages | ConnectorKey | ConnectorInfo |
+UpdateApiOpType | AttributeInfo | ConnectorObject | ObjectClass |
+ObjectClassInfo | Schema | Script | ScriptContext | OperationOptions |
+OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
+"&gt;
+
+
+
+&lt;!--=======================================================--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--= Top Level Element for object streams                =--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--=======================================================--&gt;
+
+
+&lt;!ELEMENT MultiObject ((
+  %xmlObject;
+)*)&gt;
+
+
+&lt;!--=======================================================--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--= Primitives                                          =--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--=======================================================--&gt;
+
+
+
+&lt;!ELEMENT null EMPTY&gt;
+&lt;!ELEMENT Array ((%xmlObject;)*)&gt;
+&lt;!ATTLIST Array
+  componentType CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT Boolean (#PCDATA)&gt;
+&lt;!ELEMENT boolean (#PCDATA)&gt;
+&lt;!ELEMENT Character (#PCDATA)&gt;
+&lt;!ELEMENT char (#PCDATA)&gt;
+&lt;!ELEMENT Integer (#PCDATA)&gt;
+&lt;!ELEMENT int (#PCDATA)&gt;
+&lt;!ELEMENT Byte (#PCDATA)&gt;
+&lt;!ELEMENT byte (#PCDATA)&gt;
+&lt;!ELEMENT Long (#PCDATA)&gt;
+&lt;!ELEMENT long (#PCDATA)&gt;
+&lt;!ELEMENT Float (#PCDATA)&gt;
+&lt;!ELEMENT float (#PCDATA)&gt;
+&lt;!ELEMENT Double (#PCDATA)&gt;
+&lt;!ELEMENT double (#PCDATA)&gt;
+&lt;!ELEMENT String (#PCDATA)&gt;
+&lt;!ELEMENT URI (#PCDATA)&gt;
+&lt;!ELEMENT File (#PCDATA)&gt;
+&lt;!ELEMENT BigDecimal EMPTY&gt;
+&lt;!ATTLIST BigDecimal
+    unscaled CDATA #REQUIRED
+    scale CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT BigInteger (#PCDATA)&gt;
+&lt;!ELEMENT ByteArray (#PCDATA)&gt;
+&lt;!ELEMENT Class (#PCDATA)&gt;
+&lt;!ELEMENT Map ((MapEntry)*)&gt;
+&lt;!ATTLIST Map
+    caseInsensitive CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT MapEntry ((%xmlObject;),(%xmlObject;))&gt;
+&lt;!ELEMENT Keys ((%xmlObject;)*)&gt;
+&lt;!ELEMENT List ((%xmlObject;)*)&gt;
+&lt;!ELEMENT Set ((%xmlObject;)*)&gt;
+&lt;!ATTLIST Set
+    caseInsensitive CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT Locale EMPTY&gt;
+&lt;!ATTLIST Locale
+    language CDATA #IMPLIED
+    country CDATA #IMPLIED
+    variant CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT GuardedByteArray (#PCDATA)&gt;
+&lt;!ELEMENT GuardedString (#PCDATA)&gt;
+
+&lt;!--=======================================================--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--= APIConfiguration                                    =--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--=======================================================--&gt;
+
+&lt;!ELEMENT ObjectPoolConfiguration EMPTY&gt;
+&lt;!ATTLIST ObjectPoolConfiguration
+    maxObjects CDATA #IMPLIED
+    maxIdle CDATA #IMPLIED
+    maxWait CDATA #IMPLIED
+    minEvictableIdleTimeMillis CDATA #IMPLIED
+    minIdle CDATA #IMPLIED
+&gt;
+
+&lt;!ELEMENT ResultsHandlerConfiguration EMPTY&gt;
+&lt;!ATTLIST ResultsHandlerConfiguration
+    enableNormalizingResultsHandler CDATA #IMPLIED
+    enableFilteredResultsHandler CDATA #IMPLIED
+    enableCaseInsensitiveFilter CDATA #IMPLIED
+    enableAttributesToGetSearchResultsHandler CDATA #IMPLIED
+&gt;
+
+&lt;!ELEMENT ConfigurationProperty (value,operations)&gt;
+&lt;!ATTLIST ConfigurationProperty
+    order CDATA #IMPLIED
+    confidential CDATA #IMPLIED
+    required CDATA #IMPLIED
+    name CDATA #REQUIRED
+    helpMessageKey CDATA #REQUIRED
+    displayMessageKey CDATA #REQUIRED
+    groupMessageKey CDATA #REQUIRED
+    type CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT value (%xmlObject;)&gt;
+&lt;!ELEMENT operations (Class)*&gt;
+&lt;!ELEMENT ConfigurationProperties ((ConfigurationProperty)*)&gt;
+
+&lt;!ELEMENT APIConfiguration (connectorPoolConfiguration,resultsHandlerConfiguration,ConfigurationProperties,timeoutMap,SupportedOperations)&gt;
+&lt;!ATTLIST APIConfiguration
+    connectorPoolingSupported CDATA #REQUIRED
+    producerBufferSize CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT connectorPoolConfiguration ((ObjectPoolConfiguration))&gt;
+&lt;!ELEMENT resultsHandlerConfiguration ((ResultsHandlerConfiguration))&gt;
+&lt;!ELEMENT timeoutMap (Map)&gt;
+&lt;!ELEMENT SupportedOperations ((Class)*)&gt;
+&lt;!ELEMENT ConnectorMessages (catalogs)&gt;
+&lt;!ELEMENT catalogs (Map)&gt;
+&lt;!ELEMENT ConnectorKey EMPTY&gt;
+&lt;!ATTLIST ConnectorKey
+    bundleName CDATA #REQUIRED
+    bundleVersion CDATA #REQUIRED
+    connectorName CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT ConnectorInfo (ConnectorKey,ConnectorMessages,APIConfiguration)&gt;
+&lt;!ATTLIST ConnectorInfo
+    connectorDisplayNameKey CDATA #REQUIRED
+    connectorCategoryKey CDATA #REQUIRED
+&gt;
+
+&lt;!--=======================================================--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--= Common Objects                                      =--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--=======================================================--&gt;
+&lt;!ELEMENT Attribute (Values)?&gt;
+&lt;!ELEMENT Values ((%xmlObject;)*)&gt;
+&lt;!ATTLIST Attribute
+    name CDATA #REQUIRED
+&gt;
+
+&lt;!ELEMENT Uid (#PCDATA)&gt;
+&lt;!ATTLIST Uid
+    uid CDATA #IMPLIED
+    revision CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT Name (#PCDATA)&gt;
+
+
+
+&lt;!ELEMENT UpdateApiOpType (#PCDATA)&gt;
+
+
+&lt;!ELEMENT AlreadyExistsException EMPTY&gt;
+&lt;!ATTLIST AlreadyExistsException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT ConfigurationException EMPTY&gt;
+&lt;!ATTLIST ConfigurationException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT ConnectionBrokenException EMPTY&gt;
+&lt;!ATTLIST ConnectionBrokenException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT ConnectionFailedException EMPTY&gt;
+&lt;!ATTLIST ConnectionFailedException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT ConnectorIOException EMPTY&gt;
+&lt;!ATTLIST ConnectorIOException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT InvalidPasswordException EMPTY&gt;
+&lt;!ATTLIST InvalidPasswordException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT PasswordExpiredException (Uid?)&gt;
+&lt;!ATTLIST PasswordExpiredException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT UnknownUidException EMPTY&gt;
+&lt;!ATTLIST UnknownUidException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT InvalidCredentialException EMPTY&gt;
+&lt;!ATTLIST InvalidCredentialException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT PermissionDeniedException EMPTY&gt;
+&lt;!ATTLIST PermissionDeniedException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT ConnectorSecurityException EMPTY&gt;
+&lt;!ATTLIST ConnectorSecurityException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT OperationTimeoutException EMPTY&gt;
+&lt;!ATTLIST OperationTimeoutException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT InvalidAttributeValueException EMPTY&gt;
+&lt;!ATTLIST InvalidAttributeValueException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT PreconditionFailedException EMPTY&gt;
+&lt;!ATTLIST PreconditionFailedException
+    message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT PreconditionRequiredException EMPTY&gt;
+&lt;!ATTLIST PreconditionRequiredException
+    message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT RetryableException EMPTY&gt;
+&lt;!ATTLIST RetryableException
+    message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT RemoteWrappedException (RemoteWrappedException?)&gt;
+&lt;!ATTLIST RemoteWrappedException
+   class CDATA #IMPLIED
+   message CDATA #IMPLIED
+   stackTrace CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT ConnectorException EMPTY&gt;
+&lt;!ATTLIST ConnectorException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT IllegalArgumentException EMPTY&gt;
+&lt;!ATTLIST IllegalArgumentException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT RuntimeException EMPTY&gt;
+&lt;!ATTLIST RuntimeException
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT Exception EMPTY&gt;
+&lt;!ATTLIST Exception
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT Throwable EMPTY&gt;
+&lt;!ATTLIST Throwable
+   message CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT AttributeInfo (AttributeInfoFlag*)&gt;
+&lt;!ATTLIST AttributeInfo
+   name CDATA #REQUIRED
+   type CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT AttributeInfoFlag EMPTY&gt;
+&lt;!ATTLIST AttributeInfoFlag
+   value ( REQUIRED | MULTIVALUED | NOT_CREATABLE | NOT_UPDATEABLE | NOT_READABLE | NOT_RETURNED_BY_DEFAULT ) #REQUIRED
+&gt;
+&lt;!ELEMENT ConnectorObject (ObjectClass,Attributes)&gt;
+&lt;!ELEMENT Attributes ((%attributeTypes;)*)&gt;
+
+&lt;!ELEMENT ObjectClass EMPTY&gt;
+&lt;!ATTLIST ObjectClass
+   type CDATA #REQUIRED
+&gt;
+
+&lt;!ELEMENT ObjectClassInfo (AttributeInfos)&gt;
+&lt;!ATTLIST ObjectClassInfo
+   type CDATA #REQUIRED
+   container CDATA #IMPLIED
+&gt;
+&lt;!ELEMENT AttributeInfos ((AttributeInfo)*)&gt;
+
+&lt;!ELEMENT Schema (ObjectClassInfos,OperationOptionInfos,objectClassesByOperation,optionsByOperation)&gt;
+&lt;!ELEMENT ObjectClassInfos ((ObjectClassInfo)*)&gt;
+&lt;!ELEMENT OperationOptionInfos ((OperationOptionInfo)*)&gt;
+&lt;!ELEMENT objectClassesByOperation (Map)&gt;
+&lt;!ELEMENT optionsByOperation (Map)&gt;
+
+&lt;!ELEMENT scriptText (#PCDATA)&gt;
+&lt;!ELEMENT scriptArguments (Map)&gt;
+
+&lt;!ELEMENT Script (scriptText)&gt;
+&lt;!ATTLIST Script
+   scriptLanguage CDATA #REQUIRED
+&gt;
+
+&lt;!ELEMENT ScriptContext (scriptArguments,scriptText)&gt;
+&lt;!ATTLIST ScriptContext
+   scriptLanguage CDATA #REQUIRED
+&gt;
+
+&lt;!ELEMENT OperationOptions (options)&gt;
+&lt;!ELEMENT options (Map)&gt;
+&lt;!ELEMENT OperationOptionInfo EMPTY&gt;
+&lt;!ATTLIST OperationOptionInfo
+   name CDATA #REQUIRED
+   type CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT SyncDeltaType EMPTY&gt;
+&lt;!ATTLIST SyncDeltaType
+   value ( CREATE | UPDATE | CREATE_OR_UPDATE | DELETE ) #REQUIRED
+&gt;
+&lt;!ELEMENT SyncToken (value)&gt;
+&lt;!ELEMENT SyncDelta (SyncDeltaType,SyncToken,PreviousUid?,ObjectClass?,Uid,ConnectorObject?)&gt;
+
+&lt;!ELEMENT PreviousUid (#PCDATA)&gt;
+&lt;!ATTLIST PreviousUid
+    uid CDATA #IMPLIED
+    revision CDATA #IMPLIED
+&gt;
+
+&lt;!ELEMENT QualifiedUid (ObjectClass,Uid)&gt;
+
+
+&lt;!--=======================================================--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--= Filters                                             =--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--=======================================================--&gt;
+
+
+&lt;!ELEMENT attribute (%attributeTypes;)&gt;
+&lt;!ELEMENT AndFilter ((%filterTypes;),(%filterTypes;))&gt;
+&lt;!ELEMENT ContainsFilter (attribute)&gt;
+&lt;!ELEMENT EndsWithFilter (attribute)&gt;
+&lt;!ELEMENT EqualsFilter (attribute)&gt;
+&lt;!ELEMENT GreaterThanFilter (attribute)&gt;
+&lt;!ELEMENT GreaterThanOrEqualFilter (attribute)&gt;
+&lt;!ELEMENT LessThanFilter (attribute)&gt;
+&lt;!ELEMENT LessThanOrEqualFilter (attribute)&gt;
+&lt;!ELEMENT NotFilter (%filterTypes;)&gt;
+&lt;!ELEMENT OrFilter ((%filterTypes;),(%filterTypes;))&gt;
+&lt;!ELEMENT StartsWithFilter (attribute)&gt;
+&lt;!ELEMENT ContainsAllValuesFilter (attribute)&gt;
+
+&lt;!--=======================================================--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--= Messages                                            =--&gt;
+&lt;!--=                                                     =--&gt;
+&lt;!--=======================================================--&gt;
+&lt;!ELEMENT HelloRequest EMPTY&gt;
+&lt;!ATTLIST HelloRequest
+    infoLevel CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT serverInfoMap (Map)&gt;
+&lt;!ELEMENT ConnectorKeys ((ConnectorKey)*)&gt;
+&lt;!ELEMENT ConnectorInfos ((ConnectorInfo)*)&gt;
+&lt;!ELEMENT exception (%exceptionTypes;)&gt;
+&lt;!ELEMENT HelloResponse (exception,serverInfoMap,ConnectorInfos,ConnectorKeys)&gt;
+&lt;!ELEMENT OperationRequest (ConnectorKey,Arguments)&gt;
+&lt;!ATTLIST OperationRequest
+    operation CDATA #REQUIRED
+    operationMethodName CDATA #REQUIRED
+    connectorFacadeKey CDATA #REQUIRED
+&gt;
+&lt;!ELEMENT Arguments ((%xmlObject;)*)&gt;
+&lt;!ELEMENT OperationResponseEnd EMPTY&gt;
+&lt;!ELEMENT OperationResponsePart (exception,result)&gt;
+&lt;!ELEMENT result ((%xmlObject;)*)&gt;
+&lt;!ELEMENT OperationRequestMoreData EMPTY&gt;
+&lt;!ELEMENT OperationRequestStopData EMPTY&gt;
+&lt;!ELEMENT OperationResponsePause EMPTY&gt;
+&lt;!ELEMENT EchoMessage (value,objectXml?)&gt;
+&lt;!ELEMENT objectXml (#PCDATA)&gt;</value>
+  </data>
+  <data name="TEST_FRAMEWORK_KEY" xml:space="preserve">
+    <value>Test Framework Value</value>
+  </data>
+  <data name="MESSAGE_OBJECT_CLASS_ACCOUNT" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="MESSAGE_OBJECT_CLASS_PERSON" xml:space="preserve">
+    <value>Person</value>
+  </data>
+  <data name="MESSAGE_OBJECT_CLASS_GROUP" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="MESSAGE_OBJECT_CLASS_ORGANIZATION" xml:space="preserve">
+    <value>Organization</value>
+  </data>
+</root>
