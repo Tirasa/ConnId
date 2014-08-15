@@ -20,10 +20,12 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.Assertions;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
@@ -34,6 +36,9 @@ import org.identityconnectors.framework.spi.operations.ScriptOnResourceOp;
 
 public class ScriptOnResourceImpl extends ConnectorAPIOperationRunner implements
         ScriptOnResourceApiOp {
+	
+	// Special logger with SPI operation log name. Used for logging operation entry/exit
+    private static final Log OP_LOG = Log.getLog(ScriptOnResourceOp.class);
 
     public ScriptOnResourceImpl(final ConnectorOperationalContext context, final Connector connector) {
         super(context, connector);
@@ -46,8 +51,33 @@ public class ScriptOnResourceImpl extends ConnectorAPIOperationRunner implements
         if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
-        Object rv = ((ScriptOnResourceOp) getConnector()).runScriptOnResource(request, options);
+        
+        if (isLoggable()) {
+        	StringBuilder bld = new StringBuilder();
+            bld.append("Enter: runScriptOnResource(");
+            bld.append(request).append(", ");
+            bld.append(options).append(")");
+            final String msg = bld.toString();
+            OP_LOG.log(ScriptOnResourceOp.class, "runScriptOnResource", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
+        }
+        
+        Object rv;
+        try {
+        	rv = ((ScriptOnResourceOp) getConnector()).runScriptOnResource(request, options);
+        } catch (RuntimeException e) {
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, ScriptOnResourceOp.class, "runScriptOnResource", e);
+        	throw e;
+        }
+        
+        if (isLoggable()) {
+        	OP_LOG.log(ScriptOnResourceOp.class, "runScriptOnResource", SpiOperationLoggingUtil.LOG_LEVEL,
+        			"Return: "+rv, null);
+        }
+        
         return SerializerUtil.cloneObject(rv);
     }
 
+    private static boolean isLoggable() {
+		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
+	}
 }

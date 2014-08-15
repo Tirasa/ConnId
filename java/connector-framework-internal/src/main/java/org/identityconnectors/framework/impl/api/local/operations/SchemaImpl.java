@@ -19,15 +19,21 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SchemaOp;
 
 public class SchemaImpl extends ConnectorAPIOperationRunner implements
         org.identityconnectors.framework.api.operations.SchemaApiOp {
+	
+	// Special logger with SPI operation log name. Used for logging operation entry/exit
+    private static final Log OP_LOG = Log.getLog(SchemaOp.class);
+	
     /**
      * Initializes the operation works.
      */
@@ -43,6 +49,28 @@ public class SchemaImpl extends ConnectorAPIOperationRunner implements
      */
     @Override
     public Schema schema() {
-        return ((SchemaOp)getConnector()).schema();
+    	
+    	if (isLoggable()) {
+            OP_LOG.log(SchemaOp.class, "schema", SpiOperationLoggingUtil.LOG_LEVEL, "Enter: schema()", null);
+        }
+        
+    	Schema schema;
+    	try {
+    		schema = ((SchemaOp)getConnector()).schema();
+    	} catch (RuntimeException e) {
+    		SpiOperationLoggingUtil.logOpException(OP_LOG, SchemaOp.class, "schema", e);
+        	throw e;
+    	}
+    	
+    	if (isLoggable()) {
+        	OP_LOG.log(SchemaOp.class, "schema", SpiOperationLoggingUtil.LOG_LEVEL,
+        			"Return: "+schema, null);
+        }
+    	
+    	return schema;
     }
+    
+    private static boolean isLoggable() {
+		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
+	}
 }

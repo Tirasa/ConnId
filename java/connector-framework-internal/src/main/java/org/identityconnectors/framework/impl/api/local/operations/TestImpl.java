@@ -19,9 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.TestOp;
@@ -35,6 +37,9 @@ import org.identityconnectors.framework.spi.operations.TestOp;
  *
  */
 public class TestImpl extends ConnectorAPIOperationRunner implements TestApiOp {
+	
+	// Special logger with SPI operation log name. Used for logging operation entry/exit
+    private static final Log OP_LOG = Log.getLog(TestOp.class);
 
     public TestImpl(ConnectorOperationalContext context, Connector connector) {
         super(context,connector);
@@ -45,7 +50,25 @@ public class TestImpl extends ConnectorAPIOperationRunner implements TestApiOp {
      */
     @Override
     public void test() {
-        ((TestOp) getConnector()).test();
+    	if (isLoggable()) {
+            OP_LOG.log(TestOp.class, "test", SpiOperationLoggingUtil.LOG_LEVEL, "Enter: test()", null);
+        }
+    	
+    	try {
+    		((TestOp) getConnector()).test();
+    	} catch (RuntimeException e) {
+    		SpiOperationLoggingUtil.logOpException(OP_LOG, TestOp.class, "test", e);
+        	throw e;
+    	}
+    	
+    	if (isLoggable()) {
+        	OP_LOG.log(TestOp.class, "test", SpiOperationLoggingUtil.LOG_LEVEL,
+        			"Return", null);
+        }
     }
+    
+    private static boolean isLoggable() {
+		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
+	}
 
 }

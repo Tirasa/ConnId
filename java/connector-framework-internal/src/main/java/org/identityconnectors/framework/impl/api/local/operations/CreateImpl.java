@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -27,6 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.identityconnectors.common.Assertions;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
@@ -39,6 +41,9 @@ import org.identityconnectors.framework.spi.operations.CreateOp;
 
 public class CreateImpl extends ConnectorAPIOperationRunner implements
         org.identityconnectors.framework.api.operations.CreateApiOp {
+	
+	// Special logger with SPI operation log name. Used for logging operation entry/exit
+    private static final Log OP_LOG = Log.getLog(CreateOp.class);
 
     /**
      * Initializes the operation works.
@@ -85,8 +90,36 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
         final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
         final Set<Attribute> normalizedAttributes =
                 normalizer.normalizeAttributes(createAttributes);
-        // create the object..
-        final Uid ret = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
-        return (Uid) normalizer.normalizeAttribute(ret);
+        
+        if (isLoggable()) {
+        	StringBuilder bld = new StringBuilder();
+            bld.append("Enter: create(");
+            bld.append(objectClass).append(", ");
+            bld.append(normalizedAttributes).append(", ");
+            bld.append(options).append(")");
+            final String msg = bld.toString();
+            OP_LOG.log(CreateOp.class, "create", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
+        }
+        
+        final Uid connectorUid;
+        try {
+	        // create the object..
+	        connectorUid = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
+        } catch (RuntimeException e) {
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, CreateOp.class, "create", e);
+        	throw e;
+        }
+        if (isLoggable()) {
+        	OP_LOG.log(CreateOp.class, "create", SpiOperationLoggingUtil.LOG_LEVEL,
+        			"Return: "+connectorUid, null);
+        }
+        
+        Uid uid = (Uid) normalizer.normalizeAttribute(connectorUid);
+        
+        return uid;
     }
+    
+    private static boolean isLoggable() {
+		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
+	}
 }
