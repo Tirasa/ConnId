@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -65,6 +66,7 @@ public class GetImpl implements GetApiOp {
         }
         final List<ConnectorObject> list = new ArrayList<ConnectorObject>();
         Filter filter = FilterBuilder.equalTo(uid);
+        // No need to log entry/exit here. SeachImpl will do it.
         op.search(objectClass, filter, new ResultsHandler() {
             @Override
             public boolean handle(ConnectorObject obj) {

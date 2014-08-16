@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -30,6 +31,7 @@ import java.util.Set;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.GetApiOp;
 import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
@@ -54,6 +56,9 @@ import org.identityconnectors.framework.spi.operations.UpdateOp;
  */
 public class UpdateImpl extends ConnectorAPIOperationRunner implements
         org.identityconnectors.framework.api.operations.UpdateApiOp {
+	
+	// Special logger with SPI operation log name. Used for logging operation entry/exit
+    private static final Log OP_LOG = Log.getLog(UpdateOp.class);
 
     /**
      * Determines which type of update a connector supports and then uses that
@@ -86,7 +91,19 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
         uid = (Uid) normalizer.normalizeAttribute(uid);
         replaceAttributes = normalizer.normalizeAttributes(replaceAttributes);
         UpdateOp op = (UpdateOp) getConnector();
-        Uid ret = op.update(objectClass, uid, replaceAttributes, options);
+        
+        logOpEntry("update", objectClass, uid, replaceAttributes, options);
+        
+        Uid ret;
+        try {
+        	ret = op.update(objectClass, uid, replaceAttributes, options);
+        } catch (RuntimeException e) {
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class,"update",e);
+    		throw e;
+        }
+        
+        logOpExit("update", ret);
+        
         return (Uid) normalizer.normalizeAttribute(ret);
     }
 
@@ -107,11 +124,25 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
         Uid ret;
         if (op instanceof UpdateAttributeValuesOp) {
             UpdateAttributeValuesOp valueOp = (UpdateAttributeValuesOp) op;
-            ret = valueOp.addAttributeValues(objclass, uid, valuesToAdd, options);
+            logOpEntry("addAttributeValues", objclass, uid, valuesToAdd, options);
+            try {
+            	ret = valueOp.addAttributeValues(objclass, uid, valuesToAdd, options);
+            } catch (RuntimeException e) {
+            	SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class,"addAttributeValues",e);
+        		throw e;
+            }
+            logOpExit("addAttributeValues", ret);
         } else {
             Set<Attribute> replaceAttributes =
                     fetchAndMerge(objclass, uid, valuesToAdd, true, options);
-            ret = op.update(objclass, uid, replaceAttributes, options);
+            logOpEntry("update", objclass, uid, replaceAttributes, options);
+            try {
+            	ret = op.update(objclass, uid, replaceAttributes, options);
+            } catch (RuntimeException e) {
+            	SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class,"update",e);
+        		throw e;
+            }
+            logOpExit("update", ret);
         }
         return (Uid) normalizer.normalizeAttribute(ret);
     }
@@ -133,11 +164,25 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
         Uid ret;
         if (op instanceof UpdateAttributeValuesOp) {
             UpdateAttributeValuesOp valueOp = (UpdateAttributeValuesOp) op;
-            ret = valueOp.removeAttributeValues(objclass, uid, valuesToRemove, options);
+            logOpEntry("removeAttributeValues", objclass, uid, valuesToRemove, options);
+            try {
+            	ret = valueOp.removeAttributeValues(objclass, uid, valuesToRemove, options);
+            } catch (RuntimeException e) {
+            	SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class,"removeAttributeValues",e);
+        		throw e;
+            }
+            logOpExit("removeAttributeValues", ret);
         } else {
             Set<Attribute> replaceAttributes =
                     fetchAndMerge(objclass, uid, valuesToRemove, false, options);
-            ret = op.update(objclass, uid, replaceAttributes, options);
+            logOpEntry("update", objclass, uid, replaceAttributes, options);
+            try {
+            	ret = op.update(objclass, uid, replaceAttributes, options);
+            } catch (RuntimeException e) {
+            	SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class,"update",e);
+        		throw e;
+            }
+            logOpExit("update", ret);
         }
         return (Uid) normalizer.normalizeAttribute(ret);
     }
@@ -264,4 +309,30 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
             }
         }
     }
+    
+    private static void logOpEntry(String opName, ObjectClass objectClass, Uid uid, Set<Attribute> attrs,
+			OperationOptions options) {
+		if (!isLoggable()) {
+			return;
+		}
+        StringBuilder bld = new StringBuilder();
+        bld.append("Enter: ").append(opName).append("(");
+        bld.append(objectClass).append(", ");
+        bld.append(uid).append(", ");
+    	bld.append(attrs).append(", ");
+        bld.append(options).append(")");
+        final String msg = bld.toString();
+        OP_LOG.log(UpdateOp.class, opName, SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
+	}
+	
+    private static void logOpExit(String opName, Uid uid) {
+    	if (!isLoggable()) {
+			return;
+		}
+    	OP_LOG.log(UpdateOp.class, opName, SpiOperationLoggingUtil.LOG_LEVEL, "Return: "+uid, null);
+	}
+    
+    private static boolean isLoggable() {
+		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
+	}
 }

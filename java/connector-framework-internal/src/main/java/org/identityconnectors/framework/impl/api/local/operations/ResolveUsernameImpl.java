@@ -20,10 +20,12 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.Assertions;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
@@ -33,6 +35,10 @@ import org.identityconnectors.framework.spi.operations.ResolveUsernameOp;
 
 public class ResolveUsernameImpl extends ConnectorAPIOperationRunner implements
         org.identityconnectors.framework.api.operations.ResolveUsernameApiOp {
+	
+	// Special logger with SPI operation log name. Used for logging operation entry/exit
+    private static final Log OP_LOG = Log.getLog(ResolveUsernameOp.class);
+    
     /**
      * Pass the configuration etc to the abstract class.
      */
@@ -57,6 +63,34 @@ public class ResolveUsernameImpl extends ConnectorAPIOperationRunner implements
         if ( options == null ) {
             options = new OperationOptionsBuilder().build();
         }
-        return ((ResolveUsernameOp) getConnector()).resolveUsername(objectClass, username, options);
+        
+        if (isLoggable()) {
+        	StringBuilder bld = new StringBuilder();
+            bld.append("Enter: resolveUsername(");
+            bld.append(objectClass).append(", ");
+            bld.append(username).append(", ");
+            bld.append(options).append(")");
+            final String msg = bld.toString();
+            OP_LOG.log(ResolveUsernameOp.class, "resolveUsername", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
+        }
+        
+        Uid uid;
+        try {
+        	uid = ((ResolveUsernameOp) getConnector()).resolveUsername(objectClass, username, options);
+        } catch (RuntimeException e) {
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, ResolveUsernameOp.class, "resolveUsername", e);
+        	throw e;
+        }
+        
+        if (isLoggable()) {
+        	OP_LOG.log(ResolveUsernameOp.class, "resolveUsername", SpiOperationLoggingUtil.LOG_LEVEL,
+        			"Return: "+uid, null);
+        }
+        
+        return uid;
     }
+    
+    private static boolean isLoggable() {
+		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
+	}
 }

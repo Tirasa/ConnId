@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -169,7 +170,10 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      */
     @Override
     public final SearchResult search(final ObjectClass objectClass, final Filter filter,
-            final ResultsHandler handler, final OperationOptions options) {
+            ResultsHandler handler, final OperationOptions options) {
+    	if (LoggingProxy.isLoggable()) {
+    		handler = new ResultHandlerLoggingProxy(handler);
+    	}
         return ((SearchApiOp) this.getOperationCheckSupported(SearchApiOp.class)).search(
                 objectClass, filter, handler, options);
     }

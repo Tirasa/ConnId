@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -38,6 +39,7 @@ import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
+import org.identityconnectors.framework.impl.api.ResultHandlerLoggingProxy;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.SearchResultsHandler;
 import org.identityconnectors.framework.spi.operations.SearchOp;
@@ -45,6 +47,8 @@ import org.identityconnectors.framework.spi.operations.SearchOp;
 public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApiOp {
 
     private static final Log logger = Log.getLog(SearchImpl.class);
+    // Special logger with SPI operation log name. Used for logging operation entry/exit
+    private static final Log OP_LOG = Log.getLog(SearchOp.class);
 
     /**
      * Initializes the operation works.
@@ -151,8 +155,19 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         FilterTranslator<?> translator = search.createFilterTranslator(objectClass, options);
         List<?> queries = translator.translate(filter);
 
+        if (isLoggable()) {
+        	handler = new SearchResultsHandlerLoggingProxy(handler);
+        }
+        
         if (queries.size() == 0) {
-            search.executeQuery(objectClass, null, handler, options);
+        	logOpEntry(objectClass, null, handler, options);
+        	try {
+        		search.executeQuery(objectClass, null, handler, options);
+        		logOpExit();
+        	} catch (RuntimeException e) {
+        		SpiOperationLoggingUtil.logOpException(OP_LOG, SearchOp.class, "executeQuery", e);
+        		throw e;
+        	}
         } else {
             // eliminate dups if more than one
             boolean eliminateDups = queries.size() > 1;
@@ -162,7 +177,14 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             for (Object query : queries) {
                 @SuppressWarnings("unchecked")
                 SearchOp<Object> hack = (SearchOp<Object>) search;
-                hack.executeQuery(objectClass, query, handler, options);
+                logOpEntry(objectClass, query, handler, options);
+                try {
+	                hack.executeQuery(objectClass, query, handler, options);
+	                logOpExit();
+                } catch (RuntimeException e) {
+                	SpiOperationLoggingUtil.logOpException(OP_LOG, SearchOp.class,"executeQuery",e);
+            		throw e;
+                }
                 // don't run any more queries if the consumer
                 // has stopped
                 if (handler instanceof DuplicateFilteringResultsHandler) {
@@ -174,8 +196,38 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             }
         }
     }
+    
+    private static boolean isLoggable() {
+		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
+	}
 
-    private ResultsHandler getAttributesToGetResutlsHandler(ResultsHandler handler,
+	private static void logOpEntry(ObjectClass objectClass, Object object, SearchResultsHandler handler,
+			OperationOptions options) {
+		if (!isLoggable()) {
+			return;
+		}
+        StringBuilder bld = new StringBuilder();
+        bld.append("Enter: executeQuery(");
+        bld.append(objectClass).append(", ");
+        bld.append(object).append(", ");
+        if (handler instanceof SearchResultsHandlerLoggingProxy) {
+        	bld.append(((SearchResultsHandlerLoggingProxy)handler).getOrigHandler()).append(", ");
+        } else {
+        	bld.append(handler).append(", ");
+        }
+        bld.append(options).append(")");
+        final String msg = bld.toString();
+        OP_LOG.log(SearchOp.class, "executeQuery", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
+	}
+	
+    private static void logOpExit() {
+    	if (!isLoggable()) {
+			return;
+		}
+    	OP_LOG.log(SearchOp.class, "executeQuery", SpiOperationLoggingUtil.LOG_LEVEL, "Return", null);
+	}
+	
+	private ResultsHandler getAttributesToGetResutlsHandler(ResultsHandler handler,
             OperationOptions options) {
         ResultsHandler ret = handler;
         String[] attrsToGet = options.getAttributesToGet();

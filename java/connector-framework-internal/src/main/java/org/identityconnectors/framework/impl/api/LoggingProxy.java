@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -36,7 +37,7 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
  */
 public class LoggingProxy implements InvocationHandler {
 
-    private static final Log.Level LOG_LEVEL = Log.Level.OK;
+    static final Log.Level LOG_LEVEL = Log.Level.OK;
 
     private static final Log LOG = Log.getLog(LoggingProxy.class);
 
@@ -66,7 +67,12 @@ public class LoggingProxy implements InvocationHandler {
                 if (i != 0) {
                     bld.append(", ");
                 }
-                bld.append(args[i]);
+                Object arg = args[i];
+                if (arg instanceof ResultHandlerLoggingProxy) {
+                	bld.append(((ResultHandlerLoggingProxy)arg).getOrigHandler());
+                } else {
+                	bld.append(arg);
+                }
             }
             bld.append(')');
             final String msg = bld.toString();
