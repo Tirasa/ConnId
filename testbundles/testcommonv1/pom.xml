@@ -25,7 +25,7 @@ enclosed by brackets [] replaced by your own identifying information:
   <parent>
     <groupId>org.connid.testbundles</groupId>
     <artifactId>connid-testbundles</artifactId>
-    <version>1.3.3.1-SNAPSHOT</version>
+    <version>1.3.3.1</version>
   </parent>
 
   <groupId>org.connid.testbundles</groupId>
