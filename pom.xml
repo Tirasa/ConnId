@@ -33,7 +33,7 @@ enclosed by brackets [] replaced by your own identifying information:
   <parent>
     <groupId>org.sonatype.oss</groupId>
     <artifactId>oss-parent</artifactId>
-    <version>7</version>
+    <version>9</version>
   </parent>
 
   <url>http://tirasa.github.com/ConnId/</url>
