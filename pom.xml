@@ -226,7 +226,7 @@ enclosed by brackets [] replaced by your own identifying information:
           <inherited>false</inherited>
           <version>1.9.0</version>
           <configuration>
-            <header>https://raw.github.com/Tirasa/ConnId/1_3_X/legal/COPYRIGHT</header>
+            <header>https://raw.github.com/Tirasa/ConnId/1_3_X_Y/legal/COPYRIGHT</header>
             <strictCheck>true</strictCheck>
             <failIfMissing>true</failIfMissing>
             <aggregate>true</aggregate>
