@@ -26,7 +26,7 @@ enclosed by brackets [] replaced by your own identifying information:
   <description>ConnId</description>
   <groupId>org.connid</groupId>
   <artifactId>connid</artifactId>
-  <version>1.3.3.1</version>
+  <version>1.3.3.2-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- maven repository on sonatype -->
