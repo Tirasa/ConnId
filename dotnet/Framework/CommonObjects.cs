@@ -789,10 +789,7 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
             // poor man's consistent toString impl..
             StringBuilder bld = new StringBuilder();
             bld.Append("ConnectorAttribute: ");
-            IDictionary<string, object> map = new Dictionary<string, object>();
-            map["Name"] = Name;
-            map["Value"] = Value;
-            bld.Append(map.ToString());
+            bld.Append(Name).Append(" = ").Append(CollectionUtil.Dump(Value));
             return bld.ToString();
         }
 
