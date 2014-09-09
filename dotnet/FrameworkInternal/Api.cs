@@ -1427,16 +1427,19 @@ namespace Org.IdentityConnectors.Framework.Impl.Api
                         //CurrentLocale.clear();
                     }
                 }, token);
-                if (!task.Wait(timeoutMillis, token)) { throw new OperationTimeoutException("The Task timed out!"); }
+                if (!task.Wait(timeoutMillis, token))
+                {
+                    throw new OperationTimeoutException("The Task timed out!");
+                }
                 return result;
             }
             catch (TimeoutException ex)
             {
                 throw new OperationTimeoutException(ex);
             }
-            catch (Exception ex)
+            catch (AggregateException ex)
             {
-                throw ex;
+                throw ex.InnerException;
             }
         }
 

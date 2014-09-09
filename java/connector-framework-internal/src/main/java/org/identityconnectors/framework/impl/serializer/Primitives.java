@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2014 ForgeRock AS. 
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -270,7 +271,7 @@ class Primitives {
         HANDLERS.add(new AbstractObjectSerializationHandler(Byte.class, "Byte") {
 
             public Object deserialize(final ObjectDecoder decoder) {
-                return decoder.readByteArrayContents();
+                return decoder.readByteContents();
             }
 
             public void serialize(final Object object, final ObjectEncoder encoder) {
@@ -282,7 +283,7 @@ class Primitives {
         HANDLERS.add(new AbstractObjectSerializationHandler(byte.class, "byte") {
 
             public Object deserialize(final ObjectDecoder decoder) {
-                return decoder.readByteArrayContents();
+                return decoder.readByteContents();
             }
 
             public void serialize(final Object object, final ObjectEncoder encoder) {

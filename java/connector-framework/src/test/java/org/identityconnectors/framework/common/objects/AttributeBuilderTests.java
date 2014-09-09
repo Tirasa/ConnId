@@ -122,6 +122,7 @@ public class AttributeBuilderTests {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
+    @SuppressWarnings("unchecked")
     public void mapShortAttribute() {
         HashMap<Object, Object> map1 = new HashMap<Object, Object>();
         map1.put("string", "NOK");

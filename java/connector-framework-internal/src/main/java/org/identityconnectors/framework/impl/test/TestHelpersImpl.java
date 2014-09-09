@@ -77,6 +77,8 @@ public class TestHelpersImpl implements TestHelpersSpi {
         info.setMessages(createDummyMessages());
         try {
             APIConfigurationImpl rv = createDefaultAPIConfiguration(info);
+            rv.setConfigurationProperties(JavaClassProperties.createConfigurationProperties(config));
+
             info.setDefaultAPIConfiguration(rv);
             return rv;
         } catch (Exception e) {
@@ -116,6 +118,7 @@ public class TestHelpersImpl implements TestHelpersSpi {
         String fullPrefix = StringUtil.isBlank(prefix) ? null : prefix + ".";
 
         for (ConfigurationPropertyImpl property : configProps.getProperties()) {
+            @SuppressWarnings("unchecked")
             Object value =
                     configData.getProperty(null != fullPrefix ? fullPrefix + property.getName()
                             : property.getName(), (Class<Object>) property.getType(), property

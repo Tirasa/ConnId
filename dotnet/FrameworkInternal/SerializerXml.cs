@@ -343,6 +343,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer.Xml
             return DecodeByteArray(ReadStringContentsInternal());
         }
 
+        public byte ReadByteContents()
+        {
+            return DecodeByte(ReadStringContentsInternal());
+        }
+
         public Type ReadClassContents()
         {
             return DecodeClass(ReadStringContentsInternal());
@@ -484,6 +489,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer.Xml
         private byte[] DecodeByteArray(String base64)
         {
             return Convert.FromBase64String(base64);
+        }
+
+        private byte DecodeByte(String v)
+        {
+            return Convert.ToByte(v);
         }
 
         private Type DecodeClass(String type)

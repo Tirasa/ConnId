@@ -23,7 +23,7 @@
 
 -->
 # What is ConnId?
-Want to know more about ConnId? Check our [website](http://tirasa.github.com/ConnId/).
+Want to know more about ConnId? Check our [website](http://connid.tirasa.net/).
 
 <a href="https://travis-ci.org/Tirasa/ConnId"><img src="https://api.travis-ci.org/Tirasa/ConnId.png"/></a>
 
