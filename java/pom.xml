@@ -59,19 +59,6 @@
     <developerConnection>scm:git:git@github.com:Tirasa/ConnId.git</developerConnection>
   </scm>
 
-  <distributionManagement>
-    <repository>
-      <id>evolveum-nexus</id>
-      <name>Internal Releases</name>
-      <url>http://nexus.evolveum.com/nexus/content/repositories/releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>evolveum-nexus</id>
-      <name>Internal Releases</name>
-      <url>http://nexus.evolveum.com/nexus/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
-
   <issueManagement>
     <system>jira</system>
     <url>https://connid.atlassian.net/browse/BASE</url>
