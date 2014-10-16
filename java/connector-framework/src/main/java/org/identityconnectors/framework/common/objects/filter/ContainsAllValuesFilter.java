@@ -59,7 +59,11 @@ public class ContainsAllValuesFilter extends AttributeFilter {
         Attribute found = obj.getAttributeByName(name);
         if (found != null) {
             // TODO: possible optimization using 'Set'
-            return found.getValue().containsAll(values);
+        	List<Object> value = found.getValue();
+        	if (value == null) {
+        		throw new IllegalStateException("Null value found in attribute "+name+" of connector object "+obj);
+        	}
+            return value.containsAll(values);
         }
         return false;
     }

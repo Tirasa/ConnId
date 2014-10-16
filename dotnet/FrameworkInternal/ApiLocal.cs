@@ -520,6 +520,16 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
             catch (Exception e)
             {
                 TraceUtil.TraceException("Unable to load assembly: " + assembly.FullName + ". Assembly will be ignored.", e);
+                if (e is System.Reflection.ReflectionTypeLoadException)
+                {
+                    var typeLoadException = e as ReflectionTypeLoadException;
+                    var loaderExceptions = typeLoadException.LoaderExceptions;
+                    foreach (var item in loaderExceptions) 
+                    {
+                        TraceUtil.TraceException(" - loader exception: " + item, item);
+                    }
+                }
+                return rv;
             }
 
             foreach (Type type in types)

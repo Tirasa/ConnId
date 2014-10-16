@@ -316,6 +316,7 @@
             <exclude>.git/**</exclude>
             <exclude>.idea/**</exclude>
             <exclude>**/.*</exclude>
+            <exclude>build-number.txt</exclude>
           </excludes>
         </configuration>
         <executions>

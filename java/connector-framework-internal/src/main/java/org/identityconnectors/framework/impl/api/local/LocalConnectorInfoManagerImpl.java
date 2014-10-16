@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -262,6 +263,18 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                                  e : null,
                                 "Unable to load class {0} from bundle {1}. Class will be ignored and will not be listed in list of connectors.",
                                 className, bundleInfo.getOriginalLocation());
+                    }
+                    if (connectorClass != null && options == null) {
+	                    for (Annotation annotation: connectorClass.getAnnotations()) {
+	                    	if (ConnectorClass.class.getName().equals(annotation.annotationType().getName())) {
+	                    		// Same class name as the annotation we are looking for. But the previous code haven't found it.
+	                    		// So it looks like the annotation on this class is actually the correct one but it is loaded
+	                    		// by wrong classloader. 
+	                    		// Note: This error is very difficult to diagnose. Therefore we are explicitly checking for it here.
+	                    		throw new ConfigurationException("Class "+connectorClass.getName()+" has ConnectorClass annotation but it looks like it is " +
+	                    				"loaded by a wrong classloader. Maybe the connector bundle contains the connector frameworks JAR? (it should NOT contain it).");
+	                    	}
+	                    }
                     }
                 }
                 if (connectorClass != null && options != null) {
