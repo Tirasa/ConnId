@@ -3,13 +3,11 @@ language: java
 env:
   global:
     - SONATYPE_USERNAME=chicchiricco
-    - secure: "flDw1HU7oZipzbJIeResfadwSws2oY0audnf5Gnu2xNhBxCkKfD49VMfqyGKVXY55WpDOVlX3MtAFIPorQIw4QuzHXAX1uZunSZuYmdKpFcZHXZ2Sxz3ebcr+tB3pgvVarJY8NBg2w6j3cQFOt2DkyQ5DQaFor/7jYzvBMeo0XY="
-
-before_install:
-  - cd java
+    - secure: "DQIOvCZkpx1A+f2Ccsuxc4zKQqCaifEegFzcVWo57jIxjtKB5PlVLT4OYdBz\nHXhNpObTnWkv+1RkoSk3aDlvs7HHh9leuLpHn8JDKiTAS+1wTWfykm1XJBbd\nvSlxJQ5Nyjx2saxMOBTu4sEFJ3Xtvej/rpd/nNGOAp3ySApb8mc="
 
 after_success:
-  - "[[ $TRAVIS_BRANCH == \"1_4_X_Y\" ]] && { python .travis.addServer.py; mvn clean deploy --settings ~/.m2/mySettings.xml; };"
+  - python .travis.addServer.py
+  - mvn clean deploy --settings ~/.m2/mySettings.xml
 
 notifications:
   email:
