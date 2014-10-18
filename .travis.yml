@@ -3,7 +3,7 @@ language: java
 env:
   global:
     - SONATYPE_USERNAME=chicchiricco
-    - secure: "DQIOvCZkpx1A+f2Ccsuxc4zKQqCaifEegFzcVWo57jIxjtKB5PlVLT4OYdBz\nHXhNpObTnWkv+1RkoSk3aDlvs7HHh9leuLpHn8JDKiTAS+1wTWfykm1XJBbd\nvSlxJQ5Nyjx2saxMOBTu4sEFJ3Xtvej/rpd/nNGOAp3ySApb8mc="
+    - secure: "x819XbM+j3eiERI6BMWnN8/DS7DQ1iDw7aPvMEMbUFvn0Cbn7TeqcgKUKld6cAoFMwA5KHZYxqHMKm35pj2JwIm/GWzCyZcSuZKFWuyOD1spxuC3W+33Cy29xVDKRisFJnD7ARCS6fDq3oWRJ5EuI2YUloCaEIl7Z764rEkv23E="
 
 after_success:
   - python .travis.addServer.py
