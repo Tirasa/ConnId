@@ -5,6 +5,9 @@ env:
     - SONATYPE_USERNAME=chicchiricco
     - secure: "DQIOvCZkpx1A+f2Ccsuxc4zKQqCaifEegFzcVWo57jIxjtKB5PlVLT4OYdBz\nHXhNpObTnWkv+1RkoSk3aDlvs7HHh9leuLpHn8JDKiTAS+1wTWfykm1XJBbd\nvSlxJQ5Nyjx2saxMOBTu4sEFJ3Xtvej/rpd/nNGOAp3ySApb8mc="
 
+before_install:
+  - cd java
+
 after_success:
   - python .travis.addServer.py
   - mvn clean deploy --settings ~/.m2/mySettings.xml
