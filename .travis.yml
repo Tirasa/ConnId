@@ -9,7 +9,7 @@ before_install:
   - cd java
 
 after_success:
-  - python .travis.addServer.py
+  - python ../.travis.addServer.py
   - mvn clean deploy --settings ~/.m2/mySettings.xml
 
 notifications:
