@@ -1329,6 +1329,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                     new ResultsHandlerConfiguration();
                 rv.EnableNormalizingResultsHandler = (decoder.ReadBooleanField("enableNormalizingResultsHandler", rv.EnableNormalizingResultsHandler));
                 rv.EnableFilteredResultsHandler = (decoder.ReadBooleanField("enableFilteredResultsHandler", rv.EnableFilteredResultsHandler));
+                rv.FilteredResultsHandlerInValidationMode = (decoder.ReadBooleanField("filteredResultsHandlerInValidationMode", rv.FilteredResultsHandlerInValidationMode));
                 rv.EnableCaseInsensitiveFilter = (decoder.ReadBooleanField("enableCaseInsensitiveFilter", rv.EnableCaseInsensitiveFilter));
                 rv.EnableAttributesToGetSearchResultsHandler = (
                         decoder.ReadBooleanField("enableAttributesToGetSearchResultsHandler", rv.EnableAttributesToGetSearchResultsHandler));
@@ -1343,6 +1344,8 @@ namespace Org.IdentityConnectors.Framework.Impl.Serializer
                         val.EnableNormalizingResultsHandler);
                 encoder.WriteBooleanField("enableFilteredResultsHandler",
                         val.EnableFilteredResultsHandler);
+                encoder.WriteBooleanField("filteredResultsHandlerInValidationMode",
+                        val.FilteredResultsHandlerInValidationMode);
                 encoder.WriteBooleanField("enableCaseInsensitiveFilter",
                         val.EnableCaseInsensitiveFilter);
                 encoder.WriteBooleanField("enableAttributesToGetSearchResultsHandler",

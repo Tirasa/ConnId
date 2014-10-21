@@ -103,14 +103,14 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             if (hdlCfg.isEnableFilteredResultsHandler()) {
                 // chain a filter handler..
                 final Filter normalizedFilter = normalizer.normalizeFilter(actualFilter);
-                handler = new FilteredResultsHandler(normalizingHandler, normalizedFilter);
+                handler = new FilteredResultsHandler(normalizingHandler, normalizedFilter, hdlCfg.isFilteredResultsHandlerInValidationMode());
                 actualFilter = normalizedFilter;
             } else {
                 handler = normalizingHandler;
             }
         } else if (hdlCfg.isEnableFilteredResultsHandler()) {
             // chain a filter handler..
-            handler = new FilteredResultsHandler(handler, actualFilter);
+            handler = new FilteredResultsHandler(handler, actualFilter, hdlCfg.isFilteredResultsHandlerInValidationMode());
         }
         // chain an attributes to get handler..
         String[] attrsToGet = options.getAttributesToGet();

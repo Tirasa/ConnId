@@ -82,6 +82,8 @@ class APIConfigurationHandlers {
                         "enableNormalizingResultsHandler", rv.isEnableNormalizingResultsHandler()));
                 rv.setEnableFilteredResultsHandler(decoder.readBooleanField(
                         "enableFilteredResultsHandler", rv.isEnableFilteredResultsHandler()));
+                rv.setFilteredResultsHandlerInValidationMode(decoder.readBooleanField(
+                        "filteredResultsHandlerInValidationMode", rv.isFilteredResultsHandlerInValidationMode()));
                 rv.setEnableCaseInsensitiveFilter(decoder.readBooleanField(
                         "enableCaseInsensitiveFilter", rv.isEnableCaseInsensitiveFilter()));
                 rv.setEnableAttributesToGetSearchResultsHandler(decoder.readBooleanField(
@@ -96,6 +98,8 @@ class APIConfigurationHandlers {
                         .isEnableNormalizingResultsHandler());
                 encoder.writeBooleanField("enableFilteredResultsHandler", val
                         .isEnableFilteredResultsHandler());
+                encoder.writeBooleanField("filteredResultsHandlerInValidationMode", val
+                        .isFilteredResultsHandlerInValidationMode());
                 encoder.writeBooleanField("enableCaseInsensitiveFilter", val
                         .isEnableCaseInsensitiveFilter());
                 encoder.writeBooleanField("enableAttributesToGetSearchResultsHandler", val

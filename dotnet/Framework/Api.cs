@@ -748,6 +748,17 @@ namespace Org.IdentityConnectors.Framework.Api
         private bool _enableFilteredResultsHandler = true;
 
         /// <summary>
+        /// Enables the {@link FilteredResultsHandler} in the handler chain in the validate mode.
+        /// (It means that the filter does not filter anything; it just checks whether any objects
+        /// that come from the connector would pass it. If not, it throws an exception. It is meant
+        /// as a diagnostic tool to validate that the connector does its filtering correctly.)
+        /// 
+        /// To use, you have to set BOTH EnableFilteredResultsHandler as well as
+        /// FilteredResultsHandlerInValidateMode to TRUE.
+        /// </summary>
+        private bool _filteredResultsHandlerInValidationMode = false;
+
+        /// <summary>
         /// Enables the case insensitive filtering.
         /// </summary>
         /// <remarks>
@@ -778,6 +789,7 @@ namespace Org.IdentityConnectors.Framework.Api
         {
             this.EnableNormalizingResultsHandler = source.EnableNormalizingResultsHandler;
             this.EnableFilteredResultsHandler = source.EnableFilteredResultsHandler;
+            this.FilteredResultsHandlerInValidationMode = source.FilteredResultsHandlerInValidationMode;
             this.EnableCaseInsensitiveFilter = source.EnableCaseInsensitiveFilter;
             this.EnableAttributesToGetSearchResultsHandler = source.EnableAttributesToGetSearchResultsHandler;
         }
@@ -811,6 +823,19 @@ namespace Org.IdentityConnectors.Framework.Api
                 _enableFilteredResultsHandler = value;
             }
         }
+
+        public bool FilteredResultsHandlerInValidationMode
+        {
+            get
+            {
+                return _filteredResultsHandlerInValidationMode;
+            }
+            set
+            {
+                _filteredResultsHandlerInValidationMode = value;
+            }
+        }
+
 
         /// <summary>
         /// Max time to wait if the pool is waiting for a free object to become
@@ -856,6 +881,7 @@ namespace Org.IdentityConnectors.Framework.Api
                 int hash = 3;
                 hash = 79 * hash + (EnableNormalizingResultsHandler ? 1 : 0);
                 hash = 79 * hash + (EnableFilteredResultsHandler ? 1 : 0);
+                hash = 79 * hash + (FilteredResultsHandlerInValidationMode ? 1 : 0);
                 hash = 79 * hash + (EnableCaseInsensitiveFilter ? 1 : 0);
                 hash = 79 * hash + (EnableAttributesToGetSearchResultsHandler ? 1 : 0);
                 return hash;
@@ -873,6 +899,10 @@ namespace Org.IdentityConnectors.Framework.Api
                     return false;
                 }
                 if (EnableFilteredResultsHandler != other.EnableFilteredResultsHandler)
+                {
+                    return false;
+                }
+                if (FilteredResultsHandlerInValidationMode != other.FilteredResultsHandlerInValidationMode)
                 {
                     return false;
                 }
@@ -895,6 +925,7 @@ namespace Org.IdentityConnectors.Framework.Api
             IDictionary<String, Object> bld = new Dictionary<String, Object>();
             bld["EnableNormalizingResultsHandler"] = EnableNormalizingResultsHandler;
             bld["EnableFilteredResultsHandler"] = EnableFilteredResultsHandler;
+            bld["FilteredResultsHandlerInValidationMode"] = FilteredResultsHandlerInValidationMode;
             bld["EnableCaseInsensitiveFilter"] = EnableCaseInsensitiveFilter;
             bld["EnableAttributesToGetSearchResultsHandler"] = EnableAttributesToGetSearchResultsHandler;
             return bld.ToString();
