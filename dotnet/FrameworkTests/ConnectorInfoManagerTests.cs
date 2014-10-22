@@ -590,6 +590,7 @@ namespace FrameworkTests
 
             config.ConnectorPoolConfiguration.MinIdle = 1;
             config.ConnectorPoolConfiguration.MaxIdle = 2;
+            config.ResultsHandlerConfiguration.FilteredResultsHandlerInValidationMode = true;           // for paged searches, the filtered results handler should be either disabled or put into validation mode
 
             ConnectorFacade facade1 = ConnectorFacadeFactory.GetInstance().NewInstance(config);
 

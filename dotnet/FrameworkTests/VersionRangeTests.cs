@@ -76,7 +76,7 @@ namespace FrameworkTests
                 VersionRange.Parse("(1.1.0.0)");
                 Assert.Fail("Invalid syntax not failed");
             }
-            catch (System.FormatException e)
+            catch (System.FormatException)
             {
                 // ok
             }
@@ -85,7 +85,7 @@ namespace FrameworkTests
                 VersionRange.Parse("1.1.0.0,1.1)]");
                 Assert.Fail("Invalid syntax not failed");
             }
-            catch (System.ArgumentException e)
+            catch (System.ArgumentException)
             {
                 // ok
             }
@@ -94,7 +94,7 @@ namespace FrameworkTests
                 VersionRange.Parse("(1.1.0.0-1.1)");
                 Assert.Fail("Invalid syntax not failed");
             }
-            catch (System.ArgumentException e)
+            catch (System.ArgumentException)
             {
                 // ok
             }
@@ -103,7 +103,7 @@ namespace FrameworkTests
                 VersionRange.Parse("1.1.0.0,1.1");
                 Assert.Fail("Invalid syntax not failed");
             }
-            catch (System.ArgumentException e)
+            catch (System.ArgumentException)
             {
                 // ok
             }
@@ -112,7 +112,7 @@ namespace FrameworkTests
                 VersionRange.Parse("( , 1.1)");
                 Assert.Fail("Invalid syntax not failed");
             }
-            catch (System.ArgumentException e)
+            catch (System.ArgumentException)
             {
                 // ok
             }
