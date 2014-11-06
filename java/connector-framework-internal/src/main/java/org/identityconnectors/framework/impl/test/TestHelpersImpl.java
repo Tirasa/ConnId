@@ -67,16 +67,17 @@ public class TestHelpersImpl implements TestHelpersSpi {
      * Method for convenient testing of local connectors.
      */
     @Override
-    public APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
-            Configuration config) {
-        LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
+    public APIConfiguration createTestConfiguration(
+            final Class<? extends Connector> clazz, final Configuration config) {
+
+        final LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
         info.setConnectorConfigurationClass(config.getClass());
         info.setConnectorClass(clazz);
         info.setConnectorDisplayNameKey("DUMMY_DISPLAY_NAME");
         info.setConnectorKey(new ConnectorKey(clazz.getName() + ".bundle", "1.0", clazz.getName()));
         info.setMessages(createDummyMessages());
         try {
-            APIConfigurationImpl rv = createDefaultAPIConfiguration(info);
+            final APIConfigurationImpl rv = createDefaultAPIConfiguration(info);
             rv.setConfigurationProperties(JavaClassProperties.createConfigurationProperties(config));
 
             info.setDefaultAPIConfiguration(rv);
@@ -90,10 +91,11 @@ public class TestHelpersImpl implements TestHelpersSpi {
      * Method for convenient testing of local connectors.
      */
     @Override
-    public APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
-            final Set<String> bundleContents, PropertyBag configData, String prefix) {
+    public APIConfiguration createTestConfiguration(final Class<? extends Connector> clazz,
+            final Set<String> bundleContents, final PropertyBag configData, final String prefix) {
+
         assert null != clazz;
-        ConnectorClass options = clazz.getAnnotation(ConnectorClass.class);
+        final ConnectorClass options = clazz.getAnnotation(ConnectorClass.class);
         assert null != options;
         final LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
         info.setConnectorClass(clazz);
@@ -104,25 +106,23 @@ public class TestHelpersImpl implements TestHelpersSpi {
         if (null == bundleContents || bundleContents.isEmpty()) {
             info.setMessages(createDummyMessages());
         } else {
-            ConnectorMessagesImpl messages =
-                    loadMessageCatalog(bundleContents, clazz.getClassLoader(), info
-                            .getConnectorClass());
+            final ConnectorMessagesImpl messages =
+                    loadMessageCatalog(bundleContents, clazz.getClassLoader(), info.getConnectorClass());
             info.setMessages(messages);
         }
 
-        APIConfigurationImpl impl = createDefaultAPIConfiguration(info);
+        final APIConfigurationImpl impl = createDefaultAPIConfiguration(info);
         info.setDefaultAPIConfiguration(impl);
 
-        ConfigurationPropertiesImpl configProps = impl.getConfigurationProperties();
+        final ConfigurationPropertiesImpl configProps = impl.getConfigurationProperties();
 
-        String fullPrefix = StringUtil.isBlank(prefix) ? null : prefix + ".";
+        final String fullPrefix = StringUtil.isBlank(prefix) ? null : prefix + ".";
 
         for (ConfigurationPropertyImpl property : configProps.getProperties()) {
             @SuppressWarnings("unchecked")
-            Object value =
-                    configData.getProperty(null != fullPrefix ? fullPrefix + property.getName()
-                            : property.getName(), (Class<Object>) property.getType(), property
-                            .getValue());
+            Object value = configData.getProperty(
+                    null == fullPrefix ? property.getName() : fullPrefix + property.getName(),
+                    (Class<Object>) property.getType(), property.getValue());
             if (value != null) {
                 property.setValue(value);
             }
@@ -131,15 +131,14 @@ public class TestHelpersImpl implements TestHelpersSpi {
     }
 
     @Override
-    public void fillConfiguration(Configuration config, Map<String, ? extends Object> configData) {
-        Map<String, Object> configDataCopy = new HashMap<String, Object>(configData);
-        ConfigurationPropertiesImpl configProps =
-                JavaClassProperties.createConfigurationProperties(config);
+    public void fillConfiguration(final Configuration config, final Map<String, ? extends Object> configData) {
+        final Map<String, Object> configDataCopy = new HashMap<String, Object>(configData);
+        final ConfigurationPropertiesImpl configProps = JavaClassProperties.createConfigurationProperties(config);
         for (String propName : configProps.getPropertyNames()) {
             // Remove the entry from the config map, so that at the end
             // the map only contains entries that were not assigned to a config
             // property.
-            Object value = configDataCopy.remove(propName);
+            final Object value = configDataCopy.remove(propName);
             if (value != null) {
                 configProps.setPropertyValue(propName, value);
             }
@@ -156,32 +155,27 @@ public class TestHelpersImpl implements TestHelpersSpi {
      * Performs a raw, unfiltered search at the SPI level, eliminating
      * duplicates from the result set.
      *
-     * @param search
-     *            The search SPI
-     * @param objectClass
-     *            The object class - passed through to connector so it may be
-     *            null if the connecor allowing it to be null. (This is
-     *            convenient for unit tests, but will not be the case in
-     *            general)
-     * @param filter
-     *            The filter to search on
-     * @param handler
-     *            The result handler
-     * @param options
-     *            The options - may be null - will be cast to an empty
-     *            OperationOptions
+     * @param search The search SPI
+     * @param objectClass The object class - passed through to connector so it may be null if the connecor allowing it
+     * to be null. (This
+     * is convenient for unit tests, but will not be the case in general)
+     * @param filter The filter to search on
+     * @param handler The result handler
+     * @param options The options - may be null - will be cast to an empty OperationOptions
      */
     @Override
-    public SearchResult search(SearchOp<?> search, final ObjectClass objectClass,
+    public SearchResult search(final SearchOp<?> search, final ObjectClass objectClass,
             final Filter filter, final ResultsHandler handler, OperationOptions options) {
+
         if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
         final AtomicReference<SearchResult> result = new AtomicReference<SearchResult>(null);
 
         SearchImpl.rawSearch(search, objectClass, filter, new SearchResultsHandler() {
+
             @Override
-            public void handleResult(SearchResult searchResult) {
+            public void handleResult(final SearchResult searchResult) {
                 result.set(searchResult);
             }
 
@@ -199,9 +193,10 @@ public class TestHelpersImpl implements TestHelpersSpi {
     }
 
     private static class DummyConnectorMessages implements ConnectorMessages {
+
         @Override
-        public String format(String key, String dflt, Object... args) {
-            StringBuilder builder = new StringBuilder();
+        public String format(final String key, final String dflt, final Object... args) {
+            final StringBuilder builder = new StringBuilder();
             builder.append(key);
             builder.append(": ");
             String sep = "";
