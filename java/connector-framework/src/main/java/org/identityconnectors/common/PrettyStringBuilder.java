@@ -101,6 +101,9 @@ public class PrettyStringBuilder {
                 final Object key = it.next();
                 s.append(key).append(':');
                 s.append(toPrettyString(map.get(key)));
+                if (it.hasNext()) {
+                	s.append(",");
+                }
                 i++;
             }
             if (i < map.size()) {
