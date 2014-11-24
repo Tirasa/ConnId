@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -201,6 +202,9 @@ public class BufferedResultsProxy implements InvocationHandler {
             } else if (obj instanceof RuntimeException) {
                 stop(true); // stop and wait
                 throw (RuntimeException) obj;
+            } else if (obj instanceof Error) {
+                stop(true); // stop and wait
+                throw (Error) obj;
             } else {
                 return obj;
             }
