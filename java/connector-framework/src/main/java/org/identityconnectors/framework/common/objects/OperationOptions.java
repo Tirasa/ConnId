@@ -117,6 +117,17 @@ public final class OperationOptions {
      * would normally be returned.
      */
     public static final String OP_ATTRIBUTES_TO_GET = "ATTRS_TO_GET";
+    
+    /**
+     * An option to use with {@link SearchApiOp} which specifies that the search
+     * operation may return only a reasonable subset of the results. If this option
+     * is specified then the connector is free to sacrifice completeness in favor
+     * of performance. In this case the server size limits and short-cuts may be
+     * used to get a better operation performance.
+     * Even if this option is specified the connector must set the allResultsReturned
+     * flag in SearchResult in case that partial results were returned.
+     */
+    public static final String OP_ALLOW_PARTIAL_RESULTS = "ALLOW_PARTIAL_RESULTS";
 
     /**
      * An option to use with {@link SearchApiOp} that specifies an opaque cookie
@@ -240,6 +251,24 @@ public final class OperationOptions {
         return (GuardedString) operationOptions.get(OP_RUN_WITH_PASSWORD);
     }
 
+    /**
+     * Returns a flag which specifies that the search
+     * operation may return only a reasonable subset of the results. If this option
+     * is specified then the connector is free to sacrifice completeness in favor
+     * of performance. In this case the server size limits and short-cuts may be
+     * used to get a better operation performance.
+     * Even if this option is specified the connector must set the allResultsReturned
+     * flag in SearchResult in case that partial results were returned.
+     * 
+     * @return flag which specifies that the search
+     *         operation may return only a reasonable part of the results.
+     * 
+     * @since 1.4.1
+     */
+    public Boolean getAllowPartialResults() {
+        return (Boolean) operationOptions.get(OP_ALLOW_PARTIAL_RESULTS);
+    };
+    
     /**
      * Returns the opaque cookie which is used by the Connector to track its
      * position in the set of query results. Paged results will be enabled if
