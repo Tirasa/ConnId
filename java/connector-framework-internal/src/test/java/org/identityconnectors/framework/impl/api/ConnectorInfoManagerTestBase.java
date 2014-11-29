@@ -714,6 +714,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
         config.getConnectorPoolConfiguration().setMinIdle(1);
         config.getConnectorPoolConfiguration().setMaxIdle(2);
+        config.getResultsHandlerConfiguration().setFilteredResultsHandlerInValidationMode(true);
 
         ConnectorFacade facade1 = ConnectorFacadeFactory.getInstance().newInstance(config);
 

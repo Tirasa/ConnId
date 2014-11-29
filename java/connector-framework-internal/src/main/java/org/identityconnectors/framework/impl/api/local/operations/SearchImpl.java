@@ -93,6 +93,11 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             actualFilter = new NormalizingFilter(actualFilter, normalizer);
         }
 
+        if (hdlCfg.isEnableFilteredResultsHandler() && !hdlCfg.isFilteredResultsHandlerInValidationMode() &&
+                options.getPageSize() != null && options.getPageSize() > 0) {
+            throw new IllegalArgumentException("Paged search is requested, but the filtered results handler is enabled in effective (i.e. non-validation) mode. This is not supported.");
+        }
+
         if (hdlCfg.isEnableNormalizingResultsHandler()) {
             final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
             // chain a normalizing handler (must come before
@@ -173,6 +178,9 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             boolean eliminateDups = queries.size() > 1;
             if (eliminateDups) {
                 handler = new DuplicateFilteringResultsHandler(handler);
+                if (options.getPageSize() != null && options.getPageSize() > 0) {
+                    throw new IllegalArgumentException("Paged search is requested, but the filter was translated into more than one query. This is not supported. Queries = " + queries);
+                }
             }
             for (Object query : queries) {
                 @SuppressWarnings("unchecked")
