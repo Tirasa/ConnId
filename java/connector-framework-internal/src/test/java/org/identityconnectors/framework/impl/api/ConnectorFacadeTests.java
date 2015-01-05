@@ -41,6 +41,7 @@ import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.GetApiOp;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
@@ -48,6 +49,7 @@ import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.ScriptContextBuilder;
 import org.identityconnectors.framework.common.objects.SyncDelta;
@@ -529,6 +531,30 @@ public class ConnectorFacadeTests {
             }
 
             @Override
+            public void checkCalls(List<Call> calls) {
+                assertEquals(calls.remove(0).getMethodName(), "sync");
+            }
+        });
+    }
+
+    @Test(expectedExceptions = ConnectorException.class,
+            expectedExceptionsMessageRegExp = "Sync '__ALL__' operation requires.*")
+    public void syncAllCallFailPattern() {
+        testCallPattern(new TestOperationPattern() {
+
+            public void makeCall(ConnectorFacade facade) {
+                // create an empty results handler..
+                // call the search method..
+                OperationOptionsBuilder builder = new OperationOptionsBuilder();
+                builder.setOption("FAIL_DELETE", Boolean.TRUE);
+                facade.sync(ObjectClass.ALL, new SyncToken(1), new SyncResultsHandler() {
+
+                    public boolean handle(SyncDelta delta) {
+                        return true;
+                    }
+                }, builder.build());
+            }
+
             public void checkCalls(List<Call> calls) {
                 assertEquals(calls.remove(0).getMethodName(), "sync");
             }

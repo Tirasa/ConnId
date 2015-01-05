@@ -57,6 +57,8 @@ public class SearchImplTests {
         // create duplicate data..
         Set<ConnectorObject> expected = new LinkedHashSet<ConnectorObject>();
         List<List<ConnectorObject>> main = new ArrayList<List<ConnectorObject>>();
+        // create empty batch
+        main.add(new ArrayList<ConnectorObject>());
         // create first batch
         data = new ArrayList<ConnectorObject>();
         for (int i = 0; i < 5; i++) {

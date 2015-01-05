@@ -31,11 +31,16 @@ import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.ScriptContext;
+import org.identityconnectors.framework.common.objects.SearchResult;
+import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.SyncDeltaType;
 import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
+import org.identityconnectors.framework.spi.SearchResultsHandler;
+import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 import org.identityconnectors.framework.spi.operations.AuthenticateOp;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 import org.identityconnectors.framework.spi.operations.DeleteOp;
@@ -119,6 +124,10 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp, Dele
             OperationOptions options) {
         assert objectClass != null && handler != null && options != null;
         addCall(objectClass, query, handler, options);
+        if (null != options.getPageSize() && options.getPageSize() > 0) {
+            // This is a pages search request
+            ((SearchResultsHandler) handler).handleResult(new SearchResult("TOKEN==", 100));
+        }
     }
 
     @Override
@@ -145,6 +154,15 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp, Dele
     public void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler, OperationOptions options) {
         assert objectClass != null && token != null && handler != null && options != null;
         addCall(objectClass, token, handler, options);
+        if (ObjectClass.ALL.equals(objectClass)) {
+            if (null != options.getOptions().get("FAIL_DELETE")) {
+                //Require ObjectClass when delta is 'delete'
+                handler.handle(new SyncDeltaBuilder().setDeltaType(SyncDeltaType.DELETE).setUid(
+                        new Uid("DELETED")).setToken(new SyncToken(99)).build());
+            } else {
+                ((SyncTokenResultsHandler) handler).handleResult(new SyncToken(100));
+            }
+        }
     }
 
     @Override
