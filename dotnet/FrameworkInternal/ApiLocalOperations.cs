@@ -634,7 +634,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         private readonly SearchResultsHandler _handler;
         private readonly HashSet<String> _visitedUIDs = new HashSet<String>();
 
-        private bool _stillHandling;
+        private bool _stillHandling = true;
 
         // =======================================================================
         // Constructors
