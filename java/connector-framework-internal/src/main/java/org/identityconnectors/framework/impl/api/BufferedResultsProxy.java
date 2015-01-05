@@ -201,6 +201,9 @@ public class BufferedResultsProxy implements InvocationHandler {
             } else if (obj instanceof RuntimeException) {
                 stop(true); // stop and wait
                 throw (RuntimeException) obj;
+            } else if (obj instanceof Error) {
+                stop(true); // stop and wait
+                throw (Error) obj;
             } else {
                 return obj;
             }
