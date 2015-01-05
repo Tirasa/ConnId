@@ -39,7 +39,7 @@ public final class DuplicateFilteringResultsHandler implements SearchResultsHand
     private final SearchResultsHandler handler;
     private final Set<String> visitedUIDs = new HashSet<String>();
 
-    private boolean stillHandling;
+    private boolean stillHandling = true;
 
     // =======================================================================
     // Constructors

@@ -203,6 +203,11 @@ namespace FrameworkTests
             Assert.IsNotNull(handler);
             Assert.IsNotNull(options);
             AddCall("ExecuteQuery", oclass, query, handler, options);
+            if (null != options.PageSize && options.PageSize > 0)
+            {
+                // This is a pages search request
+                ((SearchResultsHandler)handler).HandleResult(new SearchResult("TOKEN==", 100));
+            }
         }
 
         public Uid Authenticate(ObjectClass objectClass, string username, GuardedString password,
@@ -233,6 +238,22 @@ namespace FrameworkTests
             Assert.IsNotNull(handler);
             Assert.IsNotNull(options);
             AddCall("Sync", objectClass, token, handler, options);
+            if (ObjectClass.ALL.Equals(objectClass))
+            {
+                if (null != CollectionUtil.GetValue(options.Options, "FAIL_DELETE", null))
+                {
+                    //Require ObjectClass when delta is 'delete'
+                    var builder = new SyncDeltaBuilder();
+                    builder.DeltaType = SyncDeltaType.DELETE;
+                    builder.Uid = new Uid("DELETED");
+                    builder.Token = new SyncToken(99);
+                    handler.Handle(builder.Build());
+                }
+                else
+                {
+                    ((SyncTokenResultsHandler)handler).HandleResult(new SyncToken(100));
+                }
+            }
         }
 
         public SyncToken GetLatestSyncToken(ObjectClass objectClass)

@@ -135,7 +135,10 @@ public class Searches {
         @Override
         protected void beforeObject(int count) {
             if (count == idx) {
-                throw this.ex;
+                if (null != ex){
+                    throw this.ex;
+                }
+                assert false;
             }
         }
     }

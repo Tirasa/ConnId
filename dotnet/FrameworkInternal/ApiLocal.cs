@@ -175,7 +175,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local
 
         public static ObjectPool<PoolableConnector> GetPool(ConnectorPoolKey connectorPoolKey)
         {
-            return _pools[connectorPoolKey];
+            return CollectionUtil.GetValue(_pools, connectorPoolKey, null);
         }
 
         /// <summary>
