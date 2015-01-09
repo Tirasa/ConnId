@@ -159,6 +159,22 @@ public class BufferedSearchProxyTests {
     }
 
     @Test
+    public void passError() {
+        ExpectedTestResults expected = new ExpectedTestResults();
+        expected.addExpectedRange(0, 5);
+        SearchApiOp search = new Searches.ThrowsExceptionSearch(10,5,null);
+        SearchApiOp proxy = createSearchProxy(search,10+1,20000);
+        try {
+            proxy.search(ObjectClass.ACCOUNT, null, expected,null);
+            fail("expected exception");
+        }
+        catch (AssertionError e) {
+
+        }
+        expected.assertFinished();
+    }
+
+    @Test
     public void slowProducer() {
         // test the limit on a range..
         for (int i = 0; i < 5; i++) {

@@ -634,7 +634,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         private readonly SearchResultsHandler _handler;
         private readonly HashSet<String> _visitedUIDs = new HashSet<String>();
 
-        private bool _stillHandling;
+        private bool _stillHandling = true;
 
         // =======================================================================
         // Constructors
@@ -1615,10 +1615,17 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             }
 
             SyncToken result = null;
+            Boolean doAll = ObjectClass.ALL.Equals(objectClass);
             ((SyncOp)GetConnector()).Sync(objectClass, token, new SyncTokenResultsHandler()
             {
                 Handle = delta =>
                 {
+                    if (doAll && SyncDeltaType.DELETE.Equals(delta.DeltaType)
+                        && null == delta.ObjectClass)
+                    {
+                        throw new ConnectorException(
+                                "Sync '__ALL__' operation requires the connector to set 'objectClass' parameter for sync event.");
+                    }
                     return handler.Handle(delta);
                 },
                 HandleResult = obj =>

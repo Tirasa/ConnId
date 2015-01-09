@@ -29,11 +29,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
+import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
 import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.SyncDeltaType;
 import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.spi.AttributeNormalizer;
@@ -75,6 +77,7 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
 
         final SyncResultsHandler handlerChain = handler;
         final AtomicReference<SyncToken> result = new AtomicReference<SyncToken>(null);
+        final Boolean doAll = ObjectClass.ALL.equals(objectClass);
         
         SyncTokenResultsHandler syncHandler = new SyncTokenResultsHandler() {
             @Override
@@ -103,6 +106,11 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
             	}
                 boolean ret;
                 try {
+                	if (doAll && SyncDeltaType.DELETE.equals(delta.getDeltaType())
+                        && null == delta.getObjectClass()) {
+                    	throw new ConnectorException(
+                            "Sync '__ALL__' operation requires the connector to set 'objectClass' parameter for sync event.");
+                	}
                 	ret = handlerChain.handle(delta);
                 } catch (RuntimeException e) {
                 	SpiOperationLoggingUtil.logOpException(HANDLER_LOG, SyncTokenResultsHandler.class, "handle", e);

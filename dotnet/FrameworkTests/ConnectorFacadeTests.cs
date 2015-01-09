@@ -551,6 +551,33 @@ namespace FrameworkTests
         }
 
         [Test]
+        [ExpectedException(typeof(ConnectorException), ExpectedMessage="Sync '__ALL__' operation requires.*", MatchType = MessageMatch.Regex)]
+        public virtual void SyncAllCallFailPattern() {
+            TestCallPattern(new TestOperationPattern()
+            {
+                MakeCall = facade =>
+                {
+                    // create an empty results handler..
+                    SyncResultsHandler rh = new SyncResultsHandler()
+                    {
+                        Handle = obj =>
+                            {
+                                return true;
+                            }
+                    };
+                    // call the sync method..
+                    var builder = new OperationOptionsBuilder();
+                    builder.Options["FAIL_DELETE"] = true;
+                    facade.Sync(ObjectClass.ALL, new SyncToken(1), rh, builder.Build());
+                },
+                CheckCalls = calls =>
+                {
+                    Assert.AreEqual("Sync", GetAndRemoveMethodName(calls));
+                }
+            });
+        }
+
+        [Test]
         public void TestOpCallPattern()
         {
             TestCallPattern(new TestOperationPattern()
