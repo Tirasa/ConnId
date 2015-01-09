@@ -195,7 +195,6 @@ public abstract class ConnectorInfoManagerTestBase {
                     || e.getMessage()
                     .contains(errorMessageBundle.getString("nosuitableimagefound"))
                     || e.getMessage().contains(errorMessageBundle.getString("nonativein"))
-                    || e.getMessage().contains(errorMessageBundle.getString("invalidwin32"))
             		|| e.getMessage().contains(errorMessageBundle.getString("notvalidwin32application")));
         } catch (RuntimeException e) {
             // Remote framework serializes UnsatisfiedLinkError as
@@ -204,7 +203,6 @@ public abstract class ConnectorInfoManagerTestBase {
                     || e.getMessage()
                     .contains(errorMessageBundle.getString("nosuitableimagefound"))
                     || e.getMessage().contains(errorMessageBundle.getString("nonativein"))
-                    || e.getMessage().contains(errorMessageBundle.getString("invalidwin32"))
             		|| e.getMessage().contains(errorMessageBundle.getString("notvalidwin32application")));
         }
     }
