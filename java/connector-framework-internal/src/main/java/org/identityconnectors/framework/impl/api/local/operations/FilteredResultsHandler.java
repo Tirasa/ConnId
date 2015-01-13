@@ -35,6 +35,7 @@ public final class FilteredResultsHandler implements ResultsHandler {
     // =======================================================================
     final ResultsHandler handler;
     final Filter filter;
+    final boolean inValidationMode;
 
     // =======================================================================
     // Constructors
@@ -48,11 +49,16 @@ public final class FilteredResultsHandler implements ResultsHandler {
      *            Filter to use to accept objects.
      */
     public FilteredResultsHandler(ResultsHandler handler, Filter filter) {
+        this(handler, filter, false);
+    }
+
+    public FilteredResultsHandler(ResultsHandler handler, Filter filter, boolean inValidationMode) {
         // there must be a producer..
         if (handler == null) {
             throw new IllegalArgumentException("Handler must not be null!");
         }
         this.handler = handler;
+        this.inValidationMode = inValidationMode;
         // use a default pass through filter..
         this.filter = filter == null ? new PassThroughFilter() : filter;
     }
@@ -62,7 +68,11 @@ public final class FilteredResultsHandler implements ResultsHandler {
         if (filter.accept(object)) {
             return handler.handle(object);
         } else {
-            return true;
+            if (inValidationMode) {
+                throw new IllegalStateException("Object " + object + " was returned by the connector but failed to pass the framework filter. This seems like wrong implementation of the filter in the connector.");
+            } else {
+                return true;
+            }
         }
     }
 

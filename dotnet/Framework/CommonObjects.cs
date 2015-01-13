@@ -39,7 +39,7 @@ using Org.IdentityConnectors.Framework.Common.Serializer;
 namespace Org.IdentityConnectors.Framework.Common.Objects
 {
     #region NameUtil
-    internal static class NameUtil
+    public static class NameUtil
     {
         public static bool IsSpecialName(String name)
         {
@@ -1431,6 +1431,16 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
                 return CollectionUtil.Equals(_attrs, other._attrs);
             }
             return false;
+        }
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(ObjectClass.GetObjectClassValue());
+            sb.Append(":");
+            sb.Append(Name);
+            sb.Append("/");
+            sb.Append(Uid);
+            return sb.ToString();
         }
     }
     #endregion

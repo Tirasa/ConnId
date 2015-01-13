@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -266,6 +266,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 &lt;!ATTLIST ResultsHandlerConfiguration
     enableNormalizingResultsHandler CDATA #IMPLIED
     enableFilteredResultsHandler CDATA #IMPLIED
+    filteredResultsHandlerInValidationMode CDATA #IMPLIED
     enableCaseInsensitiveFilter CDATA #IMPLIED
     enableAttributesToGetSearchResultsHandler CDATA #IMPLIED
 &gt;

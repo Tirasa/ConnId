@@ -194,20 +194,16 @@ public abstract class ConnectorInfoManagerTestBase {
             assertTrue(e.getMessage().contains(errorMessageBundle.getString("filetooshort"))
                     || e.getMessage()
                     .contains(errorMessageBundle.getString("nosuitableimagefound"))
-                    || e.getMessage()
-                    .contains(errorMessageBundle.getString("notvalidwin32application"))
-                    || e.getMessage()
-                    .contains(errorMessageBundle.getString("nonativein")));
+                    || e.getMessage().contains(errorMessageBundle.getString("nonativein"))
+            		|| e.getMessage().contains(errorMessageBundle.getString("notvalidwin32application")));
         } catch (RuntimeException e) {
             // Remote framework serializes UnsatisfiedLinkError as
             // RuntimeException.
             assertTrue(e.getMessage().contains(errorMessageBundle.getString("filetooshort"))
                     || e.getMessage()
                     .contains(errorMessageBundle.getString("nosuitableimagefound"))
-                    || e.getMessage()
-                    .contains(errorMessageBundle.getString("notvalidwin32application"))
-                    || e.getMessage()
-                    .contains(errorMessageBundle.getString("nonativein")));
+                    || e.getMessage().contains(errorMessageBundle.getString("nonativein"))
+            		|| e.getMessage().contains(errorMessageBundle.getString("notvalidwin32application")));
         }
     }
 
@@ -716,6 +712,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
         config.getConnectorPoolConfiguration().setMinIdle(1);
         config.getConnectorPoolConfiguration().setMaxIdle(2);
+        config.getResultsHandlerConfiguration().setFilteredResultsHandlerInValidationMode(true);
 
         ConnectorFacade facade1 = ConnectorFacadeFactory.getInstance().newInstance(config);
 

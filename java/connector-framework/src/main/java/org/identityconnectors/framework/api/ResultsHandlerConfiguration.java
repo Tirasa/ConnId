@@ -52,6 +52,17 @@ public class ResultsHandlerConfiguration {
      */
     boolean enableFilteredResultsHandler = true;
     /**
+     * Enables the {@link org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandler}
+     * in the handler chain in the validate mode.
+     * (It means that the filter does not filter anything; it just checks whether any objects
+     * that come from the connector would pass it. If not, it throws an exception. It is meant
+     * as a diagnostic tool to validate that the connector does its filtering correctly.)
+     *
+     * To use, you have to set BOTH EnableFilteredResultsHandler as well as
+     * FilteredResultsHandlerInValidateMode to TRUE.
+     */
+    boolean filteredResultsHandlerInValidationMode = false;
+    /**
      * Enables the case insensitive filtering.
      */
     boolean enableCaseInsensitiveFilter = false;
@@ -77,6 +88,7 @@ public class ResultsHandlerConfiguration {
     public ResultsHandlerConfiguration(ResultsHandlerConfiguration source) {
         this.enableNormalizingResultsHandler = source.isEnableNormalizingResultsHandler();
         this.enableFilteredResultsHandler = source.isEnableFilteredResultsHandler();
+        this.filteredResultsHandlerInValidationMode = source.isFilteredResultsHandlerInValidationMode();
         this.enableCaseInsensitiveFilter = source.isEnableCaseInsensitiveFilter();
         this.enableAttributesToGetSearchResultsHandler =
                 source.isEnableAttributesToGetSearchResultsHandler();
@@ -97,6 +109,14 @@ public class ResultsHandlerConfiguration {
 
     public void setEnableCaseInsensitiveFilter(boolean enableCaseInsensitiveFilter) {
         this.enableCaseInsensitiveFilter = enableCaseInsensitiveFilter;
+    }
+
+    public boolean isFilteredResultsHandlerInValidationMode() {
+        return filteredResultsHandlerInValidationMode;
+    }
+
+    public void setFilteredResultsHandlerInValidationMode(boolean filteredResultsHandlerInValidationMode) {
+        this.filteredResultsHandlerInValidationMode = filteredResultsHandlerInValidationMode;
     }
 
     public boolean isEnableFilteredResultsHandler() {
@@ -130,6 +150,9 @@ public class ResultsHandlerConfiguration {
         if (this.enableFilteredResultsHandler != other.enableFilteredResultsHandler) {
             return false;
         }
+        if (this.filteredResultsHandlerInValidationMode != other.filteredResultsHandlerInValidationMode) {
+            return false;
+        }
         if (this.enableCaseInsensitiveFilter != other.enableCaseInsensitiveFilter) {
             return false;
         }
@@ -144,6 +167,7 @@ public class ResultsHandlerConfiguration {
         int hash = 3;
         hash = 79 * hash + (this.enableNormalizingResultsHandler ? 1 : 0);
         hash = 79 * hash + (this.enableFilteredResultsHandler ? 1 : 0);
+        hash = 79 * hash + (this.filteredResultsHandlerInValidationMode ? 1 : 0);
         hash = 79 * hash + (this.enableCaseInsensitiveFilter ? 1 : 0);
         hash = 79 * hash + (this.enableAttributesToGetSearchResultsHandler ? 1 : 0);
         return hash;
@@ -153,7 +177,8 @@ public class ResultsHandlerConfiguration {
     public String toString() {
         return "ResultsHandlerConfiguration{" + "enableNormalizingResultsHandler="
                 + enableNormalizingResultsHandler + "\nenableFilteredResultsHandler="
-                + enableFilteredResultsHandler + "\nenableCaseInsensitiveFilter="
+                + enableFilteredResultsHandler + "\nfilteredResultsHandlerInValidationMode="
+                + filteredResultsHandlerInValidationMode + "\nenableCaseInsensitiveFilter="
                 + enableCaseInsensitiveFilter + "\nenableAttributesToGetSearchResultsHandler="
                 + enableAttributesToGetSearchResultsHandler + '}';
     }

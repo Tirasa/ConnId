@@ -172,6 +172,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ATTLIST ResultsHandlerConfiguration
     enableNormalizingResultsHandler CDATA #IMPLIED
     enableFilteredResultsHandler CDATA #IMPLIED
+    filteredResultsHandlerInValidationMode CDATA #IMPLIED
     enableCaseInsensitiveFilter CDATA #IMPLIED
     enableAttributesToGetSearchResultsHandler CDATA #IMPLIED
 >

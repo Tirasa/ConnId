@@ -700,6 +700,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         // =======================================================================
         readonly ResultsHandler handler;
         readonly Filter filter;
+        readonly bool inValidationMode;
 
         // =======================================================================
         // Constructors
@@ -709,7 +710,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
         /// </summary>
         /// <param name="producer">Producer to filter.</param>
         /// <param name="filter">Filter to use to accept objects.</param>
-        public FilteredResultsHandler(ResultsHandler handler, Filter filter)
+        public FilteredResultsHandler(ResultsHandler handler, Filter filter) : this(handler, filter, false)
+        {
+        }
+
+        public FilteredResultsHandler(ResultsHandler handler, Filter filter, bool inValidationMode)
         {
             // there must be a producer..
             if (handler == null)
@@ -717,6 +722,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 throw new ArgumentException("Producer must not be null!");
             }
             this.handler = handler;
+            this.inValidationMode = inValidationMode;
             // use a default pass through filter..
             this.filter = filter == null ? new PassThroughFilter() : filter;
         }
@@ -733,9 +739,16 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                         {
                             return handler.Handle(obj);
                         }
-                        else
+                        else 
                         {
-                            return true;
+                            if (inValidationMode)
+                            {
+                                throw new InvalidOperationException("Object " + obj.ToString() + " was returned by the connector but failed to pass the framework filter. This seems like wrong implementation of the filter in the connector.");
+                            }
+                            else
+                            {
+                                return true;
+                            }
                         }
                     }
                 };
@@ -1400,6 +1413,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 actualFilter = new NormalizingFilter(actualFilter, normalizer);
             }
 
+            if (hdlCfg.EnableFilteredResultsHandler && !hdlCfg.FilteredResultsHandlerInValidationMode && options.PageSize.HasValue && options.PageSize.Value > 0)
+            {
+                throw new ArgumentException("Paged search is requested, but the filtered results handler is enabled in effective (i.e. non-validation) mode. This is not supported.");
+            }
+
             if (hdlCfg.EnableNormalizingResultsHandler)
             {
                 ObjectNormalizerFacade normalizer = GetNormalizer(objectClass);
@@ -1411,7 +1429,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 {
                     // chain a filter handler..
                     Filter normalizedFilter = normalizer.NormalizeFilter(actualFilter);
-                    handlerChain = new FilteredResultsHandler(normalizingHandler, normalizedFilter).ResultsHandler;
+                    handlerChain = new FilteredResultsHandler(normalizingHandler, normalizedFilter, hdlCfg.FilteredResultsHandlerInValidationMode).ResultsHandler;
                     actualFilter = normalizedFilter;
                 }
                 else
@@ -1422,7 +1440,7 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
             else if (hdlCfg.EnableFilteredResultsHandler)
             {
                 // chain a filter handler..
-                handlerChain = new FilteredResultsHandler(handlerChain, actualFilter).ResultsHandler;
+                handlerChain = new FilteredResultsHandler(handlerChain, actualFilter, hdlCfg.FilteredResultsHandlerInValidationMode).ResultsHandler;
             }
 
             //get the IList interface that this type implements
@@ -1538,6 +1556,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Api.Local.Operations
                 {
                     dups = new DuplicateFilteringResultsHandler(handler);
                     handler = dups.ResultsHandler;
+
+                    if (options.PageSize.HasValue && options.PageSize.Value > 0)
+                    {
+                        throw new ArgumentException("Paged search is requested, but the filter was translated into more than one query. This is not supported. Queries = " + CollectionUtil.Dump(queries));
+                    }
                 }
                 foreach (T query in queries)
                 {

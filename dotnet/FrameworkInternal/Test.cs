@@ -121,11 +121,11 @@ namespace Org.IdentityConnectors.Framework.Impl.Test
                     rawConnectorClass.Name)); ;
                 APIConfigurationImpl impl = LocalConnectorInfoManagerImpl.CreateDefaultAPIConfiguration(rv);
                 rv.DefaultAPIConfiguration = impl;
-                if (false)
-                {
-                    rv.Messages = CreateDummyMessages();
-                }
-                else
+//                if (false)
+//                {
+//                    rv.Messages = CreateDummyMessages();
+//                }
+//                else
                 {
                     rv.Messages = LocalConnectorInfoManagerImpl.LoadMessages(assembly, rv, attribute.MessageCatalogPaths);
                 }
