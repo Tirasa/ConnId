@@ -40,7 +40,7 @@
     <version>9</version>
   </parent>
 
-  <url>http://tirasa.github.com/ConnId/</url>
+  <url>http://connid.tirasa.net/</url>
   <prerequisites>
     <maven>[3.0.3,)</maven>
   </prerequisites>
