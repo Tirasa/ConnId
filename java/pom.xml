@@ -265,6 +265,29 @@
     </pluginManagement>
     
     <plugins>
+      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>ianal-maven-plugin</artifactId>
+        <version>1.0-alpha-1</version>
+        <configuration>
+          <requiredFiles>
+            <requiredFile>LICENSE</requiredFile>
+          </requiredFiles>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>verify-legal-files</goal>
+            </goals>
+            <configuration>
+              <!-- Fail the build if any artifacts are missing legal files -->
+              <strict>true</strict>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
       <plugin>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>

@@ -66,6 +66,18 @@
     
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>ianal-maven-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <searchPaths>
+            <searchPath>META-INF</searchPath>
+            <searchPath>connid-connector-server</searchPath>
+          </searchPaths>
+        </configuration>
+      </plugin>
+      
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -85,5 +97,19 @@
         </executions>
       </plugin>
     </plugins>
+    
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>false</filtering>
+      </resource>
+      <resource>
+        <directory>../..</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE</include>
+        </includes>
+      </resource>
+    </resources>
   </build>
 </project>

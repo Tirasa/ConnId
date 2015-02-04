@@ -58,3 +58,4 @@ AssemblyInfo.cs
 [Dd]ebug*/
 [Rr]elease*/
 dotnet/*.bat
+/java/target/

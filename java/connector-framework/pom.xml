@@ -89,12 +89,26 @@
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
+      <resource>
+        <directory>../..</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE</include>
+        </includes>
+      </resource>
     </resources>
 
     <testResources>
       <testResource>
         <directory>src/test/resources</directory>
         <filtering>true</filtering>
+      </testResource>
+      <testResource>
+        <directory>../..</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE</include>
+        </includes>
       </testResource>
     </testResources>
   </build>

@@ -34,6 +34,13 @@
   </formats>
   <fileSets>
     <fileSet>
+      <directory>../..</directory>
+      <outputDirectory>/connid-connector-server/</outputDirectory>
+      <includes>
+        <include>LICENSE</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>${basedir}/src/main/resources</directory>
       <outputDirectory>/connid-connector-server/</outputDirectory>
       <fileMode>754</fileMode>

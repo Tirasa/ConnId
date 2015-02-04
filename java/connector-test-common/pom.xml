@@ -67,8 +67,17 @@
   </dependencies>
   
   <build>
+    <resources>
+      <resource>
+        <directory>../..</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE</include>
+        </includes>
+      </resource>
+    </resources>
+    
     <testResources>
-
       <testResource>
         <filtering>false</filtering>
         <directory>src/test/java</directory>
@@ -76,7 +85,6 @@
           <include>**/properties.groovy</include>
         </includes>
       </testResource>
-
     </testResources>
   </build>
 </project>

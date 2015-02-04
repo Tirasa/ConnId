@@ -41,4 +41,15 @@
     <parent.path>${basedir}/..</parent.path>
   </properties>
     
+  <build>
+    <resources>
+      <resource>
+        <directory>../..</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 </project>
