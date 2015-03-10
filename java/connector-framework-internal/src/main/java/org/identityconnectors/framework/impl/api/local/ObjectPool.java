@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2015 Evolveum
  */
 
 package org.identityconnectors.framework.impl.api.local;
@@ -287,9 +288,17 @@ public class ObjectPool<T> {
             try {
                 do {
                     if (totalPermit.tryAcquire()) {
-                        // If the pool is empty and there are available permits
-                        // then create a new instance.
-                        return makeObject();
+                    	try {
+	                        // If the pool is empty and there are available permits
+	                        // then create a new instance.
+	                        return makeObject();
+                    	} catch (RuntimeException e) {
+                    		totalPermit.release();
+                    		throw e;
+                    	} catch (Error e) {
+                    		totalPermit.release();
+                    		throw e;
+                    	}
                     } else {
                         // Wait for permit or object to became available
                         try {
