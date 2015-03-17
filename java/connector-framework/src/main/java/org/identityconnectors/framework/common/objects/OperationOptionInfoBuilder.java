@@ -102,4 +102,8 @@ public final class OperationOptionInfoBuilder {
     public static OperationOptionInfo buildSortKeys() {
         return build(OperationOptions.OP_SORT_KEYS, SortKey.class);
     }
+    
+    public static OperationOptionInfo buildAllowPartialResults() {
+        return build(OperationOptions.OP_ALLOW_PARTIAL_RESULTS, Boolean.class);
+    }
 }
