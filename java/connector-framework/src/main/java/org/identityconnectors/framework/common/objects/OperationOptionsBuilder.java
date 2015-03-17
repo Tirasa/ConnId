@@ -228,6 +228,19 @@ public final class OperationOptionsBuilder {
         options.put(OperationOptions.OP_SORT_KEYS, sortKeys);
         return this;
     }
+    
+    /**
+     * Convenience method to set {@link OperationOptions#OP_ALLOW_PARTIAL_RESULTS}
+     *
+     * @param allowPartialResults
+     *            Flag indicating whether partial results are allowed.
+     * @return A this reference to allow chaining
+     * @since 1.4.2
+     */
+    public OperationOptionsBuilder setAllowPartialResults(boolean allowPartialResults) {
+    	options.put(OperationOptions.OP_ALLOW_PARTIAL_RESULTS, allowPartialResults);
+    	return this;
+    }
 
     /**
      * Returns a mutable reference of the options map.
