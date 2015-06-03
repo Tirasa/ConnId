@@ -156,9 +156,6 @@ public final class AttributeInfoBuilder {
      *            native name of the {@link AttributeInfo} object.
      */
     public AttributeInfoBuilder setNativeName(final String nativeName) {
-        if (StringUtil.isBlank(nativeName)) {
-            throw new IllegalArgumentException("Argument must not be blank.");
-        }
         this.nativeName = nativeName;
         return this;
     }

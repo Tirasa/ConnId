@@ -366,6 +366,7 @@ class CommonObjectHandlers {
                     }
                 }
                 builder.setFlags(flags);
+                builder.setNativeName(decoder.readStringField("nativeName", null));
                 return builder.build();
             }
 
@@ -377,6 +378,7 @@ class CommonObjectHandlers {
                 for (Flags flag : flags) {
                     encoder.writeObjectContents(flag);
                 }
+                encoder.writeStringField("nativeName", val.getNativeName());
             }
         });
 
