@@ -47,6 +47,7 @@ public final class AttributeInfoBuilder {
 
     private String name;
     private Class<?> type;
+    private String nativeName;
     private final EnumSet<Flags> flags;
 
     /**
@@ -116,7 +117,7 @@ public final class AttributeInfoBuilder {
      * @return {@link AttributeInfo} based on the properties set.
      */
     public AttributeInfo build() {
-        return new AttributeInfo(name, type, flags);
+        return new AttributeInfo(name, type, nativeName, flags);
     }
 
     /**
@@ -145,6 +146,20 @@ public final class AttributeInfoBuilder {
     public AttributeInfoBuilder setType(final Class<?> value) {
         FrameworkUtil.checkAttributeType(value);
         type = value;
+        return this;
+    }
+    
+    /**
+     * Sets the native name of the {@link AttributeInfo} object.
+     *
+     * @param nativeName
+     *            native name of the {@link AttributeInfo} object.
+     */
+    public AttributeInfoBuilder setNativeName(final String nativeName) {
+        if (StringUtil.isBlank(nativeName)) {
+            throw new IllegalArgumentException("Argument must not be blank.");
+        }
+        this.nativeName = nativeName;
         return this;
     }
 
