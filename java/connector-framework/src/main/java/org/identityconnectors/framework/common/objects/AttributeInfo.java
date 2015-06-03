@@ -52,6 +52,7 @@ public final class AttributeInfo {
 
     private final String name;
     private final Class<?> type;
+    private final String nativeName;
     private final Set<Flags> flags;
 
     /**
@@ -70,8 +71,12 @@ public final class AttributeInfo {
     public static enum Flags {
         REQUIRED, MULTIVALUED, NOT_CREATABLE, NOT_UPDATEABLE, NOT_READABLE, NOT_RETURNED_BY_DEFAULT
     }
-
+    
     AttributeInfo(final String name, final Class<?> type, final Set<Flags> flags) {
+    	this(name, type, null, flags);
+    }
+
+    AttributeInfo(final String name, final Class<?> type, final String nativeName, final Set<Flags> flags) {
         if (StringUtil.isBlank(name)) {
             throw new IllegalStateException("Name must not be blank!");
         }
@@ -86,6 +91,7 @@ public final class AttributeInfo {
         FrameworkUtil.checkAttributeType(type);
         this.name = name;
         this.type = type;
+        this.nativeName = nativeName;
         this.flags = Collections.unmodifiableSet(EnumSet.copyOf(flags));
         if (!isReadable() && isReturnedByDefault()) {
             throw new IllegalArgumentException(
@@ -96,9 +102,11 @@ public final class AttributeInfo {
     }
 
     /**
-     * The native name of the attribute.
+     * The name of the attribute. This the attribute name as it is known by the
+     * framework. It may be derived from the native attribute name. Or it may
+     * be one of the special names such as __NAME__ or __PASSWORD__.
      *
-     * @return the native name of the attribute its describing.
+     * @return the name of the attribute its describing.
      */
     public String getName() {
         return name;
@@ -113,8 +121,22 @@ public final class AttributeInfo {
     public Class<?> getType() {
         return type;
     }
-
+    
     /**
+     * The native name of the attribute. This is the attribute name as it is
+     * known by the resource. It is especially useful for attributes with
+     * special names such as __NAME__ or __PASSWORD__. In this case the
+     * nativeName will contain the real name of the attribute.
+     * The nativeName may be null. In such a case it is assumed that the
+     * native name is the same as name.
+     *
+     * @return the native name of the attribute its describing.
+     */
+    public String getNativeName() {
+		return nativeName;
+	}
+
+	/**
      * Returns the set of flags associated with the attribute.
      *
      * @return the set of flags associated with the attribute
