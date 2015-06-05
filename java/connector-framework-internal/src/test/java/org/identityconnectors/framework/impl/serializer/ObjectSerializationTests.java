@@ -585,6 +585,7 @@ public class ObjectSerializationTests {
         builder.setCreateable(true);
         builder.setMultiValued(true);
         builder.setUpdateable(false);
+        builder.setNativeName("FOOFOO");
         builder.setReturnedByDefault(false);
         AttributeInfo v1 = builder.build();
         AttributeInfo v2 = (AttributeInfo)cloneObject(v1);
@@ -638,6 +639,7 @@ public class ObjectSerializationTests {
         builder.setReadable(true);
         builder.setCreateable(true);
         builder.setMultiValued(true);
+        builder.setNativeName("FOOFOO");
         ObjectClassInfoBuilder obld = new ObjectClassInfoBuilder();
         obld.addAttributeInfo(builder.build());
         obld.setContainer(true);
