@@ -71,4 +71,11 @@ public class ContainsAllValuesFilter extends AttributeFilter {
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitContainsAllValuesFilter(p, this);
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder bld = new StringBuilder();
+        bld.append("CONTAINS_ALL_VALUES: ").append(getAttribute());
+        return bld.toString();
+    }
 }
