@@ -604,7 +604,7 @@ public class ConnectorFacadeTests {
                         .filterUid(addAttrSet), null);
         // get back the object and see if there are the same..
         addAttrSet.add(name);
-        ConnectorObject addO = new ConnectorObject(ACCOUNT, addAttrSet);
+        ConnectorObject addO = new ConnectorObject(ACCOUNT, addAttrSet, new HashSet<ObjectClass>());
         obj = facade.getObject(ObjectClass.ACCOUNT, newUid(1), null);
         assertEquals(obj, addO);
         // attempt to add on to an existing attribute..

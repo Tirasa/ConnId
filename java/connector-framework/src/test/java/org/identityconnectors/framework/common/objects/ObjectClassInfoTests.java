@@ -44,7 +44,7 @@ public class ObjectClassInfoTests {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testNoName() {
-        new ObjectClassInfo(ObjectClass.ACCOUNT_NAME, new HashSet<AttributeInfo>(), false);
+        new ObjectClassInfo(ObjectClass.ACCOUNT_NAME, new HashSet<AttributeInfo>(), false, false);
     }
 
     @Test

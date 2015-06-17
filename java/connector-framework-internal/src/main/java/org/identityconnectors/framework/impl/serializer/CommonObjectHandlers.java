@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2015 Evolveum
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -392,13 +393,18 @@ class CommonObjectHandlers {
                 @SuppressWarnings("unchecked")
                 Set<? extends Attribute> atts =
                         (Set) decoder.readObjectField("Attributes", Set.class, null);
-                return new ConnectorObject(objectClass, atts);
+                Set<ObjectClass> auxiliaryObjectClasses =
+                        (Set) decoder.readObjectField("AuxiliaryObjectClasses", Set.class, null);
+                return new ConnectorObject(objectClass, atts, auxiliaryObjectClasses);
             }
 
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final ConnectorObject val = (ConnectorObject) object;
                 encoder.writeObjectField("ObjectClass", val.getObjectClass(), true);
                 encoder.writeObjectField("Attributes", val.getAttributes(), true);
+                if (!val.getAuxiliaryObjectClasses().isEmpty()) {
+                	encoder.writeObjectField("AuxiliaryObjectClasses", val.getAuxiliaryObjectClasses(), true);
+                }
             }
         });
 
@@ -434,12 +440,13 @@ class CommonObjectHandlers {
             public Object deserialize(final ObjectDecoder decoder) {
                 final String type = decoder.readStringField("type", null);
                 final boolean container = decoder.readBooleanField("container", false);
+                final boolean auxiliary = decoder.readBooleanField("auxiliary", false);
 
                 @SuppressWarnings("unchecked")
                 final Set<AttributeInfo> attrInfo =
                         (Set) decoder.readObjectField("AttributeInfos", Set.class, null);
 
-                return new ObjectClassInfo(type, attrInfo, container);
+                return new ObjectClassInfo(type, attrInfo, container, auxiliary);
             }
 
             public void serialize(final Object object, final ObjectEncoder encoder) {
@@ -447,6 +454,7 @@ class CommonObjectHandlers {
 
                 encoder.writeStringField("type", val.getType());
                 encoder.writeBooleanField("container", val.isContainer());
+                encoder.writeBooleanField("auxiliary", val.isAuxiliary());
                 encoder.writeObjectField("AttributeInfos", val.getAttributeInfo(), true);
             }
         });

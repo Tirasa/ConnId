@@ -421,7 +421,7 @@ public final class FrameworkUtil {
             return; // ok
         }
 
-        throw new IllegalArgumentException("ConfigurationOption type '" + clazz.getName()
+        throw new IllegalArgumentException("OperationOption type '" + clazz.getName()
                 + "' is not supported.");
     }
 

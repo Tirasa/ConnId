@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2015 Evolveum
  */
 
 package org.identityconnectors.framework.common.objects;
@@ -154,6 +155,13 @@ public final class OperationOptions {
      * search request.
      */
     public static final String OP_SORT_KEYS = "SORT_KEYS";
+    
+    /**
+     * Specifies auxiliary object classes to use in addition to the
+     * primary object class. Mostly to be used with {@link CreateApiOp} and
+     * {@link SyncApiOp}.
+     */
+    public static final String OP_AUXILIARY_OBJECT_CLASSES = "AUXILIARY_OBJECT_CLASSES";
 
     private final Map<String, Object> operationOptions;
 
@@ -176,7 +184,7 @@ public final class OperationOptions {
         this.operationOptions = CollectionUtil.asReadOnlyMap(operationOptionsClone);
     }
 
-    // NOTE: this method makes a heavy assumption that in OpenICF only arrays
+    // NOTE: this method makes a heavy assumption that in ConnId only arrays
     // occur as mutable values in operation options, and that there is a single
     // level of array/nesting.
     // Really would be better if OpenICF switched to List and not array
@@ -339,5 +347,18 @@ public final class OperationOptions {
     @SuppressWarnings("unchecked")
     public SortKey[] getSortKeys() {
         return (SortKey[]) operationOptions.get(OP_SORT_KEYS);
+    };
+    
+    /**
+     * Returns auxiliary object classes to use in addition to the
+     * primary object class. Mostly to be used with {@link CreateApiOp} and
+     * {@link SyncApiOp}.
+     * @return auxiliary object classes to use in addition to the
+     *         primary object class.
+     * @since 1.4.2
+     */
+    @SuppressWarnings("unchecked")
+    public ObjectClass[] getAuxiliaryObjectClasses() {
+        return (ObjectClass[]) operationOptions.get(OP_AUXILIARY_OBJECT_CLASSES);
     };
 }

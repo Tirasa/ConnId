@@ -119,7 +119,7 @@ public final class ObjectNormalizerFacade {
      * @return The normalized object.
      */
     public ConnectorObject normalizeObject(ConnectorObject orig) {
-        return new ConnectorObject(orig.getObjectClass(), normalizeAttributes(orig.getAttributes()));
+        return new ConnectorObject(orig.getObjectClass(), normalizeAttributes(orig.getAttributes()), orig.getAuxiliaryObjectClasses());
     }
 
     /**

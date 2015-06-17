@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2015 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -34,6 +35,7 @@ import org.identityconnectors.common.CollectionUtil;
 public final class ObjectClassInfoBuilder {
 
     private boolean isContainer;
+    private boolean isAuxiliary;
     private String type;
     private Map<String, AttributeInfo> attributeInfoMap;
 
@@ -94,8 +96,12 @@ public final class ObjectClassInfoBuilder {
     public void setContainer(boolean container) {
         isContainer = container;
     }
+    
+    public void setAuxiliary(boolean isAuxiliary) {
+		this.isAuxiliary = isAuxiliary;
+	}
 
-    /**
+	/**
      * Constructs an instance of {@link ObjectClassInfo} with any
      * characteristics that were previously specified using this builder.
      *
@@ -108,6 +114,6 @@ public final class ObjectClassInfoBuilder {
             attributeInfoMap.put(Name.NAME, Name.INFO);
         }
         return new ObjectClassInfo(type, CollectionUtil.newSet(attributeInfoMap.values()),
-                isContainer);
+                isContainer, isAuxiliary);
     }
 }

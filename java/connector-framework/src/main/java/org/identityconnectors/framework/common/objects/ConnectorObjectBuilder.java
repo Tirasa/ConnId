@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2015 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -42,6 +43,7 @@ public final class ConnectorObjectBuilder {
 
     private ObjectClass objectClass;
     private Map<String, Attribute> attributeMap;
+    private Set<ObjectClass> auxiliaryObjectClasses;
 
     // =======================================================================
     // Constructors
@@ -50,6 +52,7 @@ public final class ConnectorObjectBuilder {
         attributeMap = new HashMap<String, Attribute>();
         // default always add the account object class..
         setObjectClass(ObjectClass.ACCOUNT);
+        auxiliaryObjectClasses = CollectionUtil.newSet();
     }
 
     // =======================================================================
@@ -102,6 +105,7 @@ public final class ConnectorObjectBuilder {
             addAttribute(attr);
         }
         setObjectClass(obj.getObjectClass());
+        addAuxiliaryObjectClasses(obj.getAuxiliaryObjectClasses());
         return this;
     }
 
@@ -145,6 +149,15 @@ public final class ConnectorObjectBuilder {
         addAttribute(AttributeBuilder.build(name, obj));
         return this;
     }
+    
+    public ConnectorObjectBuilder addAuxiliaryObjectClass(ObjectClass auxiliaryObjectClass) {
+    	this.auxiliaryObjectClasses.add(auxiliaryObjectClass);
+    	return this;
+    }
+    public ConnectorObjectBuilder addAuxiliaryObjectClasses(Collection<ObjectClass> auxiliaryObjectClasses) {
+    	this.auxiliaryObjectClasses.addAll(auxiliaryObjectClasses);
+    	return this;
+    }
 
     // =======================================================================
     // Build Out..
@@ -159,6 +172,6 @@ public final class ConnectorObjectBuilder {
             throw new IllegalStateException("No attributes set!");
         }
         Set<Attribute> attrs = CollectionUtil.newReadOnlySet(attributeMap.values());
-        return new ConnectorObject(objectClass, attrs);
+        return new ConnectorObject(objectClass, attrs, CollectionUtil.newReadOnlySet(auxiliaryObjectClasses));
     }
 }
