@@ -71,6 +71,10 @@ public final class OperationOptionInfoBuilder {
     public static OperationOptionInfo buildAttributesToGet() {
         return build(OperationOptions.OP_ATTRIBUTES_TO_GET, String[].class);
     }
+    
+    public static OperationOptionInfo buildReturnDefaultAttributes() {
+        return build(OperationOptions.OP_RETURN_DEFAULT_ATTRIBUTES, Boolean.class);
+    }
 
     public static OperationOptionInfo buildRunWithPassword() {
         return build(OperationOptions.OP_RUN_WITH_PASSWORD, GuardedString.class);

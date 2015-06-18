@@ -113,6 +113,15 @@ public final class OperationOptionsBuilder {
         options.put(OperationOptions.OP_ATTRIBUTES_TO_GET, attrs);
         return this;
     }
+    
+    /**
+     * Sets the {@link OperationOptions#OP_RETURN_DEFAULT_ATTRIBUTES} option.
+     */
+    public OperationOptionsBuilder setReturnDefaultAttributes(Boolean flag) {
+        Assertions.nullCheck(flag, "flag");
+        options.put(OperationOptions.OP_RETURN_DEFAULT_ATTRIBUTES, flag);
+        return this;
+    }
 
     /**
      * Set the run with password option.

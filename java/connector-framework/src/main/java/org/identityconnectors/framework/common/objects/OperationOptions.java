@@ -120,6 +120,16 @@ public final class OperationOptions {
     public static final String OP_ATTRIBUTES_TO_GET = "ATTRS_TO_GET";
     
     /**
+     * If set to true the connector will return all the attributes that are returned
+     * by default. If ATTRS_TO_GET option was also specified, it will be understood
+     * as additional attributes to return on top of all the default attributes.
+     * If set to false (or not present) then only the attributes specified by
+     * ATTRS_TO_GET will be returned. If neither ATTRS_TO_GET nor RETURN_DEFAULT_ATTRIBUTES
+     * is present then only the default attributes will be returned.
+     */
+    public static final String OP_RETURN_DEFAULT_ATTRIBUTES = "RETURN_DEFAULT_ATTRIBUTES";
+    
+    /**
      * An option to use with {@link SearchApiOp} which specifies that the search
      * operation may return only a reasonable subset of the results. If this option
      * is specified then the connector is free to sacrifice completeness in favor
@@ -243,6 +253,14 @@ public final class OperationOptions {
      */
     public String[] getAttributesToGet() {
         return (String[]) operationOptions.get(OP_ATTRIBUTES_TO_GET);
+    }
+    
+    /**
+     * Returns the flag indicating whether to return the default attributes
+     * on top of those specified by OP_ATTRIBUTES_TO_GET.
+     */
+    public Boolean getReturnDefaultAttributes() {
+        return (Boolean) operationOptions.get(OP_RETURN_DEFAULT_ATTRIBUTES);
     }
 
     /**
