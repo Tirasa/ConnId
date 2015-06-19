@@ -23,6 +23,7 @@
     "Portions Copyrighted [year] [name of copyright owner]"
     ====================
     Portions Copyrighted 2010-2014 ForgeRock AS.
+    Portions Copyrighted 2015 Evolveum
 
 -->
 
@@ -338,8 +339,9 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ATTLIST AttributeInfoFlag
    value ( REQUIRED | MULTIVALUED | NOT_CREATABLE | NOT_UPDATEABLE | NOT_READABLE | NOT_RETURNED_BY_DEFAULT ) #REQUIRED
 >
-<!ELEMENT ConnectorObject (ObjectClass,Attributes)>
+<!ELEMENT ConnectorObject (ObjectClass,Attributes,AuxiliaryObjectClasses?)>
 <!ELEMENT Attributes ((%attributeTypes;)*)>
+<!ELEMENT AuxiliaryObjectClasses (ObjectClass*)>
 
 <!ELEMENT ObjectClass EMPTY>
 <!ATTLIST ObjectClass
@@ -350,6 +352,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ATTLIST ObjectClassInfo
    type CDATA #REQUIRED
    container CDATA #IMPLIED
+   auxiliary CDATA #IMPLIED
 >
 <!ELEMENT AttributeInfos ((AttributeInfo)*)>
 

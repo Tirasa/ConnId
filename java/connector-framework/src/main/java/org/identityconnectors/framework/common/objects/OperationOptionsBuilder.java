@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.identityconnectors.common.Assertions;
+import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.serializer.ObjectSerializerFactory;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
@@ -110,6 +111,15 @@ public final class OperationOptionsBuilder {
         String[] attrs = new String[attrNames.size()];
         attrs = attrNames.toArray(attrs);
         options.put(OperationOptions.OP_ATTRIBUTES_TO_GET, attrs);
+        return this;
+    }
+    
+    /**
+     * Sets the {@link OperationOptions#OP_RETURN_DEFAULT_ATTRIBUTES} option.
+     */
+    public OperationOptionsBuilder setReturnDefaultAttributes(Boolean flag) {
+        Assertions.nullCheck(flag, "flag");
+        options.put(OperationOptions.OP_RETURN_DEFAULT_ATTRIBUTES, flag);
         return this;
     }
 
@@ -239,6 +249,20 @@ public final class OperationOptionsBuilder {
      */
     public OperationOptionsBuilder setAllowPartialResults(boolean allowPartialResults) {
     	options.put(OperationOptions.OP_ALLOW_PARTIAL_RESULTS, allowPartialResults);
+    	return this;
+    }
+    
+    /**
+     * Convenience method to set {@link OperationOptions#OP_AUXILIARY_OBJECT_CLASSES}
+     *
+     * @param auxiliaryObjectClasses
+     *            auxiliary object classes to use in addition to the
+     *            primary object class.
+     * @return A this reference to allow chaining
+     * @since 1.4.2
+     */
+    public OperationOptionsBuilder setAuxiliaryObjectClasses(ObjectClass[] auxiliaryObjectClasses) {
+    	options.put(OperationOptions.OP_AUXILIARY_OBJECT_CLASSES, auxiliaryObjectClasses);
     	return this;
     }
 

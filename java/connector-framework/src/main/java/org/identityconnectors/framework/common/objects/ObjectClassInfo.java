@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2015 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -43,6 +44,7 @@ public final class ObjectClassInfo {
     private final String type;
     private final Set<AttributeInfo> attributeInfos;
     private final boolean isContainer;
+    private final boolean isAuxiliary;
 
     /**
      * Public only for serialization; Use ObjectClassInfoBuilder instead.
@@ -54,11 +56,12 @@ public final class ObjectClassInfo {
      * @param isContainer
      *            True if this can contain other object classes.
      */
-    public ObjectClassInfo(String type, Set<AttributeInfo> attrInfo, boolean isContainer) {
+    public ObjectClassInfo(String type, Set<AttributeInfo> attrInfo, boolean isContainer, boolean isAuxiliary) {
         Assertions.nullCheck(type, "type");
         this.type = type;
         attributeInfos = CollectionUtil.newReadOnlySet(attrInfo);
         this.isContainer = isContainer;
+        this.isAuxiliary = isAuxiliary;
         // check to make sure name exists and if not throw
         Map<String, AttributeInfo> map = AttributeInfoUtil.toMap(attrInfo);
         if (!map.containsKey(Name.NAME)) {
@@ -70,7 +73,15 @@ public final class ObjectClassInfo {
         return isContainer;
     }
 
-    public Set<AttributeInfo> getAttributeInfo() {
+    /**
+     * Returns flag indicating whether this is a definition of auxiliary object class.
+     * Auxiliary object classes define additional characteristics of the object.
+     */
+    public boolean isAuxiliary() {
+		return isAuxiliary;
+	}
+
+	public Set<AttributeInfo> getAttributeInfo() {
         return CollectionUtil.newReadOnlySet(attributeInfos);
     }
 
@@ -115,6 +126,9 @@ public final class ObjectClassInfo {
             return false;
         }
         if (!isContainer == other.isContainer) {
+            return false;
+        }
+        if (!isAuxiliary == other.isAuxiliary) {
             return false;
         }
         return true;

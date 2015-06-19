@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2015 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -40,6 +41,7 @@ import org.identityconnectors.common.CollectionUtil;
 public final class ConnectorObject {
     final ObjectClass objectClass;
     final Map<String, Attribute> attributeMap;
+    final Set<ObjectClass> auxiliaryObjectClasses;
 
     /**
      * Public only for serialization; please use {@link ConnectorObjectBuilder}.
@@ -47,19 +49,19 @@ public final class ConnectorObject {
      * @throws IllegalArgumentException
      *             if {@link Name} or {@link Uid} is missing from the set.
      */
-    public ConnectorObject(ObjectClass objectClass, Set<? extends Attribute> set) {
+    public ConnectorObject(ObjectClass objectClass, Set<? extends Attribute> attributes, Set<ObjectClass> auxiliaryObjectClasses) {
         if (objectClass == null) {
             throw new IllegalArgumentException("ObjectClass may not be null");
         }
         if (ObjectClass.ALL.equals(objectClass)) {
             throw new IllegalArgumentException("Connector object class can not be type of __ALL__");
         }
-        if (set == null || set.size() == 0) {
+        if (attributes == null || attributes.size() == 0) {
             throw new IllegalArgumentException("The set can not be null or empty.");
         }
         this.objectClass = objectClass;
         // create an easy look map..
-        this.attributeMap = AttributeUtil.toMap(set);
+        this.attributeMap = AttributeUtil.toMap(attributes);
         // make sure the Uid was added..
         if (!this.attributeMap.containsKey(Uid.NAME)) {
             throw new IllegalArgumentException("The Attribute set must contain a 'Uid'.");
@@ -68,6 +70,10 @@ public final class ConnectorObject {
         if (!this.attributeMap.containsKey(Name.NAME)) {
             throw new IllegalArgumentException("The Attribute set must contain a 'Name'.");
         }
+        if (auxiliaryObjectClasses == null) {
+        	auxiliaryObjectClasses = CollectionUtil.newReadOnlySet();
+        }
+        this.auxiliaryObjectClasses = auxiliaryObjectClasses;
     }
 
     /**
@@ -112,16 +118,30 @@ public final class ConnectorObject {
 
     /**
      * Gets the {@link ObjectClass} for this object.
+     * This is the "structural" object class. The primary object class that defines
+     * basic object structure. It cannot be null.
      */
     public ObjectClass getObjectClass() {
         return objectClass;
     }
 
-    @Override
+    /**
+     * Gets the list of auxiliary {@link ObjectClass}es for this object.
+     * Auxiliary object classes define additional characteristics of the object.
+     * Auxiliary object classes are optional. The list may be empty.
+     */
+    public Set<ObjectClass> getAuxiliaryObjectClasses() {
+		return auxiliaryObjectClasses;
+	}
+
+	@Override
     public boolean equals(Object obj) {
         if (obj instanceof ConnectorObject) {
             ConnectorObject other = (ConnectorObject) obj;
             if (!objectClass.equals(other.getObjectClass())) {
+                return false;
+            }
+            if (!CollectionUtil.equals(auxiliaryObjectClasses, other.getAuxiliaryObjectClasses())) {
                 return false;
             }
             return CollectionUtil.equals(getAttributes(), other.getAttributes());
@@ -142,6 +162,7 @@ public final class ConnectorObject {
         map.put("ObjectClass", this.getObjectClass());
         map.put("Name", this.getName());
         map.put("Attributes", this.getAttributes());
+        map.put("AuxiliaryObjectClasses", this.getAuxiliaryObjectClasses());
         return map.toString();
     }
 
