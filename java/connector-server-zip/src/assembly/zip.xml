@@ -35,14 +35,14 @@
   <fileSets>
     <fileSet>
       <directory>../..</directory>
-      <outputDirectory>/connid-connector-server/</outputDirectory>
+      <outputDirectory>connid-connector-server/</outputDirectory>
       <includes>
         <include>LICENSE</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources</directory>
-      <outputDirectory>/connid-connector-server/</outputDirectory>
+      <outputDirectory>connid-connector-server/</outputDirectory>
       <fileMode>754</fileMode>
       <includes>
         <include>**/*.sh</include>
@@ -50,7 +50,7 @@
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources</directory>
-      <outputDirectory>/connid-connector-server/</outputDirectory>
+      <outputDirectory>connid-connector-server/</outputDirectory>
       <lineEnding>windows</lineEnding>
       <includes>
         <include>**/*.bat</include>
@@ -58,13 +58,13 @@
     </fileSet>
     <fileSet>
       <directory>${basedir}/src/main/resources</directory>
-      <outputDirectory>/connid-connector-server/</outputDirectory>
+      <outputDirectory>connid-connector-server/</outputDirectory>
     </fileSet>
   </fileSets>
   <dependencySets>
     <dependencySet>
       <useProjectArtifact>false</useProjectArtifact>
-      <outputDirectory>/connid-connector-server/lib/framework</outputDirectory>
+      <outputDirectory>connid-connector-server/lib/framework</outputDirectory>
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
       <includes>
         <include>net.tirasa.connid:connector-framework*</include>

@@ -974,6 +974,13 @@ public class EqualsHashCodeBuilderTests {
             return false;
         }
 
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 83 * hash + this.a;
+            return hash;
+        }
+
         public int getA() {
             return this.a;
         }
@@ -998,6 +1005,13 @@ public class EqualsHashCodeBuilderTests {
                 return this.b == ((TestBCanEqualA) o).getB();
             }
             return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 89 * hash + this.b;
+            return hash;
         }
 
         public int getB() {
