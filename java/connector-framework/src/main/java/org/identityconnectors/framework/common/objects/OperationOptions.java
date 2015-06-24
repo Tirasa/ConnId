@@ -166,12 +166,6 @@ public final class OperationOptions {
      */
     public static final String OP_SORT_KEYS = "SORT_KEYS";
     
-    /**
-     * Specifies auxiliary object classes to use in addition to the
-     * primary object class. Mostly to be used with {@link CreateApiOp} and
-     * {@link SyncApiOp}.
-     */
-    public static final String OP_AUXILIARY_OBJECT_CLASSES = "AUXILIARY_OBJECT_CLASSES";
 
     private final Map<String, Object> operationOptions;
 
@@ -365,18 +359,5 @@ public final class OperationOptions {
     @SuppressWarnings("unchecked")
     public SortKey[] getSortKeys() {
         return (SortKey[]) operationOptions.get(OP_SORT_KEYS);
-    };
-    
-    /**
-     * Returns auxiliary object classes to use in addition to the
-     * primary object class. Mostly to be used with {@link CreateApiOp} and
-     * {@link SyncApiOp}.
-     * @return auxiliary object classes to use in addition to the
-     *         primary object class.
-     * @since 1.4.2
-     */
-    @SuppressWarnings("unchecked")
-    public ObjectClass[] getAuxiliaryObjectClasses() {
-        return (ObjectClass[]) operationOptions.get(OP_AUXILIARY_OBJECT_CLASSES);
-    };
+    };    
 }

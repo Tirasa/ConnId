@@ -253,20 +253,6 @@ public final class OperationOptionsBuilder {
     }
     
     /**
-     * Convenience method to set {@link OperationOptions#OP_AUXILIARY_OBJECT_CLASSES}
-     *
-     * @param auxiliaryObjectClasses
-     *            auxiliary object classes to use in addition to the
-     *            primary object class.
-     * @return A this reference to allow chaining
-     * @since 1.4.2
-     */
-    public OperationOptionsBuilder setAuxiliaryObjectClasses(ObjectClass[] auxiliaryObjectClasses) {
-    	options.put(OperationOptions.OP_AUXILIARY_OBJECT_CLASSES, auxiliaryObjectClasses);
-    	return this;
-    }
-
-    /**
      * Returns a mutable reference of the options map.
      *
      * @return A mutable reference of the options map.

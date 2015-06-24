@@ -339,9 +339,8 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 <!ATTLIST AttributeInfoFlag
    value ( REQUIRED | MULTIVALUED | NOT_CREATABLE | NOT_UPDATEABLE | NOT_READABLE | NOT_RETURNED_BY_DEFAULT ) #REQUIRED
 >
-<!ELEMENT ConnectorObject (ObjectClass,Attributes,AuxiliaryObjectClasses?)>
+<!ELEMENT ConnectorObject (ObjectClass,Attributes)>
 <!ELEMENT Attributes ((%attributeTypes;)*)>
-<!ELEMENT AuxiliaryObjectClasses (ObjectClass*)>
 
 <!ELEMENT ObjectClass EMPTY>
 <!ATTLIST ObjectClass

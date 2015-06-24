@@ -41,7 +41,6 @@ import org.identityconnectors.common.CollectionUtil;
 public final class ConnectorObject {
     final ObjectClass objectClass;
     final Map<String, Attribute> attributeMap;
-    final Set<ObjectClass> auxiliaryObjectClasses;
 
     /**
      * Public only for serialization; please use {@link ConnectorObjectBuilder}.
@@ -49,7 +48,7 @@ public final class ConnectorObject {
      * @throws IllegalArgumentException
      *             if {@link Name} or {@link Uid} is missing from the set.
      */
-    public ConnectorObject(ObjectClass objectClass, Set<? extends Attribute> attributes, Set<ObjectClass> auxiliaryObjectClasses) {
+    public ConnectorObject(ObjectClass objectClass, Set<? extends Attribute> attributes) {
         if (objectClass == null) {
             throw new IllegalArgumentException("ObjectClass may not be null");
         }
@@ -70,10 +69,6 @@ public final class ConnectorObject {
         if (!this.attributeMap.containsKey(Name.NAME)) {
             throw new IllegalArgumentException("The Attribute set must contain a 'Name'.");
         }
-        if (auxiliaryObjectClasses == null) {
-        	auxiliaryObjectClasses = CollectionUtil.newReadOnlySet();
-        }
-        this.auxiliaryObjectClasses = auxiliaryObjectClasses;
     }
 
     /**
@@ -125,23 +120,11 @@ public final class ConnectorObject {
         return objectClass;
     }
 
-    /**
-     * Gets the list of auxiliary {@link ObjectClass}es for this object.
-     * Auxiliary object classes define additional characteristics of the object.
-     * Auxiliary object classes are optional. The list may be empty.
-     */
-    public Set<ObjectClass> getAuxiliaryObjectClasses() {
-		return auxiliaryObjectClasses;
-	}
-
 	@Override
     public boolean equals(Object obj) {
         if (obj instanceof ConnectorObject) {
             ConnectorObject other = (ConnectorObject) obj;
             if (!objectClass.equals(other.getObjectClass())) {
-                return false;
-            }
-            if (!CollectionUtil.equals(auxiliaryObjectClasses, other.getAuxiliaryObjectClasses())) {
                 return false;
             }
             return CollectionUtil.equals(getAttributes(), other.getAttributes());
@@ -162,7 +145,6 @@ public final class ConnectorObject {
         map.put("ObjectClass", this.getObjectClass());
         map.put("Name", this.getName());
         map.put("Attributes", this.getAttributes());
-        map.put("AuxiliaryObjectClasses", this.getAuxiliaryObjectClasses());
         return map.toString();
     }
 
