@@ -125,3 +125,10 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
  </tr>
  </tbody>
 </table>
+
+# Connector server
+A connector server is required when a connector bundle is not directly executed within your application. By using one or more connector servers, the connector architecture thus permits your application to communicate with externally deployed bundles.
+
+[More details](https://connid.atlassian.net/wiki/display/BASE/Connector+Servers).
+
+Download instructions at [this page](https://connid.atlassian.net/wiki/display/BASE/Downloads).
