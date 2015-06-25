@@ -624,8 +624,6 @@ public class ObjectSerializationTests {
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         bld.setUid("foo");
         bld.setName("name");
-        bld.addAuxiliaryObjectClass(new ObjectClass("Foo"));
-        bld.addAuxiliaryObjectClass(new ObjectClass("Bar"));
 
         ConnectorObject v1 = bld.build();
         ConnectorObject v2 = (ConnectorObject)cloneObject(v1);

@@ -423,10 +423,7 @@ class CommonObjectHandlers {
                 @SuppressWarnings("unchecked")
                 Set<? extends Attribute> atts =
                         (Set<? extends Attribute>) decoder.readObjectField("Attributes", Set.class, null);
-                @SuppressWarnings("unchecked")
-                Set<ObjectClass> auxiliaryObjectClasses =
-                        (Set<ObjectClass>) decoder.readObjectField("AuxiliaryObjectClasses", Set.class, null);
-                return new ConnectorObject(objectClass, atts, auxiliaryObjectClasses);
+                return new ConnectorObject(objectClass, atts);
             }
 
             @Override
@@ -434,9 +431,6 @@ class CommonObjectHandlers {
                 final ConnectorObject val = (ConnectorObject) object;
                 encoder.writeObjectField("ObjectClass", val.getObjectClass(), true);
                 encoder.writeObjectField("Attributes", val.getAttributes(), true);
-                if (!val.getAuxiliaryObjectClasses().isEmpty()) {
-                	encoder.writeObjectField("AuxiliaryObjectClasses", val.getAuxiliaryObjectClasses(), true);
-                }
             }
         });
 

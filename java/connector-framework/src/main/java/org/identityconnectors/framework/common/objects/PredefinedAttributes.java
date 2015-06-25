@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2015 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -84,4 +85,10 @@ public final class PredefinedAttributes {
      */
     public static final String GROUPS_NAME = createSpecialName("GROUPS");
 
+    /**
+     * Pseudo-attribute that represents auxiliary object classes.
+     * Auxiliary object classes can be used in addition to the
+     * primary object class. They define additional characteristics of the object.
+     */
+    public static final String AUXILIARY_OBJECT_CLASS_NAME = createSpecialName("AUXILIARY_OBJECT_CLASS");
 }
