@@ -614,11 +614,15 @@ public final class IOUtil {
             final JarEntry entry = entries.nextElement();
             final File outFile = new File(toDir, entry.getName());
             FileOutputStream fos = null;
+            InputStream in = null;
             try {
                 fos = new FileOutputStream(outFile);
-                final InputStream in = jarFile.getInputStream(entry);
+                in = jarFile.getInputStream(entry);
                 IOUtil.copyFile(in, fos);
             } finally {
+                if (in != null) {
+                    in.close();
+                }
                 if (fos != null) {
                     fos.close();
                 }

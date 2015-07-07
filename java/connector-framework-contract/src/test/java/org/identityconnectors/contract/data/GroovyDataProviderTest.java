@@ -22,14 +22,16 @@
  */
 package org.identityconnectors.contract.data;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeMethod;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
+
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+
 import groovy.util.ConfigObject;
 import groovy.util.ConfigSlurper;
 
@@ -357,24 +359,25 @@ public class GroovyDataProviderTest {
 
     @Test
     public void multiStringListTest() throws Exception {
-
         // multi.Tstring=[Lazy.random("AAAAA##") , Lazy.random("AAAAA##")]
-        Object o = getProperty(gdp, "multi.Tstring");
-        assertNotNull(o);
-        assertTrue(o instanceof List<?>);
-        if (o instanceof List<?>) {
+        Object obj = getProperty(gdp, "multi.Tstring");
+        assertNotNull(obj);
+        assertTrue(obj instanceof List<?>);
+        if (obj instanceof List<?>) {
             @SuppressWarnings("unchecked")
-            List<Object> l = (List<Object>) o;
-            printList(l);
+            List<Object> objects = (List<Object>) obj;
+            printList(objects);
             System.out.println();
             Object previous = null;
-            for (Object object : l) {
-
-                String msg = String.format("default value for Random multiString should contain Strings only, but found different type: ", object.getClass().getName());
-                assertTrue( object instanceof String, msg);
+            for (Object object : objects) {
+                String msg = String.format(
+                        "default value for Random multiString should contain Strings only, "
+                                + "but found different type: %s", object.getClass().getName());
+                assertTrue(object instanceof String, msg);
 
                 if (previous != null) {
-                    msg = String.format("two objects on the randomized list should differ, but there are two equal values: %s = %s", previous, object);
+                    msg = String.format(
+                            "two objects on the randomized list should differ, but there are two equal values: %s = %s", previous, object);
                     assertTrue(!previous.equals(object), msg);
                 }
                 previous = object;
@@ -384,7 +387,6 @@ public class GroovyDataProviderTest {
 
     @Test
     public void multiStringRecursiveTest() throws Exception {
-
         Object o = getProperty(gdp, "multi.recursive.Tstring", false);
         assertNotNull(o);
         assertTrue(o instanceof List<?>);
