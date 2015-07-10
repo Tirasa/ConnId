@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.framework.api.ResultsHandlerConfiguration;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -63,14 +64,17 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
             options = new OperationOptionsBuilder().build();
         }
 
+        ResultsHandlerConfiguration hdlCfg =
+                null != getOperationalContext() ? getOperationalContext()
+                        .getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
 
         // add a handler in the chain to remove attributes
         String[] attrsToGet = options.getAttributesToGet();
-        if (attrsToGet != null && attrsToGet.length > 0) {
+        if (attrsToGet != null && attrsToGet.length > 0 && hdlCfg.isEnableAttributesToGetSearchResultsHandler()) {
             handler = new AttributesToGetSyncResultsHandler(handler, attrsToGet);
         }
         // chain a normalizing results handler
-        if (getConnector() instanceof AttributeNormalizer) {
+        if (getConnector() instanceof AttributeNormalizer && hdlCfg.isEnableNormalizingResultsHandler()) {
             handler =
                     new NormalizingSyncResultsHandler(handler, getNormalizer(objectClass));
         }
@@ -106,11 +110,6 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
             	}
                 boolean ret;
                 try {
-                	if (doAll && SyncDeltaType.DELETE.equals(delta.getDeltaType())
-                        && null == delta.getObjectClass()) {
-                    	throw new ConnectorException(
-                            "Sync '__ALL__' operation requires the connector to set 'objectClass' parameter for sync event.");
-                	}
                 	ret = handlerChain.handle(delta);
                 } catch (RuntimeException e) {
                 	SpiOperationLoggingUtil.logOpException(HANDLER_LOG, SyncTokenResultsHandler.class, "handle", e);

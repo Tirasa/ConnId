@@ -537,30 +537,6 @@ public class ConnectorFacadeTests {
         });
     }
 
-    @Test(expectedExceptions = ConnectorException.class,
-            expectedExceptionsMessageRegExp = "Sync '__ALL__' operation requires.*")
-    public void syncAllCallFailPattern() {
-        testCallPattern(new TestOperationPattern() {
-
-            public void makeCall(ConnectorFacade facade) {
-                // create an empty results handler..
-                // call the search method..
-                OperationOptionsBuilder builder = new OperationOptionsBuilder();
-                builder.setOption("FAIL_DELETE", Boolean.TRUE);
-                facade.sync(ObjectClass.ALL, new SyncToken(1), new SyncResultsHandler() {
-
-                    public boolean handle(SyncDelta delta) {
-                        return true;
-                    }
-                }, builder.build());
-            }
-
-            public void checkCalls(List<Call> calls) {
-                assertEquals(calls.remove(0).getMethodName(), "sync");
-            }
-        });
-    }
-
     @Test
     public void testOpCallPattern() {
         testCallPattern(new TestOperationPattern() {
