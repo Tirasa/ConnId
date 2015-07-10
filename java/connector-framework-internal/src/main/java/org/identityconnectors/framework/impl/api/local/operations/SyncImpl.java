@@ -81,7 +81,6 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
 
         final SyncResultsHandler handlerChain = handler;
         final AtomicReference<SyncToken> result = new AtomicReference<SyncToken>(null);
-        final Boolean doAll = ObjectClass.ALL.equals(objectClass);
         
         SyncTokenResultsHandler syncHandler = new SyncTokenResultsHandler() {
             @Override
