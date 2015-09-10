@@ -36,7 +36,6 @@ import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 
@@ -56,8 +55,7 @@ public class GetImpl implements GetApiOp {
     public ConnectorObject getObject(ObjectClass objectClass, Uid uid, OperationOptions options) {
         Assertions.nullCheck(objectClass, "objectClass");
         if (ObjectClass.ALL.equals(objectClass)) {
-            throw new UnsupportedOperationException(
-                    "Operation is not allowed on __ALL__ object class");
+            throw new UnsupportedOperationException("Operation is not allowed on __ALL__ object class");
         }
         Assertions.nullCheck(uid, "uid");
         // cast null as empty
@@ -65,15 +63,15 @@ public class GetImpl implements GetApiOp {
             options = new OperationOptionsBuilder().build();
         }
         final List<ConnectorObject> list = new ArrayList<ConnectorObject>();
-        Filter filter = FilterBuilder.equalTo(uid);
         // No need to log entry/exit here. SeachImpl will do it.
-        op.search(objectClass, filter, new ResultsHandler() {
+        op.search(objectClass, FilterBuilder.equalTo(uid), new ResultsHandler() {
+
             @Override
             public boolean handle(ConnectorObject obj) {
                 list.add(obj);
                 return false;
             }
         }, options);
-        return list.size() == 0 ? null : list.get(0);
+        return list.isEmpty() ? null : list.get(0);
     }
 }

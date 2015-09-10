@@ -29,63 +29,44 @@ import org.identityconnectors.framework.common.objects.filter.AbstractFilterTran
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 
 /**
- * Implement this interface to allow the Connector to search for resource
- * objects.
+ * Implement this interface to allow the Connector to search for resource objects.
  *
- * @param <T>
- *            The result type of the translator.
+ * @param <T> The result type of the translator.
  * @see AbstractFilterTranslator For more information
  */
 public interface SearchOp<T> extends SPIOperation {
 
     /**
      * Creates a filter translator that will translate a specified
-     * {@link org.identityconnectors.framework.common.objects.filter.Filter
-     * filter} into one or more native queries. Each of these native queries
-     * will be passed subsequently into <code>executeQuery()</code>.
+     * {@link org.identityconnectors.framework.common.objects.filter.Filter} into one or more native queries.
+     * Each of these native queries will be passed subsequently into <code>executeQuery()</code>.
      *
-     * @param objectClass
-     *            The object class for the search. Will never be null.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            If the caller passes null, the framework will convert this
-     *            into an empty set of options, so SPI need not worry about this
-     *            ever being null.
-     * @return A filter translator. This must not be <code>null</code>. A
-     *         <code>null</code> return value will cause the API (
-     *         <code>SearchApiOp</code>) to throw {@link NullPointerException}.
+     * @param objectClass The object class for the search. Will never be null.
+     * @param options additional options that impact the way this operation is run.
+     * If the caller passes null, the framework will convert this into an empty set of options, so SPI need not worry
+     * about this ever being null.
+     * @return A filter translator. This must not be <code>null</code>. A <code>null</code> return value will cause the
+     * API (<code>SearchApiOp</code>) to throw {@link NullPointerException}.
      */
-    public FilterTranslator<T> createFilterTranslator(ObjectClass objectClass,
-            OperationOptions options);
+    public FilterTranslator<T> createFilterTranslator(ObjectClass objectClass, OperationOptions options);
 
     /**
      * ConnectorFacade calls this method once for each native query that the
-     * {@linkplain #createFilterTranslator(ObjectClass, OperationOptions)
-     * FilterTranslator} produces in response to the <code>Filter</code> passed
-     * into
-     * {@link org.identityconnectors.framework.api.operations.SearchApiOp#search
-     * SearchApiOp}. If the <code>FilterTranslator</code> produces more than one
-     * native query, then ConnectorFacade will automatically merge the results
-     * from each query and eliminate any duplicates. NOTE that this implies an
-     * in-memory data structure that holds a set of Uid values, so memory usage
-     * in the event of multiple queries will be O(N) where N is the number of
-     * results. This is why it is important that the FilterTranslator for each
-     * Connector implement OR if possible.
+     * {@link #createFilterTranslator(ObjectClass, OperationOptions)} produces in response to the
+     * <code>Filter</code> passed into {@link org.identityconnectors.framework.api.operations.SearchApiOp#search}.
      *
-     * @param objectClass
-     *            The object class for the search. Will never be null.
-     * @param query
-     *            The native query to run. A value of null means
-     *            "return every instance of the given object class".
-     * @param handler
-     *            Results should be returned to this handler
-     * @param options
-     *            Additional options that impact the way this operation is run.
-     *            If the caller passes null, the framework will convert this
-     *            into an empty set of options, so SPI need not guard against
-     *            options being null.
+     * If the <code>FilterTranslator</code> produces more than one native query, then ConnectorFacade will automatically
+     * merge the results from each query and eliminate any duplicates. NOTE that this implies an in-memory data
+     * structure that holds a set of Uid values, so memory usage in the event of multiple queries will be O(N) where N
+     * is the number of results. This is why it is important that the FilterTranslator for each Connector implement OR
+     * if possible.
+     *
+     * @param objectClass The object class for the search. Will never be null.
+     * @param query The native query to run. A value of null means "return every instance of the given object class".
+     * @param handler Results should be returned to this handler
+     * @param options Additional options that impact the way this operation is run. If the caller passes null, the
+     * framework will convert this into an empty set of options, so SPI need not guard against options being null.
      */
-    public void executeQuery(ObjectClass objectClass, T query, ResultsHandler handler,
-            OperationOptions options);
+    public void executeQuery(ObjectClass objectClass, T query, ResultsHandler handler, OperationOptions options);
 
 }

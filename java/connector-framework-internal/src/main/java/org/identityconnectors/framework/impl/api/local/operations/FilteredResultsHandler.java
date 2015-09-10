@@ -34,7 +34,9 @@ public final class FilteredResultsHandler implements ResultsHandler {
     // Fields
     // =======================================================================
     final ResultsHandler handler;
+
     final Filter filter;
+
     final boolean inValidationMode;
 
     // =======================================================================
@@ -69,10 +71,12 @@ public final class FilteredResultsHandler implements ResultsHandler {
             return handler.handle(object);
         } else {
             if (inValidationMode) {
-                throw new IllegalStateException("Object " + object + " was returned by the connector but failed to pass the framework filter. This seems like wrong implementation of the filter in the connector.");
-            } else {
-                return true;
+                throw new IllegalStateException("Object " + object
+                        + " was returned by the connector but failed to pass "
+                        + "the framework filter. This seems like wrong implementation of the filter in the connector.");
             }
+
+            return true;
         }
     }
 
@@ -80,12 +84,14 @@ public final class FilteredResultsHandler implements ResultsHandler {
      * Use a pass through filter to use if a null filter is provided.
      */
     public static class PassThroughFilter implements Filter {
+
         @Override
-        public boolean accept(ConnectorObject obj) {
+        public boolean accept(final ConnectorObject obj) {
             return true;
         }
 
-        public <R, P> R accept(FilterVisitor<R, P> v, P p) {
+        @Override
+        public <R, P> R accept(final FilterVisitor<R, P> v, final P p) {
             return v.visitExtendedFilter(p, this);
         }
     }

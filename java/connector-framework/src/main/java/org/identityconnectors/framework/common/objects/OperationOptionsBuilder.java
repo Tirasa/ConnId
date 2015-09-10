@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.identityconnectors.common.Assertions;
-import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.serializer.ObjectSerializerFactory;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
@@ -38,6 +37,7 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
  * Builder for {@link OperationOptions}.
  */
 public final class OperationOptionsBuilder {
+
     private final Map<String, Object> options;
 
     /**
@@ -50,10 +50,9 @@ public final class OperationOptionsBuilder {
     /**
      * Create a builder from an existing set of options.
      *
-     * @param options
-     *            The existing set of options. Must not be null.
+     * @param options The existing set of options. Must not be null.
      */
-    public OperationOptionsBuilder(OperationOptions options) {
+    public OperationOptionsBuilder(final OperationOptions options) {
         Assertions.nullCheck(options, "options");
         // clone options to do a deep copy in case anything
         // is an array
@@ -66,14 +65,12 @@ public final class OperationOptionsBuilder {
     /**
      * Sets a given option and a value for that option.
      *
-     * @param name
-     *            The name of the option
-     * @param value
-     *            The value of the option. Must be one of the types that we can
-     *            serialize. See {@link ObjectSerializerFactory} for a list of
-     *            supported types.
+     * @param name The name of the option
+     * @param value The value of the option. Must be one of the types that we can serialize. See
+     * {@link ObjectSerializerFactory} for a list of supported types.
+     * @return A this reference to allow chaining
      */
-    public OperationOptionsBuilder setOption(String name, Object value) {
+    public OperationOptionsBuilder setOption(final String name, final Object value) {
         Assertions.blankCheck(name, "name");
         // don't validate value here - we do that in
         // the constructor of OperationOptions - that's
@@ -85,10 +82,10 @@ public final class OperationOptionsBuilder {
     /**
      * Sets the {@link OperationOptions#OP_ATTRIBUTES_TO_GET} option.
      *
-     * @param attrNames
-     *            list of {@link Attribute} names.
+     * @param attrNames list of {@link Attribute} names.
+     * @return A this reference to allow chaining
      */
-    public OperationOptionsBuilder setAttributesToGet(String... attrNames) {
+    public OperationOptionsBuilder setAttributesToGet(final String... attrNames) {
         Assertions.nullCheck(attrNames, "attrNames");
         // don't validate value here - we do that in
         // the constructor of OperationOptions - that's
@@ -100,10 +97,10 @@ public final class OperationOptionsBuilder {
     /**
      * Sets the {@link OperationOptions#OP_ATTRIBUTES_TO_GET} option.
      *
-     * @param attrNames
-     *            list of {@link Attribute} names.
+     * @param attrNames list of {@link Attribute} names.
+     * @return A this reference to allow chaining
      */
-    public OperationOptionsBuilder setAttributesToGet(Collection<String> attrNames) {
+    public OperationOptionsBuilder setAttributesToGet(final Collection<String> attrNames) {
         Assertions.nullCheck(attrNames, "attrNames");
         // don't validate value here - we do that in
         // the constructor of OperationOptions - that's
@@ -113,11 +110,13 @@ public final class OperationOptionsBuilder {
         options.put(OperationOptions.OP_ATTRIBUTES_TO_GET, attrs);
         return this;
     }
-    
+
     /**
      * Sets the {@link OperationOptions#OP_RETURN_DEFAULT_ATTRIBUTES} option.
+     *
+     * @return A this reference to allow chaining
      */
-    public OperationOptionsBuilder setReturnDefaultAttributes(Boolean flag) {
+    public OperationOptionsBuilder setReturnDefaultAttributes(final Boolean flag) {
         Assertions.nullCheck(flag, "flag");
         options.put(OperationOptions.OP_RETURN_DEFAULT_ATTRIBUTES, flag);
         return this;
@@ -125,8 +124,10 @@ public final class OperationOptionsBuilder {
 
     /**
      * Set the run with password option.
+     *
+     * @return A this reference to allow chaining
      */
-    public OperationOptionsBuilder setRunWithPassword(GuardedString password) {
+    public OperationOptionsBuilder setRunWithPassword(final GuardedString password) {
         Assertions.nullCheck(password, "password");
         options.put(OperationOptions.OP_RUN_WITH_PASSWORD, password);
         return this;
@@ -134,124 +135,116 @@ public final class OperationOptionsBuilder {
 
     /**
      * Set the run as user option.
+     *
+     * @return A this reference to allow chaining
      */
-    public OperationOptionsBuilder setRunAsUser(String user) {
+    public OperationOptionsBuilder setRunAsUser(final String user) {
         Assertions.nullCheck(user, "user");
         options.put(OperationOptions.OP_RUN_AS_USER, user);
         return this;
     }
 
     /**
-     * Convenience method to set {@link OperationOptions#OP_SCOPE}
+     * Convenience method to set {@link OperationOptions#OP_SCOPE}.
      *
-     * @param scope
-     *            The scope. May not be null.
+     * @param scope The scope. May not be null.
      * @return A this reference to allow chaining
      */
-    public OperationOptionsBuilder setScope(String scope) {
+    public OperationOptionsBuilder setScope(final String scope) {
         Assertions.nullCheck(scope, "scope");
         options.put(OperationOptions.OP_SCOPE, scope);
         return this;
     }
 
     /**
-     * Convenience method to set {@link OperationOptions#OP_CONTAINER}
+     * Convenience method to set {@link OperationOptions#OP_CONTAINER}.
      *
-     * @param container
-     *            The container. May not be null.
+     * @param container The container. May not be null.
      * @return A this reference to allow chaining
      */
-    public OperationOptionsBuilder setContainer(QualifiedUid container) {
+    public OperationOptionsBuilder setContainer(final QualifiedUid container) {
         Assertions.nullCheck(container, "container");
         options.put(OperationOptions.OP_CONTAINER, container);
         return this;
     }
 
     /**
-     * Convenience method to set
-     * {@link OperationOptions#OP_PAGED_RESULTS_COOKIE}
+     * Convenience method to set {@link OperationOptions#OP_PAGED_RESULTS_COOKIE}.
      *
-     * @param pagedResultsCookie
-     *            The pagedResultsCookie. May not be null.
+     * @param pagedResultsCookie The pagedResultsCookie. May not be null.
      * @return A this reference to allow chaining
      * @since 1.4
      */
-    public OperationOptionsBuilder setPagedResultsCookie(String pagedResultsCookie) {
+    public OperationOptionsBuilder setPagedResultsCookie(final String pagedResultsCookie) {
         Assertions.nullCheck(pagedResultsCookie, "pagedResultsCookie");
         options.put(OperationOptions.OP_PAGED_RESULTS_COOKIE, pagedResultsCookie);
         return this;
     }
 
     /**
-     * Convenience method to set
-     * {@link OperationOptions#OP_PAGED_RESULTS_OFFSET}
+     * Convenience method to set {@link OperationOptions#OP_PAGED_RESULTS_OFFSET}.
      *
-     * @param pagedResultsOffset
-     *            The pagedResultsOffset. May not be null.
+     * @param pagedResultsOffset The pagedResultsOffset. May not be null.
      * @return A this reference to allow chaining
      * @since 1.4
      */
-    public OperationOptionsBuilder setPagedResultsOffset(Integer pagedResultsOffset) {
+    public OperationOptionsBuilder setPagedResultsOffset(final Integer pagedResultsOffset) {
         Assertions.nullCheck(pagedResultsOffset, "pagedResultsOffset");
         options.put(OperationOptions.OP_PAGED_RESULTS_OFFSET, pagedResultsOffset);
         return this;
     }
 
     /**
-     * Convenience method to set {@link OperationOptions#OP_PAGE_SIZE}
+     * Convenience method to set {@link OperationOptions#OP_PAGE_SIZE}.
      *
-     * @param pageSize
-     *            The pageSize. May not be null.
+     * @param pageSize The pageSize. May not be null.
      * @return A this reference to allow chaining
      * @since 1.4
      */
-    public OperationOptionsBuilder setPageSize(Integer pageSize) {
+    public OperationOptionsBuilder setPageSize(final Integer pageSize) {
         Assertions.nullCheck(pageSize, "pageSize");
         options.put(OperationOptions.OP_PAGE_SIZE, pageSize);
         return this;
     }
 
     /**
-     * Convenience method to set {@link OperationOptions#OP_SORT_KEYS}
+     * Convenience method to set {@link OperationOptions#OP_SORT_KEYS}.
      *
-     * @param sortKeys
-     *            The sort keys. May not be null.
+     * @param sortKeys The sort keys. May not be null.
      * @return A this reference to allow chaining
      * @since 1.4
      */
-    public OperationOptionsBuilder setSortKeys(List<SortKey> sortKeys) {
+    public OperationOptionsBuilder setSortKeys(final List<SortKey> sortKeys) {
         Assertions.nullCheck(sortKeys, "sortKeys");
         options.put(OperationOptions.OP_SORT_KEYS, sortKeys.toArray(new SortKey[sortKeys.size()]));
         return this;
     }
 
     /**
-     * Convenience method to set {@link OperationOptions#OP_SORT_KEYS}
+     * Convenience method to set {@link OperationOptions#OP_SORT_KEYS}.
      *
-     * @param sortKeys
-     *            The sort keys. May not be null.
+     * @param sortKeys The sort keys. May not be null.
      * @return A this reference to allow chaining
      * @since 1.4
      */
-    public OperationOptionsBuilder setSortKeys(SortKey... sortKeys) {
+    public OperationOptionsBuilder setSortKeys(final SortKey... sortKeys) {
         Assertions.nullCheck(sortKeys, "sortKeys");
         options.put(OperationOptions.OP_SORT_KEYS, sortKeys);
         return this;
     }
-    
+
     /**
-     * Convenience method to set {@link OperationOptions#OP_ALLOW_PARTIAL_RESULTS}
+     * Convenience method to set {@link OperationOptions#OP_ALLOW_PARTIAL_RESULTS}.
      *
-     * @param allowPartialResults
-     *            Flag indicating whether partial results are allowed.
+     * @param allowPartialResults Flag indicating whether partial results are allowed.
      * @return A this reference to allow chaining
      * @since 1.4.2
      */
-    public OperationOptionsBuilder setAllowPartialResults(boolean allowPartialResults) {
-    	options.put(OperationOptions.OP_ALLOW_PARTIAL_RESULTS, allowPartialResults);
-    	return this;
+    public OperationOptionsBuilder setAllowPartialResults(final boolean allowPartialResults) {
+        options.put(OperationOptions.OP_ALLOW_PARTIAL_RESULTS, allowPartialResults);
+        return this;
     }
-    
+
     /**
      * Returns a mutable reference of the options map.
      *
