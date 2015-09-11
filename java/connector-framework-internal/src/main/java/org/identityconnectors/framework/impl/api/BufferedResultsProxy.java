@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -30,7 +31,6 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.APIOperation;
@@ -42,11 +42,12 @@ public class BufferedResultsProxy implements InvocationHandler {
     private final static Log LOG = Log.getLog(BufferedResultsProxy.class);
 
     private final Object target;
+
     private final int bufferSize;
+
     private final long timeoutMillis;
 
     public BufferedResultsProxy(Object target, int bufferSize, long timeoutMillis) {
-
         if (target == null) {
             throw new IllegalArgumentException("Target argument must not be null!");
         }
@@ -65,13 +66,21 @@ public class BufferedResultsProxy implements InvocationHandler {
     }
 
     private static class BufferedResultsHandler extends Thread implements ObjectStreamHandler {
+
         private static final Object DONE = new Object();
+
         private final AtomicBoolean stopped = new AtomicBoolean(false);
+
         private final Method method;
+
         private final Object target;
+
         private final Object[] arguments;
+
         private final long timeoutMillis;
+
         private final ArrayBlockingQueue<Object> buffer;
+
         private Object result = null;
 
         public BufferedResultsHandler(Method method, Object target, Object[] arguments,
@@ -101,10 +110,8 @@ public class BufferedResultsProxy implements InvocationHandler {
         /**
          * Stops the thread and optionally waits for it to finish.
          *
-         * @param wait
-         *            True if we should wait for the thread to finish
-         * @throws OperationTimeoutException
-         *             If we said to wait and we timed out.
+         * @param wait True if we should wait for the thread to finish
+         * @throws OperationTimeoutException If we said to wait and we timed out.
          */
         public void stop(boolean wait) {
             if (wait && Thread.currentThread() == this) {
@@ -143,8 +150,7 @@ public class BufferedResultsProxy implements InvocationHandler {
             for (int i = 0; i < paramTypes.length; i++) {
                 Class<?> paramType = paramTypes[i];
                 if (StreamHandlerUtil.isAdaptableToObjectStreamHandler(paramType)) {
-                    actualArguments[i] =
-                            StreamHandlerUtil.adaptFromObjectStreamHandler(paramType, this);
+                    actualArguments[i] = StreamHandlerUtil.adaptFromObjectStreamHandler(paramType, this);
                 } else {
                     actualArguments[i] = arguments[i];
                 }
@@ -176,10 +182,8 @@ public class BufferedResultsProxy implements InvocationHandler {
          * Returns the next object from the stream. Returns null if done.
          *
          * @return The next object from the stream or null if done
-         * @throws OperationTimeoutException
-         *             If we timed out
-         * @throws RuntimeException
-         *             If the search threw an exception
+         * @throws OperationTimeoutException If we timed out
+         * @throws RuntimeException If the search threw an exception
          */
         public Object getNextObject() {
             if (isStopped()) {
@@ -194,7 +198,7 @@ public class BufferedResultsProxy implements InvocationHandler {
             }
             if (obj == null) {
                 stop(false); // stop, but don't wait since we've already timed
-                             // out
+                // out
                 throw new OperationTimeoutException();
             } else if (obj == DONE) {
                 stop(true); // stop and wait
@@ -216,8 +220,7 @@ public class BufferedResultsProxy implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, Object[] arguments)
-            throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] arguments) throws Throwable {
         // do not buffer/timeout equals, hashCode, toString
         if (method.getDeclaringClass() == Object.class) {
             return method.invoke(target, arguments);
@@ -235,7 +238,7 @@ public class BufferedResultsProxy implements InvocationHandler {
                 if (handler != null) {
                     throw new UnsupportedOperationException(
                             "We only support operations that have a single stream handler "
-                                    + method);
+                            + method);
                 }
                 handler = StreamHandlerUtil.adaptToObjectStreamHandler(paramType, arguments[i]);
             }

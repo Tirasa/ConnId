@@ -21,13 +21,13 @@
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
  * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -42,9 +42,10 @@ public class LoggingProxy implements InvocationHandler {
     private static final Log LOG = Log.getLog(LoggingProxy.class);
 
     private final Object target;
+
     private final Class<? extends APIOperation> op;
 
-    public LoggingProxy(Class<? extends APIOperation> api, Object target) {
+    public LoggingProxy(final Class<? extends APIOperation> api, final Object target) {
         op = api;
         this.target = target;
     }
@@ -53,8 +54,7 @@ public class LoggingProxy implements InvocationHandler {
      * {@inheritDoc}
      */
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args)
-            throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         // do not log equals, hashCode, toString
         if (method.getDeclaringClass() == Object.class) {
             return method.invoke(target, args);
@@ -68,10 +68,10 @@ public class LoggingProxy implements InvocationHandler {
                     bld.append(", ");
                 }
                 Object arg = args[i];
-                if (arg instanceof ResultHandlerLoggingProxy) {
-                	bld.append(((ResultHandlerLoggingProxy)arg).getOrigHandler());
+                if (arg instanceof SearchResultsHandlerLoggingProxy) {
+                    bld.append(((SearchResultsHandlerLoggingProxy) arg).getOrigHandler());
                 } else {
-                	bld.append(arg);
+                    bld.append(arg);
                 }
             }
             bld.append(')');

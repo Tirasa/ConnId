@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api.remote;
 
@@ -27,7 +28,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.framework.api.RemoteFrameworkConnectionInfo;
@@ -43,15 +43,18 @@ import org.identityconnectors.framework.impl.api.remote.messages.OperationRespon
 import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePause;
 
 /**
- * Invocation handler for all of our operations
+ * Invocation handler for all of our operations.
  */
 public class RemoteOperationInvocationHandler implements InvocationHandler {
+
     private final RemoteConnectorInfoImpl connectorInfo;
+
     private final String connectorFacadeKey;
+
     private final Class<? extends APIOperation> operation;
 
     public RemoteOperationInvocationHandler(final RemoteConnectorInfoImpl connectorInfo,
-            String connectorFacadeKey,final Class<? extends APIOperation> operation) {
+            String connectorFacadeKey, final Class<? extends APIOperation> operation) {
         this.connectorInfo = connectorInfo;
         this.connectorFacadeKey = connectorFacadeKey;
         this.operation = operation;
@@ -63,8 +66,7 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
         if (method.getDeclaringClass() == Object.class) {
             return method.invoke(this, args);
         }
-        // partition arguments into arguments that can
-        // be simply marshalled as part of the request and
+        // partition arguments into arguments that can be simply marshalled as part of the request and
         // those that are response handlers
         List<Object> simpleMarshallArgs = CollectionUtil.newList(args);
         ObjectStreamHandler streamHandlerArg =
@@ -72,9 +74,8 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
 
         // build the request object
         RemoteFrameworkConnectionInfo connectionInfo = connectorInfo.getRemoteConnectionInfo();
-        OperationRequest request =
-                new OperationRequest(connectorInfo.getConnectorKey(), connectorFacadeKey,
-                        operation, method.getName(), simpleMarshallArgs);
+        OperationRequest request = new OperationRequest(
+                connectorInfo.getConnectorKey(), connectorFacadeKey, operation, method.getName(), simpleMarshallArgs);
 
         // create the connection
         RemoteFrameworkConnection connection = null;
@@ -106,14 +107,14 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
     }
 
     /**
-     * Handles a stream response until the end of the stream
+     * Handles a stream response until the end of the stream.
      */
     private static void handleStreamResponse(final RemoteFrameworkConnection connection,
             final ObjectStreamHandler streamHandler) throws ConnectorException {
-        Object response;
+
         boolean handleMore = true;
         while (true) {
-            response = connection.readObject();
+            Object response = connection.readObject();
             if (response instanceof OperationResponsePart) {
                 OperationResponsePart part = (OperationResponsePart) response;
                 if (part.getException() != null) {
@@ -140,26 +141,20 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
     /**
      * Partitions arguments into regular arguments and stream arguments.
      *
-     * @param paramTypes
-     *            The param types of the method
-     * @param arguments
-     *            The passed-in arguments. As a side-effect will be set to just
-     *            the regular arguments.
+     * @param paramTypes The param types of the method
+     * @param arguments The passed-in arguments. As a side-effect will be set to just the regular arguments.
      * @return The stream handler arguments.
      */
-    private static ObjectStreamHandler extractStreamHandler(Class<?>[] paramTypes,
-            List<Object> arguments) {
+    private static ObjectStreamHandler extractStreamHandler(final Class<?>[] paramTypes, final List<Object> arguments) {
         ObjectStreamHandler rv = null;
         List<Object> filteredArguments = new ArrayList<Object>();
         for (int i = 0; i < paramTypes.length; i++) {
             Class<?> paramType = paramTypes[i];
             Object arg = arguments.get(i);
             if (StreamHandlerUtil.isAdaptableToObjectStreamHandler(paramType)) {
-                ObjectStreamHandler handler =
-                        StreamHandlerUtil.adaptToObjectStreamHandler(paramType, arg);
+                ObjectStreamHandler handler = StreamHandlerUtil.adaptToObjectStreamHandler(paramType, arg);
                 if (rv != null) {
-                    throw new UnsupportedOperationException(
-                            "Multiple stream handlers not supported");
+                    throw new UnsupportedOperationException("Multiple stream handlers not supported");
                 }
                 rv = handler;
             } else {
@@ -170,5 +165,4 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
         arguments.addAll(filteredArguments);
         return rv;
     }
-
 }

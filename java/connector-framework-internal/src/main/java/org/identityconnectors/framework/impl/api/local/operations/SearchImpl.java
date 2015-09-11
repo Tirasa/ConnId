@@ -21,12 +21,11 @@
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
  * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.ResultsHandlerConfiguration;
@@ -39,13 +38,14 @@ import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
+import org.identityconnectors.framework.impl.api.SearchResultsHandlerLoggingProxy;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.SearchResultsHandler;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 
 public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApiOp {
 
-    private static final Log logger = Log.getLog(SearchImpl.class);
+    private static final Log LOG = Log.getLog(SearchImpl.class);
 
     /**
      * Special logger with SPI operation log name. Used for logging operation entry/exit
@@ -62,14 +62,12 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
     /**
      * Call the SPI search routines to return the results to the {@link ResultsHandler}.
      *
-     * @see SearchOp#executeQuery(org.identityconnectors.framework.common.objects.ObjectClass,
-     *      Object,
-     *      org.identityconnectors.framework.common.objects.ResultsHandler,
-     *      org.identityconnectors.framework.common.objects.OperationOptions)
+     * @see SearchOp#executeQuery
      */
     @Override
-    public SearchResult search(ObjectClass objectClass, Filter originalFilter,
+    public SearchResult search(final ObjectClass objectClass, final Filter originalFilter,
             ResultsHandler handler, OperationOptions options) {
+
         Assertions.nullCheck(objectClass, "objectClass");
         if (ObjectClass.ALL.equals(objectClass)) {
             throw new UnsupportedOperationException("Operation is not allowed on __ALL__ object class");
@@ -79,7 +77,6 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
-        SearchOp<?> search = ((SearchOp<?>) getConnector());
 
         ResultsHandlerConfiguration hdlCfg =
                 null != getOperationalContext() ? getOperationalContext()
@@ -89,7 +86,7 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         Filter actualFilter = originalFilter;
 
         if (hdlCfg.isEnableFilteredResultsHandler() && hdlCfg.isEnableCaseInsensitiveFilter() && actualFilter != null) {
-            logger.ok("Creating case insensitive filter");
+            LOG.ok("Creating case insensitive filter");
             ObjectNormalizerFacade normalizer = new ObjectNormalizerFacade(objectClass, new CaseNormalizer());
             actualFilter = new NormalizingFilter(actualFilter, normalizer);
         }
@@ -102,15 +99,14 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         }
 
         if (hdlCfg.isEnableNormalizingResultsHandler()) {
-            final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
+            ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
             // chain a normalizing handler (must come before
             // filter handler)
-            NormalizingResultsHandler normalizingHandler =
-                    new NormalizingResultsHandler(handler, normalizer);
+            NormalizingResultsHandler normalizingHandler = new NormalizingResultsHandler(handler, normalizer);
             // chain a filter handler..
             if (hdlCfg.isEnableFilteredResultsHandler()) {
                 // chain a filter handler..
-                final Filter normalizedFilter = normalizer.normalizeFilter(actualFilter);
+                Filter normalizedFilter = normalizer.normalizeFilter(actualFilter);
                 handler = new FilteredResultsHandler(
                         normalizingHandler, normalizedFilter, hdlCfg.isFilteredResultsHandlerInValidationMode());
                 actualFilter = normalizedFilter;
@@ -120,23 +116,25 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         } else if (hdlCfg.isEnableFilteredResultsHandler()) {
             // chain a filter handler..
             handler = new FilteredResultsHandler(
-                    handler, actualFilter, hdlCfg.
-                    isFilteredResultsHandlerInValidationMode());
+                    handler, actualFilter, hdlCfg.isFilteredResultsHandlerInValidationMode());
         }
         // chain an attributes to get handler..
         String[] attrsToGet = options.getAttributesToGet();
         if (attrsToGet != null && attrsToGet.length > 0 && hdlCfg.isEnableAttributesToGetSearchResultsHandler()) {
-            handler = getAttributesToGetResutlsHandler(handler, options);
+            handler = getAttributesToGetResultsHandler(handler, options);
         }
 
+        SearchOp<?> search = ((SearchOp<?>) getConnector());
+        final SearchResult[] result = new SearchResult[] { null };
         final ResultsHandler handlerChain = handler;
-
-        final AtomicReference<SearchResult> result = new AtomicReference<SearchResult>(null);
         rawSearch(search, objectClass, actualFilter, new SearchResultsHandler() {
 
             @Override
             public void handleResult(final SearchResult searchResult) {
-                result.set(searchResult);
+                if (handlerChain instanceof SearchResultsHandler) {
+                    SearchResultsHandler.class.cast(handlerChain).handleResult(searchResult);
+                }
+                result[0] = searchResult;
             }
 
             @Override
@@ -144,13 +142,14 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
                 return handlerChain.handle(connectorObject);
             }
         }, options);
-        return result.get();
+
+        return result[0];
     }
 
     /**
      * Public because it is used by TestHelpersImpl. Raw, SPI-level search.
      *
-     * @param search The underlying implementation of search (generally the  connector itself)
+     * @param search The underlying implementation of search (generally the connector itself)
      * @param objectClass The object class
      * @param filter The filter
      * @param handler The handler
@@ -238,8 +237,9 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         OP_LOG.log(SearchOp.class, "executeQuery", SpiOperationLoggingUtil.LOG_LEVEL, "Return", null);
     }
 
-    private ResultsHandler getAttributesToGetResutlsHandler(ResultsHandler handler,
-            OperationOptions options) {
+    private ResultsHandler getAttributesToGetResultsHandler(
+            final ResultsHandler handler, final OperationOptions options) {
+
         ResultsHandler ret = handler;
         String[] attrsToGet = options.getAttributesToGet();
         if (attrsToGet != null && attrsToGet.length > 0) {
@@ -249,19 +249,24 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
     }
 
     /**
-     * Simple results handler that can reduce attributes to only the set of
-     * attribute to get.
-     *
+     * Simple results handler that can reduce attributes to only the set of attribute to get.
      */
-    public static class AttributesToGetSearchResultsHandler extends AttributesToGetResultsHandler
-            implements ResultsHandler {
+    public static class AttributesToGetSearchResultsHandler
+            extends AttributesToGetResultsHandler implements SearchResultsHandler {
 
         private final ResultsHandler handler;
 
-        public AttributesToGetSearchResultsHandler(final ResultsHandler handler, String[] attrsToGet) {
+        public AttributesToGetSearchResultsHandler(final ResultsHandler handler, final String[] attrsToGet) {
             super(attrsToGet);
             Assertions.nullCheck(handler, "handler");
             this.handler = handler;
+        }
+
+        @Override
+        public void handleResult(final SearchResult result) {
+            if (handler instanceof SearchResultsHandler) {
+                SearchResultsHandler.class.cast(handler).handleResult(result);
+            }
         }
 
         /**

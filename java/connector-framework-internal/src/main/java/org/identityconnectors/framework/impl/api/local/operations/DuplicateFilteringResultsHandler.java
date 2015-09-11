@@ -20,14 +20,13 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.spi.SearchResultsHandler;
 
@@ -37,6 +36,7 @@ public final class DuplicateFilteringResultsHandler implements SearchResultsHand
     // Fields
     // =======================================================================
     private final SearchResultsHandler handler;
+
     private final Set<String> visitedUIDs = new HashSet<String>();
 
     private boolean stillHandling = true;
@@ -47,8 +47,7 @@ public final class DuplicateFilteringResultsHandler implements SearchResultsHand
     /**
      * Filter chain for producers.
      *
-     * @param handler
-     *            Producer to filter.
+     * @param handler Producer to filter.
      *
      */
     public DuplicateFilteringResultsHandler(final SearchResultsHandler handler) {

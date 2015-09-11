@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -28,7 +29,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.text.MessageFormat;
 import java.util.Set;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.Base64;
 import org.identityconnectors.common.security.GuardedString;
@@ -67,6 +67,7 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 public abstract class AbstractConnectorFacade implements ConnectorFacade {
 
     private final APIConfigurationImpl configuration;
+
     private final String connectorFacadeKey;
 
     /**
@@ -89,7 +90,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     /**
      * Builds up the maps of supported operations and calls.
      */
-    public AbstractConnectorFacade(String configuration, final AbstractConnectorInfo connectorInfo) {
+    public AbstractConnectorFacade(final String configuration, final AbstractConnectorInfo connectorInfo) {
         Assertions.nullCheck(configuration, "configuration");
         Assertions.nullCheck(connectorInfo, "connectorInfo");
         this.connectorFacadeKey = configuration;
@@ -101,8 +102,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     /**
      * Return an instance of an API operation.
      *
-     * @return <code>null</code> if the operation is not support otherwise
-     *         return an instance of the operation.
+     * @return <code>null</code> if the operation is not support otherwise return an instance of the operation.
      * @see org.identityconnectors.framework.api.ConnectorFacade#getOperation(java.lang.Class)
      */
     @Override
@@ -116,12 +116,12 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     /**
      * Gets the unique generated identifier of this ConnectorFacade.
      *
-     * It's not guarantied that the equivalent configuration will generate the
-     * same configuration key. Always use the generated value and maintain it in
-     * the external application.
+     * It's not guaranteed that the equivalent configuration will generate the same configuration key. Always use the
+     * generated value and maintain it in the external application.
      *
      * @return identifier of this ConnectorFacade instance.
      */
+    @Override
     public final String getConnectorFacadeKey() {
         return connectorFacadeKey;
     }
@@ -151,18 +151,17 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     @Override
     public final Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes,
             final OperationOptions options) {
-        return ((CreateApiOp) getOperationCheckSupported(CreateApiOp.class)).create(objectClass,
-                createAttributes, options);
+
+        return ((CreateApiOp) getOperationCheckSupported(CreateApiOp.class)).
+                create(objectClass, createAttributes, options);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final void delete(final ObjectClass objectClass, final Uid uid,
-            final OperationOptions options) {
-        ((DeleteApiOp) this.getOperationCheckSupported(DeleteApiOp.class)).delete(objectClass, uid,
-                options);
+    public final void delete(final ObjectClass objectClass, final Uid uid, final OperationOptions options) {
+        ((DeleteApiOp) this.getOperationCheckSupported(DeleteApiOp.class)).delete(objectClass, uid, options);
     }
 
     /**
@@ -171,11 +170,12 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     @Override
     public final SearchResult search(final ObjectClass objectClass, final Filter filter,
             ResultsHandler handler, final OperationOptions options) {
-    	if (LoggingProxy.isLoggable()) {
-    		handler = new ResultHandlerLoggingProxy(handler);
-    	}
-        return ((SearchApiOp) this.getOperationCheckSupported(SearchApiOp.class)).search(
-                objectClass, filter, handler, options);
+
+        if (LoggingProxy.isLoggable()) {
+            handler = new SearchResultsHandlerLoggingProxy(handler);
+        }
+        return ((SearchApiOp) this.getOperationCheckSupported(SearchApiOp.class)).
+                search(objectClass, filter, handler, options);
     }
 
     /**
@@ -184,8 +184,9 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     @Override
     public final Uid update(final ObjectClass objectClass, final Uid uid,
             final Set<Attribute> attrs, final OperationOptions options) {
-        return ((UpdateApiOp) this.getOperationCheckSupported(UpdateApiOp.class)).update(
-                objectClass, uid, attrs, options);
+
+        return ((UpdateApiOp) this.getOperationCheckSupported(UpdateApiOp.class)).
+                update(objectClass, uid, attrs, options);
     }
 
     /**
@@ -194,8 +195,9 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     @Override
     public final Uid addAttributeValues(final ObjectClass objclass, final Uid uid,
             final Set<Attribute> attrs, final OperationOptions options) {
-        return ((UpdateApiOp) this.getOperationCheckSupported(UpdateApiOp.class))
-                .addAttributeValues(objclass, uid, attrs, options);
+
+        return ((UpdateApiOp) this.getOperationCheckSupported(UpdateApiOp.class)).
+                addAttributeValues(objclass, uid, attrs, options);
     }
 
     /**
@@ -204,8 +206,9 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     @Override
     public final Uid removeAttributeValues(final ObjectClass objclass, final Uid uid,
             final Set<Attribute> attrs, final OperationOptions options) {
-        return ((UpdateApiOp) this.getOperationCheckSupported(UpdateApiOp.class))
-                .removeAttributeValues(objclass, uid, attrs, options);
+
+        return ((UpdateApiOp) this.getOperationCheckSupported(UpdateApiOp.class)).
+                removeAttributeValues(objclass, uid, attrs, options);
     }
 
     /**
@@ -214,8 +217,9 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     @Override
     public final Uid authenticate(final ObjectClass objectClass, final String username,
             final GuardedString password, final OperationOptions options) {
-        return ((AuthenticationApiOp) this.getOperationCheckSupported(AuthenticationApiOp.class))
-                .authenticate(objectClass, username, password, options);
+
+        return ((AuthenticationApiOp) this.getOperationCheckSupported(AuthenticationApiOp.class)).
+                authenticate(objectClass, username, password, options);
     }
 
     /**
@@ -224,38 +228,37 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     @Override
     public final Uid resolveUsername(final ObjectClass objectClass, final String username,
             final OperationOptions options) {
-        return ((ResolveUsernameApiOp) this.getOperationCheckSupported(ResolveUsernameApiOp.class))
-                .resolveUsername(objectClass, username, options);
+
+        return ((ResolveUsernameApiOp) this.getOperationCheckSupported(ResolveUsernameApiOp.class)).
+                resolveUsername(objectClass, username, options);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final Object runScriptOnConnector(ScriptContext request, OperationOptions options) {
-        return ((ScriptOnConnectorApiOp) this
-                .getOperationCheckSupported(ScriptOnConnectorApiOp.class)).runScriptOnConnector(
-                request, options);
+    public final Object runScriptOnConnector(final ScriptContext request, final OperationOptions options) {
+        return ((ScriptOnConnectorApiOp) this.getOperationCheckSupported(ScriptOnConnectorApiOp.class)).
+                runScriptOnConnector(request, options);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final Object runScriptOnResource(ScriptContext request, OperationOptions options) {
-        return ((ScriptOnResourceApiOp) this
-                .getOperationCheckSupported(ScriptOnResourceApiOp.class)).runScriptOnResource(
-                request, options);
+    public final Object runScriptOnResource(final ScriptContext request, final OperationOptions options) {
+        return ((ScriptOnResourceApiOp) this.getOperationCheckSupported(ScriptOnResourceApiOp.class)).
+                runScriptOnResource(request, options);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final ConnectorObject getObject(ObjectClass objectClass, Uid uid,
-            OperationOptions options) {
-        return ((GetApiOp) this.getOperationCheckSupported(GetApiOp.class)).getObject(objectClass,
-                uid, options);
+    public final ConnectorObject getObject(final ObjectClass objectClass, final Uid uid,
+            final OperationOptions options) {
+
+        return ((GetApiOp) this.getOperationCheckSupported(GetApiOp.class)).getObject(objectClass, uid, options);
     }
 
     /**
@@ -278,19 +281,19 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      * {@inheritDoc}
      */
     @Override
-    public final SyncToken sync(ObjectClass objectClass, SyncToken token,
-            SyncResultsHandler handler, OperationOptions options) {
-        return ((SyncApiOp) this.getOperationCheckSupported(SyncApiOp.class)).sync(objectClass,
-                token, handler, options);
+    public final SyncToken sync(final ObjectClass objectClass, final SyncToken token,
+            final SyncResultsHandler handler, final OperationOptions options) {
+
+        return ((SyncApiOp) this.getOperationCheckSupported(SyncApiOp.class)).
+                sync(objectClass, token, handler, options);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final SyncToken getLatestSyncToken(ObjectClass objectClass) {
-        return ((SyncApiOp) this.getOperationCheckSupported(SyncApiOp.class))
-                .getLatestSyncToken(objectClass);
+    public final SyncToken getLatestSyncToken(final ObjectClass objectClass) {
+        return ((SyncApiOp) this.getOperationCheckSupported(SyncApiOp.class)).getLatestSyncToken(objectClass);
     }
 
     private static final String MSG = "Operation ''{0}'' not supported.";
@@ -309,19 +312,17 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      */
     protected APIOperation newAPIOperationProxy(final Class<? extends APIOperation> api,
             final InvocationHandler handler) {
-        return (APIOperation) Proxy.newProxyInstance(api.getClassLoader(), new Class<?>[] { api },
-                handler);
+
+        return (APIOperation) Proxy.newProxyInstance(api.getClassLoader(), new Class<?>[] { api }, handler);
     }
 
     /**
      * Gets the implementation of the given operation.
      *
-     * @param api
-     *            The operation to implement.
+     * @param api The operation to implement.
      * @return The implementation
      */
-    protected abstract APIOperation getOperationImplementation(
-            final Class<? extends APIOperation> api);
+    protected abstract APIOperation getOperationImplementation(final Class<? extends APIOperation> api);
 
     protected final APIConfigurationImpl getAPIConfiguration() {
         return configuration;
@@ -330,14 +331,12 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     /**
      * Creates the timeout proxy for the given operation.
      *
-     * @param api
-     *            The operation
-     * @param target
-     *            The underlying object
+     * @param api The operation
+     * @param target The underlying object
      * @return The proxy
      */
-    protected final APIOperation createTimeoutProxy(Class<? extends APIOperation> api,
-            APIOperation target) {
+    protected final APIOperation createTimeoutProxy(
+            final Class<? extends APIOperation> api, final APIOperation target) {
 
         int timeout = getAPIConfiguration().getTimeout(api);
         int bufferSize = getAPIConfiguration().getProducerBufferSize();
@@ -350,12 +349,13 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     /**
      * Creates a logging proxy.
      *
-     * @param api
-     * @param target
-     * @return
+     * @param api The operation
+     * @param target The underlying object
+     * @return The proxy
      */
-    protected final APIOperation createLoggingProxy(Class<? extends APIOperation> api,
-            APIOperation target) {
+    protected final APIOperation createLoggingProxy(
+            final Class<? extends APIOperation> api, final APIOperation target) {
+
         return newAPIOperationProxy(api, new LoggingProxy(api, target));
     }
 }

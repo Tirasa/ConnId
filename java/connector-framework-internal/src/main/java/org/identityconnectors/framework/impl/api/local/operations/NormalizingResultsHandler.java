@@ -25,10 +25,13 @@ package org.identityconnectors.framework.impl.api.local.operations;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.SearchResult;
+import org.identityconnectors.framework.spi.SearchResultsHandler;
 
-public class NormalizingResultsHandler implements ResultsHandler {
+public class NormalizingResultsHandler implements SearchResultsHandler {
 
     private final ResultsHandler target;
+
     private final ObjectNormalizerFacade normalizer;
 
     public NormalizingResultsHandler(ResultsHandler target, ObjectNormalizerFacade normalizer) {
@@ -36,6 +39,13 @@ public class NormalizingResultsHandler implements ResultsHandler {
         Assertions.nullCheck(normalizer, "normalizer");
         this.target = target;
         this.normalizer = normalizer;
+    }
+
+    @Override
+    public void handleResult(final SearchResult result) {
+        if (target instanceof SearchResultsHandler) {
+            SearchResultsHandler.class.cast(target).handleResult(result);
+        }
     }
 
     @Override

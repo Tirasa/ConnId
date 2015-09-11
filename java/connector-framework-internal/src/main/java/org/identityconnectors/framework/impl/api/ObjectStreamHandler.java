@@ -19,9 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
 public interface ObjectStreamHandler {
+
     public boolean handle(Object object);
 }
