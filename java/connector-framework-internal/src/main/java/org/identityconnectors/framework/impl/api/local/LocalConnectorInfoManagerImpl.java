@@ -194,13 +194,11 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             try {
                 stream = new JarInputStream(url.openStream());
                 // only parse the manifest for top-level bundles
-                // other bundles may not be bundles - they might be
-                // jars instead
+                // other bundles may not be bundles - they might be jars instead
                 if (topLevel) {
                     final Manifest rawManifest = stream.getManifest();
                     final ConnectorBundleManifestParser parser =
-                            new ConnectorBundleManifestParser(info.getOriginalLocation(),
-                                    rawManifest);
+                            new ConnectorBundleManifestParser(info.getOriginalLocation(), rawManifest);
                     info.setManifest(parser.parse());
                 }
 
@@ -259,22 +257,26 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                         // it might be from a bundle
                         // fragment ( a bundle only included by other bundles ).
                         // However, we should definitely warn
-                        LOG.info(LOG.isOk() ?
-                                 e : null,
-                                "Unable to load class {0} from bundle {1}. Class will be ignored and will not be listed in list of connectors.",
+                        LOG.info(LOG.isOk() ? e : null,
+                                "Unable to load class {0} from bundle {1}. Class will be ignored and will not be "
+                                + "listed in list of connectors.",
                                 className, bundleInfo.getOriginalLocation());
                     }
                     if (connectorClass != null && options == null) {
-	                    for (Annotation annotation: connectorClass.getAnnotations()) {
-	                    	if (ConnectorClass.class.getName().equals(annotation.annotationType().getName())) {
-	                    		// Same class name as the annotation we are looking for. But the previous code haven't found it.
-	                    		// So it looks like the annotation on this class is actually the correct one but it is loaded
-	                    		// by wrong classloader. 
-	                    		// Note: This error is very difficult to diagnose. Therefore we are explicitly checking for it here.
-	                    		throw new ConfigurationException("Class "+connectorClass.getName()+" has ConnectorClass annotation but it looks like it is " +
-	                    				"loaded by a wrong classloader. Maybe the connector bundle contains the connector frameworks JAR? (it should NOT contain it).");
-	                    	}
-	                    }
+                        for (Annotation annotation : connectorClass.getAnnotations()) {
+                            if (ConnectorClass.class.getName().equals(annotation.annotationType().getName())) {
+                                // Same class name as the annotation we are looking for. But the previous code haven't 
+                                // found it.
+                                // So it looks like the annotation on this class is actually the correct one but it is 
+                                // loaded by wrong classloader. 
+                                // Note: This error is very difficult to diagnose. Therefore we are explicitly checking 
+                                // for it here.
+                                throw new ConfigurationException("Class " + connectorClass.getName()
+                                        + " has ConnectorClass annotation but it looks like it is "
+                                        + "loaded by a wrong classloader. Maybe the connector bundle contains the "
+                                        + "connector frameworks JAR? (it should NOT contain it).");
+                            }
+                        }
                     }
                 }
                 if (connectorClass != null && options != null) {
@@ -299,14 +301,14 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                         LOG.info("Add ConnectorInfo {0} to Local Connector Info Manager from {1}",
                                 info.getConnectorKey(), bundleInfo.getOriginalLocation());
                     } catch (final NoClassDefFoundError e) {
-                        LOG.info(LOG.isOk() ?
-                                e : null,
-                                "Unable to load configuration class of connector {0} from bundle {1}. Class will be ignored and will not be listed in list of connectors.",
+                        LOG.info(LOG.isOk() ? e : null,
+                                "Unable to load configuration class of connector {0} from bundle {1}. "
+                                + "Class will be ignored and will not be listed in list of connectors.",
                                 connectorClass, bundleInfo.getOriginalLocation());
                     } catch (final TypeNotPresentException e) {
-                        LOG.info(LOG.isOk() ?
-                                 e : null,
-                                "Unable to load configuration class of connector {0} from bundle {1}. Class will be ignored and will not be listed in list of connectors.",
+                        LOG.info(LOG.isOk() ? e : null,
+                                "Unable to load configuration class of connector {0} from bundle {1}. "
+                                + "Class will be ignored and will not be listed in list of connectors.",
                                 connectorClass, bundleInfo.getOriginalLocation());
                     }
                 }
@@ -415,7 +417,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
         if (paths == null || paths.length == 0) {
             final String pkage = ReflectionUtil.getPackage(connector);
             final String messageCatalog = pkage + ".Messages";
-            paths = new String[]{messageCatalog};
+            paths = new String[] { messageCatalog };
         }
         for (int i = 0; i < paths.length; i++) {
             paths[i] = paths[i].replace('.', '/');

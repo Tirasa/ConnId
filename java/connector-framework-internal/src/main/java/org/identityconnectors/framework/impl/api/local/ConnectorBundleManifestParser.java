@@ -42,15 +42,16 @@ public final class ConnectorBundleManifestParser {
     private static final String ATT_BUNDLE_VERSION = BUNDLE_PREFIX + "Version";
 
     private final String fileName;
+
     private final Map<String, String> attributes;
 
-    public ConnectorBundleManifestParser(String fileName, Manifest manifest) {
+    public ConnectorBundleManifestParser(final String fileName, final Manifest manifest) {
         this.fileName = fileName;
         attributes = getAttributes(manifest);
     }
 
-    private static Map<String, String> getAttributes(Manifest manifest) {
-        HashMap<String, String> rv = new HashMap<String, String>();
+    private static Map<String, String> getAttributes(final Manifest manifest) {
+        Map<String, String> rv = new HashMap<String, String>();
         for (Map.Entry<Object, Object> entry : manifest.getMainAttributes().entrySet()) {
             rv.put(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
         }
@@ -60,10 +61,9 @@ public final class ConnectorBundleManifestParser {
     /**
      * Parses the manifest.
      *
-     * @return The manifest. Note that the classes/classloaders will not be
-     *         populated yet. That is to be done at a higher-level.
-     * @throws ConfigurationException
-     *             If there were any structural problems.
+     * @return The manifest. Note that the classes/classloaders will not be populated yet. That is to be done at a
+     * higher-level.
+     * @throws ConfigurationException if there were any structural problems.
      */
     public ConnectorBundleManifest parse() throws ConfigurationException {
         String frameworkVersion = getRequiredAttribute(ATT_FRAMEWORK_VERSION);
@@ -73,8 +73,8 @@ public final class ConnectorBundleManifestParser {
         if (FrameworkUtil.getFrameworkVersion().compareTo(Version.parse(frameworkVersion)) < 0) {
             String message =
                     "Bundle " + fileName + " requests an unrecognized " + "framework version "
-                            + frameworkVersion + " but available is "
-                            + FrameworkUtil.getFrameworkVersion().getVersion();
+                    + frameworkVersion + " but available is "
+                    + FrameworkUtil.getFrameworkVersion().getVersion();
             throw new ConfigurationException(message);
         }
 
