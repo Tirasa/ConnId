@@ -59,3 +59,4 @@ AssemblyInfo.cs
 [Rr]elease*/
 dotnet/*.bat
 /java/target/
+/java/archetype/target/

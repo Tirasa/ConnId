@@ -262,6 +262,19 @@
             </supportedProjectTypes>
           </configuration>
         </plugin>
+        
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>xml-maven-plugin</artifactId>
+          <version>1.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>xalan</groupId>
+              <artifactId>xalan</artifactId>
+              <version>2.7.1</version>
+            </dependency>
+          </dependencies>
+        </plugin>
       </plugins>
     </pluginManagement>
     
@@ -334,7 +347,7 @@
           <headerSections>
             <headerSection>
               <key>COPYRIGHT_SECTION</key>
-              <defaultValue>Copyright 2014 ConnId. All rights reserved.</defaultValue>
+              <defaultValue>Copyright 2015 ConnId. All rights reserved.</defaultValue>
               <ensureMatch>Copyright .*\. All rights reserved\.</ensureMatch>
             </headerSection>
             <headerSection>
@@ -373,6 +386,8 @@
             <exclude>**/.*</exclude>
             <exclude>build-number.txt</exclude>
             <exclude>**/cov-int/**</exclude>
+            <exclude>**/archetype-resources/**</exclude>
+            <exclude>**/goal.txt</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -444,6 +459,7 @@
     <module>connector-framework-contract</module>
     <module>slf4j-logging</module>
     <module>connector-server-zip</module>
+    <module>archetype</module>
   </modules>
 
 </project>

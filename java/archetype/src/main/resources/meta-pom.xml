@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    ====================
+    DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+
+    Copyright 2015 ConnId. All rights reserved.
+
+    The contents of this file are subject to the terms of the Common Development
+    and Distribution License("CDDL") (the "License").  You may not use this file
+    except in compliance with the License.
+
+    You can obtain a copy of the License at
+    http://opensource.org/licenses/cddl1.php
+    See the License for the specific language governing permissions and limitations
+    under the License.
+
+    When distributing the Covered Code, include this CDDL Header Notice in each file
+    and include the License file at http://opensource.org/licenses/cddl1.php.
+    If applicable, add the following below this CDDL Header, with the fields
+    enclosed by brackets [] replaced by your own identifying information:
+    "Portions Copyrighted [year] [name of copyright owner]"
+    ====================
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+      
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>net.tirasa.connid</groupId>
+    <artifactId>connid</artifactId>
+    <version></version>
+  </parent>
+    
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>        
+  <name>ConnId Sample Bundle</name>
+  <packaging>jar</packaging>
+
+  <properties>
+    <connid.version></connid.version>
+        
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.tirasa.connid</groupId>
+      <artifactId>connector-framework</artifactId>
+      <version>${connid.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.tirasa.connid</groupId>
+      <artifactId>connector-framework-internal</artifactId>
+      <version>${connid.version}</version>
+    </dependency>
+        
+    <!-- TEST -->        
+    <dependency>
+      <groupId>net.tirasa.connid</groupId>
+      <artifactId>connector-test-common</artifactId>
+      <version>${connid.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+    
+  <build>
+    <plugins>
+      <!-- Disable any licese check -->  
+      <plugin>        
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>copy-javadoc-legal-files</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>ianal-maven-plugin</artifactId>
+        <inherited>true</inherited>
+        <executions>
+          <execution>            
+            <goals>
+              <goal>verify-legal-files</goal>
+            </goals>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <appendAssemblyId>true</appendAssemblyId>
+          <descriptors>
+            <descriptor>src/assemble/connector.xml</descriptor>
+          </descriptors>
+          <archive>
+            <index>true</index>
+            <manifestEntries>
+              <ConnectorBundle-FrameworkVersion>${connid.version}</ConnectorBundle-FrameworkVersion>
+              <ConnectorBundle-Name>${project.artifactId}</ConnectorBundle-Name>
+              <ConnectorBundle-Version>${project.version}</ConnectorBundle-Version>
+            </manifestEntries>
+          </archive>
+        </configuration>                
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>    
+  </build>
+
+  <repositories>
+    <repository>
+      <id>sonatype</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+      </snapshots>
+    </repository>
+  </repositories>
+
+</project>
