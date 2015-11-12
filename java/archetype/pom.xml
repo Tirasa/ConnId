@@ -111,7 +111,7 @@
     <resources>
       <resource>
         <directory>src/main/resources</directory>
-        <filtering>true</filtering>
+        <filtering>false</filtering>
       </resource>
       <resource>
         <directory>../..</directory>
@@ -125,7 +125,7 @@
     <testResources>
       <testResource>
         <directory>src/test/resources</directory>
-        <filtering>true</filtering>
+        <filtering>false</filtering>
       </testResource>
       <testResource>
         <directory>../..</directory>
