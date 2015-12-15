@@ -210,6 +210,8 @@
               <include>**/*Tests.java</include>
             </includes>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
+            <runOrder>alphabetical</runOrder>
+            <argLine>-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -Xss256k</argLine>
           </configuration>
         </plugin>
         <plugin>
