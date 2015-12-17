@@ -197,7 +197,8 @@ public final class AttributeBuilder {
      */
     private void checkSingleValue() {
         if (value == null || value.size() != 1) {
-            throw new IllegalArgumentException("Must be a single value.");
+            throw new IllegalArgumentException("Value of attribute '" + name + "' must be a single value, but it has "
+            		+ (value==null?null:value.size()) + "values");
         }
     }
 
@@ -210,7 +211,7 @@ public final class AttributeBuilder {
     private String getSingleStringValue() {
         checkSingleValue();
         if (!(value.get(0) instanceof String)) {
-            throw new IllegalArgumentException("Attribute value must be an instance of String.");
+            throw new IllegalArgumentException("Value of attribute '" + name + "' must be an instance of String.");
         }
         return (String) value.get(0);
     }
