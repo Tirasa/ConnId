@@ -200,8 +200,9 @@ public final class AttributeBuilder {
      */
     private void checkSingleValue() {
         if (value == null || value.size() != 1) {
-            throw new IllegalArgumentException("Value of attribute '" + name + "' must be a single value, but it has "
-            		+ (value==null?null:value.size()) + "values");
+            throw new IllegalArgumentException(
+                    "Value of attribute '" + name + "' must be a single value, but it has "
+                    + (value == null ? null : value.size()) + "values");
         }
     }
 
