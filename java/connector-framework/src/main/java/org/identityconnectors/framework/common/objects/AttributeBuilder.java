@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2016 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -55,6 +56,8 @@ public final class AttributeBuilder {
     String name;
 
     List<Object> value;
+    
+   AttributeValueCompleteness attributeValueCompleteness = AttributeValueCompleteness.COMPLETE;
 
     /**
      * Creates a attribute with the specified name and a {@code null} value.
@@ -185,7 +188,7 @@ public final class AttributeBuilder {
         } else if (Name.NAME.equals(name)) {
             return new Name(getSingleStringValue());
         }
-        return new Attribute(name, value);
+        return new Attribute(name, value, attributeValueCompleteness);
     }
 
     /**
@@ -230,7 +233,15 @@ public final class AttributeBuilder {
         }
     }
 
-    // =======================================================================
+    public AttributeValueCompleteness getAttributeValueCompleteness() {
+		return attributeValueCompleteness;
+	}
+
+	public void setAttributeValueCompleteness(AttributeValueCompleteness attributeValueCompleteness) {
+		this.attributeValueCompleteness = attributeValueCompleteness;
+	}
+
+	// =======================================================================
     // Operational Attributes
     // =======================================================================
     /**

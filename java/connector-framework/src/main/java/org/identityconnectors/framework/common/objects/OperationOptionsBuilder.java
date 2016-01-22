@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2016 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -242,6 +243,18 @@ public final class OperationOptionsBuilder {
      */
     public OperationOptionsBuilder setAllowPartialResults(final boolean allowPartialResults) {
         options.put(OperationOptions.OP_ALLOW_PARTIAL_RESULTS, allowPartialResults);
+        return this;
+    }
+    
+    /**
+     * Convenience method to set {@link OperationOptions#OP_ALLOW_PARTIAL_ATTRIBUTE_VALUES}.
+     *
+     * @param allowPartialResults Flag indicating whether partial attribute values are allowed.
+     * @return A this reference to allow chaining
+     * @since 1.4.3
+     */
+    public OperationOptionsBuilder setAllowPartialAttributeValues(final boolean allowPartialAttributeValues) {
+        options.put(OperationOptions.OP_ALLOW_PARTIAL_ATTRIBUTE_VALUES, allowPartialAttributeValues);
         return this;
     }
 
