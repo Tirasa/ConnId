@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2016 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -96,21 +97,43 @@ public class Attribute {
      * Values of the {@link Attribute}.
      */
     private final List<Object> value;
+    
+    /**
+     * A status that indicates completeness of attribute values.
+     * Normal resources always return all values of the attribute. However there may be
+     * cases, when returning all the values is not an acceptable overhead
+     * (e.g. returning all group members for big groups). This status can also be used
+     * to indicate that an attribute has a value without revealing that value.
+     * E.g. resource may indicate that the account has a password without revealing
+     * that password.
+     * The interpretation: If there is no Attribute object in the ConnectorObject for any
+     * specific attribute, then the client should make no assumption about existence of
+     * the attribute (e.g. the attribute may exists, but it security policies deny reading
+     * of the attribute right now). If the Attribute object is returned then the client
+     * may assume that the attribute exists and it has at least one value. If the 
+     * attributeValueCompleteness is set to COMPLETE then the client may also assume that
+     * the returned set of value is complete.
+     */
+    private final AttributeValueCompleteness attributeValueCompleteness;
 
+    Attribute(String name, List<Object> value) {
+    	this(name, value, AttributeValueCompleteness.COMPLETE);
+    }
+    
     /**
      * Create an attribute.
      */
-    Attribute(String name, List<Object> value) {
+    Attribute(String name, List<Object> value, AttributeValueCompleteness attributeValueCompleteness) {
         if (StringUtil.isBlank(name)) {
             throw new IllegalArgumentException("Name must not be blank!");
         }
         if (OperationalAttributes.PASSWORD_NAME.equals(name)
                 || OperationalAttributes.CURRENT_PASSWORD_NAME.equals(name)) {
             // check the value..
-            if (value == null || value.size() != 1) {
-                throw new IllegalArgumentException("Must be a single value.");
+            if (value == null || value.size() > 1) {
+                throw new IllegalArgumentException("Password attribute must be single-value.");
             }
-            if (!(value.get(0) instanceof GuardedString)) {
+            if (value.size() == 1 && !(value.get(0) instanceof GuardedString)) {
                 throw new IllegalArgumentException(
                         "Password value must be an instance of GuardedString");
             }
@@ -119,6 +142,7 @@ public class Attribute {
         this.name = name;
         // copy to prevent corruption..
         this.value = (value == null) ? null : CollectionUtil.newReadOnlyList(value);
+        this.attributeValueCompleteness = attributeValueCompleteness;
     }
 
     public String getName() {
@@ -129,7 +153,11 @@ public class Attribute {
         return (this.value == null) ? null : Collections.unmodifiableList(this.value);
     }
 
-    /**
+    public AttributeValueCompleteness getAttributeValueCompleteness() {
+		return attributeValueCompleteness;
+	}
+
+	/**
      * Determines if the 'name' matches this {@link Attribute}.
      *
      * @param name
@@ -185,6 +213,11 @@ public class Attribute {
         if (!CollectionUtil.equals(value, other.value)) {
             return false;
         }
+        
+        if (this.attributeValueCompleteness != other.attributeValueCompleteness) {
+        	return false;
+        }
+        
         return true;
     }
 }
