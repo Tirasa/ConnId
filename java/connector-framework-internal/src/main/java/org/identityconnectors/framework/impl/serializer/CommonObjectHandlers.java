@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
- * Portions Copyrighted 2015 Evolveum
+ * Portions Copyrighted 2015-2016 Evolveum
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -396,6 +396,7 @@ class CommonObjectHandlers {
                 }
                 builder.setFlags(flags);
                 builder.setNativeName(decoder.readStringField("nativeName", null));
+                builder.setSubtype(decoder.readStringField("subtype", null));
                 return builder.build();
             }
 
@@ -409,6 +410,7 @@ class CommonObjectHandlers {
                     encoder.writeObjectContents(flag);
                 }
                 encoder.writeStringField("nativeName", val.getNativeName());
+                encoder.writeStringField("subtype", val.getSubtype());
             }
         });
 

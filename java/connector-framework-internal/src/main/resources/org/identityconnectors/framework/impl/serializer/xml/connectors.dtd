@@ -23,7 +23,7 @@
     "Portions Copyrighted [year] [name of copyright owner]"
     ====================
     Portions Copyrighted 2010-2014 ForgeRock AS.
-    Portions Copyrighted 2015 Evolveum
+    Portions Copyrighted 2015-2016 Evolveum
 
 -->
 
@@ -334,6 +334,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
    name CDATA #REQUIRED
    type CDATA #REQUIRED
    nativeName CDATA #IMPLIED
+   subtype CDATA #IMPLIED
 >
 <!ELEMENT AttributeInfoFlag EMPTY>
 <!ATTLIST AttributeInfoFlag

@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2015-2016 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -47,6 +48,7 @@ public final class AttributeInfoBuilder {
 
     private String name;
     private Class<?> type;
+    private String subtype;
     private String nativeName;
     private final EnumSet<Flags> flags;
 
@@ -117,7 +119,7 @@ public final class AttributeInfoBuilder {
      * @return {@link AttributeInfo} based on the properties set.
      */
     public AttributeInfo build() {
-        return new AttributeInfo(name, type, nativeName, flags);
+        return new AttributeInfo(name, type, subtype, nativeName, flags);
     }
 
     /**
@@ -150,6 +152,32 @@ public final class AttributeInfoBuilder {
     }
     
     /**
+     * Optional subtype of the attribute. This defines a subformat or provides
+     * more specific definition what the attribute contains. E.g. it may define
+     * that the attribute contains case-insensitive string, URL, LDAP distinguished
+     * name and so on.
+     * 
+     * The subtype may contain one of the pre-defined subtypes 
+     * (a value form the Subtype enumeration). The subtype may also contain an URI
+     * that specifies a custom subtype that the connector recognizes and it is not
+     * defined in the pre-defined subtype enumeration.
+     * 
+     * See {@link AttributeInfo#Subtypes} for the list of pre-defined subtypes.
+     * 
+     * @param subtype
+     * 			subtype for an {@link Attribute}'s value.
+     */
+    public AttributeInfoBuilder setSubtype(String subtype) {
+		this.subtype = subtype;
+		return this;
+	}
+    
+    public AttributeInfoBuilder setSubtype(AttributeInfo.Subtypes subtype) {
+		this.subtype = subtype.toString();
+		return this;
+	}
+
+	/**
      * Sets the native name of the {@link AttributeInfo} object.
      *
      * @param nativeName

@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
- * Portions Copyrighted 2015 Evolveum
+ * Portions Copyrighted 2015-2016 Evolveum
  */
 
 package org.identityconnectors.framework.impl.serializer;
@@ -587,12 +587,14 @@ public class ObjectSerializationTests {
         builder.setMultiValued(true);
         builder.setUpdateable(false);
         builder.setNativeName("FOOFOO");
+        builder.setSubtype(AttributeInfo.Subtypes.STRING_CASE_IGNORE);
         builder.setReturnedByDefault(false);
         AttributeInfo v1 = builder.build();
         AttributeInfo v2 = (AttributeInfo)cloneObject(v1);
         assertEquals(v1,v2);
         assertEquals("foo", v2.getName());
         assertEquals(String.class, v2.getType());
+        assertEquals(AttributeInfo.Subtypes.STRING_CASE_IGNORE.toString(), v2.getSubtype());
         assertTrue(v2.isMultiValued());
         assertTrue(v2.isReadable());
         assertTrue(v2.isRequired());
