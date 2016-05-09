@@ -81,7 +81,7 @@ public class EncryptorImpl implements Encryptor {
             try {
                 Cipher cipher = Cipher.getInstance(FULL_ALGORITHM);
                 cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-                cipher.doFinal("A".getBytes());
+                cipher.doFinal("A".getBytes("UTF-8"));
             } catch (InvalidKeyException e) {
 
                 LOG.warn("Error in self-test with default generated key (algorithm={0}, keySize(encoded)={1}), "
@@ -97,7 +97,6 @@ public class EncryptorImpl implements Encryptor {
                 }
                 keyGenerator.init(FALLBACK_KEY_SIZE);
                 key = keyGenerator.generateKey();
-
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
