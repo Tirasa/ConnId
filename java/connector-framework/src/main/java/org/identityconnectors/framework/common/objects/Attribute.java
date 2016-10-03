@@ -88,6 +88,7 @@ import org.identityconnectors.common.security.GuardedString;
  * @since 1.0
  */
 public class Attribute {
+
     /**
      * Name of the {@link Attribute}.
      */
@@ -97,7 +98,7 @@ public class Attribute {
      * Values of the {@link Attribute}.
      */
     private final List<Object> value;
-    
+
     /**
      * A status that indicates completeness of attribute values.
      * Normal resources always return all values of the attribute. However there may be
@@ -110,16 +111,16 @@ public class Attribute {
      * specific attribute, then the client should make no assumption about existence of
      * the attribute (e.g. the attribute may exists, but it security policies deny reading
      * of the attribute right now). If the Attribute object is returned then the client
-     * may assume that the attribute exists and it has at least one value. If the 
+     * may assume that the attribute exists and it has at least one value. If the
      * attributeValueCompleteness is set to COMPLETE then the client may also assume that
      * the returned set of value is complete.
      */
     private final AttributeValueCompleteness attributeValueCompleteness;
 
     Attribute(String name, List<Object> value) {
-    	this(name, value, AttributeValueCompleteness.COMPLETE);
+        this(name, value, AttributeValueCompleteness.COMPLETE);
     }
-    
+
     /**
      * Create an attribute.
      */
@@ -154,17 +155,16 @@ public class Attribute {
     }
 
     public AttributeValueCompleteness getAttributeValueCompleteness() {
-		return attributeValueCompleteness;
-	}
+        return attributeValueCompleteness;
+    }
 
-	/**
+    /**
      * Determines if the 'name' matches this {@link Attribute}.
      *
      * @param name
-     *            case insensitive string representation of the attribute's
-     *            name.
+     * case insensitive string representation of the attribute's name.
      * @return <code>true</code> if the case insentitive name is equal to that
-     *         of the one in {@link Attribute}.
+     * of the one in {@link Attribute}.
      */
     public boolean is(String name) {
         return namesEqual(this.name, name);
@@ -186,8 +186,13 @@ public class Attribute {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         map.put("Name", getName());
         map.put("Value", getValue());
+        extendToStringMap(map);
         bld.append(map);
         return bld.toString();
+    }
+
+    protected void extendToStringMap(final Map<String, Object> map) {
+        // Nothing to do here. Just for use in sublcasses.
     }
 
     @Override
@@ -213,11 +218,11 @@ public class Attribute {
         if (!CollectionUtil.equals(value, other.value)) {
             return false;
         }
-        
+
         if (this.attributeValueCompleteness != other.attributeValueCompleteness) {
-        	return false;
+            return false;
         }
-        
+
         return true;
     }
 }
