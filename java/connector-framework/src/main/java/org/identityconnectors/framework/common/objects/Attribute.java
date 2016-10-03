@@ -186,8 +186,13 @@ public class Attribute {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         map.put("Name", getName());
         map.put("Value", getValue());
+        extendToStringMap(map);
         bld.append(map);
         return bld.toString();
+    }
+    
+    protected void extendToStringMap(Map<String, Object> map) {
+    	// Nothing to do here. Just for use in sublcasses.
     }
 
     @Override

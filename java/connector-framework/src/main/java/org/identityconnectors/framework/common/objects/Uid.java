@@ -20,9 +20,12 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2016 Evolveum
  */
 
 package org.identityconnectors.framework.common.objects;
+
+import java.util.Map;
 
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.StringUtil;
@@ -75,10 +78,12 @@ public final class Uid extends Attribute {
     public static final String NAME = AttributeUtil.createSpecialName("UID");
 
     private final String revision;
+    private final Name nameHint;
 
     public Uid(String value) {
         super(NAME, CollectionUtil.<Object> newReadOnlyList(check(value)));
         revision = null;
+        nameHint = null;
     }
 
     public Uid(String value, String revision) {
@@ -87,8 +92,24 @@ public final class Uid extends Attribute {
             throw new IllegalArgumentException("Revision value must not be blank!");
         }
         this.revision = revision;
+        this.nameHint = null;
     }
-
+    
+    public Uid(String value, Name nameHint) {
+        super(NAME, CollectionUtil.<Object> newReadOnlyList(check(value)));
+        this.revision = null;
+        this.nameHint = nameHint;
+    }
+    
+    public Uid(String value, String revision, Name nameHint) {
+        super(NAME, CollectionUtil.<Object> newReadOnlyList(check(value)));
+        if (StringUtil.isBlank(revision)) {
+            throw new IllegalArgumentException("Revision value must not be blank!");
+        }
+        this.revision = revision;
+        this.nameHint = nameHint;
+    }
+    
     /**
      * Throws an {@link IllegalArgumentException} if the value passed in blank.
      */
@@ -111,6 +132,31 @@ public final class Uid extends Attribute {
     }
 
     /**
+     * Returns the last known name of the object that is identified by this Uid.
+     * This returns the __NAME__ attribute of the object as either the connector
+     * or the framework client seen it. This hint can be used to optimize some
+     * connector operations (e.g. read operations in environments with several
+     * servers). It can also be used to make the rename (update) operations more
+     * reliable. It can be used to make the use of QuailifiedUid more useful,
+     * e.g. when used in the CONTAINER operation option.
+     * 
+     * @return last known name of the object that is identified by this Uid.
+     */
+    public Name getNameHint() {
+		return nameHint;
+	}
+    
+    /**
+     * Obtain a string representation of the value of name hint.
+     * Convenience method.
+     *
+     * @return string representation of the name hint.
+     */
+    public String getNameHintValue() {
+    	return AttributeUtil.getStringValue(nameHint);
+	}
+
+	/**
      * Return the string representation of the revision value of the
      * <p/>
      * The revision number specifies a given version ot the
@@ -123,4 +169,16 @@ public final class Uid extends Attribute {
     public String getRevision() {
         return revision;
     }
+
+	@Override
+	protected void extendToStringMap(Map<String, Object> map) {
+		super.extendToStringMap(map);
+		if (revision != null) {
+			map.put("Revision", revision);
+		}
+		if (nameHint != null) {
+			map.put("NameHint", nameHint);
+		}
+	}
+
 }
