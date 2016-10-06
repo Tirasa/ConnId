@@ -64,16 +64,16 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
     // =======================================================================
     // Test Data
     // =======================================================================
-    private static List<ConnectorObject> objects = new ArrayList<ConnectorObject>();
+    private static final List<ConnectorObject> OBJECTS = new ArrayList<ConnectorObject>();
 
     static {
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         for (int i = 0; i < 100; i++) {
             bld.setUid(Integer.toString(i));
             bld.setName(Integer.toString(i));
-            objects.add(bld.build());
+            OBJECTS.add(bld.build());
         }
-    };
+    }
 
     // =======================================================================
     // Test Methods
@@ -82,21 +82,21 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
      * This will do a basic replace.
      *
      * @see UpdateOp#update(org.identityconnectors.framework.common.objects.ObjectClass,
-     *      org.identityconnectors.framework.common.objects.Uid, java.util.Set,
-     *      org.identityconnectors.framework.common.objects.OperationOptions)
+     * org.identityconnectors.framework.common.objects.Uid, java.util.Set,
+     * org.identityconnectors.framework.common.objects.OperationOptions)
      */
     @Override
     public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> attrs,
             OperationOptions options) {
         String val = AttributeUtil.getAsStringValue(uid);
-        int idx = Integer.valueOf(val).intValue();
+        int idx = val == null ? 0 : Integer.parseInt(val);
         // get out the object..
-        ConnectorObject base = objects.get(idx);
+        ConnectorObject base = OBJECTS.get(idx);
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         bld.add(base);
         bld.addAttributes(attrs);
         ConnectorObject obj = bld.build();
-        objects.set(idx, obj);
+        OBJECTS.set(idx, obj);
         return obj.getUid();
     }
 
@@ -112,14 +112,14 @@ public class MockUpdateConnector implements Connector, UpdateOp, SearchOp<String
      * Simply return everything don't bother optimizing.
      *
      * @see SearchOp#executeQuery(org.identityconnectors.framework.common.objects.ObjectClass,
-     *      Object,
-     *      org.identityconnectors.framework.common.objects.ResultsHandler,
-     *      org.identityconnectors.framework.common.objects.OperationOptions)
+     * Object,
+     * org.identityconnectors.framework.common.objects.ResultsHandler,
+     * org.identityconnectors.framework.common.objects.OperationOptions)
      */
     @Override
     public void executeQuery(ObjectClass objectClass, String query, ResultsHandler handler,
             OperationOptions options) {
-        Iterator<ConnectorObject> iter = objects.iterator();
+        Iterator<ConnectorObject> iter = OBJECTS.iterator();
         while (iter.hasNext()) {
             if (!handler.handle(iter.next())) {
                 break;

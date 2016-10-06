@@ -53,11 +53,14 @@ import org.identityconnectors.framework.spi.operations.SPIOperation;
 
 import static org.identityconnectors.framework.common.FrameworkUtil.isSupportedConfigurationType;
 
+import java.util.Arrays;
+
 /**
  * Class for translating from a Java class to ConfigurationProperties and from
  * ConfigurationProperties to a java class.
  */
 public class JavaClassProperties {
+
     /**
      * Given a configuration class, creates the configuration properties for it.
      */
@@ -247,9 +250,7 @@ public class JavaClassProperties {
         boolean filterUnsupported = false;
         ConfigurationClass options = config.getAnnotation(ConfigurationClass.class);
         if (null != options) {
-            for (String s : options.ignore()) {
-                excludes.add(s);
-            }
+            excludes.addAll(Arrays.asList(options.ignore()));
             filterUnsupported = options.skipUnsupported();
         }
 
@@ -262,7 +263,9 @@ public class JavaClassProperties {
             if (excludes.contains(propName)) {
                 continue;
             }
-            if (filterUnsupported && !isSupportedConfigurationType(descriptor.getPropertyType())) {
+            if (filterUnsupported && descriptor.getPropertyType() != null
+                    && !isSupportedConfigurationType(descriptor.getPropertyType())) {
+
                 //Silently ignore if the property type is not supported
                 continue;
             }
