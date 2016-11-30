@@ -109,6 +109,13 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://connid.atlassian.net/browse/OPENAM">issues</a></td>
   <td><a href="https://travis-ci.org/Tirasa/ConnIdOpenAMBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdOpenAMBundle.png"/></a></td>
  </tr>
+<tr>
+  <td>REST</td>
+  <td>https://github.com/Tirasa/ConnIdRESTBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/REST">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/REST">issues</a></td>
+  <td><a href="https://travis-ci.org/Tirasa/ConnIdRESTBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdRESTBundle.png"/></a></td>
+ </tr>
  <tr>
   <td>SOAP</td>
   <td>https://github.com/Tirasa/ConnIdSOAPBundle</td>
