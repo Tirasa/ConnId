@@ -77,9 +77,8 @@
     <Copy SourceFiles="@(PowerShellScriptExecutorFactoryFiles)" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="@(ShellScriptExecutorFactoryFiles)" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="@(EXEFiles)" DestinationFolder="bin\$(Configuration)\target" />
-    <Copy SourceFiles="..\legal\CDDLv1.txt" DestinationFolder="bin\$(Configuration)\target" />
+    <Copy SourceFiles="..\..\LICENSE" DestinationFolder="bin\$(Configuration)\target" />
     <Copy SourceFiles="..\legal\THIRDPARTYREADME.txt" DestinationFolder="bin\$(Configuration)\target" />
-    <Copy SourceFiles="..\legal\ForgeRock_License.txt" DestinationFolder="bin\$(Configuration)\target" Condition=" '$(Configuration)' == 'Release' "/>
     <ItemGroup>
       <ZipFiles Include="bin\$(Configuration)\target\*.*" Exclude="*.zip" />
     </ItemGroup>
