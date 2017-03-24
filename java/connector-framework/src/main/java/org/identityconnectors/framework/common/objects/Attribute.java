@@ -131,10 +131,10 @@ public class Attribute {
         if (OperationalAttributes.PASSWORD_NAME.equals(name)
                 || OperationalAttributes.CURRENT_PASSWORD_NAME.equals(name)) {
             // check the value..
-            if (value == null || value.size() > 1) {
+            if (!AttributeValueCompleteness.INCOMPLETE.equals(attributeValueCompleteness) && (value == null || value.size() > 1)) {
                 throw new IllegalArgumentException("Password attribute must be single-value.");
             }
-            if (value.size() == 1 && !(value.get(0) instanceof GuardedString)) {
+            if (value != null && value.size() == 1 && !(value.get(0) instanceof GuardedString)) {
                 throw new IllegalArgumentException(
                         "Password value must be an instance of GuardedString");
             }
