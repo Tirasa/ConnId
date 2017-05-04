@@ -38,6 +38,7 @@ import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
 import org.identityconnectors.framework.api.operations.ValidateApiOp;
 
 /**
@@ -50,7 +51,7 @@ import org.identityconnectors.framework.api.operations.ValidateApiOp;
  * @author Will Droste
  * @since 1.0
  */
-public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, UpdateApiOp,
+public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, UpdateApiOp, UpdateDeltaApiOp,
         SchemaApiOp, AuthenticationApiOp, ResolveUsernameApiOp, GetApiOp, ValidateApiOp, TestApiOp,
         ScriptOnConnectorApiOp, ScriptOnResourceApiOp, SyncApiOp {
 

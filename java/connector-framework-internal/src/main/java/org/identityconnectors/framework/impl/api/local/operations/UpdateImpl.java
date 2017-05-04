@@ -55,7 +55,7 @@ import org.identityconnectors.framework.spi.operations.UpdateOp;
  * update.
  */
 public class UpdateImpl extends ConnectorAPIOperationRunner implements
-        org.identityconnectors.framework.api.operations.UpdateApiOp {
+        org.identityconnectors.framework.api.operations.UpdateApiOp{
 	
 	// Special logger with SPI operation log name. Used for logging operation entry/exit
     private static final Log OP_LOG = Log.getLog(UpdateOp.class);
@@ -186,7 +186,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements
         }
         return (Uid) normalizer.normalizeAttribute(ret);
     }
-
+    
     private Set<Attribute> fetchAndMerge(ObjectClass objclass, Uid uid,
             Set<Attribute> valuesToChange, boolean add, OperationOptions options) {
         // check that this connector supports Search..

@@ -61,6 +61,9 @@ import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
+import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
+import org.identityconnectors.framework.common.objects.AttributeDeltaUtil;
 import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.Name;
@@ -418,6 +421,51 @@ public class ConnectorHelper {
 
         return success;
     }
+    
+    /**
+	 * Checks if object has expected attributesDelta and values. All readable or
+	 * non-special attributesDelta are checked.
+	 */
+	public static boolean checkObjectByAttrDelta(ObjectClassInfo objectClassInfo, ConnectorObject connectorObj,
+			Set<AttributeDelta> requestedAttributesDelta) {
+		return checkObjectByAttrDelta(objectClassInfo, connectorObj, requestedAttributesDelta, true);
+	}
+
+	/**
+	 * Checks if object has expected attributesDelta and values. All readable or
+	 * non-special attributes are checked.
+	 * 
+	 * @param checkNotReturnedByDefault
+	 *            if true then also attributes not returned by default are
+	 *            checked
+	 */
+	public static boolean checkObjectByAttrDelta(ObjectClassInfo objectClassInfo, ConnectorObject connectorObj,
+			Set<AttributeDelta> requestedAttributesDelta, boolean checkNotReturnedByDefault) {
+		boolean success = true;
+
+		for (AttributeDelta attributeDelta : requestedAttributesDelta) {
+			// we will check all attributesDelta that are readable all other
+			// attributesDelta
+			// should not be present in connector object
+			if (isReadable(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta))) {
+				if (checkNotReturnedByDefault
+						|| isReturnedByDefault(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta))) {
+					Attribute createdAttribute = connectorObj.getAttributeByName(attributeDelta.getName());
+					if (createdAttribute == null)
+						Assert.fail(String.format("Attribute '%s' is missing.", attributeDelta.getName()));
+
+					List<Object> fetchedValue = createdAttribute.getValue();
+					List<Object> requestedValue = attributeDelta.getValuesToReplace();
+					String msg = String.format(
+							"AttributeDelta '%s' was not properly created. Requested values: %s Fetched values: %s",
+							attributeDelta.getName(), requestedValue, fetchedValue);
+					Assert.assertTrue(checkValue(fetchedValue, requestedValue), msg);
+				}
+			}
+		}
+
+		return success;
+	}
 
     static <E> boolean checkValue(List<E> fetchedValues, List<E> expectedValues) {
         Iterator<E> e = expectedValues.iterator();
@@ -606,6 +654,22 @@ public class ConnectorHelper {
             String testName, String qualifier, int sequenceNumber, boolean checkRequired, boolean onlyMultiValue) {
         return getAttributes(dataProvider, objectClassInfo, testName, qualifier, sequenceNumber, checkRequired, onlyMultiValue, false, true);
     }
+    
+    /**
+	 * Get updateable attributes' values.
+	 *
+	 * Generate new values for updateable attributes based on contract test
+	 * properties prefixed by <code>qualifier</code>
+	 *
+	 * @param qualifier
+	 *            the prefix for values used in update.
+	 */
+	public static Set<AttributeDelta> getUpdateableAttributesDelta(DataProvider dataProvider,
+			ObjectClassInfo objectClassInfo, String testName, String qualifier, int sequenceNumber,
+			boolean checkRequired, boolean isMultiValue, boolean isAddOrRemoveValues) {
+		return getAttributesDelta(dataProvider, objectClassInfo, testName, qualifier, sequenceNumber, checkRequired,
+				isMultiValue, isAddOrRemoveValues, false, true);
+	}
 
     /**
      * Get createable attributes' values.
@@ -696,6 +760,107 @@ public class ConnectorHelper {
 
         return attributes;
     }
+    
+    /**
+	 * get attributeDelta values (concatenates the qualifier with the name)
+	 * 
+	 * @param dataProvider
+	 * @param objectClassInfo
+	 * @param testName
+	 * @param qualifier
+	 * @param sequenceNumber
+	 * @param checkRequired
+	 * @return
+	 * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
+	 */
+	public static Set<AttributeDelta> getAttributesDelta(DataProvider dataProvider, ObjectClassInfo objectClassInfo,
+			String testName, String qualifier, int sequenceNumber, boolean checkRequired, boolean isMultiValue,
+			boolean isAddValues, boolean onlyCreateable, boolean onlyUpdateable)
+			throws ObjectNotFoundException {
+		Set<AttributeDelta> attributesDelta = new HashSet<AttributeDelta>();
+
+		for (AttributeInfo attributeInfo : objectClassInfo.getAttributeInfo()) {
+			if (isMultiValue && !attributeInfo.isMultiValued()) {
+				continue;
+			}
+			if (!isMultiValue && attributeInfo.isMultiValued()) {
+				continue;
+			}
+			if (onlyCreateable && !attributeInfo.isCreateable()) {
+				continue;
+			}
+			if (onlyUpdateable && !attributeInfo.isUpdateable()) {
+				continue;
+			}
+			String attributeName = attributeInfo.getName();
+			try {
+				// if the attribute is not UID, get a value from the
+				// dataprovider
+				// and add an attribute (exception is thrown if value is not
+				// present
+				// values for UID cannot be generated because some connectors
+				// have mapping of
+				// UID and NAME to same values - check test would fail
+				if (!attributeInfo.is(Uid.NAME)) {
+					String dataName = attributeName;
+					if (qualifier.length() > 0) {
+						dataName = qualifier + "." + dataName;
+					}
+
+					// *multivalue* attributes have different default values.
+					// That is why we should
+					// pass this to get().
+					Object attributeValue = get(dataProvider, testName, attributeInfo.getType(), dataName,
+							objectClassInfo.getType(), sequenceNumber, attributeInfo.isMultiValued());
+					if (!isMultiValue) {
+						if (attributeValue instanceof Collection<?>) {
+							attributesDelta
+									.add(AttributeDeltaBuilder.build(attributeName, (Collection<?>) attributeValue));
+						} else {
+							attributesDelta.add(AttributeDeltaBuilder.build(attributeName, attributeValue));
+						}
+					} else {
+						if (isAddValues) {
+							if (attributeValue instanceof Collection<?>) {
+								attributesDelta.add(AttributeDeltaBuilder.build(attributeName,
+										(Collection<?>) attributeValue, null));
+							} else {
+								AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
+								attrBuilder.addValueToAdd(attributeValue);
+								attrBuilder.setName(attributeName);
+								attributesDelta.add(attrBuilder.build());
+							}
+						} else {
+							if (attributeValue instanceof Collection<?>) {
+								attributesDelta.add(AttributeDeltaBuilder.build(attributeName, null,
+										(Collection<?>) attributeValue));
+							} else {
+								AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
+								attrBuilder.addValueToRemove(attributeValue);
+								attrBuilder.setName(attributeName);
+								attributesDelta.add(attrBuilder.build());
+							}
+						}
+					}
+				}
+			} catch (ObjectNotFoundException ex) {
+				// caught an exception because no value was supplied for an
+				// attribute
+				if (checkRequired && attributeInfo.isRequired()) {
+					// if the attribute was required, it's an error
+					logger.error("Could not find a value of REQUIRED attribute type ''" + attributeInfo.getType()
+							+ "'' for ''" + attributeName + "''", ex);
+					throw ex;
+				} else {
+					// if the attribute was not required, it's a warning
+					logger.warn("Could not find a value of type ''" + attributeInfo.getType() + "'' for ''"
+							+ attributeName + "''");
+				}
+			}
+		}
+
+		return attributesDelta;
+	}
 
     /**
      * gets the attributes for you, appending the qualifier to the attribute name

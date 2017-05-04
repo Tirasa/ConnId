@@ -37,6 +37,7 @@ import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
 import org.identityconnectors.framework.api.operations.ValidateApiOp;
 
 
@@ -60,6 +61,8 @@ class OperationMappings {
                 "SchemaApiOp"));
         MAPPINGS.add(new ObjectTypeMapperImpl(UpdateApiOp.class,
                 "UpdateApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(UpdateDeltaApiOp.class,
+                "UpdateDeltaApiOp"));
         MAPPINGS.add(new ObjectTypeMapperImpl(DeleteApiOp.class,
                 "DeleteApiOp"));
         MAPPINGS.add(new ObjectTypeMapperImpl(GetApiOp.class,

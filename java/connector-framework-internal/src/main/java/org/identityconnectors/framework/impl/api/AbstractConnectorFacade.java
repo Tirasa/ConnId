@@ -46,8 +46,10 @@ import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
 import org.identityconnectors.framework.api.operations.ValidateApiOp;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
@@ -188,6 +190,17 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
         return ((UpdateApiOp) this.getOperationCheckSupported(UpdateApiOp.class)).
                 update(objectClass, uid, attrs, options);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final Set<AttributeDelta> updateDelta(final ObjectClass objectClass, final Uid uid,
+            final Set<AttributeDelta> attrsDelta, final OperationOptions options) {
+
+        return ((UpdateDeltaApiOp) this.getDeltaOperationCheckSupported(UpdateDeltaApiOp.class, UpdateApiOp.class)).
+                updateDelta(objectClass, uid, attrsDelta, options);
+    }
 
     /**
      * {@inheritDoc}
@@ -305,6 +318,18 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
             throw new UnsupportedOperationException(str);
         }
         return getOperationImplementation(api);
+    }
+    
+    private APIOperation getDeltaOperationCheckSupported(final Class<? extends APIOperation>... apis) {
+        // check if this operation is supported.
+    	for (Class<? extends APIOperation> api : apis){
+    		if(configuration.isSupportedOperation(api)){
+    			return getOperationImplementation(UpdateDeltaApiOp.class);
+    		}
+    	}
+    	String str = MessageFormat.format(MSG, apis);
+        throw new UnsupportedOperationException(str);
+        
     }
 
     /**

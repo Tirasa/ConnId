@@ -59,6 +59,7 @@ import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
 import org.identityconnectors.framework.api.operations.ValidateApiOp;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -78,6 +79,7 @@ import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 import org.identityconnectors.framework.spi.operations.TestOp;
 import org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp;
+import org.identityconnectors.framework.spi.operations.UpdateDeltaOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
 
 public final class FrameworkUtil {
@@ -108,6 +110,7 @@ public final class FrameworkUtil {
         SPI_TO_API.put(DeleteOp.class, DeleteApiOp.class);
         SPI_TO_API.put(SearchOp.class, SearchApiOp.class);
         SPI_TO_API.put(UpdateOp.class, UpdateApiOp.class);
+        SPI_TO_API.put(UpdateDeltaOp.class, UpdateDeltaApiOp.class);
         SPI_TO_API.put(UpdateAttributeValuesOp.class, UpdateApiOp.class);
         SPI_TO_API.put(SchemaOp.class, SchemaApiOp.class);
         SPI_TO_API.put(TestOp.class, TestApiOp.class);
