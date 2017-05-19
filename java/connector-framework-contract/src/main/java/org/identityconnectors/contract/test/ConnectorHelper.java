@@ -654,22 +654,22 @@ public class ConnectorHelper {
             String testName, String qualifier, int sequenceNumber, boolean checkRequired, boolean onlyMultiValue) {
         return getAttributes(dataProvider, objectClassInfo, testName, qualifier, sequenceNumber, checkRequired, onlyMultiValue, false, true);
     }
-    
+
     /**
-	 * Get updateable attributes' values.
-	 *
-	 * Generate new values for updateable attributes based on contract test
-	 * properties prefixed by <code>qualifier</code>
-	 *
-	 * @param qualifier
-	 *            the prefix for values used in update.
-	 */
-	public static Set<AttributeDelta> getUpdateableAttributesDelta(DataProvider dataProvider,
-			ObjectClassInfo objectClassInfo, String testName, String qualifier, int sequenceNumber,
-			boolean checkRequired, boolean isMultiValue, boolean isAddOrRemoveValues) {
-		return getAttributesDelta(dataProvider, objectClassInfo, testName, qualifier, sequenceNumber, checkRequired,
-				isMultiValue, isAddOrRemoveValues, false, true);
-	}
+     * Get updateable attributes' values.
+     *
+     * Generate new values for updateable attributes based on contract test
+     * properties prefixed by <code>qualifier</code>
+     *
+     * @param qualifier
+     * the prefix for values used in update.
+     */
+    public static Set<AttributeDelta> getUpdateableAttributesDelta(DataProvider dataProvider,
+            ObjectClassInfo objectClassInfo, String testName, String qualifier, int sequenceNumber,
+            boolean checkRequired, boolean isMultiValue, boolean isAddOrRemoveValues) {
+        return getAttributesDelta(dataProvider, objectClassInfo, testName, qualifier, sequenceNumber, checkRequired,
+                isMultiValue, isAddOrRemoveValues, false, true);
+    }
 
     /**
      * Get createable attributes' values.
@@ -762,105 +762,105 @@ public class ConnectorHelper {
     }
     
     /**
-	 * get attributeDelta values (concatenates the qualifier with the name)
-	 * 
-	 * @param dataProvider
-	 * @param objectClassInfo
-	 * @param testName
-	 * @param qualifier
-	 * @param sequenceNumber
-	 * @param checkRequired
-	 * @return
-	 * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
-	 */
-	public static Set<AttributeDelta> getAttributesDelta(DataProvider dataProvider, ObjectClassInfo objectClassInfo,
-			String testName, String qualifier, int sequenceNumber, boolean checkRequired, boolean isMultiValue,
-			boolean isAddValues, boolean onlyCreateable, boolean onlyUpdateable)
-			throws ObjectNotFoundException {
-		Set<AttributeDelta> attributesDelta = new HashSet<AttributeDelta>();
+     * Get attributeDelta values (concatenates the qualifier with the name).
+     *
+     * @param dataProvider
+     * @param objectClassInfo
+     * @param testName
+     * @param qualifier
+     * @param sequenceNumber
+     * @param checkRequired
+     * @return
+     * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
+     */
+    public static Set<AttributeDelta> getAttributesDelta(DataProvider dataProvider, ObjectClassInfo objectClassInfo,
+            String testName, String qualifier, int sequenceNumber, boolean checkRequired, boolean isMultiValue,
+            boolean isAddValues, boolean onlyCreateable, boolean onlyUpdateable)
+            throws ObjectNotFoundException {
+        Set<AttributeDelta> attributesDelta = new HashSet<AttributeDelta>();
 
-		for (AttributeInfo attributeInfo : objectClassInfo.getAttributeInfo()) {
-			if (isMultiValue && !attributeInfo.isMultiValued()) {
-				continue;
-			}
-			if (!isMultiValue && attributeInfo.isMultiValued()) {
-				continue;
-			}
-			if (onlyCreateable && !attributeInfo.isCreateable()) {
-				continue;
-			}
-			if (onlyUpdateable && !attributeInfo.isUpdateable()) {
-				continue;
-			}
-			String attributeName = attributeInfo.getName();
-			try {
-				// if the attribute is not UID, get a value from the
-				// dataprovider
-				// and add an attribute (exception is thrown if value is not
-				// present
-				// values for UID cannot be generated because some connectors
-				// have mapping of
-				// UID and NAME to same values - check test would fail
-				if (!attributeInfo.is(Uid.NAME)) {
-					String dataName = attributeName;
-					if (qualifier.length() > 0) {
-						dataName = qualifier + "." + dataName;
-					}
+        for (AttributeInfo attributeInfo : objectClassInfo.getAttributeInfo()) {
+            if (isMultiValue && !attributeInfo.isMultiValued()) {
+                continue;
+            }
+            if (!isMultiValue && attributeInfo.isMultiValued()) {
+                continue;
+            }
+            if (onlyCreateable && !attributeInfo.isCreateable()) {
+                continue;
+            }
+            if (onlyUpdateable && !attributeInfo.isUpdateable()) {
+                continue;
+            }
+            String attributeName = attributeInfo.getName();
+            try {
+                // if the attribute is not UID, get a value from the
+                // dataprovider
+                // and add an attribute (exception is thrown if value is not
+                // present
+                // values for UID cannot be generated because some connectors
+                // have mapping of
+                // UID and NAME to same values - check test would fail
+                if (!attributeInfo.is(Uid.NAME)) {
+                    String dataName = attributeName;
+                    if (qualifier.length() > 0) {
+                        dataName = qualifier + "." + dataName;
+                    }
 
-					// *multivalue* attributes have different default values.
-					// That is why we should
-					// pass this to get().
-					Object attributeValue = get(dataProvider, testName, attributeInfo.getType(), dataName,
-							objectClassInfo.getType(), sequenceNumber, attributeInfo.isMultiValued());
-					if (!isMultiValue) {
-						if (attributeValue instanceof Collection<?>) {
-							attributesDelta
-									.add(AttributeDeltaBuilder.build(attributeName, (Collection<?>) attributeValue));
-						} else {
-							attributesDelta.add(AttributeDeltaBuilder.build(attributeName, attributeValue));
-						}
-					} else {
-						if (isAddValues) {
-							if (attributeValue instanceof Collection<?>) {
-								attributesDelta.add(AttributeDeltaBuilder.build(attributeName,
-										(Collection<?>) attributeValue, null));
-							} else {
-								AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
-								attrBuilder.addValueToAdd(attributeValue);
-								attrBuilder.setName(attributeName);
-								attributesDelta.add(attrBuilder.build());
-							}
-						} else {
-							if (attributeValue instanceof Collection<?>) {
-								attributesDelta.add(AttributeDeltaBuilder.build(attributeName, null,
-										(Collection<?>) attributeValue));
-							} else {
-								AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
-								attrBuilder.addValueToRemove(attributeValue);
-								attrBuilder.setName(attributeName);
-								attributesDelta.add(attrBuilder.build());
-							}
-						}
-					}
-				}
-			} catch (ObjectNotFoundException ex) {
-				// caught an exception because no value was supplied for an
-				// attribute
-				if (checkRequired && attributeInfo.isRequired()) {
-					// if the attribute was required, it's an error
-					logger.error("Could not find a value of REQUIRED attribute type ''" + attributeInfo.getType()
-							+ "'' for ''" + attributeName + "''", ex);
-					throw ex;
-				} else {
-					// if the attribute was not required, it's a warning
-					logger.warn("Could not find a value of type ''" + attributeInfo.getType() + "'' for ''"
-							+ attributeName + "''");
-				}
-			}
-		}
+                    // *multivalue* attributes have different default values.
+                    // That is why we should
+                    // pass this to get().
+                    Object attributeValue = get(dataProvider, testName, attributeInfo.getType(), dataName,
+                            objectClassInfo.getType(), sequenceNumber, attributeInfo.isMultiValued());
+                    if (!isMultiValue) {
+                        if (attributeValue instanceof Collection<?>) {
+                            attributesDelta
+                                    .add(AttributeDeltaBuilder.build(attributeName, (Collection<?>) attributeValue));
+                        } else {
+                            attributesDelta.add(AttributeDeltaBuilder.build(attributeName, attributeValue));
+                        }
+                    } else {
+                        if (isAddValues) {
+                            if (attributeValue instanceof Collection<?>) {
+                                attributesDelta.add(AttributeDeltaBuilder.build(attributeName,
+                                        (Collection<?>) attributeValue, null));
+                            } else {
+                                AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
+                                attrBuilder.addValueToAdd(attributeValue);
+                                attrBuilder.setName(attributeName);
+                                attributesDelta.add(attrBuilder.build());
+                            }
+                        } else {
+                            if (attributeValue instanceof Collection<?>) {
+                                attributesDelta.add(AttributeDeltaBuilder.build(attributeName, null,
+                                        (Collection<?>) attributeValue));
+                            } else {
+                                AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
+                                attrBuilder.addValueToRemove(attributeValue);
+                                attrBuilder.setName(attributeName);
+                                attributesDelta.add(attrBuilder.build());
+                            }
+                        }
+                    }
+                }
+            } catch (ObjectNotFoundException ex) {
+                // caught an exception because no value was supplied for an
+                // attribute
+                if (checkRequired && attributeInfo.isRequired()) {
+                    // if the attribute was required, it's an error
+                    logger.error("Could not find a value of REQUIRED attribute type ''" + attributeInfo.getType()
+                            + "'' for ''" + attributeName + "''", ex);
+                    throw ex;
+                } else {
+                    // if the attribute was not required, it's a warning
+                    logger.warn("Could not find a value of type ''" + attributeInfo.getType() + "'' for ''"
+                            + attributeName + "''");
+                }
+            }
+        }
 
-		return attributesDelta;
-	}
+        return attributesDelta;
+    }
 
     /**
      * gets the attributes for you, appending the qualifier to the attribute name

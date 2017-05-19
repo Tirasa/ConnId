@@ -195,6 +195,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public final Set<AttributeDelta> updateDelta(final ObjectClass objectClass, final Uid uid,
             final Set<AttributeDelta> attrsDelta, final OperationOptions options) {
 
@@ -327,7 +328,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     			return getOperationImplementation(UpdateDeltaApiOp.class);
     		}
     	}
-    	String str = MessageFormat.format(MSG, apis);
+    	String str = MessageFormat.format(MSG, (Object[]) apis);
         throw new UnsupportedOperationException(str);
         
     }

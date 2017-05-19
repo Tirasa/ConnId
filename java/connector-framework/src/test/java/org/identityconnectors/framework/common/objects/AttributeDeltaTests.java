@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 2017 Evolveum. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -109,12 +109,4 @@ public class AttributeDeltaTests {
             Locale.setDefault(defLocale);
         }
     }
-    
-//    @Test(expectedExceptions = IllegalArgumentException.class)
-//    public void testNotExistReplaceWithAddValues(){
-//    	List<byte[]> values1 = new ArrayList<byte[]>();
-//        values1.add(new byte[] { 0, 1 });
-//        AttributeDelta attribute1 = build("test", values1);
-//        AttributeDelta attribute2 = build("test", values2);
-//    }
 }

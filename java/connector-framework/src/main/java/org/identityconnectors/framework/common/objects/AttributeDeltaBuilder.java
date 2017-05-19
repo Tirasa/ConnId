@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 2017 Evolveum. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -19,7 +19,6 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2016 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -38,317 +37,318 @@ import org.identityconnectors.framework.common.FrameworkUtil;
 
 public class AttributeDeltaBuilder {
 
-	private final static String NAME_ERROR = "Name must not be blank!";
-	private final static String COLLISION_ERROR = "Collision, valuesToReplace, valuesToAdd and valuesToRemove can't be used together!";
-	private final static String COLLISION_ERROR_REPLACE = "Collision, valuesToReplace can't be used together with valuesToAdd or valuesToRemove!";
-	private final static String COLLISION_ERROR_ADDORREMOVE = "Collision, valuesToAdd or valuesToRemove can't be used together with valuesToReplace!";
-	String name;
+    private final static String NAME_ERROR = "Name must not be blank!";
 
-	List<Object> valuesToAdd;
+    private final static String COLLISION_ERROR =
+            "Collision, valuesToReplace, valuesToAdd and valuesToRemove can't be used together!";
 
-	List<Object> valuesToRemove;
+    private final static String COLLISION_ERROR_REPLACE =
+            "Collision, valuesToReplace can't be used together with valuesToAdd or valuesToRemove!";
 
-	List<Object> valuesToReplace;
+    private final static String COLLISION_ERROR_ADDORREMOVE =
+            "Collision, valuesToAdd or valuesToRemove can't be used together with valuesToReplace!";
 
-	/**
-	 * Creates a attributeDelta with the specified name and a {@code null} value
-	 * for valuesToAdd, valuesToRemove and valuesToReplace.
-	 *
-	 * @param name
-	 *            unique name of the attributeDelta.
-	 * @return instance of {@code AttributeDelta} with a {@code null} or actual values for
-	 *         valuesToAdd, valuesToRemove and valuesToReplace.
-	 */
-	public static AttributeDelta build(final String name) {
-		AttributeDeltaBuilder bld = new AttributeDeltaBuilder();
-		bld.setName(name);
-		return bld.build();
-	}
+    private String name;
 
-	/**
-	 * Creates an {@code AttributeDelta} with the name and the values provided
-	 * for valuesToAdd and valuesToRemove.
-	 *
-	 * @param name
-	 *            unique name of the attributeDelta.
-	 * @param valuesToAdd
-	 *            a collection of objects that are used as values for the
-	 *            valuesToAdd of the attributeDelta.
-	 * @param valuesToRemove
-	 *            a collection of objects that are used as values for the
-	 *            valuesToRemove of the attributeDelta.
-	 * @return instance of {@code AttributeDelta} with the specified name and a
-	 *         value that includes the arguments provided.
-	 */
-	public static AttributeDelta build(final String name, final Collection<?> valuesToAdd,
-			final Collection<?> valuesToRemove) {
-		AttributeDeltaBuilder bld = new AttributeDeltaBuilder();
-		bld.setName(name);
-		bld.addValueToAdd(valuesToAdd);
-		bld.addValueToRemove(valuesToRemove);
-		return bld.build();
-	}
+    private List<Object> valuesToAdd;
 
-	/**
-	 * Creates an {@code AttributeDelta} with the name and the values provided
-	 * for valuesToReplace.
-	 *
-	 * @param name
-	 *            unique name of the attributeDelta.
-	 * @param valuesToReplace
-	 *            variable number of arguments that are used as values for the
-	 *            valuesToReplace of the attributeDelta.
-	 */
-	public static AttributeDelta build(final String name, final Object... args) {
-		AttributeDeltaBuilder bld = new AttributeDeltaBuilder();
-		bld.setName(name);
-		bld.addValueToReplace(args);
-		return bld.build();
-	}
+    private List<Object> valuesToRemove;
 
-	/**
-	 * Creates an {@code AttributeDelta} with the name and the values provided
-	 * for valuesToReplace.
-	 *
-	 * @param name
-	 *            unique name of the attributeDelta.
-	 * @param valuesToReplace
-	 *            a collection of objects that are used as values for the
-	 *            valuesToReplace of the attributeDelta.
-	 */
-	public static AttributeDelta build(final String name, final Collection<?> valuesToReplace) {
-		AttributeDeltaBuilder bld = new AttributeDeltaBuilder();
-		bld.setName(name);
-		bld.addValueToReplace(valuesToReplace);
-		return bld.build();
-	}
+    private List<Object> valuesToReplace;
 
-	/**
-	 * * @return instance of {@code AttributeDelta} with the specified name and
-	 * a value that includes the arguments provided.
-	 */
+    /**
+     * Creates a attributeDelta with the specified name and a {@code null} value
+     * for valuesToAdd, valuesToRemove and valuesToReplace.
+     *
+     * @param name
+     * unique name of the attributeDelta.
+     * @return instance of {@code AttributeDelta} with a {@code null} or actual values for
+     * valuesToAdd, valuesToRemove and valuesToReplace.
+     */
+    public static AttributeDelta build(final String name) {
+        AttributeDeltaBuilder bld = new AttributeDeltaBuilder();
+        bld.setName(name);
+        return bld.build();
+    }
 
-	/**
-	 * Get the name of the attributeDelta that is being built.
-	 *
-	 * @return The name of the attributeDelta.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Creates an {@code AttributeDelta} with the name and the values provided
+     * for valuesToAdd and valuesToRemove.
+     *
+     * @param name
+     * unique name of the attributeDelta.
+     * @param valuesToAdd
+     * a collection of objects that are used as values for the
+     * valuesToAdd of the attributeDelta.
+     * @param valuesToRemove
+     * a collection of objects that are used as values for the
+     * valuesToRemove of the attributeDelta.
+     * @return instance of {@code AttributeDelta} with the specified name and a
+     * value that includes the arguments provided.
+     */
+    public static AttributeDelta build(
+            final String name, final Collection<?> valuesToAdd, final Collection<?> valuesToRemove) {
 
-	/**
-	 * Set the name of the attributeDelta that is being built.
-	 *
-	 * @throws IllegalArgumentException
-	 *             if the name parameter is blank.
-	 */
-	public AttributeDeltaBuilder setName(final String name) {
-		if (StringUtil.isBlank(name)) {
-			throw new IllegalArgumentException(NAME_ERROR);
-		}
-		this.name = name;
-		return this;
-	}
+        AttributeDeltaBuilder bld = new AttributeDeltaBuilder();
+        bld.setName(name);
+        bld.addValueToAdd(valuesToAdd);
+        bld.addValueToRemove(valuesToRemove);
+        return bld.build();
+    }
 
-	/**
-	 * Return any current value of the valuesToAdd in the attributeDelta that is
-	 * being built.
-	 *
-	 * @return any current value of the valuesToAdd in the attributeDelta that
-	 *         is being built.
-	 */
-	public List<Object> getValuesToAdd() {
-		return valuesToAdd == null ? null : CollectionUtil.asReadOnlyList(valuesToAdd);
-	}
+    /**
+     * Creates an {@code AttributeDelta} with the name and the values provided
+     * for valuesToReplace.
+     *
+     * @param name
+     * unique name of the attributeDelta.
+     * @param args
+     * variable number of arguments that are used as values for the
+     * valuesToReplace of the attributeDelta.
+     * @return instance of {@code AttributeDelta} with the specified name and a
+     * value that includes the arguments provided.
+     */
+    public static AttributeDelta build(final String name, final Object... args) {
+        AttributeDeltaBuilder bld = new AttributeDeltaBuilder();
+        bld.setName(name);
+        bld.addValueToReplace(args);
+        return bld.build();
+    }
 
-	/**
-	 * Return any current value of the valuesToRemove in the the attributeDelta
-	 * that is being built.
-	 *
-	 * @return any current value of the valuesToRemove in the attributeDelta
-	 *         that is being built.
-	 */
-	public List<Object> getValueToRemove() {
-		return valuesToRemove == null ? null : CollectionUtil.asReadOnlyList(valuesToRemove);
-	}
+    /**
+     * Creates an {@code AttributeDelta} with the name and the values provided
+     * for valuesToReplace.
+     *
+     * @param name
+     * unique name of the attributeDelta.
+     * @param valuesToReplace
+     * a collection of objects that are used as values for the
+     * valuesToReplace of the attributeDelta.
+     * @return instance of {@code AttributeDelta} with the specified name and a
+     * value that includes the arguments provided.
+     */
+    public static AttributeDelta build(final String name, final Collection<?> valuesToReplace) {
+        AttributeDeltaBuilder bld = new AttributeDeltaBuilder();
+        bld.setName(name);
+        bld.addValueToReplace(valuesToReplace);
+        return bld.build();
+    }
 
-	/**
-	 * Return any current value of the valuesToReplace in the attribute that is
-	 * being built.
-	 *
-	 * @return any current value of the valuesToReplace in the attribute that is
-	 *         being built.
-	 */
-	public List<Object> getValueToReplace() {
-		return valuesToReplace == null ? null : CollectionUtil.asReadOnlyList(valuesToReplace);
-	}
+    /**
+     * Get the name of the attributeDelta that is being built.
+     *
+     * @return The name of the attributeDelta.
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Adds each object in the collection as a value for the valuesToAdd of the
-	 * attributeDelta that is being built.
-	 *
-	 * @param obj
-	 *            the values to add for ValueToAdd
-	 */
-	public AttributeDeltaBuilder addValueToAdd(final Collection<?> obj) {
-		if (valuesToReplace == null) {
-			valuesToAdd = addValuesInternal(obj, valuesToAdd);
-		} else {
-			throw new IllegalArgumentException(COLLISION_ERROR_ADDORREMOVE);
-		}
-		return this;
-	}
+    /**
+     * Set the name of the attributeDelta that is being built.
+     *
+     * @throws IllegalArgumentException
+     * if the name parameter is blank.
+     * @return instance of {@code AttributeDelta} with the specified name and a
+     * value that includes the arguments provided.
+     */
+    public AttributeDeltaBuilder setName(final String name) {
+        if (StringUtil.isBlank(name)) {
+            throw new IllegalArgumentException(NAME_ERROR);
+        }
+        this.name = name;
+        return this;
+    }
 
-	/**
-	 * Adds each of the specified objects as a value for the valuesToAdd of the
-	 * attributeDelta that is being built.
-	 *
-	 * @param objs
-	 *            the values to add for ValueToAdd
-	 */
-	public AttributeDeltaBuilder addValueToAdd(final Object... objs) {
-		if (valuesToReplace == null) {
-			if (objs != null) {
-				valuesToAdd = addValuesInternal(Arrays.asList(objs), valuesToAdd);
-			}
-		} else {
-			throw new IllegalArgumentException(COLLISION_ERROR_ADDORREMOVE);
-		}
-		return this;
-	}
+    /**
+     * Return any current value of the valuesToAdd in the attributeDelta that is
+     * being built.
+     *
+     * @return any current value of the valuesToAdd in the attributeDelta that
+     * is being built.
+     */
+    public List<Object> getValuesToAdd() {
+        return valuesToAdd == null ? null : CollectionUtil.asReadOnlyList(valuesToAdd);
+    }
 
-	/**
-	 * * @return a new attributeDelta with the name and any values of the
-	 * valuesToAdd that have been provided to the builder.
-	 * 
-	 * @throws NullPointerException
-	 *             if any of the values is null.
-	 * @throws IllegalArgumentException
-	 *             if no name has been provided.
-	 */
+    /**
+     * Return any current value of the valuesToRemove in the the attributeDelta
+     * that is being built.
+     *
+     * @return any current value of the valuesToRemove in the attributeDelta
+     * that is being built.
+     */
+    public List<Object> getValueToRemove() {
+        return valuesToRemove == null ? null : CollectionUtil.asReadOnlyList(valuesToRemove);
+    }
 
-	/**
-	 * Adds each object in the collection as a value for the valuesToRemove of
-	 * the attributeDelta that is being built.
-	 *
-	 * @param obj
-	 *            the values to add for ValueToRemove
-	 */
-	public AttributeDeltaBuilder addValueToRemove(final Collection<?> obj) {
-		if (valuesToReplace == null) {
-			valuesToRemove = addValuesInternal(obj, valuesToRemove);
-		} else {
-			throw new IllegalArgumentException(COLLISION_ERROR_ADDORREMOVE);
-		}
-		return this;
-	}
+    /**
+     * Return any current value of the valuesToReplace in the attribute that is
+     * being built.
+     *
+     * @return any current value of the valuesToReplace in the attribute that is
+     * being built.
+     */
+    public List<Object> getValueToReplace() {
+        return valuesToReplace == null ? null : CollectionUtil.asReadOnlyList(valuesToReplace);
+    }
 
-	/**
-	 * Adds each of the specified objects as a value for the valuesToRemove of
-	 * the attributeDelta that is being built.
-	 *
-	 * @param objs
-	 *            the values to add for ValueToRemove
-	 */
-	public AttributeDeltaBuilder addValueToRemove(final Object... objs) {
-		if (valuesToReplace == null) {
-			if (objs != null) {
-				valuesToRemove = addValuesInternal(Arrays.asList(objs), valuesToRemove);
-			}
-		} else {
-			throw new IllegalArgumentException(COLLISION_ERROR_ADDORREMOVE);
-		}
-		return this;
-	}
+    /**
+     * Adds each object in the collection as a value for the valuesToAdd of the
+     * attributeDelta that is being built.
+     *
+     * @param obj
+     * the values to add for ValueToAdd
+     * @return instance of {@code AttributeDelta} with the specified name and a
+     * value that includes the arguments provided.
+     */
+    public AttributeDeltaBuilder addValueToAdd(final Collection<?> obj) {
+        if (valuesToReplace == null) {
+            valuesToAdd = addValuesInternal(obj, valuesToAdd);
+        } else {
+            throw new IllegalArgumentException(COLLISION_ERROR_ADDORREMOVE);
+        }
+        return this;
+    }
 
-	/**
-	 * * @return a new attributeDelta with the name and any values of the
-	 * valuesToRemove that have been provided to the builder.
-	 * 
-	 * @throws NullPointerException
-	 *             if any of the values is null.
-	 * @throws IllegalArgumentException
-	 *             if no name has been provided.
-	 */
+    /**
+     * Adds each of the specified objects as a value for the valuesToAdd of the
+     * attributeDelta that is being built.
+     *
+     * @param objs
+     * the values to add for ValueToAdd
+     * @return instance of {@code AttributeDelta} with the specified name and a
+     * value that includes the arguments provided.
+     */
+    public AttributeDeltaBuilder addValueToAdd(final Object... objs) {
+        if (valuesToReplace == null) {
+            if (objs != null) {
+                valuesToAdd = addValuesInternal(Arrays.asList(objs), valuesToAdd);
+            }
+        } else {
+            throw new IllegalArgumentException(COLLISION_ERROR_ADDORREMOVE);
+        }
+        return this;
+    }
 
-	/**
-	 * Adds each object in the collection as a value for the valuesToReplace of
-	 * the attributeDelta that is being built.
-	 *
-	 * @param obj
-	 *            the values to add for ValueToReplace
-	 */
-	public AttributeDeltaBuilder addValueToReplace(final Collection<?> obj) {
-		if (valuesToAdd == null && valuesToRemove == null) {
-			valuesToReplace = addValuesInternal(obj, valuesToReplace);
-		} else {
-			throw new IllegalArgumentException(COLLISION_ERROR_REPLACE);
-		}
-		return this;
-	}
+    /**
+     * Adds each object in the collection as a value for the valuesToRemove of
+     * the attributeDelta that is being built.
+     *
+     * @param obj
+     * the values to add for ValueToRemove
+     * @return a new attributeDelta with the name and any values of the
+     * valuesToAdd that have been provided to the builder.
+     *
+     * @throws NullPointerException
+     * if any of the values is null.
+     * @throws IllegalArgumentException
+     * if no name has been provided.
+     */
+    public AttributeDeltaBuilder addValueToRemove(final Collection<?> obj) {
+        if (valuesToReplace == null) {
+            valuesToRemove = addValuesInternal(obj, valuesToRemove);
+        } else {
+            throw new IllegalArgumentException(COLLISION_ERROR_ADDORREMOVE);
+        }
+        return this;
+    }
 
-	/**
-	 * Adds each of the specified objects as a value for the valuesToReplace of
-	 * the attributeDelta that is being built.
-	 *
-	 * @param objs
-	 *            the values to add for ValueToReplace
-	 */
-	public AttributeDeltaBuilder addValueToReplace(final Object... objs) {
-		if (valuesToAdd == null && valuesToRemove == null) {
-			if (objs != null) {
-				valuesToReplace = addValuesInternal(Arrays.asList(objs), valuesToReplace);
-			}
-		} else {
-			throw new IllegalArgumentException(COLLISION_ERROR_REPLACE);
-		}
-		return this;
-	}
+    /**
+     * Adds each of the specified objects as a value for the valuesToRemove of
+     * the attributeDelta that is being built.
+     *
+     * @param objs
+     * the values to add for ValueToRemove
+     * @return instance of {@code AttributeDelta} with the specified name and a
+     * value that includes the arguments provided.
+     */
+    public AttributeDeltaBuilder addValueToRemove(final Object... objs) {
+        if (valuesToReplace == null) {
+            if (objs != null) {
+                valuesToRemove = addValuesInternal(Arrays.asList(objs), valuesToRemove);
+            }
+        } else {
+            throw new IllegalArgumentException(COLLISION_ERROR_ADDORREMOVE);
+        }
+        return this;
+    }
 
-	/**
-	 * * @return a new attributeDelta with the name and any values of the
-	 * valuesToReplace that have been provided to the builder.
-	 * 
-	 * @throws NullPointerException
-	 *             if any of the values is null.
-	 * @throws IllegalArgumentException
-	 *             if no name has been provided.
-	 */
+    /**
+     * Adds each object in the collection as a value for the valuesToReplace of
+     * the attributeDelta that is being built.
+     *
+     * @param obj
+     * the values to add for ValueToReplace
+     * @return a new attributeDelta with the name and any values of the
+     * valuesToRemove that have been provided to the builder.
+     *
+     * @throws NullPointerException
+     * if any of the values is null.
+     * @throws IllegalArgumentException
+     * if no name has been provided.
+     */
+    public AttributeDeltaBuilder addValueToReplace(final Collection<?> obj) {
+        if (valuesToAdd == null && valuesToRemove == null) {
+            valuesToReplace = addValuesInternal(obj, valuesToReplace);
+        } else {
+            throw new IllegalArgumentException(COLLISION_ERROR_REPLACE);
+        }
+        return this;
+    }
 
-	/**
-	 * Creates a attributeDelta with the specified name and the value for
-	 * valuesToAdd, valuesToRemove and valuesToReplace that have been provided
-	 * to the builder.
-	 *
-	 * @return instance of {@code AttributeDelta} with name and
-	 *         {@code List<Object>} for valuesToAdd, valuesToRemove and
-	 *         valuesToReplace.
-	 * @throws IllegalArgumentException
-	 *             if no name has been provided.
-	 */
-	public AttributeDelta build() {
-		if (StringUtil.isBlank(name)) {
-			throw new IllegalArgumentException(NAME_ERROR);
-		}
-		if (valuesToReplace != null && (valuesToAdd != null || valuesToRemove != null)){
-			throw new IllegalArgumentException(COLLISION_ERROR);
-		}
-		if (Uid.NAME.equals(name)) {
-			System.out.println("UID");
+    /**
+     * Adds each of the specified objects as a value for the valuesToReplace of
+     * the attributeDelta that is being built.
+     *
+     * @param objs
+     * the values to add for ValueToReplace
+     * @return instance of {@code AttributeDelta} with the specified name and a
+     * value that includes the arguments provided.
+     */
+    public AttributeDeltaBuilder addValueToReplace(final Object... objs) {
+        if (valuesToAdd == null && valuesToRemove == null) {
+            if (objs != null) {
+                valuesToReplace = addValuesInternal(Arrays.asList(objs), valuesToReplace);
+            }
+        } else {
+            throw new IllegalArgumentException(COLLISION_ERROR_REPLACE);
+        }
+        return this;
+    }
+
+    /**
+     * Creates a attributeDelta with the specified name and the value for
+     * valuesToAdd, valuesToRemove and valuesToReplace that have been provided
+     * to the builder.
+     *
+     * @return instance of {@code AttributeDelta} with name and
+     * {@code List<Object>} for valuesToAdd, valuesToRemove and
+     * valuesToReplace.
+     * @throws IllegalArgumentException
+     * if no name has been provided.
+     */
+    public AttributeDelta build() {
+        if (StringUtil.isBlank(name)) {
+            throw new IllegalArgumentException(NAME_ERROR);
+        }
+        if (valuesToReplace != null && (valuesToAdd != null || valuesToRemove != null)) {
+            throw new IllegalArgumentException(COLLISION_ERROR);
+        }
+        if (Uid.NAME.equals(name)) {
+            System.out.println("UID");
             return new AttributeDelta(Uid.NAME, null, null, getSingleStringValue());
         } else if (Name.NAME.equals(name)) {
             return new AttributeDelta(Name.NAME, null, null, getSingleStringValue());
         }
-		return new AttributeDelta(name, valuesToAdd, valuesToRemove, valuesToReplace);
-	}
-	
-	/**
+        return new AttributeDelta(name, valuesToAdd, valuesToRemove, valuesToReplace);
+    }
+
+    /**
      * Confirm that the attributeDelta that is being built has at most a single
      * value.
      *
      * @throws IllegalArgumentException
-     *             if the attribute contains more than a single value.
+     * if the attribute contains more than a single value.
      */
     private void checkSingleValue() {
         if (valuesToReplace == null || valuesToReplace.size() != 1) {
@@ -361,39 +361,39 @@ public class AttributeDeltaBuilder {
     /**
      * @return the single string value of the attributeDelta that is being built.
      * @throws IllegalArgumentException
-     *             if the attribute contains more than a single value, or if the
-     *             value is not of type {@code String}.
+     * if the attribute contains more than a single value, or if the
+     * value is not of type {@code String}.
      */
     private List<Object> getSingleStringValue() {
         checkSingleValue();
         System.out.println("get" + valuesToReplace.get(0).getClass().toString());
         if (!(valuesToReplace.get(0) instanceof String)) {
-        	System.out.println("ou");
-            throw new IllegalArgumentException("ValueToReplace of attributeDelta '" + name + "' must be an instance of String.");
+            System.out.println("ou");
+            throw new IllegalArgumentException("ValueToReplace of attributeDelta '" + name
+                    + "' must be an instance of String.");
         }
-        return Arrays.asList((Object)valuesToReplace.get(0));
+        return Arrays.asList(valuesToReplace.get(0));
     }
 
-	private List<Object> addValuesInternal(final Iterable<?> values, List<Object> ListValues) {
-		if (values != null) {
-			// make sure the list is ready to receive values.
-			List<Object> ret = new ArrayList<Object>();
-			if (ListValues != null) {
-				ret.addAll(ListValues);
-			}
-			// add each value checking to make sure its correct
-			for (Object v : values) {
-				System.out.println(v.getClass());
-				FrameworkUtil.checkAttributeValue(name, v);
-				ret.add(v);
-			}
-			return ret;
-		} 
-		return ListValues;
-	}
-	
-	
-	// =======================================================================
+    private List<Object> addValuesInternal(final Iterable<?> values, List<Object> ListValues) {
+        if (values != null) {
+            // make sure the list is ready to receive values.
+            List<Object> ret = new ArrayList<Object>();
+            if (ListValues != null) {
+                ret.addAll(ListValues);
+            }
+            // add each value checking to make sure its correct
+            for (Object v : values) {
+                System.out.println(v.getClass());
+                FrameworkUtil.checkAttributeValue(name, v);
+                ret.add(v);
+            }
+            return ret;
+        }
+        return ListValues;
+    }
+
+    // =======================================================================
     // Operational Attributes
     // =======================================================================
     /**
@@ -402,9 +402,9 @@ public class AttributeDeltaBuilder {
      * system or application.
      *
      * @param dateTime
-     *            UTC time in milliseconds.
+     * UTC time in milliseconds.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#PASSWORD_EXPIRATION_DATE_NAME
+     * {@linkplain OperationalAttributes#PASSWORD_EXPIRATION_DATE_NAME
      *         pre-defined name for password expiration date}.
      */
     public static AttributeDelta buildPasswordExpirationDate(final Date dateTime) {
@@ -417,9 +417,9 @@ public class AttributeDeltaBuilder {
      * system or application.
      *
      * @param dateTime
-     *            UTC time in milliseconds.
+     * UTC time in milliseconds.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#PASSWORD_EXPIRATION_DATE_NAME
+     * {@linkplain OperationalAttributes#PASSWORD_EXPIRATION_DATE_NAME
      *         pre-defined name for password expiration date}.
      */
     public static AttributeDelta buildPasswordExpirationDate(final long dateTime) {
@@ -431,9 +431,9 @@ public class AttributeDeltaBuilder {
      * represents the password of an object on a target system or application.
      *
      * @param password
-     *            the string that represents a password.
+     * the string that represents a password.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#PASSWORD_NAME predefined name
+     * {@linkplain OperationalAttributes#PASSWORD_NAME predefined name
      *         for password}.
      */
     public static AttributeDelta buildPassword(final GuardedString password) {
@@ -447,9 +447,9 @@ public class AttributeDeltaBuilder {
      * The caller is responsible for clearing out the array of characters.
      *
      * @param password
-     *            the characters that represent a password.
+     * the characters that represent a password.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#PASSWORD_NAME predefined name
+     * {@linkplain OperationalAttributes#PASSWORD_NAME predefined name
      *         for password}.
      */
     public static AttributeDelta buildPassword(final char[] password) {
@@ -467,9 +467,9 @@ public class AttributeDeltaBuilder {
      * policy.
      *
      * @param password
-     *            the string that represents a password.
+     * the string that represents a password.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#CURRENT_PASSWORD_NAME
+     * {@linkplain OperationalAttributes#CURRENT_PASSWORD_NAME
      *         predefined name for current password}.
      */
     public static AttributeDelta buildCurrentPassword(final GuardedString password) {
@@ -489,9 +489,9 @@ public class AttributeDeltaBuilder {
      * The caller is responsible for clearing out the array of characters.
      *
      * @param password
-     *            the characters that represent a password.
+     * the characters that represent a password.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#CURRENT_PASSWORD_NAME
+     * {@linkplain OperationalAttributes#CURRENT_PASSWORD_NAME
      *         predefined name for current password}.
      */
     public static AttributeDelta buildCurrentPassword(final char[] password) {
@@ -513,9 +513,9 @@ public class AttributeDeltaBuilder {
      * </ul>
      *
      * @param value
-     *            true indicates the object is enabled; otherwise false.
+     * true indicates the object is enabled; otherwise false.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#ENABLE_NAME predefined name for
+     * {@linkplain OperationalAttributes#ENABLE_NAME predefined name for
      *         enabled}.
      */
     public static AttributeDelta buildEnabled(final boolean value) {
@@ -538,9 +538,9 @@ public class AttributeDeltaBuilder {
      * </ul>
      *
      * @param date
-     *            The date and time to enable a particular object.
+     * The date and time to enable a particular object.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#ENABLE_DATE_NAME predefined
+     * {@linkplain OperationalAttributes#ENABLE_DATE_NAME predefined
      *         name for enable date}.
      */
     public static AttributeDelta buildEnableDate(final Date date) {
@@ -563,10 +563,10 @@ public class AttributeDeltaBuilder {
      * </ul>
      *
      * @param date
-     *            The date and time (UTC in milliseconds) to enable a particular
-     *            object.
+     * The date and time (UTC in milliseconds) to enable a particular
+     * object.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#ENABLE_DATE_NAME predefined
+     * {@linkplain OperationalAttributes#ENABLE_DATE_NAME predefined
      *         name for enable date}.
      */
     public static AttributeDelta buildEnableDate(final long date) {
@@ -589,9 +589,9 @@ public class AttributeDeltaBuilder {
      * </ul>
      *
      * @param date
-     *            The date and time to disable a particular object.
+     * The date and time to disable a particular object.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#DISABLE_DATE_NAME predefined
+     * {@linkplain OperationalAttributes#DISABLE_DATE_NAME predefined
      *         name for disable date}.
      */
     public static AttributeDelta buildDisableDate(final Date date) {
@@ -614,10 +614,10 @@ public class AttributeDeltaBuilder {
      * </ul>
      *
      * @param date
-     *            The date and time (UTC in milliseconds) to disable a
-     *            particular object.
+     * The date and time (UTC in milliseconds) to disable a
+     * particular object.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#DISABLE_DATE_NAME predefined
+     * {@linkplain OperationalAttributes#DISABLE_DATE_NAME predefined
      *         name for disable date}.
      */
     public static AttributeDelta buildDisableDate(final long date) {
@@ -642,9 +642,9 @@ public class AttributeDeltaBuilder {
      * </ul>
      *
      * @param lock
-     *            true if the object is locked out; otherwise false.
+     * true if the object is locked out; otherwise false.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#LOCK_OUT_NAME predefined name
+     * {@linkplain OperationalAttributes#LOCK_OUT_NAME predefined name
      *         for lockout state}.
      */
     public static AttributeDelta buildLockOut(final boolean lock) {
@@ -669,10 +669,10 @@ public class AttributeDeltaBuilder {
      * </ul>
      *
      * @param value
-     *            from the API true expires and from the SPI its shows its
-     *            either expired or not.
+     * from the API true expires and from the SPI its shows its
+     * either expired or not.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain OperationalAttributes#PASSWORD_EXPIRED_NAME
+     * {@linkplain OperationalAttributes#PASSWORD_EXPIRED_NAME
      *         predefined name for password expiration state}.
      */
     public static AttributeDelta buildPasswordExpired(final boolean value) {
@@ -682,16 +682,15 @@ public class AttributeDeltaBuilder {
     // =======================================================================
     // Pre-defined Attributes
     // =======================================================================
-
     /**
      * Builds an {@linkplain AttributeDelta of pre-defined attribute} that
      * represents the date and time of the most recent login for an object (such
      * as an account) on a target system or application.
      *
      * @param date
-     *            The date and time of the last login.
+     * The date and time of the last login.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain PredefinedAttributes#LAST_LOGIN_DATE_NAME predefined
+     * {@linkplain PredefinedAttributes#LAST_LOGIN_DATE_NAME predefined
      *         name for password expiration state}.
      */
     public static AttributeDelta buildLastLoginDate(final Date date) {
@@ -706,9 +705,9 @@ public class AttributeDeltaBuilder {
      * The time parameter is UTC in milliseconds.
      *
      * @param date
-     *            The date and time (UTC in milliseconds) of the last login.
+     * The date and time (UTC in milliseconds) of the last login.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain PredefinedAttributes#LAST_LOGIN_DATE_NAME predefined
+     * {@linkplain PredefinedAttributes#LAST_LOGIN_DATE_NAME predefined
      *         name for password expiration state}.
      */
     public static AttributeDelta buildLastLoginDate(final long date) {
@@ -721,9 +720,9 @@ public class AttributeDeltaBuilder {
      * for an object (such as an account) on a target system or application.
      *
      * @param date
-     *            The date and time that the password was most recently changed.
+     * The date and time that the password was most recently changed.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain PredefinedAttributes#LAST_PASSWORD_CHANGE_DATE_NAME
+     * {@linkplain PredefinedAttributes#LAST_PASSWORD_CHANGE_DATE_NAME
      *         predefined name for password expiration state}.
      */
     public static AttributeDelta buildLastPasswordChangeDate(final Date date) {
@@ -738,9 +737,9 @@ public class AttributeDeltaBuilder {
      * The time parameter is UTC in milliseconds.
      *
      * @param date
-     *            The date and time that the password was most recently changed.
+     * The date and time that the password was most recently changed.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain PredefinedAttributes#LAST_PASSWORD_CHANGE_DATE_NAME
+     * {@linkplain PredefinedAttributes#LAST_PASSWORD_CHANGE_DATE_NAME
      *         predefined name for password expiration state}.
      */
     public static AttributeDelta buildLastPasswordChangeDate(final long date) {
@@ -755,11 +754,11 @@ public class AttributeDeltaBuilder {
      * The value for this attribute is expressed in milliseconds.
      *
      * @param value
-     *            The number of milliseconds between the time that the password
-     *            was most recently changed and the time when the password must
-     *            be changed again.
+     * The number of milliseconds between the time that the password
+     * was most recently changed and the time when the password must
+     * be changed again.
      * @return an {@code AttributeDelta} with the
-     *         {@linkplain PredefinedAttributes#PASSWORD_CHANGE_INTERVAL_NAME
+     * {@linkplain PredefinedAttributes#PASSWORD_CHANGE_INTERVAL_NAME
      *         predefined name for password expiration state}.
      */
     public static AttributeDelta buildPasswordChangeInterval(final long value) {

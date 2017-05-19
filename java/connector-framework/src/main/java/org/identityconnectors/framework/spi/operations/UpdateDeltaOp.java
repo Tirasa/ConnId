@@ -36,8 +36,8 @@ import org.identityconnectors.framework.common.objects.Uid;
  * of each attribute is described by {@link AttributeDelta}.
  * </p>
  * <p>
- * This operation is meant as a complete replacement of {@link UpdateOp} and 
- * {@link UpdateAttributeValuesOp} that were poorly designed in the early 
+ * This operation is meant as a complete replacement of {@link UpdateOp} and
+ * {@link UpdateAttributeValuesOp} that were poorly designed in the early
  * framework versions. The old operations have not provided any practical
  * way how to execute complex attribute changes in an efficient or atomic
  * way. The presence of a single operation in {@link UpdateOp} could not
@@ -55,8 +55,8 @@ import org.identityconnectors.framework.common.objects.Uid;
  * changes when some of the attributes are changed. The old update operations
  * provided no way how to indicate this change even if the connector was aware
  * of the change.
- * </p> 
- * 
+ * </p>
+ *
  * @author Radovan Semancik
  * @since 1.4.3
  */
@@ -79,24 +79,24 @@ public interface UpdateDeltaOp extends SPIOperation {
      * </p>
      *
      * @param objclass
-     *            the type of object to modify. Will never be null.
+     * the type of object to modify. Will never be null.
      * @param uid
-     *            the uid of the object to modify. Will never be null.
+     * the uid of the object to modify. Will never be null.
      * @param modifications
-     *            set of attribute deltas. Each delta describes modification
-     *            of one attribute. Each attribute will be in the set at most once. 
-     *            The set will never be null.
+     * set of attribute deltas. Each delta describes modification
+     * of one attribute. Each attribute will be in the set at most once.
+     * The set will never be null.
      * @param options
-     *            additional options that impact the way this operation is run.
-     *            Will never be null.
+     * additional options that impact the way this operation is run.
+     * Will never be null.
      * @return the set of modifications that were a side-effect of the primary modifications
-     *            specified in the modifications parameters.
+     * specified in the modifications parameters.
      * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException
-     *             if the {@link Uid} does not exist on the resource.
+     * if the {@link Uid} does not exist on the resource.
      * @throws org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException
-     *             if any of the specified values is not appropriate for the attribute,
-     *             if the delta execution would result in violation of the schema,
-     *             if the result would be missing mandatory attribute and in similar cases.
+     * if any of the specified values is not appropriate for the attribute,
+     * if the delta execution would result in violation of the schema,
+     * if the result would be missing mandatory attribute and in similar cases.
      */
     public Set<AttributeDelta> updateDelta(ObjectClass objclass, Uid uid, Set<AttributeDelta> modifications,
             OperationOptions options);

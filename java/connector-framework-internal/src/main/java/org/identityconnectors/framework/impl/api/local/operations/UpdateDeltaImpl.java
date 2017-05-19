@@ -149,7 +149,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements
 			logDeltaOpExit("updateDelta", attrsDelta);
 
 			// return set of side-effect modifications
-			return (Set<AttributeDelta>) normalizeSetAttributesDelta(normalizer, attrsDelta);
+			return normalizeSetAttributesDelta(normalizer, attrsDelta);
 		} else if (conector instanceof UpdateAttributeValuesOp) {
 			UpdateOp op = (UpdateOp) conector;
 			UpdateAttributeValuesOp valueOp = (UpdateAttributeValuesOp) conector;

@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 2017 Evolveum. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -19,14 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 ForgeRock AS.
  */
 package org.identityconnectors.framework.common.objects;
 
 import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+
 import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +34,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-
 
 public class AttributeDeltaBuilderTests {
 
@@ -69,10 +67,10 @@ public class AttributeDeltaBuilderTests {
         testAttributesDelta(attrDelta1, attrDelta2, attrDelta3);
     }
 
-	void testAttributesDelta(AttributeDelta attrDelta1, AttributeDelta attrDelta2, AttributeDelta attrDelta3) {
+    void testAttributesDelta(AttributeDelta attrDelta1, AttributeDelta attrDelta2, AttributeDelta attrDelta3) {
         assertEquals(attrDelta1, attrDelta2);
         assertEquals(attrDelta1, attrDelta1);
-        assertFalse(attrDelta1.equals(null));
+        assertNotNull(attrDelta1);
 
         Set<AttributeDelta> set = new HashSet<AttributeDelta>();
         set.add(attrDelta1);
@@ -85,13 +83,15 @@ public class AttributeDeltaBuilderTests {
     public void uidFromBuilderInteger() {
         AttributeDeltaBuilder.build(Uid.NAME, 1);
     }
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void uidFromBuilderLong() {
-    	AttributeDeltaBuilder.build(Uid.NAME, 1L);
+        AttributeDeltaBuilder.build(Uid.NAME, 1L);
     }
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void uidFromBuilderDouble() {
-    	AttributeDeltaBuilder.build(Uid.NAME, 1.0);
+        AttributeDeltaBuilder.build(Uid.NAME, 1.0);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -147,44 +147,44 @@ public class AttributeDeltaBuilderTests {
 
         AttributeDeltaBuilder.build("map", map4);
     }
-    
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void conflictReplaceAndAddValues() {
-    	AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
-    	attrDelta1.setName("test");
-    	attrDelta1.addValueToReplace("jgs");
-    	attrDelta1.addValueToAdd("fda");
+        AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
+        attrDelta1.setName("test");
+        attrDelta1.addValueToReplace("jgs");
+        attrDelta1.addValueToAdd("fda");
     }
-    
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void conflictReplaceAndRemoveValues() {
-    	AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
-    	attrDelta1.setName("test");
-    	attrDelta1.addValueToReplace("jgs");
-    	attrDelta1.addValueToRemove("fda");
+        AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
+        attrDelta1.setName("test");
+        attrDelta1.addValueToReplace("jgs");
+        attrDelta1.addValueToRemove("fda");
     }
-    
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void conflictAddAndReplaceValues() {
-    	AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
-    	attrDelta1.setName("test");
-    	attrDelta1.addValueToAdd("fda");
-    	attrDelta1.addValueToReplace("jgs");
+        AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
+        attrDelta1.setName("test");
+        attrDelta1.addValueToAdd("fda");
+        attrDelta1.addValueToReplace("jgs");
     }
-    
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void conflictRemoveAndReplaceValues() {
-    	AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
-    	attrDelta1.setName("test");
-    	attrDelta1.addValueToRemove("fda");
-    	attrDelta1.addValueToReplace("jgs");
+        AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
+        attrDelta1.setName("test");
+        attrDelta1.addValueToRemove("fda");
+        attrDelta1.addValueToReplace("jgs");
     }
-    
+
     @Test
     public void buildAttrDeltaWithRemoveAndAddValues() {
-    	AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
-    	attrDelta1.setName("test");
-    	attrDelta1.addValueToRemove("fda");
-    	attrDelta1.addValueToAdd("jgs");
+        AttributeDeltaBuilder attrDelta1 = new AttributeDeltaBuilder();
+        attrDelta1.setName("test");
+        attrDelta1.addValueToRemove("fda");
+        attrDelta1.addValueToAdd("jgs");
     }
 }

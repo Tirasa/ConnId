@@ -54,7 +54,7 @@ import org.identityconnectors.common.StringUtil;
  * should be removed, but no new value is to be set in the attribute. The resulting state is attribute with
  * no values.
  * </p>
- * <p> 
+ * <p>
  * The delta does not guarantee ordering of the values. It is not guaranteed that the added attributes will
  * be appended at the end. Nor is the resulting order of values after application of remove delta guaranteed.
  * This behavior is connector-specific.
@@ -82,7 +82,7 @@ public class AttributeDelta {
      * Attribute values to add
      */
     private final List<Object> valuesToAdd;
-    
+
     /**
      * Attribute values to remove
      */
@@ -104,7 +104,8 @@ public class AttributeDelta {
         this.name = name;
         // sanity
         if (valuesToReplace != null && (valuesToAdd != null || valuesToRemove != null)) {
-        	throw new IllegalArgumentException("Delta of attribute '"+name+"' may be either replace or add/remove but not both at the same time");
+            throw new IllegalArgumentException("Delta of attribute '" + name
+                    + "' may be either replace or add/remove but not both at the same time");
         }
         // copy to prevent corruption..
         this.valuesToAdd = (valuesToAdd == null) ? null : CollectionUtil.newReadOnlyList(valuesToAdd);
@@ -182,11 +183,11 @@ public class AttributeDelta {
         if (!CollectionUtil.equals(valuesToAdd, other.valuesToAdd)) {
             return false;
         }
-        
+
         if (!CollectionUtil.equals(valuesToRemove, other.valuesToRemove)) {
             return false;
         }
-        
+
         if (!CollectionUtil.equals(valuesToReplace, other.valuesToReplace)) {
             return false;
         }

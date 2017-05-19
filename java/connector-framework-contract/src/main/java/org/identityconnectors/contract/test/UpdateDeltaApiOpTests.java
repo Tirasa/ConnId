@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 2017 Evolveum. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -19,60 +19,44 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2013 ForgeRock AS.
  */
 package org.identityconnectors.contract.test;
 
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import org.identityconnectors.contract.exceptions.ObjectNotFoundException;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.api.operations.DeleteApiOp;
 import org.identityconnectors.framework.api.operations.GetApiOp;
-import org.identityconnectors.framework.api.operations.UpdateApiOp;
 import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.AttributeDelta;
 import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
 import org.identityconnectors.framework.common.objects.AttributeDeltaUtil;
-import org.identityconnectors.framework.common.objects.AttributeInfo;
-import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.testng.Assert;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 import org.testng.log4testng.Logger;
 
-
 /**
- * Contract test of {@link UpdateDeltaApiOp}
+ * Contract test of {@link UpdateDeltaApiOp}.
  */
-@Test(testName =  UpdateDeltaApiOpTests.TEST_NAME)
+@Test(testName = UpdateDeltaApiOpTests.TEST_NAME)
 public class UpdateDeltaApiOpTests extends ObjectClassRunner {
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
+
+    private static final Logger LOG = Logger.getLogger(ValidateApiOpTests.class);
 
     protected static final String MODIFIED = "modified";
-    private static final String ADDED = "added";
-    public static final String TEST_NAME = "UpdateDelta";
 
-    private static final String NON_EXISTING_PROP_NAME = "unsupportedAttributeName";
+    private static final String ADDED = "added";
+
+    public static final String TEST_NAME = "UpdateDelta";
 
     /**
      * {@inheritDoc}
@@ -107,79 +91,85 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
         ConnectorObject obj = null;
         Uid uid = null;
 
-
         try {
             // create an object to update
             uid = ConnectorHelper.createObject(getConnectorFacade(), getDataProvider(),
-                    getObjectClassInfo(objectClass), getTestName(), 0, getOperationOptionsByOp(objectClass, CreateApiOp.class));
-            assertNotNull(uid,"Create returned null Uid.");
+                    getObjectClassInfo(objectClass), getTestName(), 0, getOperationOptionsByOp(objectClass,
+                    CreateApiOp.class));
+            assertNotNull(uid, "Create returned null Uid.");
 
             // get by uid
             obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
-            assertNotNull(obj,"Cannot retrieve created object.");
+            assertNotNull(obj, "Cannot retrieve created object.");
 
             Set<AttributeDelta> replaceAttributesDelta = ConnectorHelper.getUpdateableAttributesDelta(
                     getDataProvider(), getObjectClassInfo(objectClass), getTestName(), MODIFIED, 0, false,
                     false, true);
-            
+
             Set<AttributeDelta> addAttributesDelta = ConnectorHelper.getUpdateableAttributesDelta(getDataProvider(),
                     getObjectClassInfo(objectClass), getTestName(), ADDED, 0, false, true, true);
-            
+
             Set<AttributeDelta> removeAttributesDelta = ConnectorHelper.getUpdateableAttributesDelta(getDataProvider(),
                     getObjectClassInfo(objectClass), getTestName(), ADDED, 0, false, true, false);
-            
+
             Set<AttributeDelta> replaceAndAddAttrsDelta = new HashSet<AttributeDelta>();
-            
+
             replaceAndAddAttrsDelta.addAll(replaceAttributesDelta);
             replaceAndAddAttrsDelta.addAll(addAttributesDelta);
-            
+
             if (replaceAndAddAttrsDelta.size() > 0 || !isObjectClassSupported(objectClass)) {
                 /* TODO when object class is not supported?!
                  */
                 // update only in case there is something to update or when object class is not supported
-            	replaceAndAddAttrsDelta.add(AttributeDeltaBuilder.build(uid.getName(), uid.getValue()));
+                replaceAndAddAttrsDelta.add(AttributeDeltaBuilder.build(uid.getName(), uid.getValue()));
 
-                assertTrue((replaceAndAddAttrsDelta.size() > 0),"no update attributesDelta were found");
+                assertTrue((replaceAndAddAttrsDelta.size() > 0), "no update attributesDelta were found");
                 Set<AttributeDelta> sideEffectModificationAttributesDelta = getConnectorFacade().updateDelta(
-                        objectClass, uid, AttributeDeltaUtil.filterUid(replaceAndAddAttrsDelta), getOperationOptionsByOp(objectClass, UpdateDeltaApiOp.class));
+                        objectClass, uid, AttributeDeltaUtil.filterUid(replaceAndAddAttrsDelta),
+                        getOperationOptionsByOp(objectClass, UpdateDeltaApiOp.class));
 
                 // Update change of Uid must be propagated to replaceAttributes
                 // set
-                
-                AttributeDelta newUidAttrDelta = AttributeDeltaUtil.getUidAttributeDelta(sideEffectModificationAttributesDelta);
+                AttributeDelta newUidAttrDelta = AttributeDeltaUtil.getUidAttributeDelta(
+                        sideEffectModificationAttributesDelta);
                 if (newUidAttrDelta != null) {
-                	Attribute newUid = AttributeBuilder.build(newUidAttrDelta.getName(), newUidAttrDelta.getValuesToReplace());
-                	uid = (Uid)newUid;
+                    Attribute newUid = AttributeBuilder.build(newUidAttrDelta.getName(), newUidAttrDelta.
+                            getValuesToReplace());
+                    uid = (Uid) newUid;
                 }
             }
 
             // verify the change
             obj = getConnectorFacade().getObject(objectClass, uid,
                     getOperationOptionsByOp(objectClass, GetApiOp.class));
-            assertNotNull(obj,"Cannot retrieve updated object.");
+            assertNotNull(obj, "Cannot retrieve updated object.");
             ConnectorHelper.checkObjectByAttrDelta(getObjectClassInfo(objectClass), obj, replaceAndAddAttrsDelta);
             // TODO Here it jumps to finally section which is wrong...
             // DELETE update test:
-            
+
             if (removeAttributesDelta.size() > 0) {
                 // uid must be present for update
                 removeAttributesDelta.add(AttributeDeltaBuilder.build(uid.getName(), uid.getValue()));
 
                 // delete added attribute values
-                Set<AttributeDelta> sideEffectModificationAttributesDelta = getConnectorFacade().updateDelta(objectClass,
-                        uid,
-                        AttributeDeltaUtil.filterUid(removeAttributesDelta), getOperationOptionsByOp(objectClass, UpdateDeltaApiOp.class));
+                Set<AttributeDelta> sideEffectModificationAttributesDelta = getConnectorFacade().
+                        updateDelta(objectClass,
+                                uid,
+                                AttributeDeltaUtil.filterUid(removeAttributesDelta),
+                                getOperationOptionsByOp(objectClass, UpdateDeltaApiOp.class));
 
-                AttributeDelta newUidAttrDelta = AttributeDeltaUtil.getUidAttributeDelta(sideEffectModificationAttributesDelta);
+                AttributeDelta newUidAttrDelta = AttributeDeltaUtil.getUidAttributeDelta(
+                        sideEffectModificationAttributesDelta);
                 if (newUidAttrDelta != null) {
-                	Attribute newUid = AttributeBuilder.build(newUidAttrDelta.getName(), newUidAttrDelta.getValuesToReplace());
-                	uid = (Uid)newUid;
+                    Attribute newUid = AttributeBuilder.build(newUidAttrDelta.getName(), newUidAttrDelta.
+                            getValuesToReplace());
+                    uid = (Uid) newUid;
                 }
 
                 // verify the change after DELETE
                 obj = getConnectorFacade().getObject(objectClass, uid,
                         getOperationOptionsByOp(objectClass, GetApiOp.class));
-                assertNotNull(obj,"Cannot retrieve updated object.");
+                assertNotNull(obj, "Cannot retrieve updated object.");
                 ConnectorHelper.checkObjectByAttrDelta(getObjectClassInfo(objectClass), obj, replaceAttributesDelta);
             }
         } finally {
@@ -190,7 +180,6 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
             }
         }
     }
-
 
     @Override
     public String getTestName() {
