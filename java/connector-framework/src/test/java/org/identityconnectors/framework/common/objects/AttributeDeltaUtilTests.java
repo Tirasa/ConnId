@@ -95,7 +95,7 @@ public class AttributeDeltaUtilTests {
         assertNull(value);
         // test class cast exception
         attr = build("int", "1");
-        value = getIntegerValue(attr);
+        getIntegerValue(attr);
     }
 
     @Test(expectedExceptions = ClassCastException.class)
@@ -111,7 +111,7 @@ public class AttributeDeltaUtilTests {
         assertNull(value);
         // test class cast exception
         attr = build("long", "1");
-        value = AttributeDeltaUtil.getLongValue(attr);
+        AttributeDeltaUtil.getLongValue(attr);
     }
 
     @Test(expectedExceptions = ClassCastException.class)
@@ -127,7 +127,7 @@ public class AttributeDeltaUtilTests {
         assertNull(value);
         // test class cast exception
         attr = build("big", "1");
-        value = AttributeDeltaUtil.getBigDecimalValue(attr);
+        AttributeDeltaUtil.getBigDecimalValue(attr);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
