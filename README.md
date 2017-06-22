@@ -126,18 +126,19 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://connid.atlassian.net/browse/SOAP">issues</a></td>
   <td><a href="https://travis-ci.org/Tirasa/ConnIdSOAPBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdSOAPBundle.png"/></a></td>
  </tr>
-  <tr>
-  <td>Zimbra</td>
-  <td>https://github.com/Tirasa/ConnIdZimbraBundle</td>
-  <td><a href="https://connid.atlassian.net/wiki/display/BASE/Zimbra">wiki</a></td>
-  <td><a href="https://connid.atlassian.net/browse/Zimbra">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdZimbraBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdZimbraBundle.png"/></a></td> </tr>
  <tr>
   <td>UNIX</td>
   <td>https://github.com/Tirasa/ConnIdUNIXBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/UNIX">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/UNIX">issues</a></td>
   <td><a href="https://travis-ci.org/Tirasa/ConnIdUNIXBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdUNIXBundle.png"/></a></td>
+  </tr>
+ <tr>
+  <td>Zimbra</td>
+  <td>https://github.com/Tirasa/ConnIdZimbraBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/Zimbra">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/Zimbra">issues</a></td>
+  <td><a href="https://travis-ci.org/Tirasa/ConnIdZimbraBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdZimbraBundle.png"/></a></td>
  </tr>
  </tbody>
 </table>
