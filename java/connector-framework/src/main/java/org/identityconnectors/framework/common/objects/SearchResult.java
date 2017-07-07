@@ -19,9 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 Evolveum 
+ * Portions Copyrighted 2014 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
+
+import java.io.Serializable;
 
 /**
  * The final result of a query request returned after all connector objects
@@ -32,7 +34,9 @@ package org.identityconnectors.framework.common.objects;
  *
  * @since 1.4
  */
-public final class SearchResult {
+public final class SearchResult implements Serializable {
+
+    private static final long serialVersionUID = 629759587906070073L;
 
     private final String pagedResultsCookie;
 
