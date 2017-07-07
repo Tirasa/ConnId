@@ -30,7 +30,7 @@
   <parent>
     <groupId>net.tirasa.connid</groupId>
     <artifactId>connid</artifactId>
-    <version>1.4.3.0</version>
+    <version>1.4.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>slf4j-logging</artifactId>    
