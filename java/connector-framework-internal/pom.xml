@@ -105,6 +105,11 @@
           <instructions>
             <Main-Class>org.identityconnectors.framework.server.Main</Main-Class>
             <Fragment-Host>net.tirasa.connid.connector-framework</Fragment-Host>
+            <Export-Package>
+              {local-packages},
+              org.identityconnectors.framework.impl.*
+            </Export-Package>
+            <Provide-Capability>org.identityconnectors.framework.internal</Provide-Capability>
           </instructions>
         </configuration>
       </plugin>
