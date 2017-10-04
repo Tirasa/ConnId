@@ -9,6 +9,9 @@ java/testbundlev1/target/
 java/testbundlev2/target/
 java/testcommonv1/target/
 java/testcommonv2/target/
+java/target/
+java/archetype/target/
+java/archetype/src/main/resources/archetype-resources/pom.xml
 
 #IntelliJ IDEA stuff
 java/.idea/
@@ -58,5 +61,3 @@ AssemblyInfo.cs
 [Dd]ebug*/
 [Rr]elease*/
 dotnet/*.bat
-/java/target/
-/java/archetype/target/
