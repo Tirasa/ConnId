@@ -24,6 +24,7 @@ package org.identityconnectors.common;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
@@ -35,6 +36,11 @@ import java.util.regex.Matcher;
 public final class StringUtil {
 
     /**
+     * Empty {@code ""} string.
+     */
+    public static final String EMPTY = "";
+
+    /**
      * Never allow this to be instantiated.
      */
     private StringUtil() {
@@ -44,10 +50,8 @@ public final class StringUtil {
     /**
      * Finds the index of the first digit and starts from the index specified.
      *
-     * @param str
-     *            String to search for a digit.
-     * @param startidx
-     *            Starting index from which to search
+     * @param str String to search for a digit.
+     * @param startidx Starting index from which to search
      * @return -1 if not found otherwise the index.
      */
     public static int indexOfDigit(final String str, final int startidx) {
@@ -67,8 +71,7 @@ public final class StringUtil {
     /**
      * Finds the index of the first digit.
      *
-     * @param str
-     *            String to seach for a digit.
+     * @param str String to search for a digit.
      * @return -1 if not found otherwise the index.
      */
     public static int indexOfDigit(final String str) {
@@ -79,10 +82,8 @@ public final class StringUtil {
      * Finds the index of the first non digit and starts from the index
      * specified.
      *
-     * @param str
-     *            String to seach for a non digit.
-     * @param startidx
-     *            Starting index from which to search.
+     * @param str String to search for a non digit.
+     * @param startidx Starting index from which to search.
      * @return -1 if not found otherwise the index.
      */
     public static int indexOfNonDigit(final String str, final int startidx) {
@@ -102,8 +103,7 @@ public final class StringUtil {
     /**
      * Finds the index of the first non digit.
      *
-     * @param str
-     *            String to seach for a non digit.
+     * @param str String to search for a non digit.
      * @return -1 if not found otherwise the index.
      */
     public static int indexOfNonDigit(final String str) {
@@ -113,8 +113,7 @@ public final class StringUtil {
     /**
      * Return the string of digits from string.
      *
-     * @param str
-     *            Source string to search.
+     * @param str Source string to search.
      */
     public static String subDigitString(final String str) {
         return subDigitString(str, 0);
@@ -123,10 +122,8 @@ public final class StringUtil {
     /**
      * Return the string of digits from string.
      *
-     * @param str
-     *            Source string to search.
-     * @param idx
-     *            Start index from which to search.
+     * @param str Source string to search.
+     * @param idx Start index from which to search.
      */
     public static String subDigitString(final String str, final int idx) {
         String ret = null;
@@ -204,10 +201,8 @@ public final class StringUtil {
     /**
      * Finds the start index of the comparison string regards of case.
      *
-     * @param src
-     *            String to search.
-     * @param cmp
-     *            Comparsion string to find.
+     * @param src String to search.
+     * @param cmp Comparison string to find.
      * @return -1 if not found otherwise the index of the starting character.
      */
     public static int indexOfIgnoreCase(final String src, final String cmp) {
@@ -221,6 +216,7 @@ public final class StringUtil {
     }
 
     private static final String END_XMLCOMMENT = "-->";
+
     private static final String START_XMLCOMMENT = "<!--";
 
     /**
@@ -280,20 +276,18 @@ public final class StringUtil {
      *  StringUtil.isEmpty(&quot; bob &quot;)  = false
      * </pre>
      *
-     * @param val
-     *            string to evaluate as empty.
+     * @param val string to evaluate as empty.
      * @return true if the string is empty else false.
      */
     public static boolean isEmpty(final String val) {
-        return (val == null) ? true : "".equals(val) ? true : false;
+        return (val == null) ? true : "".equals(val);
     }
 
     /**
      * Determines if a string is not empty. Its the exact opposite for
      * {@link #isEmpty(String)}.
      *
-     * @param val
-     *            string to evaluate.
+     * @param val string to evaluate.
      * @return true if the string is not empty
      */
     public static boolean isNotEmpty(final String val) {
@@ -311,8 +305,7 @@ public final class StringUtil {
      *      StringUtil.isBlank(&quot;  bob  &quot;) = false
      * </pre>
      *
-     * @param val
-     *            the String to check, may be null
+     * @param val the String to check, may be null
      *
      * @return {@code true} if the String is null, empty or whitespace
      */
@@ -331,19 +324,16 @@ public final class StringUtil {
      *      StringUtil.isBlank(&quot;  bob  &quot;) = false
      * </pre>
      *
-     * @param val
-     *            the String to check, may be null
+     * @param val the String to check, may be null
      *
-     * @return {@code true} if the String is not empty and not null and not
-     *         whitespace
+     * @return {@code true} if the String is not empty and not null and not whitespace
      */
     public static boolean isNotBlank(final String val) {
         return !isBlank(val);
     }
 
     /**
-     * Returns a properties object w/ the key/value pairs parsed from the string
-     * passed in.
+     * Returns a properties object w/ the key/value pairs parsed from the string passed in.
      */
     public static Properties toProperties(final String value) {
         final Properties ret = new Properties();
@@ -375,16 +365,12 @@ public final class StringUtil {
      * assert r.equals(n);
      * </pre>
      *
-     * @param o
-     *            Original string to do the replacement on.
-     * @param var
-     *            String representation of the variable to replace.
-     * @param val
-     *            Value to replace the variable with.
+     * @param o Original string to do the replacement on.
+     * @param var String representation of the variable to replace.
+     * @param val Value to replace the variable with.
      * @return String will all the variables replaced with the value.
      *
-     * @throws IllegalArgumentException
-     *             if o is null, var is blank, or val is null.
+     * @throws IllegalArgumentException if o is null, var is blank, or val is null.
      */
     public static String replaceVariable(final String o, final String var, final String val) {
         try {
@@ -411,12 +397,10 @@ public final class StringUtil {
     /**
      * Determines if the string parameter 'str' ends with the character value.
      *
-     * @param str
-     *            String to check for the character at the end.
-     * @param value
-     *            The character to look for at the end of the string.
+     * @param str String to check for the character at the end.
+     * @param value The character to look for at the end of the string.
      * @return true if character parameter is found at the end of the string
-     *         parameter otherwise false.
+     * parameter otherwise false.
      */
     public static boolean endsWith(final String str, final char value) {
         return StringUtil.isBlank(str) ? false : str.charAt(str.length() - 1) == value;
@@ -425,14 +409,11 @@ public final class StringUtil {
     /**
      * Parses a line into a List of strings.
      *
-     * @param line
-     *            String to parse.
-     * @param fsep
-     *            Field separator
-     * @param tqul
-     *            Text qualifier.
+     * @param line String to parse.
+     * @param fsep field separator
+     * @param tqul Text qualifier.
      * @return list of string separated by a delimiter passed in by 'fsep' and
-     *         text is qualified by the parameter 'tqul'.
+     * text is qualified by the parameter 'tqul'.
      */
     public static List<String> parseLine(final String line, final char fsep, final char tqul) {
         assert isNotBlank(line);
@@ -542,8 +523,7 @@ public final class StringUtil {
     }
 
     /**
-     * Create a random length Unicode string based on the {@link Random} object
-     * passed in.
+     * Create a random length Unicode string based on the {@link Random} object passed in.
      */
     public static String randomString(final Random r) {
         return randomString(r, Math.abs(r.nextInt(257)));
@@ -553,10 +533,8 @@ public final class StringUtil {
      * Create a random string of fixed length based on the {@link Random} object
      * passed in. Insure that the string is built w/ Unicode characters.
      *
-     * @param r
-     *            used to get random unicode characters.
-     * @param length
-     *            fixed length of string.
+     * @param r used to get random unicode characters.
+     * @param length fixed length of string.
      * @return a randomly generated string based on the parameters.
      */
     public static String randomString(final Random r, final int length) {
@@ -569,5 +547,67 @@ public final class StringUtil {
             }
         }
         return bld.toString();
+    }
+
+    /**
+     *
+     * @param collection
+     * @param separator
+     * @return
+     * @since 1.3
+     */
+    public static String join(final Collection<String> collection, final char separator) {
+        if (collection == null) {
+            return null;
+        }
+
+        return join(collection.toArray(new String[collection.size()]), separator, 0, collection
+                .size());
+    }
+
+    /**
+     *
+     * @param array
+     * @param separator
+     * @return
+     * @since 1.3
+     */
+    public static String join(final Object[] array, final char separator) {
+        if (array == null) {
+            return null;
+        }
+
+        return join(array, separator, 0, array.length);
+    }
+
+    /**
+     *
+     * @param array
+     * @param separator
+     * @param startIndex
+     * @param endIndex
+     * @return
+     * @since 1.3
+     */
+    public static String join(final Object[] array, final char separator, final int startIndex, final int endIndex) {
+        if (array == null) {
+            return null;
+        }
+        final int noOfItems = endIndex - startIndex;
+        if (noOfItems <= 0) {
+            return EMPTY;
+        }
+
+        final StringBuilder buf = new StringBuilder(noOfItems * 16);
+
+        for (int i = startIndex; i < endIndex; i++) {
+            if (i > startIndex) {
+                buf.append(separator);
+            }
+            if (array[i] != null) {
+                buf.append(array[i]);
+            }
+        }
+        return buf.toString();
     }
 }
