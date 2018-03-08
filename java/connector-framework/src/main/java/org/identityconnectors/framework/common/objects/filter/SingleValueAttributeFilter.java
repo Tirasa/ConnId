@@ -35,10 +35,7 @@ public abstract class SingleValueAttributeFilter extends AttributeFilter {
      */
     SingleValueAttributeFilter(Attribute attr) {
         super(attr);
-        // make sure this is not a Uid..
-        if (Uid.NAME.equals(attr.getName())) {
-            throw new IllegalArgumentException("Uid can only be used for equals comparison.");
-        }
+
         // actual runtime..
         if (attr.getValue().size() != 1) {
             throw new IllegalArgumentException("Must only be one value!");
