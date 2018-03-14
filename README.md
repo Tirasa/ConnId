@@ -56,6 +56,13 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://connid.atlassian.net/browse/AD">issues</a></td>
   <td><a href="https://travis-ci.org/Tirasa/ConnIdADBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdADBundle.png"/></a></td>
  </tr>
+ <tr>
+  <td>Azure</td>
+  <td>https://github.com/Tirasa/ConnIdAzureBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/Azure">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/Azure">issues</a></td>
+  <td><a href="https://travis-ci.org/Tirasa/ConnIdAzureBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdAzureBundle.png"/></a></td>
+ </tr>
   <tr>
   <td>CMD</td>
   <td>https://github.com/Tirasa/ConnIdCMDBundle</td>
