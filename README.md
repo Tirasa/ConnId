@@ -26,8 +26,8 @@
 Want to know more about ConnId? Check our [website](http://connid.tirasa.net/).
 
 <a href="https://travis-ci.org/Tirasa/ConnId"><img src="https://api.travis-ci.org/Tirasa/ConnId.png"/></a>
-<a href="https://maven-badges.herokuapp.com/maven-central/net.tirasa.connid/connid">
-  <img src="https://maven-badges.herokuapp.com/maven-central/net.tirasa.connid/connid/badge.svg"/>
+<a href="#">
+  <img src="https://img.shields.io/maven-central/v/net.tirasa.connid/connid.png"/>
 </a>
 
 # Available connectors
