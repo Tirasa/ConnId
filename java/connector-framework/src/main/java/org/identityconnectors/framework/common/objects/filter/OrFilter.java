@@ -64,6 +64,7 @@ public final class OrFilter extends CompositeFilter {
         return result;
     }
 
+    @Override
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitOrFilter(p, this);
     }
@@ -79,13 +80,14 @@ public final class OrFilter extends CompositeFilter {
             final LinkedList<Filter> right = new LinkedList<Filter>(subFilters);
             right.removeFirst();
             return new AndFilter(right);
-        } else if (subFilters.size() == 2 ){
+        } else if (subFilters.size() == 2) {
             return subFilters.getLast();
         } else {
             return null;
         }
     }
 
+    @Override
     public Collection<Filter> getFilters() {
         return CollectionUtil.asReadOnlyList(subFilters);
     }

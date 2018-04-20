@@ -68,6 +68,7 @@ public class ContainsAllValuesFilter extends AttributeFilter {
         return false;
     }
 
+    @Override
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitContainsAllValuesFilter(p, this);
     }

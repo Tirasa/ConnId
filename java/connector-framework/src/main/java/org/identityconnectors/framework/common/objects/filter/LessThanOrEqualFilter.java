@@ -43,6 +43,7 @@ public final class LessThanOrEqualFilter extends ComparableAttributeFilter {
         return isPresent(obj) && this.compare(obj) <= 0;
     }
 
+    @Override
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitLessThanOrEqualFilter(p, this);
     }

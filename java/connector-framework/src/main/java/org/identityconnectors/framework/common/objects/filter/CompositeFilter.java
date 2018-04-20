@@ -35,12 +35,12 @@ public abstract class CompositeFilter implements Filter {
     /**
      * Left side of a composite based filter.
      */
-    private Filter left;
+    private final Filter left;
 
     /**
      * Right side of a composite based filter.
      */
-    private Filter right;
+    private final Filter right;
 
     /**
      * Create a composite filter w/ the left and right filters provided.

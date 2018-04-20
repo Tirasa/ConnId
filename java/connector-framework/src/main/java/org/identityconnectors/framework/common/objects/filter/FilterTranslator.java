@@ -25,5 +25,6 @@ package org.identityconnectors.framework.common.objects.filter;
 import java.util.List;
 
 public interface FilterTranslator<T> {
-    public List<T> translate(Filter filter);
+
+    List<T> translate(Filter filter);
 }

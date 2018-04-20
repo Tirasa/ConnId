@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS. 
+ * Portions Copyrighted 2018 ConnId. 
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -39,25 +40,33 @@ public class FilterBuilderTests {
 
     @Test
     public void equalsFilter() {
-        Attribute attr;
-        ConnectorObjectBuilder bld;
-        bld = new ConnectorObjectBuilder();
+        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         bld.setUid("233");
         bld.setName(Integer.toString(233));
-        attr = AttributeBuilder.build("email", "bob@example.com");
+        Attribute attr = AttributeBuilder.build("email", "bob@example.com");
         bld.addAttribute(attr);
         ConnectorObject obj = bld.build();
-        Filter f = FilterBuilder.equalTo(attr);
-        assertTrue(f.accept(obj));
+
+        // check equals match
+        Filter filter = FilterBuilder.equalTo(attr);
+        assertTrue(filter.accept(obj));
+
+        // check equals does not match
         bld.addAttribute("email", "something@different.com");
         obj = bld.build();
-        assertFalse(f.accept(obj));
+        assertFalse(filter.accept(obj));
+
+        // check equals ignore case does not match
+        bld.addAttribute("email", "bob@EXAMPLE.com");
+        obj = bld.build();
+        assertFalse(filter.accept(obj));
+
         // check when the attribute doesn't exist in the object..
         bld = new ConnectorObjectBuilder();
         bld.setUid("3234");
         bld.setName(Integer.toString(3234));
         bld.addAttribute("adflk", "fafkajwe");
-        assertFalse(f.accept(bld.build()));
+        assertFalse(filter.accept(bld.build()));
     }
 
     // =======================================================================
@@ -66,71 +75,67 @@ public class FilterBuilderTests {
 
     @Test
     public void greaterThanFilter() {
-        Attribute attr;
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-        attr = AttributeBuilder.build("count", 3);
-        Filter f = FilterBuilder.greaterThan(attr);
+        Attribute attr = AttributeBuilder.build("count", 3);
+        Filter filter = FilterBuilder.greaterThan(attr);
         bld.addAttribute("count", 4);
         bld.setUid("1");
         bld.setName(Integer.toString(1));
-        boolean ret = f.accept(bld.build());
+        boolean ret = filter.accept(bld.build());
         assertTrue(ret);
         bld.addAttribute("count", 2);
-        ret = f.accept(bld.build());
+        ret = filter.accept(bld.build());
         assertFalse(ret);
     }
 
     @Test
     public void greaterThanEqualsToFilter() {
-        Attribute attr;
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-        attr = AttributeBuilder.build("count", 3);
-        Filter f = FilterBuilder.greaterThanOrEqualTo(attr);
+        Attribute attr = AttributeBuilder.build("count", 3);
+        Filter filter = FilterBuilder.greaterThanOrEqualTo(attr);
         bld.addAttribute("count", 4);
         bld.setUid("1");
         bld.setName(Integer.toString(1));
-        boolean ret = f.accept(bld.build());
+        boolean ret = filter.accept(bld.build());
         assertTrue(ret);
         bld.addAttribute("count", 2);
-        ret = f.accept(bld.build());
+        ret = filter.accept(bld.build());
         assertFalse(ret);
         bld.addAttribute("count", 3);
-        ret = f.accept(bld.build());
+        ret = filter.accept(bld.build());
         assertTrue(ret);
     }
 
     @Test
     public void lessThanFilter() {
-        Attribute attr;
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-        attr = AttributeBuilder.build("count", 50);
-        Filter f = FilterBuilder.lessThan(attr);
+        Attribute attr = AttributeBuilder.build("count", 50);
+        Filter filter = FilterBuilder.lessThan(attr);
         bld.addAttribute("count", 49);
         bld.setUid("1");
         bld.setName(Integer.toString(1));
-        boolean ret = f.accept(bld.build());
+        boolean ret = filter.accept(bld.build());
         assertTrue(ret);
         bld.addAttribute("count", 51);
-        ret = f.accept(bld.build());
+        ret = filter.accept(bld.build());
         assertFalse(ret);
     }
 
     @Test
     public void lessThanEqualToFilter() {
-        Attribute attr;
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
-        attr = AttributeBuilder.build("count", 50);
-        Filter f = FilterBuilder.lessThanOrEqualTo(attr);
+        Attribute attr = AttributeBuilder.build("count", 50);
+        Filter filter = FilterBuilder.lessThanOrEqualTo(attr);
         bld.addAttribute("count", 49);
         bld.setUid("1");
         bld.setName(Integer.toString(1));
-        boolean ret = f.accept(bld.build());
+        boolean ret = filter.accept(bld.build());
         assertTrue(ret);
         bld.addAttribute("count", 51);
-        ret = f.accept(bld.build());
+        ret = filter.accept(bld.build());
         assertFalse(ret);
         bld.addAttribute("count", 50);
-        ret = f.accept(bld.build());
+        ret = filter.accept(bld.build());
         assertTrue(ret);
     }
 
@@ -141,48 +146,61 @@ public class FilterBuilderTests {
     public void startsWithFilter() {
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         Attribute attr = AttributeBuilder.build("name", "fred");
-        Filter f = FilterBuilder.startsWith(attr);
+        Filter filter = FilterBuilder.startsWith(attr);
         bld.setUid("1");
         bld.setName(Integer.toString(1));
         bld.addAttribute("name", "fredrick");
-        assertTrue(f.accept(bld.build()));
+        assertTrue(filter.accept(bld.build()));
         bld.addAttribute("name", "fasdfklj");
-        assertFalse(f.accept(bld.build()));
+        assertFalse(filter.accept(bld.build()));
     }
 
     @Test
     public void endsWithFilter() {
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         Attribute attr = AttributeBuilder.build("name", "rick");
-        Filter f = FilterBuilder.endsWith(attr);
+        Filter filter = FilterBuilder.endsWith(attr);
         bld.setUid("1");
         bld.setName(Integer.toString(1));
         bld.addAttribute("name", "fredrick");
-        assertTrue(f.accept(bld.build()));
+        assertTrue(filter.accept(bld.build()));
         bld.addAttribute("name", "fakljffd");
-        assertFalse(f.accept(bld.build()));
+        assertFalse(filter.accept(bld.build()));
     }
 
     @Test
-    public void constainsWithFilter() {
+    public void containsFilter() {
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         Attribute attr = AttributeBuilder.build("name", "red");
-        Filter f = FilterBuilder.contains(attr);
+        Filter filter = FilterBuilder.contains(attr);
         bld.setUid("1");
         bld.setName(Integer.toString(1));
         bld.addAttribute("name", "fredrick");
-        assertTrue(f.accept(bld.build()));
+        assertTrue(filter.accept(bld.build()));
         bld.addAttribute("name", "falkjfklj");
-        assertFalse(f.accept(bld.build()));
+        assertFalse(filter.accept(bld.build()));
     }
 
+    @Test
+    public void equalsIgnoreCaseFilter() {
+        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+        Attribute attr = AttributeBuilder.build("name", "red");
+        Filter filter = FilterBuilder.equalsIgnoreCase(attr);
+        bld.setUid("1");
+        bld.setName(Integer.toString(1));
+        bld.addAttribute("name", "ReD");
+        assertTrue(filter.accept(bld.build()));
+        bld.addAttribute("name", "falkjfklj");
+        assertFalse(filter.accept(bld.build()));
+    }
+    
     // =======================================================================
     // Binary Operators
     // =======================================================================
 
     @Test
     public void andFilter() {
-        Filter filter = null;
+        Filter filter;
         filter = FilterBuilder.and(new TrueFilter(), new TrueFilter());
         assertTrue(filter.accept(null));
         filter = FilterBuilder.and(new TrueFilter(), new FalseFilter());
@@ -195,7 +213,7 @@ public class FilterBuilderTests {
 
     @Test
     public void orFilter() {
-        Filter filter = null;
+        Filter filter;
         filter = FilterBuilder.or(new TrueFilter(), new TrueFilter());
         assertTrue(filter.accept(null));
         filter = FilterBuilder.or(new TrueFilter(), new FalseFilter());
@@ -208,7 +226,7 @@ public class FilterBuilderTests {
 
     @Test
     public void notFilter() {
-        Filter filter = null;
+        Filter filter;
         filter = FilterBuilder.not(new TrueFilter());
         assertFalse(filter.accept(null));
         filter = FilterBuilder.not(new FalseFilter());
@@ -225,26 +243,26 @@ public class FilterBuilderTests {
     // =======================================================================
     @Test
     public void containsAllValuesFilterTrue() {
-        Filter f = null;
+        Filter filter;
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         bld.setUid("1");
         bld.setName("1");
         bld.addAttribute("a", "a", "b", "c");
-        f = FilterBuilder.containsAllValues(AttributeBuilder.build("a", "a"));
-        assertTrue(f.accept(bld.build()));
+        filter = FilterBuilder.containsAllValues(AttributeBuilder.build("a", "a"));
+        assertTrue(filter.accept(bld.build()));
     }
 
     @Test
     public void containsAllValuesFilterFalse() {
-        Filter f = null;
+        Filter filter;
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         bld.setUid("2");
         bld.setName("1");
         bld.addAttribute("a", "a", "b", "c");
-        f = FilterBuilder.containsAllValues(AttributeBuilder.build("b", "a"));
-        assertFalse(f.accept(bld.build()));
-        f = FilterBuilder.containsAllValues(AttributeBuilder.build("a", "d"));
-        assertFalse(f.accept(bld.build()));
+        filter = FilterBuilder.containsAllValues(AttributeBuilder.build("b", "a"));
+        assertFalse(filter.accept(bld.build()));
+        filter = FilterBuilder.containsAllValues(AttributeBuilder.build("a", "d"));
+        assertFalse(filter.accept(bld.build()));
     }
 
     // =======================================================================
@@ -257,6 +275,7 @@ public class FilterBuilderTests {
             return true;
         }
 
+        @Override
         public <R, P> R accept(FilterVisitor<R, P> v, P p) {
             return v.visitExtendedFilter(p, this);
         }
@@ -268,6 +287,7 @@ public class FilterBuilderTests {
             return false;
         }
 
+        @Override
         public <R, P> R accept(FilterVisitor<R, P> v, P p) {
             return v.visitExtendedFilter(p, this);
         }

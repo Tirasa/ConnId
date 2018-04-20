@@ -34,7 +34,7 @@ package org.identityconnectors.framework.common.objects.filter;
  */
 public abstract class ExternallyChainedFilter implements Filter {
 
-    private Filter filter;
+    private final Filter filter;
 
     public ExternallyChainedFilter(Filter filter) {
         this.filter = filter;

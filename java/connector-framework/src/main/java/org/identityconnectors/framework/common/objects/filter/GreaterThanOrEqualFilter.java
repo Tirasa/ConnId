@@ -37,6 +37,7 @@ public final class GreaterThanOrEqualFilter extends ComparableAttributeFilter {
         return isPresent(obj) && this.compare(obj) >= 0;
     }
 
+    @Override
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitGreaterThanOrEqualFilter(p, this);
     }

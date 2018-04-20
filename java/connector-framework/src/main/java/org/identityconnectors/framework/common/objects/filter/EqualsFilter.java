@@ -71,6 +71,7 @@ public final class EqualsFilter extends AttributeFilter {
         return ret;
     }
 
+    @Override
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitEqualsFilter(p, this);
     }

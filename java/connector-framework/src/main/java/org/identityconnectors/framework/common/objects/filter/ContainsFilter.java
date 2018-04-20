@@ -36,6 +36,7 @@ public final class ContainsFilter extends StringFilter {
         return value.contains(getValue());
     }
 
+    @Override
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitContainsFilter(p, this);
     }

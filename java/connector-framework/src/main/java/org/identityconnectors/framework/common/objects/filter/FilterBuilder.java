@@ -20,13 +20,13 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId.
  */
 package org.identityconnectors.framework.common.objects.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
@@ -144,16 +144,45 @@ public final class FilterBuilder {
 
     /**
      * Select only an input <code>ConnectorObject</code> with a value for the
-     * specified <code>Attribute</code> that is <em>lexically equal to</em> the
-     * value of the specified <code>Attribute</code>.
-     * <p>
-     * <b>NOTE: Is comparison case-sensitive?</b>
+     * specified <code>Attribute</code> that is <em>equal to, not considering the case</em>
+     * the value of the specified <code>Attribute</code>.
      * <p>
      * For example, if the specified <code>Attribute</code> were
      * <code>{"hairColor": "brown"}</code>, <br>
      * this would match any <code>ConnectorObject</code> with a value such as <br>
-     * &nbsp;&nbsp;&nbsp;&nbsp;<code>{"hairColor": "brown"}</code> or <br>
-     * &nbsp;&nbsp;&nbsp;&nbsp;<code>{"hairColor": "BROWN"}</code> <br>
+     * &nbsp;&nbsp;&nbsp;&nbsp; <code>{"hairColor": "brown"}</code> or <br>
+     * &nbsp;&nbsp;&nbsp;&nbsp; <code>{"hairColor": "bRoWn"}</code> <br>
+     * but would <em>not</em> match any <code>ConnectorObject</code> that
+     * contains only values such as <br>
+     * &nbsp;&nbsp;&nbsp;&nbsp; <code>{"hairColor": "red"}</code> or <br>
+     * &nbsp;&nbsp;&nbsp;&nbsp; <code>{"hairColor": "auburn"}</code>. <br>
+     * This also would <em>not</em> match any <code>ConnectorObject</code> that
+     * contains only <code>{"hairColor": null}</code> <br>
+     * or that lacks the attribute <code>"hairColor"</code>.
+     *
+     * @param attr
+     *            <code>Attribute</code> <em>containing exactly one value</em>
+     *            to test against each value of the corresponding
+     *            <code>ConnectorObject</code> attribute.
+     * @return an instance of <code>Filter</code> whose <code>accept()</code>
+     *         method will return <code>true</code> if at least one value of the
+     *         corresponding attribute of the <code>ConnectorObject</code>
+     *         <em>is equal ignore case</em> the value of the specified
+     *         <code>Attribute</code>; otherwise <code>false</code>.
+     */
+    public static Filter equalsIgnoreCase(final Attribute attr) {
+        return new EqualsIgnoreCaseFilter(attr);
+    }
+    
+    /**
+     * Select only an input <code>ConnectorObject</code> with a value for the
+     * specified <code>Attribute</code> that is <em>lexically equal to</em> the
+     * value of the specified <code>Attribute</code>.
+     * <p>
+     * For example, if the specified <code>Attribute</code> were
+     * <code>{"hairColor": "brown"}</code>, <br>
+     * this would match any <code>ConnectorObject</code> with a value such as <br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;<code>{"hairColor": "brown"}<br>
      * but would <em>not</em> match any <code>ConnectorObject</code> that
      * contains only <br>
      * &nbsp;&nbsp;&nbsp;&nbsp;<code>{"hairColor": "brownish-gray"}</code> or <br>
@@ -189,8 +218,6 @@ public final class FilterBuilder {
      * specified <code>Attribute</code> that is
      * <em>lexically greater than or equal to</em> the value of the specified
      * <code>Attribute</code>.
-     * <p>
-     * <b>NOTE: Is comparison case-sensitive?</b>
      * <p>
      * For example, if the specified <code>Attribute</code> were
      * <code>{"hairColor": "brown"}</code>, <br>
@@ -235,8 +262,6 @@ public final class FilterBuilder {
      * <em>lexically less than or equal to</em> the value of the specified
      * <code>Attribute</code>.
      * <p>
-     * <b>NOTE: Is comparison case-sensitive?</b>
-     * <p>
      * For example, if the specified <code>Attribute</code> were
      * <code>{"hairColor": "brown"}</code>, <br>
      * this would match any <code>ConnectorObject</code> with a value such as <br>
@@ -279,8 +304,6 @@ public final class FilterBuilder {
      * specified <code>Attribute</code> that is <em>lexically less than</em> the
      * value of the specified <code>Attribute</code>.
      * <p>
-     * <b>NOTE: Is comparison case-sensitive?</b>
-     * <p>
      * For example, if the specified <code>Attribute</code> were
      * <code>{"hairColor": "brown"}</code>, <br>
      * this would match any <code>ConnectorObject</code> with a value such as <br>
@@ -322,8 +345,6 @@ public final class FilterBuilder {
      * Select only an input <code>ConnectorObject</code> with a value for the
      * specified <code>Attribute</code> that is <em>lexically greater than</em>
      * the value of the specified <code>Attribute</code>.
-     * <p>
-     * <b>NOTE: Is comparison case-sensitive?</b>
      * <p>
      * For example, if the specified <code>Attribute</code> were
      * <code>{"hairColor": "brown"}</code>, <br>

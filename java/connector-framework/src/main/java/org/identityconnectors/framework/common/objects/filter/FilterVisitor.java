@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId.
  */
 
 package org.identityconnectors.framework.common.objects.filter;
@@ -190,5 +191,16 @@ public interface FilterVisitor<R, P> {
      * @return Returns a visitor specified result.
      */
     R visitEndsWithFilter(P p, EndsWithFilter filter);
+    
+    /**
+     * Visits a {@code equals ignoreCase} filter.
+     *
+     * @param p
+     *            A visitor specified parameter.
+     * @param filter
+     *            The visited filter.
+     * @return Returns a visitor specified result.
+     */
+    R visitEqualsIgnoreCaseFilter(P p, EqualsIgnoreCaseFilter filter);
 
 }

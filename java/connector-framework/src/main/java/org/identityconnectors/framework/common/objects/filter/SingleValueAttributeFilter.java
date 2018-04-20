@@ -23,7 +23,6 @@
 package org.identityconnectors.framework.common.objects.filter;
 
 import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.Uid;
 
 /**
  * Get a single value out of the attribute to test w/.
@@ -33,7 +32,7 @@ public abstract class SingleValueAttributeFilter extends AttributeFilter {
     /**
      * Attempt to single out the value for comparison.
      */
-    SingleValueAttributeFilter(Attribute attr) {
+    SingleValueAttributeFilter(final Attribute attr) {
         super(attr);
 
         // actual runtime..
