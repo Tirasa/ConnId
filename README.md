@@ -127,6 +127,13 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://travis-ci.org/Tirasa/ConnIdRESTBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdRESTBundle.png"/></a></td>
  </tr>
  <tr>
+  <td>SCIM 1.1</td>
+  <td>https://github.com/Tirasa/ConnIdSCIMv11Bundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/SCIM+1.1">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/SCIMV11">issues</a></td>
+  <td><a href="https://travis-ci.org/Tirasa/ConnIdSCIMv11Bundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdSCIMv11Bundle.png"/></a></td>
+ </tr>
+ <tr>
   <td>SOAP</td>
   <td>https://github.com/Tirasa/ConnIdSOAPBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/SOAP">wiki</a></td>
