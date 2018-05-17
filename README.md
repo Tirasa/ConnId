@@ -134,6 +134,13 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://travis-ci.org/Tirasa/ConnIdSCIMv11Bundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdSCIMv11Bundle.png"/></a></td>
  </tr>
  <tr>
+  <td>ServiceNow</td>
+  <td>https://github.com/Tirasa/ConnIdServiceNowBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/ServiceNow">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/SERVICENOW">issues</a></td>
+  <td><a href="https://travis-ci.org/Tirasa/ConnIdServiceNowBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdServiceNowBundle.png"/></a></td>
+ </tr>
+ <tr>
   <td>SOAP</td>
   <td>https://github.com/Tirasa/ConnIdSOAPBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/SOAP">wiki</a></td>
