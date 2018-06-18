@@ -57,7 +57,6 @@
     <connection>scm:git:git@github.com:Tirasa/ConnId.git</connection>
     <url>scm:git:git@github.com:Tirasa/ConnId.git</url>
     <developerConnection>scm:git:git@github.com:Tirasa/ConnId.git</developerConnection>
-    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
