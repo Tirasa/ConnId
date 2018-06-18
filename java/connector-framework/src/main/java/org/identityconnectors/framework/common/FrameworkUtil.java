@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.text.MessageFormat;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -260,6 +261,7 @@ public final class FrameworkUtil {
         ATTR_SUPPORTED_TYPES.add(GuardedByteArray.class);
         ATTR_SUPPORTED_TYPES.add(GuardedString.class);
         ATTR_SUPPORTED_TYPES.add(Map.class);
+        ATTR_SUPPORTED_TYPES.add(ZonedDateTime.class);
     }
 
     public static Set<Class<? extends Object>> getAllSupportedAttributeTypes() {
@@ -301,6 +303,7 @@ public final class FrameworkUtil {
      * <li>BigDecimal.class</li>
      * <li>BigInteger.class</li>
      * <li>Map.class</li>
+     * <li>ZonedDateTime.class</li>
      * </ul>
      *
      * @param clazz

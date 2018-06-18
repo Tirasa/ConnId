@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -359,6 +361,25 @@ class Primitives {
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final Class<?> val = (Class<?>) object;
                 encoder.writeClassContents(val);
+            }
+        });
+        
+        HANDLERS.add(new AbstractObjectSerializationHandler(ZonedDateTime.class, "ZonedDateTime") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final String val = decoder.readStringContents();
+                return ZonedDateTime.parse(val);
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final ZonedDateTime val = (ZonedDateTime) object;
+                // Make sure we have timezone as (numeric) offset instead of 
+                // using zone ID. We do this by invoking toOffsetDateTime().
+                // This makes the timestamp ISO-8601 compatible and therefore
+                // more portable.
+                encoder.writeStringContents(val.toOffsetDateTime().toString());
             }
         });
 
