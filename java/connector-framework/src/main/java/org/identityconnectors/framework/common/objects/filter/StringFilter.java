@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -37,8 +38,7 @@ public abstract class StringFilter extends SingleValueAttributeFilter {
         super(attr);
         Object val = super.getValue();
         if (!(val instanceof String)) {
-            final String msg = "Value must be a string!";
-            throw new IllegalArgumentException(msg);
+            throw new IllegalArgumentException("Value must be a string!");
         }
     }
 
@@ -53,16 +53,18 @@ public abstract class StringFilter extends SingleValueAttributeFilter {
     }
 
     /**
-     * @throws ClassCastException
-     *             if the value from the {@link ConnectorObject}'s attribute of
-     *             the same name as provided is not a string.
+     * @throws IllegalArgumentException if the value from the {@link ConnectorObject}'s attribute of the same name as
+     * provided is not a string.
      * @see org.identityconnectors.framework.common.objects.filter.Filter#accept(ConnectorObject)
      */
     @Override
     public boolean accept(ConnectorObject obj) {
         boolean ret = false;
         Attribute attr = obj.getAttributeByName(getName());
-        if (attr != null) {
+        if (attr != null && attr.getValue() != null) {
+            if (!(attr.getValue().get(0) instanceof String)) {
+                throw new IllegalArgumentException("Value must be a string!");
+            }
             ret = accept((String) attr.getValue().get(0));
         }
         return ret;
