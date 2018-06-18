@@ -19,11 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The final result of a query request returned after all connector objects
@@ -119,4 +121,53 @@ public final class SearchResult implements Serializable {
         return allResultsReturned;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder bld = new StringBuilder();
+        bld.append("SearchResult: ");
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        map.put("PagedResultsCookie", getPagedResultsCookie());
+        map.put("RemainingPagedResults", getRemainingPagedResults());
+        map.put("AllResultsReturned", isAllResultsReturned());
+        bld.append(map);
+        return bld.toString();
+    }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (allResultsReturned ? 1231 : 1237);
+		result = prime * result + ((pagedResultsCookie == null) ? 0 : pagedResultsCookie.hashCode());
+		result = prime * result + remainingPagedResults;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		SearchResult other = (SearchResult) obj;
+		if (allResultsReturned != other.allResultsReturned) {
+			return false;
+		}
+		if (pagedResultsCookie == null) {
+			if (other.pagedResultsCookie != null) {
+				return false;
+			}
+		} else if (!pagedResultsCookie.equals(other.pagedResultsCookie)) {
+			return false;
+		}
+		if (remainingPagedResults != other.remainingPagedResults) {
+			return false;
+		}
+		return true;
+	}
 }
