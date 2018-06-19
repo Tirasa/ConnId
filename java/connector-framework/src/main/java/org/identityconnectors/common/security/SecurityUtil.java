@@ -19,13 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common.security;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
-
-import org.identityconnectors.common.Base64;
+import java.util.Base64;
 
 public final class SecurityUtil {
 
@@ -36,11 +36,9 @@ public final class SecurityUtil {
      * Converts chars to bytes without using any external functions that might
      * allocate additional buffers for the potentially sensitive data.
      *
-     * This guarantees the caller that they only need to cleanup the input and
-     * result.
+     * This guarantees the caller that they only need to cleanup the input and result.
      *
-     * @param chars
-     *            The chars
+     * @param chars The chars
      * @return The bytes
      */
     public static byte[] charsToBytes(char[] chars) {
@@ -58,11 +56,9 @@ public final class SecurityUtil {
      * Converts bytes to chars without using any external functions that might
      * allocate additional buffers for the potentially sensitive data.
      *
-     * This guarantees the caller that they only need to cleanup the input and
-     * result.
+     * This guarantees the caller that they only need to cleanup the input and result.
      *
-     * @param bytes
-     *            The bytes (to convert into characters).
+     * @param bytes The bytes (to convert into characters).
      * @return The characters (converted from the specified bytes).
      */
     public static char[] bytesToChars(byte[] bytes) {
@@ -77,8 +73,7 @@ public final class SecurityUtil {
     /**
      * Clears an array of potentially sensitive bytes
      *
-     * @param bytes
-     *            The bytes. May be null.
+     * @param bytes The bytes. May be null.
      */
     public static void clear(byte[] bytes) {
         if (bytes != null) {
@@ -89,8 +84,7 @@ public final class SecurityUtil {
     /**
      * Clears an array of potentially sensitive chars
      *
-     * @param chars
-     *            The characters. May be null.
+     * @param chars The characters. May be null.
      */
     public static void clear(char[] chars) {
         if (chars != null) {
@@ -101,15 +95,12 @@ public final class SecurityUtil {
     /**
      * Computes the base 64 encoded SHA1 hash of the input.
      *
-     * @param input
-     *            The input chars
+     * @param input The input chars
      * @return the hash
      */
     public static String computeBase64SHA1Hash(char[] input) {
-        // convert the char [] to bytes. I know there
-        // are utility methods for doing this, but I don't
-        // know what sort of buffering they use. because it
-        // is possibly sensitive data, we do this in line so
+        // convert the char [] to bytes. I know there are utility methods for doing this, but I don't
+        // know what sort of buffering they use. because it is possibly sensitive data, we do this in line so
         // that we can clear out our bytes after we are done.
         byte[] bytes = null;
         try {
@@ -125,8 +116,7 @@ public final class SecurityUtil {
     /**
      * Computes the base 64 encoded SHA1 hash of the input.
      *
-     * @param bytes
-     *            The input bytes.
+     * @param bytes The input bytes.
      * @return the hash (computed from the input bytes).
      */
     public static String computeBase64SHA1Hash(byte[] bytes) {
@@ -139,18 +129,16 @@ public final class SecurityUtil {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return Base64.encode(data);
+        return Base64.getEncoder().encodeToString(data);
     }
 
     /**
      * Verifies the base 64-encoded SHA1 hash of the input.
      *
-     * @param input
-     *            The input chars
-     * @param hash
-     *            The expected hash
+     * @param input The input chars
+     * @param hash The expected hash
      * @return true if the hash of the input characters matches the expected
-     *         hash.
+     * hash.
      */
     public static boolean verifyBase64SHA1Hash(char[] input, String hash) {
         String inputHash = computeBase64SHA1Hash(input);
@@ -160,44 +148,30 @@ public final class SecurityUtil {
     /**
      * Decrypts the value of a {@link GuardedString}.
      *
-     * @param guardedString
-     *            the guarded string value.
+     * @param guardedString the guarded string value.
      * @return the clear string value.
      * @since 1.4
      */
     public static String decrypt(GuardedString guardedString) {
-        final String[] clearText = new String[1];
-
-        GuardedString.Accessor accessor = new GuardedString.Accessor() {
-
-            public void access(char[] clearChars) {
-                clearText[0] = new String(clearChars);
-            }
-        };
-
-        guardedString.access(accessor);
+        String[] clearText = new String[1];
+        guardedString.access((clearChars) -> {
+            clearText[0] = new String(clearChars);
+        });
         return clearText[0];
     }
 
     /**
      * Decrypts the value of a {@link GuardedByteArray}.
      *
-     * @param guardedByteArray
-     *            the guarded byte array value.
+     * @param guardedByteArray the guarded byte array value.
      * @return the clear byte array value.
      * @since 1.4
      */
     public static byte[] decrypt(GuardedByteArray guardedByteArray) {
-        final byte[][] clearByte = new byte[1][];
-
-        GuardedByteArray.Accessor accessor = new GuardedByteArray.Accessor() {
-            public void access(byte[] clearBytes) {
-                clearByte[0] = clearBytes;
-            }
-        };
-
-        guardedByteArray.access(accessor);
+        byte[][] clearByte = new byte[1][];
+        guardedByteArray.access((clearBytes) -> {
+            clearByte[0] = clearBytes;
+        });
         return clearByte[0];
     }
-
 }

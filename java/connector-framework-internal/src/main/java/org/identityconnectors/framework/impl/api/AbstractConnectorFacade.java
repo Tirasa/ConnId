@@ -28,9 +28,9 @@ package org.identityconnectors.framework.impl.api;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.text.MessageFormat;
+import java.util.Base64;
 import java.util.Set;
 import org.identityconnectors.common.Assertions;
-import org.identityconnectors.common.Base64;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.api.operations.APIOperation;
@@ -83,7 +83,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
         // also, configuration is used as a key in the
         // pool, so it is important that it not be modified.
         byte[] bytes = SerializerUtil.serializeBinaryObject(configuration);
-        connectorFacadeKey = Base64.encode(bytes);
+        connectorFacadeKey = Base64.getEncoder().encodeToString(bytes);
         this.configuration = (APIConfigurationImpl) SerializerUtil.deserializeBinaryObject(bytes);
         // parent ref not included in the clone
         this.configuration.setConnectorInfo(configuration.getConnectorInfo());

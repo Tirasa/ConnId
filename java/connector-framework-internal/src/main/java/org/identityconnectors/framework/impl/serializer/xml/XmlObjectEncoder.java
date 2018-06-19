@@ -19,14 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.serializer.xml;
 
 import java.lang.reflect.Array;
+import java.util.Base64;
 import java.util.Stack;
-
 import org.identityconnectors.common.Assertions;
-import org.identityconnectors.common.Base64;
 import org.identityconnectors.common.XmlUtil;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.serializer.ObjectEncoder;
@@ -37,8 +37,11 @@ import org.identityconnectors.framework.impl.serializer.ObjectTypeMapper;
 public class XmlObjectEncoder implements ObjectEncoder {
 
     private static class OutputElement {
+
         private final String name;
+
         private final StringBuilder contents = new StringBuilder();
+
         private boolean elementData = false;
 
         public OutputElement(String name) {
@@ -46,9 +49,9 @@ public class XmlObjectEncoder implements ObjectEncoder {
         }
     }
 
-    private Stack<OutputElement> outputStack = new Stack<OutputElement>();
+    private final Stack<OutputElement> outputStack = new Stack<>();
 
-    private StringBuilder rootBuilder;
+    private final StringBuilder rootBuilder;
 
     public XmlObjectEncoder(StringBuilder builder) {
         Assertions.nullCheck(builder, "builder");
@@ -133,7 +136,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
 
     @Override
     public void writeObjectContents(Object o) {
-        if (outputStack.size() == 0) {
+        if (outputStack.isEmpty()) {
             throw new IllegalStateException("May not write contents on top-level object");
         }
         writeObjectInternal(o, false);
@@ -141,7 +144,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
 
     @Override
     public void writeObjectField(String fieldName, Object object, boolean inline) {
-        if (outputStack.size() == 0) {
+        if (outputStack.isEmpty()) {
             throw new IllegalStateException("May not write field on top-level object");
         }
         if (inline && object == null) {
@@ -173,7 +176,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
     }
 
     private static String encodeByteArray(byte[] bytes) {
-        return Base64.encode(bytes);
+        return Base64.getEncoder().encodeToString(bytes);
     }
 
     private static String encodeClass(Class<?> clazz) {
@@ -267,9 +270,8 @@ public class XmlObjectEncoder implements ObjectEncoder {
     // xml encoding
     //
     // ///////////////////////////////////////////////////////////////
-
     private OutputElement getCurrentElement() {
-        if (outputStack.size() == 0) {
+        if (outputStack.isEmpty()) {
             return null;
         } else {
             return outputStack.peek();
@@ -277,7 +279,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
     }
 
     private StringBuilder getCurrentBuilder() {
-        if (outputStack.size() == 0) {
+        if (outputStack.isEmpty()) {
             return rootBuilder;
         } else {
             return getCurrentElement().contents;
@@ -285,7 +287,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
     }
 
     private StringBuilder getPreviousBuilder() {
-        if (outputStack.size() == 0) {
+        if (outputStack.isEmpty()) {
             return null;
         } else if (outputStack.size() == 1) {
             return rootBuilder;
@@ -300,7 +302,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
         if (current != null) {
             current.elementData = true;
         }
-        getCurrentBuilder().append("<" + name);
+        getCurrentBuilder().append('<').append(name);
         outputStack.push(new OutputElement(name));
     }
 

@@ -19,14 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.serializer.xml;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
-
-import org.identityconnectors.common.Base64;
 import org.identityconnectors.common.XmlUtil;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.serializer.ObjectDecoder;
@@ -39,6 +39,7 @@ import org.w3c.dom.Element;
 public class XmlObjectDecoder implements ObjectDecoder {
 
     private final Element node;
+
     private final Class<?> expectedClass;
 
     public XmlObjectDecoder(Element node, Class<?> expectedClass) {
@@ -93,8 +94,7 @@ public class XmlObjectDecoder implements ObjectDecoder {
 
     @Override
     public double readDoubleField(String fieldName, double dflt) {
-        return decodeDouble(readStringAttributeInternal(fieldName, XmlObjectEncoder
-                .encodeDouble(dflt)));
+        return decodeDouble(readStringAttributeInternal(fieldName, XmlObjectEncoder.encodeDouble(dflt)));
     }
 
     @Override
@@ -104,8 +104,7 @@ public class XmlObjectDecoder implements ObjectDecoder {
 
     @Override
     public float readFloatField(String fieldName, float dflt) {
-        return decodeFloat(readStringAttributeInternal(fieldName, XmlObjectEncoder
-                .encodeFloat(dflt)));
+        return decodeFloat(readStringAttributeInternal(fieldName, XmlObjectEncoder.encodeFloat(dflt)));
     }
 
     @Override
@@ -203,7 +202,7 @@ public class XmlObjectDecoder implements ObjectDecoder {
     }
 
     private byte[] decodeByteArray(String base64) {
-        return Base64.decode(base64);
+        return Base64.getDecoder().decode(base64);
     }
 
     private Class<?> decodeClass(String type) {
@@ -244,7 +243,7 @@ public class XmlObjectDecoder implements ObjectDecoder {
                     ObjectSerializerRegistry.getHandlerByObjectType(expectedClass);
             if (handler == null) {
                 if (expectedClass.isArray()) {
-                    List<Object> temp = new ArrayList<Object>();
+                    List<Object> temp = new ArrayList<>();
                     for (Element child = XmlUtil.getFirstChildElement(node); child != null; child =
                             XmlUtil.getNextElement(child)) {
                         XmlObjectDecoder sub = new XmlObjectDecoder(child, null);
@@ -272,7 +271,7 @@ public class XmlObjectDecoder implements ObjectDecoder {
                 componentType = "Object";
             }
             Class<?> componentClass = decodeClass(componentType);
-            List<Object> temp = new ArrayList<Object>();
+            List<Object> temp = new ArrayList<>();
             for (Element child = XmlUtil.getFirstChildElement(node); child != null; child =
                     XmlUtil.getNextElement(child)) {
                 XmlObjectDecoder sub = new XmlObjectDecoder(child, null);
@@ -297,5 +296,4 @@ public class XmlObjectDecoder implements ObjectDecoder {
             }
         }
     }
-
 }

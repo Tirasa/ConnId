@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.serializer;
 
@@ -28,9 +29,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
-
-import org.identityconnectors.common.Base64;
 import org.xml.sax.InputSource;
 
 /**
@@ -39,14 +39,12 @@ import org.xml.sax.InputSource;
 public final class SerializerUtil {
 
     private SerializerUtil() {
-
     }
 
     /**
      * Serializes the given object to bytes.
      *
-     * @param object
-     *            The object to serialize
+     * @param object The object to serialize
      * @return The bytes
      * @see ObjectSerializerFactory for a list of supported types
      */
@@ -62,8 +60,7 @@ public final class SerializerUtil {
     /**
      * Deserializes the given object from bytes.
      *
-     * @param bytes
-     *            The bytes to deserialize
+     * @param bytes The bytes to deserialize
      * @return The object
      * @see ObjectSerializerFactory for a list of supported types
      */
@@ -77,36 +74,32 @@ public final class SerializerUtil {
     /**
      * Serializes the given object to Base64 string.
      *
-     * @param object
-     *            The object to serialize
+     * @param object The object to serialize
      * @return The Base64 string
      * @see ObjectSerializerFactory for a list of supported types
      * @since 1.4
      */
     public static String serializeBase64Object(Object object) {
-        return Base64.encode(serializeBinaryObject(object));
+        return new String(Base64.getEncoder().encode(serializeBinaryObject(object)));
     }
 
     /**
      * Deserializes the given object from Base64 String.
      *
-     * @param encdata
-     *            The string to deserialize
+     * @param encdata The string to deserialize
      * @return The object
      * @see ObjectSerializerFactory for a list of supported types
      * @since 1.4
      */
     public static Object deserializeBase64Object(String encdata) {
-        return deserializeBinaryObject(Base64.decode(encdata));
+        return deserializeBinaryObject(Base64.getDecoder().decode(encdata));
     }
 
     /**
      * Serializes the given object to xml.
      *
-     * @param object
-     *            The object to serialize
-     * @param includeHeader
-     *            True if we are to include the xml header.
+     * @param object The object to serialize
+     * @param includeHeader True if we are to include the xml header.
      * @return The xml
      * @see ObjectSerializerFactory for a list of supported types
      */
@@ -122,42 +115,30 @@ public final class SerializerUtil {
     /**
      * Deserializes the given object from xml.
      *
-     * @param str
-     *            The xml to deserialize
-     * @param validate
-     *            True if we are to validate the xml
+     * @param str The xml to deserialize
+     * @param validate True if we are to validate the xml
      * @return The object
      * @see ObjectSerializerFactory for a list of supported types
      */
     public static Object deserializeXmlObject(String str, boolean validate) {
         ObjectSerializerFactory fact = ObjectSerializerFactory.getInstance();
         InputSource source = new InputSource(new StringReader(str));
-        final List<Object> rv = new ArrayList<Object>();
-        fact.deserializeXmlStream(source, new XmlObjectResultsHandler() {
-            @Override
-            public boolean handle(Object o) {
-                rv.add(o);
-                return false;
-            }
+        final List<Object> rv = new ArrayList<>();
+        fact.deserializeXmlStream(source, (object) -> {
+            rv.add(object);
+            return false;
         }, validate);
-        if (rv.size() > 0) {
-            return rv.get(0);
-        } else {
-            return null;
-        }
+        return rv.isEmpty() ? null : rv.get(0);
     }
 
     /**
-     * Clones the given object by serializing it to bytes and then deserializing
-     * it.
+     * Clones the given object by serializing it to bytes and then deserializing it.
      *
-     * @param object
-     *            The object.
+     * @param object The object.
      * @return A clone of the object
      */
     public static Object cloneObject(Object object) {
         byte[] bytes = serializeBinaryObject(object);
         return deserializeBinaryObject(bytes);
     }
-
 }
