@@ -41,7 +41,6 @@ public class XmlSerializationTests extends ObjectSerializationTests {
     @Override
     protected Object cloneObject(Object o) {
         String xml = SerializerUtil.serializeXmlObject(o, true);
-        System.out.println(xml);
         o = SerializerUtil.deserializeXmlObject(xml, true);
 
         // pass through a list to make sure dtd correctly defines all xml
@@ -49,7 +48,6 @@ public class XmlSerializationTests extends ObjectSerializationTests {
         List<Object> list = new ArrayList<Object>();
         list.add(o);
         xml = SerializerUtil.serializeXmlObject(list, true);
-        System.out.println(xml);
         @SuppressWarnings("unchecked")
         List<Object> rv = (List<Object>) SerializerUtil.deserializeXmlObject(xml, true);
         return rv.get(0);
@@ -64,7 +62,6 @@ public class XmlSerializationTests extends ObjectSerializationTests {
         ser.writeObject("bar");
         ser.close(true);
         String xml = sw.toString();
-        System.out.println(xml);
         final List<Object> results = new ArrayList<Object>();
         factory.deserializeXmlStream(new InputSource(new StringReader(xml)),
                 new XmlObjectResultsHandler() {

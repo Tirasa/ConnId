@@ -1028,7 +1028,6 @@ public class GroovyDataProvider implements DataProvider {
                     //use cached value:
                     resolvedValue = cache.get(prefix).toString();
                 } else {
-                    //System.out.println("no key: " + prefix + " /In cache");
                     resolvedValue = "Lazy.random(\"" + randomLazy.getValue() + "\", " + randomLazy.getClazz().getName() + ")";
                 }
             }

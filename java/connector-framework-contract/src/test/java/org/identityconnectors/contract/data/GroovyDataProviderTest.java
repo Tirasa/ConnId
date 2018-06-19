@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.data;
 
@@ -58,8 +59,11 @@ import org.identityconnectors.framework.common.objects.Attribute;
  *
  */
 public class GroovyDataProviderTest {
+
     private static final String NON_EXISTING_PROPERTY = "abcdefghi123asiosfjds";
+
     private static GroovyDataProvider gdp;
+
     public static final String CONFIG_FILE_NAME = "configfileTest.groovy";
 
     private static URL getConfigFileUrl() {
@@ -67,12 +71,12 @@ public class GroovyDataProviderTest {
     }
 
     @BeforeMethod
-	public void setUp() {
+    public void setUp() {
         gdp = new GroovyDataProvider(getConfigFileUrl());
     }
 
     @AfterMethod
-	public void tearDown() {
+    public void tearDown() {
         gdp = null;
     }
 
@@ -86,10 +90,16 @@ public class GroovyDataProviderTest {
         List<Object> l = (List<Object>) o;
         int iter = 0;
         for (Object object : l) {
-            switch(iter) {
-            case 0: assertTrue(object.equals("a")); break;
-            case 1: assertTrue(object.equals("b")); break;
-            case 2: assertTrue(object.equals("b")); break;
+            switch (iter) {
+                case 0:
+                    assertTrue(object.equals("a"));
+                    break;
+                case 1:
+                    assertTrue(object.equals("b"));
+                    break;
+                case 2:
+                    assertTrue(object.equals("b"));
+                    break;
             }
             iter++;
         }
@@ -105,13 +115,17 @@ public class GroovyDataProviderTest {
         List<Object> l = (List<Object>) o;
         int iter = 0;
         for (Object object : l) {
-            switch(iter) {
-            case 0: assertTrue(object.equals("a")); break;
-            case 1: assertTrue(object.equals("b")); break;
-            case 2:
-                assertTrue(object instanceof String);
-                assertTrue(object.toString().contains("X"));
-            break;
+            switch (iter) {
+                case 0:
+                    assertTrue(object.equals("a"));
+                    break;
+                case 1:
+                    assertTrue(object.equals("b"));
+                    break;
+                case 2:
+                    assertTrue(object instanceof String);
+                    assertTrue(object.toString().contains("X"));
+                    break;
             }
             iter++;
         }
@@ -137,7 +151,7 @@ public class GroovyDataProviderTest {
 
         final String message = "if we query the same attribute twice, it should return the same default value";
         assertTrue(nonExistingAttribute
-                .equals(nonExistingAttribute2),message);
+                .equals(nonExistingAttribute2), message);
 
         Object o3 = get("anotherNonExistingAttribute");
         assertNotNull(o3);
@@ -154,7 +168,7 @@ public class GroovyDataProviderTest {
         String anotherNonExistingAttribute2 = (String) o4;
 
         assertTrue(anotherNonExistingAttribute
-                .equals(anotherNonExistingAttribute2),message);
+                .equals(anotherNonExistingAttribute2), message);
     }
 
     /** helper method of {@link GroovyDataProviderTest#testProperDefaulting()};
@@ -197,7 +211,7 @@ public class GroovyDataProviderTest {
         List<Object> anotherNonExistingAttribute2 = (List<Object>) o4;
 
         assertTrue(anotherNonExistingAttribute
-                .equals(anotherNonExistingAttribute2),message);
+                .equals(anotherNonExistingAttribute2), message);
     }
 
     /** helper method of {@link GroovyDataProviderTest#testProperDefaultingMulti()
@@ -222,16 +236,14 @@ public class GroovyDataProviderTest {
     public void testSimpleMapAcquire() throws Exception {
         Object o = getProperty(gdp, "sampleMap");
         assertNotNull(o);
-        assertTrue(o instanceof Map<?,?>);
-        printMap(o);
+        assertTrue(o instanceof Map<?, ?>);
     }
 
     @Test
     public void testDotInNameMapAcquire() throws Exception {
         Object o = getProperty(gdp, "sampleMap.foo.bar");
         assertNotNull(o);
-        assertTrue(o instanceof Map<?,?>);
-        printMap(o);
+        assertTrue(o instanceof Map<?, ?>);
     }
 
     @Test
@@ -243,7 +255,6 @@ public class GroovyDataProviderTest {
         Object o = getProperty(gdp, "foo.abc");
         assertNotNull(o);
         assertEquals(o.toString(), "abc");
-        printMap(o);
     }
 
     @Test
@@ -309,9 +320,6 @@ public class GroovyDataProviderTest {
 
         assertTrue(o instanceof Long);
         assertTrue(o2 instanceof Integer);
-
-        System.out.println("long value: " + o.toString() + "   int value: "
-                + o2.toString());
     }
 
     @Test
@@ -352,7 +360,6 @@ public class GroovyDataProviderTest {
         {
             Object o = getProperty(gdp, "Tfloat");
             assertNotNull(o);
-            System.out.println(o.getClass().getName() + " " + o.toString());
             assertTrue(o instanceof Float);
         }
     }
@@ -366,18 +373,17 @@ public class GroovyDataProviderTest {
         if (obj instanceof List<?>) {
             @SuppressWarnings("unchecked")
             List<Object> objects = (List<Object>) obj;
-            printList(objects);
-            System.out.println();
             Object previous = null;
             for (Object object : objects) {
                 String msg = String.format(
                         "default value for Random multiString should contain Strings only, "
-                                + "but found different type: %s", object.getClass().getName());
+                        + "but found different type: %s", object.getClass().getName());
                 assertTrue(object instanceof String, msg);
 
                 if (previous != null) {
                     msg = String.format(
-                            "two objects on the randomized list should differ, but there are two equal values: %s = %s", previous, object);
+                            "two objects on the randomized list should differ, but there are two equal values: %s = %s",
+                            previous, object);
                     assertTrue(!previous.equals(object), msg);
                 }
                 previous = object;
@@ -387,7 +393,7 @@ public class GroovyDataProviderTest {
 
     @Test
     public void multiStringRecursiveTest() throws Exception {
-        Object o = getProperty(gdp, "multi.recursive.Tstring", false);
+        Object o = getProperty(gdp, "multi.recursive.Tstring");
         assertNotNull(o);
         assertTrue(o instanceof List<?>);
         if (o instanceof List<?>) {
@@ -411,9 +417,6 @@ public class GroovyDataProviderTest {
             }
             assertTrue(recursiveListPresent);
             assertTrue(recursiveListPresent2);
-
-            printList(l);
-            System.out.println("\n");
         }
     }
 
@@ -422,14 +425,6 @@ public class GroovyDataProviderTest {
         Object o = getProperty(gdp, "byteArray.test");
         assertNotNull(o);
         assertTrue(o instanceof byte[]);
-        if (o instanceof byte[]) {
-            byte[] barr = (byte[]) o;
-            System.out.println("Byte Array values:");
-            for (byte b : barr) {
-                System.out.print(Byte.toString(b) + ", ");
-            }
-            System.out.println();
-        }
     }
 
     @Test
@@ -505,7 +500,7 @@ public class GroovyDataProviderTest {
     public void testLazyMap() {
         Object o = ((DataProvider) gdp).get("mapWithLazyCalls");
         assertNotNull(o);
-        assertTrue(o instanceof Map<?,?>);
+        assertTrue(o instanceof Map<?, ?>);
         @SuppressWarnings("unchecked") // collection retyping
         Map<Object, Object> m = (Map<Object, Object>) o;
         int cntr = 0;
@@ -513,7 +508,6 @@ public class GroovyDataProviderTest {
             Map.Entry<Object, Object> current = iterator.next();
             if (cntr == 0 || cntr == 1) {
                 assertTrue(current.getValue() instanceof String);
-                //System.out.println("k: " + current.getKey().toString() + " v: " + current.getValue().toString());
             } else {
                 fail("should not be more than two items in the map");
             }
@@ -527,7 +521,7 @@ public class GroovyDataProviderTest {
     public void testAcquireMap() {
         Object o = ((DataProvider) gdp).get("abcAccount.all");
         assertNotNull(o);
-        assertTrue(o instanceof Map<?,?>);
+        assertTrue(o instanceof Map<?, ?>);
         @SuppressWarnings("unchecked") // collection retyping
         Map<Object, Object> m = (Map<Object, Object>) o;
         assertTrue(m.get("__NAME__") instanceof String);
@@ -537,83 +531,19 @@ public class GroovyDataProviderTest {
     }
 
     /* ************* UTILITY METHODS ***************** */
-    /**
-     * recursively print a list
-     */
-    private <T> void printList(List<T> l) {
-        System.out.print(" [ ");
-        for (Object object : l) {
-            if (object instanceof List<?>) {
-                @SuppressWarnings("unchecked") // collection retyping
-                List<T> newL = (List<T>) object;
-                printList(newL);
-            } else {
-                System.out.print(object.toString() + ", ");
-            }
-        }
-        System.out.print(" ] ");
-    }
-
-    private void printMap(Object o) {
-        if (o instanceof Map<?,?>) {
-            Map<?, ?> m = (Map<?, ?>) o;
-            Set<?> tmpSet = m.entrySet();
-            for (Object object : tmpSet) {
-                System.out.print(object + " ");
-            }
-            System.out.println("\n");
-        }
-    }
-
-    /**
-     * just call the get, and do some println for neat output.
-     *
-     * @param gdp2
-     * @param propertyName
-     * @return
-     * @throws Exception
-     */
-    private Object getProperty(GroovyDataProvider gdp2, String propertyName)
-            throws Exception {
-
-        return getProperty(gdp2, propertyName, true);
-    }
-
-    /**
-     * helper method that retrieves the parameter from the properties file and
-     * tries to display useful information about its contents on System.out
-     */
-    private Object getProperty(GroovyDataProvider gdp2, String propertyName,
-            boolean printOut) throws Exception {
+    private Object getProperty(GroovyDataProvider gdp2, String propertyName) throws Exception {
         // doing the acquire of property!
         Object o = gdp2.get(propertyName, "string", true);
 
-        // just informational output
-        if (o instanceof Map<?,?>) {
-            Map<?,?> m = (Map<?,?>) o;
-            String s = (m.size() > 0) ? "is present" : "is missing";
-            if (printOut) {
-                System.out.println("property " + propertyName + " " + s);
-            }
-        } else {
-            String s = o.toString();
-            if (printOut) {
-                System.out.println("property " + propertyName + " : "
-                        + ((s.length() > 0) ? s : "EMPTY STRING"));
-            }
-        }
-
         return o;
     }
-    /* *********************** SNAPSHOT GENERATING FEATURE TESTS ************************** */
 
-    /** Test of Lazy.get() and Lazy.random()*/
+    /* *********************** SNAPSHOT GENERATING FEATURE TESTS ************************** */
+    /** Test of Lazy.get() and Lazy.random() */
     @Test
     public void getPropertyTest() {
-        assertTrue(gdp.get("rumulus", null, false).equals(
-                gdp.get("rumulus", null, false)));
-        assertTrue(gdp.get("remus", null, false).equals(
-                gdp.get("rumulus", null, false)));
+        assertTrue(gdp.get("rumulus", null, false).equals(gdp.get("rumulus", null, false)));
+        assertTrue(gdp.get("remus", null, false).equals(gdp.get("rumulus", null, false)));
     }
 
     /** Test of left sides for the snapshot output */
@@ -627,9 +557,6 @@ public class GroovyDataProviderTest {
         // parse and control the properties in the written file
         // FOR NOW just left side from the assigment is controlled.
         parseAndControl(lines);
-
-        // output, might comment this out
-        // System.out.println(o.toString());
     }
 
     @Test
@@ -641,10 +568,11 @@ public class GroovyDataProviderTest {
         String fullName = (String) gdp.get("Xfull");
         assertNotNull(firstName);
 
-        String msg = String.format("Error, doesn't fulfill the concatenation: \n firstname: '%s' lastname: '%s' fullname: '%s'", firstName, lastName, fullName);
+        String msg = String.format(
+                "Error, doesn't fulfill the concatenation: \n firstname: '%s' lastname: '%s' fullname: '%s'", firstName,
+                lastName, fullName);
         assertTrue(String.format("%s %s", firstName, lastName).equals(fullName), msg);
     }
-
 
     @Test
     public void testGetAttributeSet() throws Exception {
@@ -654,20 +582,20 @@ public class GroovyDataProviderTest {
         assertTrue(as.size() == 5);
 
         for (Attribute attr : as) {
-            if ( attr.getName().equals("name")) {
+            if (attr.getName().equals("name")) {
                 assertEquals(attr.getValue().get(0), "String");
-            } else if ( attr.getName().equals("id")) {
-                assertEquals( attr.getValue().get(0), 15);
+            } else if (attr.getName().equals("id")) {
+                assertEquals(attr.getValue().get(0), 15);
 
-            } else if ( attr.getName().equals("arl")) {
-                assertEquals(attr.getValue().size(), 2);
-                assertEquals( attr.getValue().get(0), "elm1");
-                assertEquals(attr.getValue().get(1), "elm2");
-            } else if ( attr.getName().equals("ara")) {
+            } else if (attr.getName().equals("arl")) {
                 assertEquals(attr.getValue().size(), 2);
                 assertEquals(attr.getValue().get(0), "elm1");
                 assertEquals(attr.getValue().get(1), "elm2");
-            } else if ( attr.getName().equals("bool")) {
+            } else if (attr.getName().equals("ara")) {
+                assertEquals(attr.getValue().size(), 2);
+                assertEquals(attr.getValue().get(0), "elm1");
+                assertEquals(attr.getValue().get(1), "elm2");
+            } else if (attr.getName().equals("bool")) {
                 assertEquals(attr.getValue().get(0), true);
             } else {
                 fail("Unexpected attribute");
@@ -682,10 +610,11 @@ public class GroovyDataProviderTest {
         assertTrue(defaultedValue instanceof GuardedString);
         GuardedString gs = (GuardedString) defaultedValue;
         gs.access(new GuardedString.Accessor() {
+
             @Override
             public void access(char[] clearChars) {
-                 String result = new String(clearChars);
-                 assertTrue(result.length() > 0);
+                String result = new String(clearChars);
+                assertTrue(result.length() > 0);
             }
         });
     }
@@ -697,10 +626,11 @@ public class GroovyDataProviderTest {
         assertTrue(seekedValue instanceof GuardedString);
         GuardedString gs = (GuardedString) seekedValue;
         gs.access(new GuardedString.Accessor() {
+
             @Override
             public void access(char[] clearChars) {
-                 String result = new String(clearChars);
-                 assertTrue(result.length() > 0 && result.endsWith("ahoj"));
+                String result = new String(clearChars);
+                assertTrue(result.length() > 0 && result.endsWith("ahoj"));
             }
         });
     }
@@ -710,8 +640,10 @@ public class GroovyDataProviderTest {
         Object defaultedValue1 = ((DataProvider) gdp).get(GuardedString.class, "nonexistingAttributeFooBarBaz_123", "");
         Object defaultedValue2 = ((DataProvider) gdp).get(GuardedString.class, "nonexistingAttributeFooBarBaz_456", "");
         // second query should return the same value
-        assertEquals(((DataProvider) gdp).get(GuardedString.class, "nonexistingAttributeFooBarBaz_123", ""), defaultedValue1);
-        assertEquals(((DataProvider) gdp).get(GuardedString.class, "nonexistingAttributeFooBarBaz_456", ""), defaultedValue2);
+        assertEquals(((DataProvider) gdp).get(GuardedString.class, "nonexistingAttributeFooBarBaz_123", ""),
+                defaultedValue1);
+        assertEquals(((DataProvider) gdp).get(GuardedString.class, "nonexistingAttributeFooBarBaz_456", ""),
+                defaultedValue2);
         // the two passwords should be unique
         assertFalse(defaultedValue1.equals(defaultedValue2));
     }

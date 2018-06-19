@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.data;
 
@@ -42,9 +43,7 @@ public class RandomGeneratorTest {
             Object o = RandomGenerator.generate("#####", Long.class);
             assertNotNull(o);
             assertTrue(o instanceof Long);
-            System.out.println(o.toString());
         }
-
     }
 
     @Test
@@ -53,7 +52,6 @@ public class RandomGeneratorTest {
             Object o = RandomGenerator.generate("###X##");
             assertNotNull(o);
             assertTrue(o.toString().contains("X"));
-            System.out.println(o.toString());
         }
     }
 
@@ -61,12 +59,11 @@ public class RandomGeneratorTest {
     public void testRgen3() {
         {
             Object o = RandomGenerator.generate("###\\.##", Float.class); // this
-                                                                          // means
+            // means
             // ###\.##
             assertNotNull(o);
             assertTrue(o instanceof Float);
             assertTrue(o.toString().contains("."));
-            System.out.println(o.toString());
         }
     }
 
@@ -80,7 +77,6 @@ public class RandomGeneratorTest {
             assertTrue(o.toString().contains("X"));
             assertTrue(o2.toString().contains("X"));
             assertTrue(!o2.equals(o));
-            System.out.println(o.toString() + "\n" + o2.toString());
         }
     }
 
@@ -90,6 +86,7 @@ public class RandomGeneratorTest {
         assertTrue(o instanceof GuardedString);
         GuardedString pass = (GuardedString) o;
         pass.access(new GuardedString.Accessor() {
+
             @Override
             public void access(char[] clearChars) {
                 final String result = new String(clearChars);
@@ -105,5 +102,4 @@ public class RandomGeneratorTest {
         assertNotNull(o);
         assertTrue(o instanceof Character);
     }
-
 }
