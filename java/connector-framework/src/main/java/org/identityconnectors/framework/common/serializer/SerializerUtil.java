@@ -80,7 +80,7 @@ public final class SerializerUtil {
      * @since 1.4
      */
     public static String serializeBase64Object(Object object) {
-        return new String(Base64.getEncoder().encode(serializeBinaryObject(object)));
+        return Base64.getEncoder().encodeToString(serializeBinaryObject(object));
     }
 
     /**
