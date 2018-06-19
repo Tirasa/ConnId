@@ -39,6 +39,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -615,8 +616,6 @@ public final class IOUtil {
         }
     }
 
-    public static final String UTF8 = "UTF-8";
-
     /**
      * Reads the given file as UTF-8
      *
@@ -628,7 +627,7 @@ public final class IOUtil {
      */
     public static String readFileUTF8(final File file) throws IOException {
         final byte[] bytes = IOUtil.readFileBytes(file);
-        return new String(bytes, UTF8);
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
     /**
@@ -658,11 +657,8 @@ public final class IOUtil {
      * if the file parameter is null.
      */
     public static void writeFileUTF8(final File file, final String contents) throws IOException {
-        final Writer writer = new OutputStreamWriter(new FileOutputStream(file), UTF8);
-        try {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
             writer.write(contents);
-        } finally {
-            writer.close();
         }
     }
 

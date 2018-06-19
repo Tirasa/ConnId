@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
- * Portions Copyrighted 2010-2014 Tirasa.
+ * Portions Copyrighted 2010-2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local;
 
@@ -47,7 +47,6 @@ import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.ReflectionUtil;
@@ -70,7 +69,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
 
     private static final Log LOG = Log.getLog(LocalConnectorInfoManagerImpl.class);
 
-    private List<ConnectorInfo> connectorInfos;
+    private final List<ConnectorInfo> connectorInfos;
 
     public LocalConnectorInfoManagerImpl(final List<URL> bundleURLs,
             final ClassLoader bundleParentClassLoader) throws ConfigurationException {
@@ -85,8 +84,9 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
      */
     private static List<WorkingBundleInfo> expandBundles(final List<URL> bundleURLs)
             throws ConfigurationException {
-        final List<WorkingBundleInfo> rv = new ArrayList<WorkingBundleInfo>();
-        for (URL url : bundleURLs) {
+
+        final List<WorkingBundleInfo> rv = new ArrayList<>();
+        bundleURLs.forEach(url -> {
             WorkingBundleInfo info = null;
             try {
                 if ("file".equals(url.getProtocol())) {
@@ -102,7 +102,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                 throw new ConfigurationException("Invalid bundleURL: " + url.toExternalForm(), e);
             }
             rv.add(info);
-        }
+        });
         return rv;
     }
 
@@ -127,16 +127,15 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             final File libDir = new File(dir, "lib");
             if (libDir.exists()) {
                 final List<URL> libURLs = BundleLibSorter.getSortedURLs(libDir);
-                for (URL lib : libURLs) {
+                libURLs.forEach((lib) -> {
                     info.getEmbeddedBundles().add(processURL(lib, false));
-                }
+                });
             }
             final File nativeDir = new File(dir, "native");
             if (nativeDir.exists()) {
                 for (File file : BundleLibSorter.getSortedFiles(nativeDir)) {
                     if (file.isFile()) {
-                        info.getImmediateNativeLibraries().put(file.getName(),
-                                file.getAbsolutePath());
+                        info.getImmediateNativeLibraries().put(file.getName(), file.getAbsolutePath());
                     }
                 }
             }
@@ -151,15 +150,14 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
      * as a list of forward-slash separated relative paths
      */
     private static List<String> listBundleContents(final File dir) {
-        final List<String> rv = new ArrayList<String>();
+        final List<String> rv = new ArrayList<>();
         for (File file : dir.listFiles()) {
             listBundleContents2("", file, rv);
         }
         return rv;
     }
 
-    private static void listBundleContents2(final String prefix, final File file,
-            final List<String> result) {
+    private static void listBundleContents2(final String prefix, final File file, final List<String> result) {
         String path = prefix + file.getName();
         result.add(path);
         if (file.isDirectory()) {
@@ -171,6 +169,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
 
     private static WorkingBundleInfo processURL(final URL url, final boolean topLevel)
             throws ConfigurationException {
+
         final WorkingBundleInfo info = new WorkingBundleInfo(url.toString());
         final BundleTempDirectory tempDir = new BundleTempDirectory();
 
@@ -223,9 +222,9 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             } finally {
                 IOUtil.quietClose(stream);
             }
-            for (URL lib : libURLs.values()) {
+            libURLs.values().forEach((lib) -> {
                 info.getEmbeddedBundles().add(processURL(lib, false));
-            }
+            });
         } catch (IOException e) {
             throw new ConfigurationException(e);
         }
@@ -238,12 +237,14 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
     private static List<ConnectorInfo> createConnectorInfo(
             final Collection<WorkingBundleInfo> parsed, final ClassLoader bundleParentClassLoader)
             throws ConfigurationException {
-        final List<ConnectorInfo> rv = new ArrayList<ConnectorInfo>();
-        for (WorkingBundleInfo bundleInfo : parsed) {
-            final ClassLoader loader =
-                    new BundleClassLoader(bundleInfo.getEffectiveClassPath(), bundleInfo
-                            .getEffectiveNativeLibraries(), bundleParentClassLoader);
-            for (String name : bundleInfo.getImmediateBundleContents()) {
+
+        final List<ConnectorInfo> rv = new ArrayList<>();
+        parsed.forEach((bundleInfo) -> {
+            final ClassLoader loader = new BundleClassLoader(
+                    bundleInfo.getEffectiveClassPath(),
+                    bundleInfo.getEffectiveNativeLibraries(),
+                    bundleParentClassLoader);
+            bundleInfo.getImmediateBundleContents().forEach(name -> {
                 Class<?> connectorClass = null;
                 ConnectorClass options = null;
                 if (name.endsWith(".class")) {
@@ -267,8 +268,8 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                             if (ConnectorClass.class.getName().equals(annotation.annotationType().getName())) {
                                 // Same class name as the annotation we are looking for. But the previous code haven't 
                                 // found it.
-                                // So it looks like the annotation on this class is actually the correct one but it is 
-                                // loaded by wrong classloader. 
+                                // So it looks like the annotation on this class is actually the correct one but it is
+                                // loaded by wrong classloader.
                                 // Note: This error is very difficult to diagnose. Therefore we are explicitly checking 
                                 // for it here.
                                 throw new ConfigurationException("Class " + connectorClass.getName()
@@ -312,8 +313,8 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                                 connectorClass, bundleInfo.getOriginalLocation());
                     }
                 }
-            }
-        }
+            });
+        });
         return rv;
     }
 
@@ -321,11 +322,9 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
      * Create an instance of the {@link APIConfiguration} object to setup the
      * framework etc..
      */
-    public static APIConfigurationImpl createDefaultAPIConfiguration(
-            final LocalConnectorInfoImpl localInfo) {
+    public static APIConfigurationImpl createDefaultAPIConfiguration(final LocalConnectorInfoImpl localInfo) {
         // setup classloader since we are going to construct the config bean
-        ThreadClassLoaderManager.getInstance().pushClassLoader(
-                localInfo.getConnectorClass().getClassLoader());
+        ThreadClassLoaderManager.getInstance().pushClassLoader(localInfo.getConnectorClass().getClassLoader());
         try {
             final Class<? extends Connector> connectorClass = localInfo.getConnectorClass();
             final APIConfigurationImpl rv = new APIConfigurationImpl();
@@ -364,7 +363,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                             // get or create map
                             Map<String, String> map = rv.getCatalogs().get(locale);
                             if (map == null) {
-                                map = new HashMap<String, String>();
+                                map = new HashMap<>();
                                 rv.getCatalogs().put(locale, map);
                             }
                             // merge properties into map, overwriting
@@ -457,8 +456,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             return candidate;
         }
 
-        public File copyStreamToFile(final InputStream stream, final String name)
-                throws IOException {
+        public File copyStreamToFile(final InputStream stream, final String name) throws IOException {
             final File bundleDir = getBundleTempDir();
             final File newFile = new File(bundleDir, name);
             if (newFile.exists()) {
@@ -468,7 +466,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             if (!parent.exists() && !parent.mkdirs()) {
                 throw new IOException("Could not create directory " + parent);
             }
-            while (!parent.equals(bundleDir)) {
+            while (parent != null && !parent.equals(bundleDir)) {
                 parent.deleteOnExit();
                 parent = parent.getParentFile();
             }
@@ -478,11 +476,8 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
         }
 
         private void copyStream(final InputStream stream, final File toFile) throws IOException {
-            final FileOutputStream out = new FileOutputStream(toFile);
-            try {
+            try (FileOutputStream out = new FileOutputStream(toFile)) {
                 IOUtil.copyFile(stream, out);
-            } finally {
-                out.close();
             }
         }
 

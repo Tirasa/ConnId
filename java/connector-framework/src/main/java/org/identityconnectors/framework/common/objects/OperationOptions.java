@@ -21,13 +21,11 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2015-2016 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
-
 package org.identityconnectors.framework.common.objects;
 
-import java.util.HashMap;
 import java.util.Map;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.PrettyStringBuilder;
 import org.identityconnectors.common.security.GuardedString;
@@ -118,7 +116,7 @@ public final class OperationOptions {
      * would normally be returned.
      */
     public static final String OP_ATTRIBUTES_TO_GET = "ATTRS_TO_GET";
-    
+
     /**
      * If set to true the connector will return all the attributes that are returned
      * by default. If ATTRS_TO_GET option was also specified, it will be understood
@@ -128,7 +126,7 @@ public final class OperationOptions {
      * is present then only the default attributes will be returned.
      */
     public static final String OP_RETURN_DEFAULT_ATTRIBUTES = "RETURN_DEFAULT_ATTRIBUTES";
-    
+
     /**
      * An option to use with {@link SearchApiOp} which specifies that the search
      * operation may return only a reasonable subset of the results (objects). If this option
@@ -139,7 +137,7 @@ public final class OperationOptions {
      * flag in SearchResult in case that partial results were returned.
      */
     public static final String OP_ALLOW_PARTIAL_RESULTS = "ALLOW_PARTIAL_RESULTS";
-    
+
     /**
      * An option to use with {@link SearchApiOp} which specifies that the search
      * operation may return objects with partial attribute values. E.g. it may result
@@ -148,7 +146,7 @@ public final class OperationOptions {
      * is only meant to be displayed in the user interface table. Composing the list
      * of all the members of a big groups may be significant overhead and this option
      * allows to reduce that overhead.
-     * Even if this option is specified the connector must set the 
+     * Even if this option is specified the connector must set the
      * attributeValueCompleteness status in Attribute in case that partial attribute
      * values were returned.
      * Please note that the connector may return incomplete attributes even if
@@ -182,16 +180,13 @@ public final class OperationOptions {
      * search request.
      */
     public static final String OP_SORT_KEYS = "SORT_KEYS";
-    
 
     private final Map<String, Object> operationOptions;
 
     /**
-     * Public only for serialization; please use {@link OperationOptionsBuilder}
-     * .
+     * Public only for serialization; please use {@link OperationOptionsBuilder}.
      *
-     * @param operationOptions
-     *            The options.
+     * @param operationOptions The options.
      */
     public OperationOptions(Map<String, Object> operationOptions) {
         for (Object value : operationOptions.values()) {
@@ -203,21 +198,6 @@ public final class OperationOptions {
         Map<String, Object> operationOptionsClone =
                 (Map<String, Object>) SerializerUtil.cloneObject(operationOptions);
         this.operationOptions = CollectionUtil.asReadOnlyMap(operationOptionsClone);
-    }
-
-    // NOTE: this method makes a heavy assumption that in ConnId only arrays
-    // occur as mutable values in operation options, and that there is a single
-    // level of array/nesting.
-    // Really would be better if OpenICF switched to List and not array
-    // To more easily return immutable views
-    private Map<String, Object> copyMutables(Map<String, Object> operationOptions) {
-        Map<String, Object> operationOptionsCopy = new HashMap<String, Object>(operationOptions);
-        for (Map.Entry<String, Object> entry : operationOptionsCopy.entrySet()) {
-            if (entry.getValue() instanceof Object[]) {
-                entry.setValue(((Object[]) entry.getValue()).clone());
-            }
-        }
-        return operationOptionsCopy;
     }
 
     /**
@@ -265,7 +245,7 @@ public final class OperationOptions {
     public String[] getAttributesToGet() {
         return (String[]) operationOptions.get(OP_ATTRIBUTES_TO_GET);
     }
-    
+
     /**
      * Returns the flag indicating whether to return the default attributes
      * on top of those specified by OP_ATTRIBUTES_TO_GET.
@@ -296,16 +276,16 @@ public final class OperationOptions {
      * used to get a better operation performance.
      * Even if this option is specified the connector must set the allResultsReturned
      * flag in SearchResult in case that partial results were returned.
-     * 
+     *
      * @return flag which specifies that the search
-     *         operation may return only a reasonable part of the results.
-     * 
+     * operation may return only a reasonable part of the results.
+     *
      * @since 1.4.1
      */
     public Boolean getAllowPartialResults() {
         return (Boolean) operationOptions.get(OP_ALLOW_PARTIAL_RESULTS);
-    };
-    
+    }
+
     /**
      * Returns a flag which specifies that the search
      * operation may return objects with partial attribute values. E.g. it may result
@@ -314,22 +294,22 @@ public final class OperationOptions {
      * is only meant to be displayed in the user interface table. Composing the list
      * of all the members of a big groups may be significant overhead and this option
      * allows to reduce that overhead.
-     * Even if this option is specified the connector must set the 
+     * Even if this option is specified the connector must set the
      * attributeValueCompleteness status in Attribute in case that partial attribute
      * values were returned.
      * Please note that the connector may return incomplete attributes even if
      * this flag is NOT set. E.g. in case that the connector knows that the password
      * is set but it cannot reveal its value.
-     * 
+     *
      * @return flag which specifies that the search
-     *         operation may return return objects with partial attribute values.
-     * 
+     * operation may return return objects with partial attribute values.
+     *
      * @since 1.4.3
      */
     public Boolean getAllowPartialAttributeValues() {
         return (Boolean) operationOptions.get(OP_ALLOW_PARTIAL_ATTRIBUTE_VALUES);
-    };
-    
+    }
+
     /**
      * Returns the opaque cookie which is used by the Connector to track its
      * position in the set of query results. Paged results will be enabled if
@@ -342,17 +322,17 @@ public final class OperationOptions {
      * has been returned.
      *
      * @return The opaque cookie which is used by the Connector to track its
-     *         position in the set of search results, or {@code null} if paged
-     *         results are not requested (when the page size is 0), or if the
-     *         first page of results is being requested (when the page size is
-     *         non-zero).
+     * position in the set of search results, or {@code null} if paged
+     * results are not requested (when the page size is 0), or if the
+     * first page of results is being requested (when the page size is
+     * non-zero).
      * @see #getPageSize()
      * @see #getPagedResultsOffset()
      * @since 1.4
      */
     public String getPagedResultsCookie() {
         return (String) operationOptions.get(OP_PAGED_RESULTS_COOKIE);
-    };
+    }
 
     /**
      * Returns the index within the result set of the first result which should
@@ -363,14 +343,14 @@ public final class OperationOptions {
      * page should be returned starting from the position specified.
      *
      * @return The index within the result set of the first result which should
-     *         be returned.
+     * be returned.
      * @see #getPageSize()
      * @see #getPagedResultsCookie()
      * @since 1.4
      */
     public Integer getPagedResultsOffset() {
         return (Integer) operationOptions.get(OP_PAGED_RESULTS_OFFSET);
-    };
+    }
 
     /**
      * Returns the requested page results page size or {@code 0} if paged
@@ -379,26 +359,26 @@ public final class OperationOptions {
      * {@link #getPagedResultsCookie()} for more information.
      *
      * @return The requested page results page size or {@code 0} if paged
-     *         results are not required.
+     * results are not required.
      * @see #getPagedResultsCookie()
      * @see #getPagedResultsOffset()
      * @since 1.4
      */
     public Integer getPageSize() {
         return (Integer) operationOptions.get(OP_PAGE_SIZE);
-    };
+    }
 
     /**
      * Returns the sort keys which should be used for ordering the
      * {@link ConnectorObject}s returned by this search request.
      *
      * @return The sort keys which should be used for ordering the
-     *         {@link ConnectorObject}s returned by this search request (never
-     *         {@code null}).
+     * {@link ConnectorObject}s returned by this search request (never
+     * {@code null}).
      * @since 1.4
      */
     @SuppressWarnings("unchecked")
     public SortKey[] getSortKeys() {
         return (SortKey[]) operationOptions.get(OP_SORT_KEYS);
-    };    
+    }
 }

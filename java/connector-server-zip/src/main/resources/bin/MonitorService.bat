@@ -20,7 +20,8 @@
 @REM "Portions Copyrighted [year] [name of copyright owner]"
 @REM ====================
 @REM Portions Copyrighted 2012 ForgeRock
+@REM Portions Copyrighted 2018 ConnId
 @REM
 
 rem http://commons.apache.org/daemon/procrun.html
-start prunmgr.exe //MS/OpenICFConnectorServerJava
+start prunmgr.exe //MS/ConnIdConnectorServerJava

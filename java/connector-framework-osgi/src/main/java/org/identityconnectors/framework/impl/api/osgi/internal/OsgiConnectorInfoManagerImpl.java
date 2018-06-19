@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.osgi.internal;
 
@@ -34,8 +35,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Vector;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.Pair;
 import org.identityconnectors.common.ReflectionUtil;
@@ -73,8 +72,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The OSGi ConnectorInfoManager Implementation ...
- * <p/>
+ * The OSGi ConnectorInfoManager Implementation.
  *
  * @author Laszlo Hordos
  * @since 1.1
@@ -82,18 +80,14 @@ import org.slf4j.LoggerFactory;
 public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory implements
         ConnectorInfoManager, BundleObserver<ManifestEntry>, ConnectorEventPublisher {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory
-            .getLogger(OsgiConnectorInfoManagerImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OsgiConnectorInfoManagerImpl.class);
+
     /**
      * Connector Cache.
      */
-    private final HashMap<String, Pair<Bundle, List<ConnectorInfo>>> connectorInfoCache =
-            new HashMap<String, Pair<Bundle, List<ConnectorInfo>>>();
+    private final HashMap<String, Pair<Bundle, List<ConnectorInfo>>> connectorInfoCache = new HashMap<>();
 
-    private final Vector<ConnectorEventHandler> eventHandlers = new Vector<ConnectorEventHandler>();
+    private final List<ConnectorEventHandler> eventHandlers = new ArrayList<>();
 
     @Override
     public ConnectorInfo findConnectorInfo(ConnectorKey key) {
@@ -109,10 +103,10 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
 
     @Override
     public List<ConnectorInfo> getConnectorInfos() {
-        List<ConnectorInfo> result = new ArrayList<ConnectorInfo>();
-        for (Pair<Bundle, List<ConnectorInfo>> info : connectorInfoCache.values()) {
+        List<ConnectorInfo> result = new ArrayList<>();
+        connectorInfoCache.values().forEach((info) -> {
             result.addAll(info.second);
-        }
+        });
         return CollectionUtil.newReadOnlyList(result);
     }
 
@@ -133,8 +127,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                 ret = new LocalConnectorFacadeImpl(localInfo, impl);
             } catch (Exception ex) {
                 String connector = impl.getConnectorInfo().getConnectorKey().toString();
-                logger.error("Failed to create new connector facade: {}, {}", new Object[] {
-                    connector, config }, ex);
+                LOG.error("Failed to create new connector facade: {}, {}", connector, config, ex);
                 throw ConnectorException.wrap(ex);
             }
         } else {
@@ -153,8 +146,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                 ret = new LocalConnectorFacadeImpl(localInfo, config);
             } catch (Exception ex) {
                 String connector = connectorInfo.getConnectorKey().toString();
-                logger.error("Failed to create new connector facade: {}, {}", new Object[] {
-                        connector, config }, ex);
+                LOG.error("Failed to create new connector facade: {}, {}", connector, config, ex);
                 throw ConnectorException.wrap(ex);
             }
         } else {
@@ -172,12 +164,12 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                 Pair<Bundle, List<ConnectorInfo>> info = processBundle(bundle, list);
                 if (null != info) {
                     connectorInfoCache.put(bundle.getSymbolicName(), info);
-                    for (ConnectorInfo connectorInfo : info.second) {
-                        notifyListeners(buildEvent(ConnectorEvent.CONNECTOR_REGISTERED, info.first,
-                                connectorInfo.getConnectorKey()));
-                    }
+                    info.second.forEach((connectorInfo) -> {
+                        notifyListeners(buildEvent(
+                                ConnectorEvent.CONNECTOR_REGISTERED, info.first, connectorInfo.getConnectorKey()));
+                    });
                 }
-                logger.info("Add Connector {}, list: {}", bundle.getSymbolicName(), list);
+                LOG.info("Add Connector {}, list: {}", bundle.getSymbolicName(), list);
             }
         }
     }
@@ -189,13 +181,13 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
             Pair<Bundle, List<ConnectorInfo>> info =
                     connectorInfoCache.remove(bundle.getSymbolicName());
             if (null != info) {
-                for (ConnectorInfo connectorInfo : info.second) {
-                    notifyListeners(buildEvent(ConnectorEvent.CONNECTOR_UNREGISTERING, info.first,
-                            connectorInfo.getConnectorKey()));
-                }
+                info.second.forEach((connectorInfo) -> {
+                    notifyListeners(buildEvent(
+                            ConnectorEvent.CONNECTOR_UNREGISTERING, info.first, connectorInfo.getConnectorKey()));
+                });
             }
         }
-        logger.info("Remove Connector {}, list: {}", bundle.getSymbolicName(), list);
+        LOG.info("Remove Connector {}, list: {}", bundle.getSymbolicName(), list);
     }
 
     /**
@@ -209,14 +201,13 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         if (!eventHandlers.contains(hook)) {
             // TODO: hook is not wired to the listeners and it's not called if a
             // new connector registered meanwhile
-            for (Map.Entry<String, Pair<Bundle, List<ConnectorInfo>>> entry : connectorInfoCache
-                    .entrySet()) {
-                for (ConnectorInfo connectorInfo : entry.getValue().second) {
-                    hook.handleEvent(buildEvent(ConnectorEvent.CONNECTOR_REGISTERED, entry
-                            .getValue().first, connectorInfo.getConnectorKey()));
-                }
-            }
-            eventHandlers.addElement(hook);
+            connectorInfoCache.forEach((key, value) -> {
+                value.second.forEach((connectorInfo) -> {
+                    hook.handleEvent(buildEvent(
+                            ConnectorEvent.CONNECTOR_REGISTERED, value.first, connectorInfo.getConnectorKey()));
+                });
+            });
+            eventHandlers.add(hook);
         }
     }
 
@@ -225,7 +216,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
      */
     @Override
     public void deleteConnectorEventHandler(ConnectorEventHandler hook) {
-        eventHandlers.removeElement(hook);
+        eventHandlers.remove(hook);
     }
 
     private Pair<Bundle, List<ConnectorInfo>> processBundle(Bundle bundle, List<ManifestEntry> list) {
@@ -233,10 +224,10 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         try {
             List<ConnectorInfo> info = createConnectorInfo(bundle, list);
             if (!info.isEmpty()) {
-                result = new Pair<Bundle, List<ConnectorInfo>>(bundle, info);
+                result = new Pair<>(bundle, info);
             }
         } catch (Throwable t) {
-            logger.error("ConnectorBundel {} loading failed.", bundle.getSymbolicName(), t);
+            LOG.error("ConnectorBundel {} loading failed.", bundle.getSymbolicName(), t);
         }
         return result;
     }
@@ -244,9 +235,8 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
     /**
      * Final pass - create connector infos.
      */
-    private List<ConnectorInfo> createConnectorInfo(Bundle parsed,
-            List<ManifestEntry> manifestEnties) {
-        List<ConnectorInfo> rv = new ArrayList<ConnectorInfo>();
+    private List<ConnectorInfo> createConnectorInfo(Bundle parsed, List<ManifestEntry> manifestEnties) {
+        List<ConnectorInfo> rv = new ArrayList<>();
         Enumeration<URL> classFiles = parsed.findEntries("/", "*.class", true);
         List<URL> propertyFiles = Collections.list(parsed.findEntries("/", "*.properties", true));
 
@@ -267,8 +257,8 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         if (FrameworkUtil.getFrameworkVersion().compareTo(Version.parse(frameworkVersion)) < 0) {
             String message =
                     "Bundle " + parsed.getLocation() + " requests an unrecognized framework version "
-                            + frameworkVersion + " but available is "
-                            + FrameworkUtil.getFrameworkVersion().getVersion();
+                    + frameworkVersion + " but available is "
+                    + FrameworkUtil.getFrameworkVersion().getVersion();
             throw new ConfigurationException(message);
         }
 
@@ -292,9 +282,9 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                 // might be from a bundle
                 // fragment ( a bundle only included by other bundles ).
                 // However, we should definitely warn
-                logger.warn(
-                        "Unable to load class {} from bundle {}. Class will be ignored and will not be listed in list of connectors.",
-                        new Object[] { className, parsed.getLocation() }, e);
+                LOG.warn("Unable to load class {} from bundle {}. "
+                        + "Class will be ignored and will not be listed in list of connectors.",
+                        className, parsed.getLocation(), e);
             }
 
             if (connectorClass != null && options != null) {
@@ -305,24 +295,26 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                 final LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
                 info.setConnectorClass(connectorClass.asSubclass(Connector.class));
                 try {
-                info.setConnectorConfigurationClass(options.configurationClass());
-                info.setConnectorDisplayNameKey(options.displayNameKey());
-                info.setConnectorCategoryKey(options.categoryKey());
-                info.setConnectorKey(new ConnectorKey(bundleName, bundleVersion, connectorClass
-                        .getName()));
-                ConnectorMessagesImpl messages =
-                        loadMessageCatalog(propertyFiles, parsed, info.getConnectorClass());
-                info.setMessages(messages);
-                info.setDefaultAPIConfiguration(createDefaultAPIConfiguration(info));
-                rv.add(info);
+                    info.setConnectorConfigurationClass(options.configurationClass());
+                    info.setConnectorDisplayNameKey(options.displayNameKey());
+                    info.setConnectorCategoryKey(options.categoryKey());
+                    info.setConnectorKey(new ConnectorKey(bundleName, bundleVersion, connectorClass
+                            .getName()));
+                    ConnectorMessagesImpl messages =
+                            loadMessageCatalog(propertyFiles, parsed, info.getConnectorClass());
+                    info.setMessages(messages);
+                    info.setDefaultAPIConfiguration(createDefaultAPIConfiguration(info));
+                    rv.add(info);
                 } catch (final NoClassDefFoundError e) {
-                    logger.warn(
-                            "Unable to load configuration class of connector {} from bundle {}. Class will be ignored and will not be listed in list of connectors.",
-                            logger.isDebugEnabled() ? new Object[]{connectorClass, parsed.getLocation(),e} : new Object[]{connectorClass, parsed.getLocation()});
+                    LOG.warn("Unable to load configuration class of connector {} from bundle {}. "
+                            + "Class will be ignored and will not be listed in list of connectors.",
+                            LOG.isDebugEnabled() ? new Object[] { connectorClass, parsed.getLocation(), e }
+                            : new Object[] { connectorClass, parsed.getLocation() });
                 } catch (final TypeNotPresentException e) {
-                    logger.warn(
-                            "Unable to load configuration class of connector {} from bundle {}. Class will be ignored and will not be listed in list of connectors.",
-                            logger.isDebugEnabled() ? new Object[]{connectorClass, parsed.getLocation(),e} : new Object[]{connectorClass, parsed.getLocation()});
+                    LOG.warn("Unable to load configuration class of connector {} from bundle {}. "
+                            + "Class will be ignored and will not be listed in list of connectors.",
+                            LOG.isDebugEnabled() ? new Object[] { connectorClass, parsed.getLocation(), e }
+                            : new Object[] { connectorClass, parsed.getLocation() });
                 }
             }
         }
@@ -368,14 +360,13 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                     if (path.startsWith(prefix)) {
                         String localeStr = path.substring(prefix.length());
                         if (localeStr.endsWith(suffix)) {
-                            localeStr =
-                                    localeStr.substring(0, localeStr.length() - suffix.length());
+                            localeStr = localeStr.substring(0, localeStr.length() - suffix.length());
                             Locale locale = parseLocale(localeStr);
                             Properties properties = getResourceAsProperties(loader, path);
                             // get or create map
                             Map<String, String> map = rv.getCatalogs().get(locale);
                             if (map == null) {
-                                map = new HashMap<String, String>();
+                                map = new HashMap<>();
                                 rv.getCatalogs().put(locale, map);
                             }
                             // merge properties into map, overwriting

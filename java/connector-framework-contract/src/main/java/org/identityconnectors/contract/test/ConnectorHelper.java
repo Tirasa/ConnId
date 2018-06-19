@@ -35,8 +35,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +76,6 @@ import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncDeltaType;
-import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.Filter;
@@ -154,7 +153,7 @@ public class ConnectorHelper {
         ConfigurationProperties properties = apiConfig.getConfigurationProperties();
 
         List<String> propertyNames = properties.getPropertyNames();
-        for (String propName : propertyNames) {
+        propertyNames.forEach(propName -> {
             ConfigurationProperty prop = properties.getProperty(propName);
             LOG.info("OldValue = " + propName + " = \'" + prop.getValue() + "\' type = \'" + prop.getType() + "\'");
 
@@ -179,7 +178,7 @@ public class ConnectorHelper {
             } catch (ObjectNotFoundException ex) {
                 LOG.info("Caught Object not found exception, propName: " + propName);
             }
-        }
+        });
 
         LOG.info("----------------------------------");
         propertyNames.forEach((propName) -> {
@@ -310,8 +309,8 @@ public class ConnectorHelper {
      */
     public static Map<Uid, ConnectorObject> search2Map(
             ConnectorFacade connectorFacade, ObjectClass objClass, Filter filter, OperationOptions opOptions) {
-        final Map<Uid, ConnectorObject> foundObjects = new Hashtable<>();
-        connectorFacade.search(objClass, filter, (ConnectorObject obj) -> {
+        final Map<Uid, ConnectorObject> foundObjects = new HashMap<>();
+        connectorFacade.search(objClass, filter, (obj) -> {
             foundObjects.put(obj.getUid(), obj);
             return true;
         }, opOptions);
@@ -327,13 +326,9 @@ public class ConnectorHelper {
             SyncToken token, OperationOptions opOptions) {
         final List<SyncDelta> returnedDeltas = new ArrayList<>();
 
-        connectorFacade.sync(objClass, token, new SyncResultsHandler() {
-
-            @Override
-            public boolean handle(SyncDelta delta) {
-                returnedDeltas.add(delta);
-                return true;
-            }
+        connectorFacade.sync(objClass, token, (delta) -> {
+            returnedDeltas.add(delta);
+            return true;
         }, opOptions);
 
         return returnedDeltas;
@@ -634,8 +629,7 @@ public class ConnectorHelper {
      * Generate new values for updateable attributes based on contract test
      * properties prefixed by <code>qualifier</code>
      *
-     * @param qualifier
-     * the prefix for values used in update.
+     * @param qualifier the prefix for values used in update.
      */
     public static Set<Attribute> getUpdateableAttributes(DataProvider dataProvider,
             ObjectClassInfo objectClassInfo,
@@ -650,8 +644,7 @@ public class ConnectorHelper {
      * Generate new values for updateable attributes based on contract test
      * properties prefixed by <code>qualifier</code>
      *
-     * @param qualifier
-     * the prefix for values used in update.
+     * @param qualifier the prefix for values used in update.
      */
     public static Set<AttributeDelta> getUpdateableAttributesDelta(DataProvider dataProvider,
             ObjectClassInfo objectClassInfo, String testName, String qualifier, int sequenceNumber,

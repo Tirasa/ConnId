@@ -19,12 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.script.ScriptExecutor;
 import org.identityconnectors.common.script.ScriptExecutorFactory;
@@ -37,46 +37,38 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.ScriptOnConnectorOp;
 
+public class ScriptOnConnectorImpl extends ConnectorAPIOperationRunner implements ScriptOnConnectorApiOp {
 
-public class ScriptOnConnectorImpl extends ConnectorAPIOperationRunner
-        implements ScriptOnConnectorApiOp {
-
-    public ScriptOnConnectorImpl(final ConnectorOperationalContext context,
-            final Connector connector) {
-        super(context,connector);
+    public ScriptOnConnectorImpl(final ConnectorOperationalContext context, final Connector connector) {
+        super(context, connector);
     }
 
     @Override
-    public Object runScriptOnConnector(ScriptContext request,
-            OperationOptions options) {
+    public Object runScriptOnConnector(ScriptContext request, OperationOptions options) {
         Assertions.nullCheck(request, "request");
         //convert null into empty
-        if ( options == null ) {
+        if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
         Object rv;
-        if ( getConnector() instanceof ScriptOnConnectorOp ) {
-            rv = ((ScriptOnConnectorOp)getConnector()).runScriptOnConnector(request, options);
-        }
-        else {
+        if (getConnector() instanceof ScriptOnConnectorOp) {
+            rv = ((ScriptOnConnectorOp) getConnector()).runScriptOnConnector(request, options);
+        } else {
             String language = request.getScriptLanguage();
             ClassLoader classloader =
-                getConnector().getClass().getClassLoader();
-            ScriptExecutor executor =
-                ScriptExecutorFactory.newInstance(language).newScriptExecutor(classloader,
-                        request.getScriptText(),
-                        false);
-            Map<String,Object> scriptArgs = new HashMap<String,Object>();
+                    getConnector().getClass().getClassLoader();
+            ScriptExecutor executor = ScriptExecutorFactory.newInstance(language).newScriptExecutor(classloader,
+                    request.getScriptText(), false);
+            Assertions.nullCheck(executor, "executor");
+            Map<String, Object> scriptArgs = new HashMap<>();
             scriptArgs.putAll(request.getScriptArguments()); //add the args passed by the application
-            scriptArgs.put("connector",getConnector()); //add the connector instance itself
+            scriptArgs.put("connector", getConnector()); //add the connector instance itself
             try {
                 rv = executor.execute(scriptArgs);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw ConnectorException.wrap(e);
             }
         }
         return SerializerUtil.cloneObject(rv);
     }
-
 }

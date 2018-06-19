@@ -67,17 +67,18 @@ import java.util.TreeSet;
  */
 public class RandomGenerator {
 
-    private static Random rnd;
+    private static final Random RND;
+
     static {
-        rnd = new Random(System.currentTimeMillis());
+        RND = new Random(System.currentTimeMillis());
     }
 
     /**
      * generate a random string based on given pattern
+     *
      * @param pattern see the definition in class header
      */
     public static String generate(String pattern) {
-
         return createRandomString(pattern, getDefaultCharacterSetMap());
     }
 
@@ -87,13 +88,11 @@ public class RandomGenerator {
      * constructor on the given class accepting a string argument.
      * </p>
      *
-     * @param pattern
-     *            see the definition in class header
+     * @param pattern see the definition in class header
      * @return object initialized with random string
      */
     public static Object generate(String pattern, Class<?> clazz) {
-        String generatedStr = createRandomString(pattern,
-                getDefaultCharacterSetMap());
+        String generatedStr = createRandomString(pattern, getDefaultCharacterSetMap());
 
         // resolve Character and ByteArray types:
         if (clazz.isInstance(new byte[0])) {
@@ -128,17 +127,17 @@ public class RandomGenerator {
      * @return
      */
     private static Map<Character, Set<Character>> getDefaultCharacterSetMap() {
-        Map<Character, Set<Character>> characterSetMap = new HashMap<Character, Set<Character>>();
+        Map<Character, Set<Character>> characterSetMap = new HashMap<>();
 
         // these are the Sets used by the map. For any character
         // in the macro, a get is done on the map with that character
         // as the key, and the Set returned represents the list of
         // characters to pick from randomly
-        Set<Character> alpha_lower = new TreeSet<Character>();
-        Set<Character> alpha_upper = new TreeSet<Character>();
-        Set<Character> alpha_mixed = new TreeSet<Character>();
-        Set<Character> alpha_numeric = new TreeSet<Character>();
-        Set<Character> numeric = new TreeSet<Character>();
+        Set<Character> alpha_lower = new TreeSet<>();
+        Set<Character> alpha_upper = new TreeSet<>();
+        Set<Character> alpha_mixed = new TreeSet<>();
+        Set<Character> alpha_numeric = new TreeSet<>();
+        Set<Character> numeric = new TreeSet<>();
 
         // all lower case letters
         addRange(alpha_lower, 'a', 'z');
@@ -155,11 +154,11 @@ public class RandomGenerator {
         alpha_mixed.addAll(alpha_upper);
 
         // setup the mappings
-        characterSetMap.put(new Character('#'), numeric);
-        characterSetMap.put(new Character('a'), alpha_lower);
-        characterSetMap.put(new Character('A'), alpha_upper);
-        characterSetMap.put(new Character('?'), alpha_mixed);
-        characterSetMap.put(new Character('.'), alpha_numeric);
+        characterSetMap.put('#', numeric);
+        characterSetMap.put('a', alpha_lower);
+        characterSetMap.put('A', alpha_upper);
+        characterSetMap.put('?', alpha_mixed);
+        characterSetMap.put('.', alpha_numeric);
 
         return characterSetMap;
     }
@@ -168,7 +167,7 @@ public class RandomGenerator {
      * Fills the Set with Characters
      *
      * @param s
-     *            {@link Set} to be filled
+     * {@link Set} to be filled
      * @param min
      * @param max
      */
@@ -180,7 +179,7 @@ public class RandomGenerator {
         }
 
         for (char i = min; i <= max; i++) {
-            s.add(new Character(i));
+            s.add(i);
         }
     }
 
@@ -199,7 +198,7 @@ public class RandomGenerator {
         }
         Character[] charArray = validChars.toArray(new Character[0]);
         Character charValue = charArray[next];
-        return charValue.charValue();
+        return charValue;
     }
 
     /**
@@ -213,8 +212,7 @@ public class RandomGenerator {
             Map<Character, Set<Character>> characterSetMap) {
         StringBuilder replacement = new StringBuilder();
         for (int i = 0; i < pattern.length(); i++) {
-            Set<Character> characterSet = characterSetMap.get(new Character(
-                    pattern.charAt(i)));
+            Set<Character> characterSet = characterSetMap.get(pattern.charAt(i));
             if (pattern.charAt(i) == '\\') {
                 // do escape, and print the next character
                 i++;
@@ -226,7 +224,7 @@ public class RandomGenerator {
             if (characterSet == null) {
                 replacement.append(pattern.charAt(i));
             } else {
-                replacement.append(randomCharacter(rnd, characterSet));
+                replacement.append(randomCharacter(RND, characterSet));
             }
         }
         return replacement.toString();

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -53,12 +54,16 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
  * used.. based on OperationalAttribute etc..
  */
 public final class Schema {
+
     /**
      *
      */
     private final Set<ObjectClassInfo> declaredObjectClasses;
+
     private final Set<OperationOptionInfo> declaredOperationOptions;
+
     private final Map<Class<? extends APIOperation>, Set<ObjectClassInfo>> supportedObjectClassesByOperation;
+
     private final Map<Class<? extends APIOperation>, Set<OperationOptionInfo>> supportedOptionsByOperation;
 
     /**
@@ -77,30 +82,26 @@ public final class Schema {
         // make read-only
         {
             Map<Class<? extends APIOperation>, Set<ObjectClassInfo>> temp =
-                    new HashMap<Class<? extends APIOperation>, Set<ObjectClassInfo>>();
-            for (Map.Entry<Class<? extends APIOperation>, Set<ObjectClassInfo>> entry : supportedObjectClassesByOperation
-                    .entrySet()) {
+                    new HashMap<>();
+            supportedObjectClassesByOperation.entrySet().forEach((entry) -> {
                 Class<? extends APIOperation> op = entry.getKey();
                 Set<ObjectClassInfo> resolvedClasses =
                         CollectionUtil.newReadOnlySet(entry.getValue());
                 temp.put(op, resolvedClasses);
-            }
+            });
             this.supportedObjectClassesByOperation = CollectionUtil.asReadOnlyMap(temp);
         }
         // make read-only
         {
-            Map<Class<? extends APIOperation>, Set<OperationOptionInfo>> temp =
-                    new HashMap<Class<? extends APIOperation>, Set<OperationOptionInfo>>();
-            for (Map.Entry<Class<? extends APIOperation>, Set<OperationOptionInfo>> entry : supportedOptionsByOperation
-                    .entrySet()) {
+            Map<Class<? extends APIOperation>, Set<OperationOptionInfo>> temp = new HashMap<>();
+            supportedOptionsByOperation.entrySet().forEach((entry) -> {
                 Class<? extends APIOperation> op = entry.getKey();
                 Set<OperationOptionInfo> resolvedClasses =
                         CollectionUtil.newReadOnlySet(entry.getValue());
                 temp.put(op, resolvedClasses);
-            }
+            });
             this.supportedOptionsByOperation = CollectionUtil.asReadOnlyMap(temp);
         }
-
     }
 
     /**
@@ -115,7 +116,7 @@ public final class Schema {
      * Returns the ObjectClassInfo for the given type.
      *
      * @param type
-     *            The type to find.
+     * The type to find.
      * @return the ObjectClassInfo for the given type or null if not found.
      */
     public ObjectClassInfo findObjectClassInfo(String type) {
@@ -142,7 +143,7 @@ public final class Schema {
      * Returns the OperationOptionInfo for the given name.
      *
      * @param name
-     *            The name to find.
+     * The name to find.
      * @return the OperationOptionInfo for the given name or null if not found.
      */
     public OperationOptionInfo findOperationOptionInfo(String name) {
@@ -159,38 +160,28 @@ public final class Schema {
      * Returns the supported object classes for the given operation.
      *
      * @param apiop
-     *            The operation.
+     * The operation.
      * @return the supported object classes for the given operation.
      */
-    public Set<ObjectClassInfo> getSupportedObjectClassesByOperation(
-            Class<? extends APIOperation> apiop) {
+    public Set<ObjectClassInfo> getSupportedObjectClassesByOperation(Class<? extends APIOperation> apiop) {
         Set<ObjectClassInfo> rv = supportedObjectClassesByOperation.get(apiop);
-        if (rv == null) {
-            @SuppressWarnings("unchecked")
-            Set<ObjectClassInfo> empty = Collections.EMPTY_SET;
-            return empty;
-        } else {
-            return rv;
-        }
+        return rv == null
+                ? Collections.emptySet()
+                : rv;
     }
 
     /**
      * Returns the supported options for the given operation.
      *
      * @param apiop
-     *            The operation.
+     * The operation.
      * @return the supported options for the given operation.
      */
-    public Set<OperationOptionInfo> getSupportedOptionsByOperation(
-            Class<? extends APIOperation> apiop) {
+    public Set<OperationOptionInfo> getSupportedOptionsByOperation(Class<? extends APIOperation> apiop) {
         Set<OperationOptionInfo> rv = supportedOptionsByOperation.get(apiop);
-        if (rv == null) {
-            @SuppressWarnings("unchecked")
-            Set<OperationOptionInfo> empty = Collections.EMPTY_SET;
-            return empty;
-        } else {
-            return rv;
-        }
+        return rv == null
+                ? Collections.emptySet()
+                : rv;
     }
 
     /**
@@ -207,7 +198,7 @@ public final class Schema {
      * operation.
      *
      * @return the set of operation options that apply to a particular
-     *         operation.
+     * operation.
      */
     public Map<Class<? extends APIOperation>, Set<OperationOptionInfo>> getSupportedOptionsByOperation() {
         return supportedOptionsByOperation;
@@ -234,18 +225,15 @@ public final class Schema {
             if (!CollectionUtil.equals(getOperationOptionInfo(), other.getOperationOptionInfo())) {
                 return false;
             }
-            if (!CollectionUtil.equals(supportedObjectClassesByOperation,
-                    other.supportedObjectClassesByOperation)) {
+            if (!CollectionUtil.equals(supportedObjectClassesByOperation, other.supportedObjectClassesByOperation)) {
                 return false;
             }
-            if (!CollectionUtil.equals(supportedOptionsByOperation,
-                    other.supportedOptionsByOperation)) {
+            if (!CollectionUtil.equals(supportedOptionsByOperation, other.supportedOptionsByOperation)) {
                 return false;
             }
             return true;
         }
         return false;
-
     }
 
     /**
@@ -257,5 +245,4 @@ public final class Schema {
     public int hashCode() {
         return declaredObjectClasses.hashCode();
     }
-
 }

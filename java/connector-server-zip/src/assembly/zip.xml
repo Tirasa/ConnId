@@ -70,7 +70,7 @@
         <include>net.tirasa.connid:connector-framework*</include>
         <include>org.slf4j:*</include>
         <include>ch.qos.logback:*</include>
-        <include>org.codehaus.groovy:groovy-all</include>
+        <include>org.codehaus.groovy:*</include>
       </includes>
     </dependencySet>
   </dependencySets>

@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import groovy.util.ConfigObject;
 import groovy.util.ConfigSlurper;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -44,7 +43,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.contract.data.groovy.Get;
@@ -128,7 +126,7 @@ public class GroovyDataProvider implements DataProvider {
 
     private static final String ARRAY_MARKER = "array";
 
-    static final String PROPERTY_SEPARATOR = ".";
+    protected static final String PROPERTY_SEPARATOR = ".";
 
     /** boostrap.groovy contains default values that are returned when the property is not found */
     private static final String BOOTSTRAP_FILE_NAME = "bootstrap.groovy";
@@ -189,7 +187,9 @@ public class GroovyDataProvider implements DataProvider {
     public GroovyDataProvider(String connectorName) {
         if (StringUtil.isBlank(connectorName)) {
             throw new IllegalArgumentException(
-                    "To run contract tests, you must specify valid [connectorName] system property with the value equal to FQN of your connector class, or use GroovyDataProvider(String connectorName) constructor");
+                    "To run contract tests, you must specify valid [connectorName] "
+                    + "system property with the value equal to FQN of your connector class, "
+                    + "or use GroovyDataProvider(String connectorName) constructor");
 
         }
         initSnapshot();
@@ -326,9 +326,7 @@ public class GroovyDataProvider implements DataProvider {
     }
 
     /**
-     *
      * Main get method. Property lookup starts here.
-     *
      */
     public Object get(String name, String type, boolean useDefault) {
         Object o = null;
@@ -482,7 +480,6 @@ public class GroovyDataProvider implements DataProvider {
      * @throws ObjectNotFoundException
      */
     private Object configObjectGet(ConfigObject co, String currentNamePart) {
-
         /*
          * get the property value
          */
@@ -807,7 +804,7 @@ public class GroovyDataProvider implements DataProvider {
 
     /**
      * @param propertySetName
-     * @return The set <CODE>Set<Attribute></CODE> of attributes
+     * @return The set <CODE>Set&lt;Attribute&gt;</CODE> of attributes
      */
     @Override
     public Set<Attribute> getAttributeSet(final String propertySetName) {

@@ -66,7 +66,14 @@ rem set CP="lib/*;lib/framework/*"
 rem setup the classpath
 set CP=lib\framework\connector-framework.jar
 set CP=%CP%;lib\framework\connector-framework-internal.jar
-set CP=%CP%;lib\framework\groovy-all.jar
+set CP=%CP%;lib\framework\groovy-templates.jar
+set CP=%CP%;lib\framework\groovy-bsf.jar
+set CP=%CP%;lib\framework\groovy-jsr223.jar
+set CP=%CP%;lib\framework\groovy-datetime.jar
+set CP=%CP%;lib\framework\groovy-dateutil.jar
+set CP=%CP%;lib\framework\groovy-sql.jar
+set CP=%CP%;lib\framework\groovy-xml.jar
+set CP=%CP%;lib\framework\groovy.jar
 set CP=%CP%;lib\framework\icfl-over-slf4j.jar
 set CP=%CP%;lib\framework\slf4j-api.jar
 set CP=%CP%;lib\framework\logback-core.jar

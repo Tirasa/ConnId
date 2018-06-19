@@ -19,11 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,7 +56,7 @@ public final class CollectionUtil {
      * @return An empty case-insensitive set
      */
     public static SortedSet<String> newCaseInsensitiveSet() {
-        TreeSet<String> rv = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        TreeSet<String> rv = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         return rv;
     }
 
@@ -62,7 +64,7 @@ public final class CollectionUtil {
      * Returns true if the given set is a case-insensitive set.
      *
      * @param set
-     *            The set. May be null.
+     * The set. May be null.
      * @return true if the given set is a case-insensitive set
      */
     public static boolean isCaseInsensitiveSet(Set<?> set) {
@@ -80,11 +82,11 @@ public final class CollectionUtil {
      * Creates a case-insensitive map.
      *
      * @param <T>
-     *            The object type of the map
+     * The object type of the map
      * @return An empty case-insensitive map
      */
     public static <T> SortedMap<String, T> newCaseInsensitiveMap() {
-        TreeMap<String, T> rv = new TreeMap<String, T>(String.CASE_INSENSITIVE_ORDER);
+        TreeMap<String, T> rv = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         return rv;
     }
 
@@ -92,7 +94,7 @@ public final class CollectionUtil {
      * Returns true if the given map is a case-insensitive map.
      *
      * @param map
-     *            The map. May be null.
+     * The map. May be null.
      * @return true if the given map is a case-insensitive map
      */
     public static boolean isCaseInsensitiveMap(Map<?, ?> map) {
@@ -112,15 +114,12 @@ public final class CollectionUtil {
      *
      * if the parameter <strong>c</strong> is <strong>null</strong>.
      *
-     * @param c
-     *            collection to check
-     * @param <T>
-     *            the type of the collection
-     * @return if null new {@link HashSet} otherwise the parameter that was
-     *         passed in or
+     * @param c collection to check
+     * @param <T> the type of the collection
+     * @return if null new {@link HashSet} otherwise the parameter that was passed in or
      */
     public static <T> Collection<T> nullAsEmpty(Collection<T> c) {
-        return c == null ? new HashSet<T>() : c;
+        return c == null ? new HashSet<>() : c;
     }
 
     /**
@@ -129,7 +128,7 @@ public final class CollectionUtil {
      * Otherwise return the parameter that was passed in.
      */
     public static <T, K> Map<T, K> nullAsEmpty(Map<T, K> map) {
-        return (map == null) ? new HashMap<T, K>() : map;
+        return (map == null) ? new HashMap<>() : map;
     }
 
     /**
@@ -138,7 +137,7 @@ public final class CollectionUtil {
      * Otherwise return the parameter that was passed in.
      */
     public static <T> Set<T> nullAsEmpty(Set<T> set) {
-        return (set == null) ? new HashSet<T>() : set;
+        return (set == null) ? new HashSet<>() : set;
     }
 
     /**
@@ -147,7 +146,7 @@ public final class CollectionUtil {
      * . Otherwise return the parameter that was passed in.
      */
     public static <T> List<T> nullAsEmpty(final List<T> list) {
-        return (list == null) ? new ArrayList<T>() : list;
+        return (list == null) ? new ArrayList<>() : list;
     }
 
     /**
@@ -164,11 +163,11 @@ public final class CollectionUtil {
      * returned {@link Collection} is unmodifiable.
      */
     public static <T> Collection<T> unique(final Collection<T> c) {
-        return Collections.<T> unmodifiableSet(newSet(c));
+        return Collections.<T>unmodifiableSet(newSet(c));
     }
 
     public static <T, K> Map<T, K> newReadOnlyMap(Map<T, K> map) {
-        return Collections.unmodifiableMap(new HashMap<T, K>(nullAsEmpty(map)));
+        return Collections.unmodifiableMap(new HashMap<>(nullAsEmpty(map)));
     }
 
     public static <T, K> Map<T, K> asReadOnlyMap(Map<T, K> map) {
@@ -182,13 +181,13 @@ public final class CollectionUtil {
     }
 
     public static <T> Map<T, T> newReadOnlyMap(T[][] kv) {
-        Map<T, T> map = new HashMap<T, T>();
+        Map<T, T> map = new HashMap<>();
         for (int i = 0; kv != null && i < kv.length; i++) {
             T key = kv[i][0];
             T value = kv[i][1];
             map.put(key, value);
         }
-        return Collections.<T, T> unmodifiableMap(map);
+        return Collections.<T, T>unmodifiableMap(map);
     }
 
     /**
@@ -200,7 +199,7 @@ public final class CollectionUtil {
         if (keys.size() != values.size()) {
             throw new IllegalArgumentException();
         }
-        Map<T, K> map = new HashMap<T, K>(keys.size());
+        Map<T, K> map = new HashMap<>(keys.size());
         Iterator<T> keyIter = keys.iterator();
         Iterator<K> valueIter = values.iterator();
         while (keyIter.hasNext() && valueIter.hasNext()) {
@@ -212,15 +211,15 @@ public final class CollectionUtil {
     }
 
     public static Map<String, String> newMap(Properties properties) {
-        Map<String, String> rv = new HashMap<String, String>();
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+        Map<String, String> rv = new HashMap<>();
+        properties.entrySet().forEach((entry) -> {
             rv.put((String) entry.getKey(), (String) entry.getValue());
-        }
+        });
         return rv;
     }
 
     public static <T, K> Map<T, K> newMap(T k0, K v0) {
-        Map<T, K> map = new HashMap<T, K>();
+        Map<T, K> map = new HashMap<>();
         map.put(k0, v0);
         return map;
     }
@@ -259,10 +258,8 @@ public final class CollectionUtil {
     /**
      * Builds a map from two arrays.
      *
-     * @param k
-     *            Array of keys.
-     * @param v
-     *            Array of values.
+     * @param k Array of keys.
+     * @param v Array of values.
      * @return a map based on the two arrays.
      */
     public static <T, K> Map<T, K> newMap(T[] k, K[] v) {
@@ -270,7 +267,7 @@ public final class CollectionUtil {
         if (k.length != v.length) {
             throw new IllegalArgumentException();
         }
-        Map<T, K> map = new HashMap<T, K>(k.length);
+        Map<T, K> map = new HashMap<>(k.length);
         for (int i = 0; i < k.length; i++) {
             T key = k[i];
             K value = v[i];
@@ -283,20 +280,19 @@ public final class CollectionUtil {
      * Creates a set that can be modified from the {@link Collection} provided.
      */
     public static <T> Set<T> newSet(Collection<T> c) {
-        return new HashSet<T>(CollectionUtil.nullAsEmpty(c));
+        return new HashSet<>(CollectionUtil.nullAsEmpty(c));
     }
 
     /**
      * Creates a set that can be modified from the arguments.
      */
+    @SafeVarargs
     public static <T> Set<T> newSet(T... arr) {
         // default to empty..
-        Set<T> ret = new HashSet<T>();
+        Set<T> ret = new HashSet<>();
         if (arr != null && arr.length != 0) {
             // not empty populate the set..
-            for (T t : arr) {
-                ret.add(t);
-            }
+            ret.addAll(Arrays.asList(arr));
         }
         return ret;
     }
@@ -304,6 +300,7 @@ public final class CollectionUtil {
     /**
      * Creates an unmodifiable set from a variable number arguments.
      */
+    @SafeVarargs
     public static <T> Set<T> newReadOnlySet(T... arr) {
         return Collections.unmodifiableSet(newSet(arr));
     }
@@ -321,7 +318,7 @@ public final class CollectionUtil {
     public static <T> Set<T> union(Collection<T> c1, Collection<T> c2) {
         Set<T> union = newSet(c1);
         union.addAll(c2);
-        return Collections.<T> unmodifiableSet(union);
+        return Collections.<T>unmodifiableSet(union);
     }
 
     /**
@@ -331,7 +328,7 @@ public final class CollectionUtil {
     public static <T> Set<T> intersection(Collection<T> c1, Collection<T> c2) {
         Set<T> intersection = newSet(c1);
         intersection.retainAll(c2);
-        return Collections.<T> unmodifiableSet(intersection);
+        return Collections.<T>unmodifiableSet(intersection);
     }
 
     /**
@@ -350,19 +347,17 @@ public final class CollectionUtil {
      * value is backed by an {@link ArrayList}.
      */
     public static <T> List<T> newList(Collection<? extends T> c) {
-        return new ArrayList<T>(CollectionUtil.nullAsEmpty(c));
+        return new ArrayList<>(CollectionUtil.nullAsEmpty(c));
     }
 
     /**
-     * Create a modifiable list from the arguments. The return value is backed
-     * by an {@link ArrayList}.
+     * Create a modifiable list from the arguments. The return value is backed by an {@link ArrayList}.
      */
+    @SafeVarargs
     public static <T> List<T> newList(T... arr) {
-        List<T> ret = new ArrayList<T>();
+        List<T> ret = new ArrayList<>();
         if (arr != null && arr.length != 0) {
-            for (T t : arr) {
-                ret.add(t);
-            }
+            ret.addAll(Arrays.asList(arr));
         }
         return ret;
     }
@@ -373,13 +368,14 @@ public final class CollectionUtil {
      * insures that the order is maintained between lists.
      */
     public static <T> List<T> newReadOnlyList(final List<? extends T> list) {
-        List<T> l = new ArrayList<T>(nullAsEmpty(list));
+        List<T> l = new ArrayList<>(nullAsEmpty(list));
         return Collections.unmodifiableList(l);
     }
 
     /**
      * Creates an unmodifiable {@link List} from a variable number arguments.
      */
+    @SafeVarargs
     public static <T> List<T> newReadOnlyList(T... obj) {
         return Collections.unmodifiableList(newList(obj));
     }
@@ -392,18 +388,15 @@ public final class CollectionUtil {
     }
 
     /**
-     * Returns a read-only list. The list is backed by the original so no copy
-     * is made.
+     * Returns a read-only list. The list is backed by the original so no copy is made.
      *
-     * @param <T>
-     *            The type of the list
-     * @param list
-     *            The list or null.
+     * @param <T> The type of the list
+     * @param list The list or null.
      * @return A read-only proxy on the original list.
      */
     public static <T> List<T> asReadOnlyList(List<T> list) {
         if (list == null) {
-            list = new ArrayList<T>();
+            list = new ArrayList<>();
         }
         return Collections.unmodifiableList(list);
     }
@@ -426,8 +419,7 @@ public final class CollectionUtil {
      * hashCode function that properly handles arrays, collections, maps,
      * collections of arrays, and maps of arrays.
      *
-     * @param o
-     *            The object. May be null.
+     * @param o The object. May be null.
      * @return the hashCode
      */
     public static int hashCode(Object o) {
@@ -444,9 +436,7 @@ public final class CollectionUtil {
         } else if (o instanceof Collection) {
             Collection<?> l = (Collection<?>) o;
             int rv = 0;
-            for (Object el : l) {
-                rv += CollectionUtil.hashCode(el);
-            }
+            rv = l.stream().map((el) -> CollectionUtil.hashCode(el)).reduce(rv, Integer::sum);
             return rv;
         } else if (o instanceof Map) {
             Map<?, ?> map = (Map<?, ?>) o;
@@ -468,10 +458,8 @@ public final class CollectionUtil {
      * true for Map keys. Map values, on the other hand, are compared (so Map
      * values can be arrays).
      *
-     * @param o1
-     *            The first object. May be null.
-     * @param o2
-     *            The second object. May be null.
+     * @param o1 The first object. May be null.
+     * @param o2 The second object. May be null.
      * @return true if the two objects are equal.
      */
     public static boolean equals(Object o1, Object o2) {
@@ -520,10 +508,8 @@ public final class CollectionUtil {
             }
         } else if (o1 instanceof Set) {
             if (o2 instanceof Set) {
-                // rely on Set equality. this does not
-                // handle the case of arrays within sets,
-                // but arrays should not be placed within sets
-                // unless the set is a specialized set that
+                // rely on Set equality. this does not handle the case of arrays within sets,
+                // but arrays should not be placed within sets unless the set is a specialized set that
                 // knows how to compare arrays
                 return o1.equals(o2);
             } else {

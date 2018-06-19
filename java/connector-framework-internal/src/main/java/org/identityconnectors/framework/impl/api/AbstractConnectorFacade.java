@@ -190,7 +190,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
         return ((UpdateApiOp) this.getOperationCheckSupported(UpdateApiOp.class)).
                 update(objectClass, uid, attrs, options);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -320,24 +320,25 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
         }
         return getOperationImplementation(api);
     }
-    
-    private APIOperation getDeltaOperationCheckSupported(final Class<? extends APIOperation>... apis) {
+
+    @SafeVarargs
+    private final APIOperation getDeltaOperationCheckSupported(final Class<? extends APIOperation>... apis) {
         // check if this operation is supported.
-    	for (Class<? extends APIOperation> api : apis){
-    		if(configuration.isSupportedOperation(api)){
-    			return getOperationImplementation(UpdateDeltaApiOp.class);
-    		}
-    	}
-    	String str = MessageFormat.format(MSG, (Object[]) apis);
+        for (Class<? extends APIOperation> api : apis) {
+            if (configuration.isSupportedOperation(api)) {
+                return getOperationImplementation(UpdateDeltaApiOp.class);
+            }
+        }
+        String str = MessageFormat.format(MSG, (Object[]) apis);
         throw new UnsupportedOperationException(str);
-        
+
     }
 
     /**
      * Creates a new {@link APIOperation} proxy given a handler.
      */
-    protected APIOperation newAPIOperationProxy(final Class<? extends APIOperation> api,
-            final InvocationHandler handler) {
+    protected APIOperation newAPIOperationProxy(
+            final Class<? extends APIOperation> api, final InvocationHandler handler) {
 
         return (APIOperation) Proxy.newProxyInstance(api.getClassLoader(), new Class<?>[] { api }, handler);
     }

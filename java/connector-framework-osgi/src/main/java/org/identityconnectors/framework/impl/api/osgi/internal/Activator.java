@@ -19,12 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
-
 package org.identityconnectors.framework.impl.api.osgi.internal;
 
 import java.util.Hashtable;
-
 import org.identityconnectors.common.event.ConnectorEventPublisher;
 import org.identityconnectors.framework.api.ConnectorInfoManager;
 import org.identityconnectors.framework.common.FrameworkUtil;
@@ -44,53 +43,45 @@ import org.slf4j.LoggerFactory;
  */
 public class Activator implements BundleActivator {
 
-    /**
-     * Logger.
-     */
     private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
+
     /**
-     * Bundle watcher of ConnectorBundle-.
+     * Bundle watcher of ConnectorBundle.
      */
     private BundleWatcher<ManifestEntry> connectorWatcher;
-    /**
-     *
-     */
+
     private ServiceRegistration<?> connectorInfoManager;
 
     @SuppressWarnings("unchecked")
     @Override
     public void start(BundleContext context) throws Exception {
-        LOG.debug("OpenICF OSGi Extender - Starting");
+        LOG.debug("ConnId OSGi Extender - Starting");
 
         OsgiConnectorInfoManagerImpl manager = new OsgiConnectorInfoManagerImpl();
-        connectorWatcher =
-                new BundleWatcher<ManifestEntry>(context, new ConnectorManifestScanner(
-                        FrameworkUtil.getFrameworkVersion()), manager);
+        connectorWatcher = new BundleWatcher<>(context, new ConnectorManifestScanner(
+                FrameworkUtil.getFrameworkVersion()), manager);
         connectorWatcher.start();
 
-        Hashtable<String, String> prop = new Hashtable<String, String>();
-        prop.put("ConnectorBundle-FrameworkVersion", FrameworkUtil.getFrameworkVersion()
-                .getVersion());
+        Hashtable<String, String> prop = new Hashtable<>();
+        prop.put("ConnectorBundle-FrameworkVersion", FrameworkUtil.getFrameworkVersion().getVersion());
 
-        connectorInfoManager =
-                context.registerService(new String[] { ConnectorInfoManager.class.getName(),
-                    ConnectorEventPublisher.class.getName() }, manager, prop);
+        connectorInfoManager = context.registerService(new String[] {
+            ConnectorInfoManager.class.getName(), ConnectorEventPublisher.class.getName() }, manager, prop);
 
-        LOG.debug("OpenICF OSGi Extender - Started");
+        LOG.debug("ConnId OSGi Extender - Started");
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        LOG.debug("OpenICF OSGi Extender - Stopping");
+        LOG.debug("ConnId OSGi Extender - Stopping");
         connectorInfoManager.unregister();
         // Stop the bundle watcher.
-        // This will result in un-publish of each web application that was
-        // registered during the lifetime of
+        // This will result in un-publish of each web application that was registered during the lifetime of
         // bundle watcher.
         if (connectorWatcher != null) {
             connectorWatcher.stop();
             connectorWatcher = null;
         }
-        LOG.debug("OpenICF OSGi Extender - Stopped");
+        LOG.debug("ConnId OSGi Extender - Stopped");
     }
 }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common.script;
 
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -61,11 +63,10 @@ public abstract class ScriptExecutorFactory {
         if (factoryCache == null) {
             factoryCache = CollectionUtil.newCaseInsensitiveMap();
             List<String> factories = getRegisteredFactories();
-            for (String factory : factories) {
+            factories.forEach(factory -> {
                 try {
                     Class<?> clazz = Class.forName(factory);
-                    // Create an instance in order to get the supported
-                    // language.
+                    // Create an instance in order to get the supported language.
                     ScriptExecutorFactory instance = (ScriptExecutorFactory) clazz.newInstance();
                     String language = instance.getLanguageName();
                     // Do not override a factory earlier in the classpath.
@@ -75,11 +76,10 @@ public abstract class ScriptExecutorFactory {
                 } catch (RuntimeException e) {
                     throw e;
                 } catch (Exception e) {
-                    // Probably an error loading or instantiating the SEF
-                    // implementation.
+                    // Probably an error loading or instantiating the SEF implementation.
                     // Do not report.
                 }
-            }
+            });
         }
         return factoryCache;
     }
@@ -90,12 +90,10 @@ public abstract class ScriptExecutorFactory {
      * @return a non-null list of factory class names.
      */
     private static List<String> getRegisteredFactories() {
-        // Would be nice to move this method to IOUtil when external
-        // registrations for another SPI
-        // are supported. Currently it would have two clients
-        // (ScriptExecutorFactory and Log).
+        // Would be nice to move this method to IOUtil when external registrations for another SPI
+        // are supported. Currently it would have two clients (ScriptExecutorFactory and Log).
         // Better to have three before it is turned into an API.
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         String path = "META-INF/services/" + ScriptExecutorFactory.class.getName();
         try {
             Enumeration<URL> configFiles =
@@ -111,28 +109,20 @@ public abstract class ScriptExecutorFactory {
     }
 
     private static void addFactories(URL configFile, List<String> result) throws IOException {
-        InputStream input = configFile.openStream();
-        try {
-            // Encoding as per JAR file spec.
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
-            try {
-                String line = reader.readLine();
-                while (line != null) {
-                    int comment = line.indexOf('#');
-                    if (comment >= 0) {
-                        line = line.substring(0, comment);
-                    }
-                    line = line.trim();
-                    if (StringUtil.isNotBlank(line)) {
-                        result.add(line);
-                    }
-                    line = reader.readLine();
+        try (InputStream input = configFile.openStream(); // Encoding as per JAR file spec.
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
+            String line = reader.readLine();
+            while (line != null) {
+                int comment = line.indexOf('#');
+                if (comment >= 0) {
+                    line = line.substring(0, comment);
                 }
-            } finally {
-                reader.close();
+                line = line.trim();
+                if (StringUtil.isNotBlank(line)) {
+                    result.add(line);
+                }
+                line = reader.readLine();
             }
-        } finally {
-            input.close();
         }
     }
 
@@ -148,11 +138,9 @@ public abstract class ScriptExecutorFactory {
     /**
      * Creates a ScriptExecutorFactory for the given language.
      *
-     * @param language
-     *            The name of the language
+     * @param language The name of the language
      * @return The script executor factory
-     * @throws IllegalArgumentException
-     *             If the given language is not supported.
+     * @throws IllegalArgumentException If the given language is not supported.
      */
     public static ScriptExecutorFactory newInstance(String language) {
         if (StringUtil.isBlank(language)) {
@@ -177,21 +165,14 @@ public abstract class ScriptExecutorFactory {
     /**
      * Creates a script executor for the given script.
      *
-     * @param loader
-     *            The classloader that contains the java classes that the script
-     *            should have access to.
-     * @param script
-     *            The script text.
-     * @param compile
-     *            A hint to tell the script executor whether or not to compile
-     *            the given script. This need not be implemented by all script
-     *            executors. If true, the caller is saying that they intend to
-     *            call the script multiple times with different arguments, so
-     *            compile if possible.
+     * @param loader The classloader that contains the java classes that the script should have access to.
+     * @param script The script text.
+     * @param compile A hint to tell the script executor whether or not to compile the given script.
+     * This need not be implemented by all script executors. If true, the caller is saying that they intend to
+     * call the script multiple times with different arguments, so compile if possible.
      * @return A script executor.
      */
-    public abstract ScriptExecutor newScriptExecutor(ClassLoader loader, String script,
-            boolean compile);
+    public abstract ScriptExecutor newScriptExecutor(ClassLoader loader, String script, boolean compile);
 
     /**
      * Returns the name of the language supported by this factory.

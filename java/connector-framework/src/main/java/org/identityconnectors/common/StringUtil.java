@@ -19,10 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -341,7 +343,7 @@ public final class StringUtil {
         if (isNotBlank(value)) {
             try {
                 // get the bytes..
-                final byte[] bytes = value.getBytes("ISO-8859-1");
+                final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
                 // load into the properties object..
                 ret.load(new ByteArrayInputStream(bytes));
             } catch (RuntimeException ex) {

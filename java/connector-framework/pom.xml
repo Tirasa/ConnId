@@ -75,8 +75,7 @@
           <instructions>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Export-Package>
-              {local-packages},
-              org.identityconnectors.framework.impl.*
+              {local-packages}
             </Export-Package>
             <Require-Capability>org.identityconnectors.framework.internal</Require-Capability>
           </instructions>

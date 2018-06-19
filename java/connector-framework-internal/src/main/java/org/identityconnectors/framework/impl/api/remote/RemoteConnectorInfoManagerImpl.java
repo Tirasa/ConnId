@@ -20,8 +20,8 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
-
 package org.identityconnectors.framework.impl.api.remote;
 
 import java.util.ArrayList;
@@ -29,8 +29,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.event.ConnectorEvent;
 import org.identityconnectors.common.event.ConnectorEventHandler;
@@ -56,10 +54,12 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
     private static final Log LOG = Log.getLog(RemoteConnectorInfoManagerImpl.class);
 
     private final RemoteFrameworkConnectionInfo frameworkConnectionInfo;
+
     private List<ConnectorInfo> connectorInfoList;
+
     private Long serverStartTime = null;
 
-    private final Vector<ConnectorEventHandler> eventHandlers = new Vector<ConnectorEventHandler>();
+    private final List<ConnectorEventHandler> eventHandlers = new ArrayList<>();
 
     private RemoteConnectorInfoManagerImpl() {
         frameworkConnectionInfo = null;
@@ -70,8 +70,7 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
         this(info, true);
     }
 
-    public RemoteConnectorInfoManagerImpl(RemoteFrameworkConnectionInfo info,
-            boolean loadConnectorInfo) throws RuntimeException {
+    public RemoteConnectorInfoManagerImpl(RemoteFrameworkConnectionInfo info, boolean loadConnectorInfo) {
         frameworkConnectionInfo = info;
         if (loadConnectorInfo) {
             init();
@@ -81,8 +80,7 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
     }
 
     private void init() {
-        RemoteFrameworkConnection connection =
-                new RemoteFrameworkConnection(frameworkConnectionInfo);
+        RemoteFrameworkConnection connection = new RemoteFrameworkConnection(frameworkConnectionInfo);
         HelloResponse response = null;
         try {
             connection.writeObject(CurrentLocale.get());
@@ -103,12 +101,12 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
 
         List<RemoteConnectorInfoImpl> remoteInfos = response.getConnectorInfos();
         // populate transient fields not serialized
-        for (RemoteConnectorInfoImpl remoteInfo : remoteInfos) {
+        remoteInfos.forEach((remoteInfo) -> {
             remoteInfo.setRemoteConnectionInfo(frameworkConnectionInfo);
-        }
+        });
 
         List<ConnectorInfo> connectorInfoBefore = connectorInfoList;
-        connectorInfoList = CollectionUtil.<ConnectorInfo> newReadOnlyList(remoteInfos);
+        connectorInfoList = CollectionUtil.<ConnectorInfo>newReadOnlyList(remoteInfos);
         Object o = response.getServerInfo().get(HelloResponse.SERVER_START_TIME);
         if (o instanceof Long) {
             serverStartTime = (Long) o;
@@ -117,7 +115,7 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
         }
 
         // Notify all the listeners
-        List<ConnectorInfo> unchanged = new ArrayList<ConnectorInfo>(connectorInfoList.size());
+        List<ConnectorInfo> unchanged = new ArrayList<>(connectorInfoList.size());
         if (null != connectorInfoBefore) {
             for (ConnectorInfo oldCi : connectorInfoBefore) {
                 boolean unregistered = true;
@@ -134,12 +132,12 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
                 }
             }
         }
-        for (ConnectorInfo newCi : connectorInfoList) {
-            if (!unchanged.contains(newCi)) {
-                notifyListeners(new ConnectorEvent(ConnectorEvent.CONNECTOR_REGISTERED, newCi
-                        .getConnectorKey()));
-            }
-        }
+        connectorInfoList.stream().
+                filter((newCi) -> (!unchanged.contains(newCi))).
+                forEachOrdered((newCi) -> {
+                    notifyListeners(
+                            new ConnectorEvent(ConnectorEvent.CONNECTOR_REGISTERED, newCi.getConnectorKey()));
+                });
     }
 
     /**
@@ -157,10 +155,10 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
             @SuppressWarnings("unchecked")
             List<RemoteConnectorInfoImpl> remoteInfos =
                     (List<RemoteConnectorInfoImpl>) SerializerUtil.cloneObject(connectorInfoList);
-            for (RemoteConnectorInfoImpl remoteInfo : remoteInfos) {
+            remoteInfos.forEach((remoteInfo) -> {
                 remoteInfo.setRemoteConnectionInfo(info);
-            }
-            rv.connectorInfoList = CollectionUtil.<ConnectorInfo> newReadOnlyList(remoteInfos);
+            });
+            rv.connectorInfoList = CollectionUtil.<ConnectorInfo>newReadOnlyList(remoteInfos);
         }
         return rv;
     }
@@ -209,10 +207,10 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
         } catch (ConnectorIOException e) {
             // Server is unreachable and we notify all listeners
             if (null != connectorInfoList) {
-                for (ConnectorInfo connectorInfo : connectorInfoList) {
+                connectorInfoList.forEach((connectorInfo) -> {
                     notifyListeners(new ConnectorEvent(ConnectorEvent.CONNECTOR_UNREGISTERING,
                             connectorInfo.getConnectorKey()));
-                }
+                });
             }
             connectorInfoList = null;
             LOG.error("Failed to connect to remote connector server {0}", frameworkConnectionInfo);
@@ -231,12 +229,12 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
         }
         if (!eventHandlers.contains(hook)) {
             if (null != connectorInfoList) {
-                for (ConnectorInfo connectorInfo : connectorInfoList) {
+                connectorInfoList.forEach((connectorInfo) -> {
                     hook.handleEvent(new ConnectorEvent(ConnectorEvent.CONNECTOR_REGISTERED,
                             connectorInfo.getConnectorKey()));
-                }
+                });
             }
-            eventHandlers.addElement(hook);
+            eventHandlers.add(hook);
         }
     }
 
@@ -245,13 +243,11 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
      */
     @Override
     public void deleteConnectorEventHandler(ConnectorEventHandler hook) {
-        eventHandlers.removeElement(hook);
+        eventHandlers.remove(hook);
     }
 
     public Map<String, Object> getServerInfo() throws RuntimeException {
-        RemoteFrameworkConnection connection =
-                new RemoteFrameworkConnection(frameworkConnectionInfo);
-        try {
+        try (RemoteFrameworkConnection connection = new RemoteFrameworkConnection(frameworkConnectionInfo)) {
             connection.writeObject(CurrentLocale.get());
             connection.writeObject(frameworkConnectionInfo.getKey());
             connection.writeObject(new HelloRequest(HelloRequest.SERVER_INFO));
@@ -262,15 +258,11 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
                 throw ConnectorException.wrap(response.getException());
             }
             return response.getServerInfo();
-        } finally {
-            connection.close();
         }
     }
 
     public List<ConnectorKey> getConnectorKeys() throws RuntimeException {
-        RemoteFrameworkConnection connection =
-                new RemoteFrameworkConnection(frameworkConnectionInfo);
-        try {
+        try (RemoteFrameworkConnection connection = new RemoteFrameworkConnection(frameworkConnectionInfo)) {
             connection.writeObject(CurrentLocale.get());
             connection.writeObject(frameworkConnectionInfo.getKey());
             connection.writeObject(new HelloRequest(HelloRequest.CONNECTOR_KEY_LIST));
@@ -281,8 +273,6 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
                 throw ConnectorException.wrap(response.getException());
             }
             return response.getConnectorKeys();
-        } finally {
-            connection.close();
         }
     }
 

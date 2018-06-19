@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.serializer.binary;
 
@@ -28,12 +29,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
 import org.identityconnectors.common.Pair;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.serializer.BinaryObjectSerializer;
@@ -53,14 +54,19 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
     public static final int OBJECT_MAGIC = 0xFAFB;
 
     public static final byte OBJECT_TYPE_NULL = 60;
+
     public static final byte OBJECT_TYPE_CLASS = 61;
+
     public static final byte OBJECT_TYPE_ARRAY = 62;
 
     public static final byte FIELD_TYPE_ANONYMOUS_FIELD = 70;
+
     public static final byte FIELD_TYPE_NAMED_FIELD = 71;
+
     public static final byte FIELD_TYPE_END_OBJECT = 72;
 
     private static class OutputBuffer extends Pair<ByteArrayOutputStream, DataOutputStream> {
+
         public OutputBuffer(ByteArrayOutputStream buf, DataOutputStream data) {
             super(buf, data);
         }
@@ -71,12 +77,14 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         /**
          * Mapping from type name to the ID we serialize so we only have to
          */
-        private Map<String, Integer> constantPool = new HashMap<String, Integer>();
+        private final Map<String, Integer> constantPool = new HashMap<>();
 
-        private List<String> constantBuffer = new ArrayList<String>();
+        private final List<String> constantBuffer = new ArrayList<>();
 
-        private Stack<OutputBuffer> outputBufferStack = new Stack<OutputBuffer>();
-        private DataOutputStream rootOutput;
+        private final Stack<OutputBuffer> outputBufferStack = new Stack<>();
+
+        private final DataOutputStream rootOutput;
+
         private boolean firstObject = true;
 
         public InternalEncoder(DataOutputStream output) {
@@ -126,18 +134,18 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
                 }
             }
             writeByte(FIELD_TYPE_END_OBJECT); // write end-object into the
-                                              // current obj buffer
+            // current obj buffer
 
             // pop the stack
             outputBufferStack.pop();
 
             // it's a top-level object, flush the constant pool
-            if (outputBufferStack.size() == 0) {
+            if (outputBufferStack.isEmpty()) {
                 writeInt(constantBuffer.size());
-                for (String constant : constantBuffer) {
+                constantBuffer.forEach(constant -> {
                     writeString(constant, false);
                     writeInt(constantPool.get(constant));
-                }
+                });
                 constantBuffer.clear();
             }
 
@@ -152,8 +160,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         }
 
         public void writeClass(Class<?> clazz) {
-            ObjectSerializationHandler handler =
-                    ObjectSerializerRegistry.getHandlerByObjectType(clazz);
+            ObjectSerializationHandler handler = ObjectSerializerRegistry.getHandlerByObjectType(clazz);
             ObjectTypeMapper mapper = ObjectSerializerRegistry.getMapperByObjectType(clazz);
             if (handler == null && clazz.isArray()) {
                 // we may have special handlers for certain types of arrays
@@ -250,12 +257,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
                 writeInt(code);
                 return;
             }
-            try {
-                byte[] bytes = str.getBytes("UTF8");
-                writeByteArray(bytes);
-            } catch (IOException e) {
-                throw ConnectorException.wrap(e);
-            }
+            writeByteArray(str.getBytes(StandardCharsets.UTF_8));
         }
 
         private void writeBytes(byte[] v) {
@@ -277,7 +279,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         }
 
         private DataOutputStream getCurrentOutput() {
-            if (outputBufferStack.size() == 0) {
+            if (outputBufferStack.isEmpty()) {
                 return rootOutput;
             } else {
                 return outputBufferStack.peek().second;
@@ -285,11 +287,10 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
         }
     }
 
-    private InternalEncoder internalEncoder;
+    private final InternalEncoder internalEncoder;
 
     public BinaryObjectEncoder(OutputStream output) {
-        internalEncoder =
-                new InternalEncoder(new DataOutputStream(new BufferedOutputStream(output, 4096)));
+        internalEncoder = new InternalEncoder(new DataOutputStream(new BufferedOutputStream(output, 4096)));
     }
 
     @Override

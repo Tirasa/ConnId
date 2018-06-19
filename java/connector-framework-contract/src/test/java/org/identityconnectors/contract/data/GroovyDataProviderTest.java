@@ -36,10 +36,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.contract.exceptions.ObjectNotFoundException;
 import org.identityconnectors.framework.common.objects.Attribute;
@@ -664,16 +664,6 @@ public class GroovyDataProviderTest {
 
     /** read lines from given file line by line */
     private List<String> readLines(URL url) throws IOException {
-        List<String> result = new ArrayList<>();
-
-        // get the lines of the original property file
-        try (BufferedReader input = new BufferedReader(new InputStreamReader(url.openStream()))) {
-            String line = null; // not declared within while loop
-
-            while ((line = input.readLine()) != null) {
-                result.add(line);
-            }
-        }
-        return result;
+        return new BufferedReader(new InputStreamReader(url.openStream())).lines().collect(Collectors.toList());
     }
 }

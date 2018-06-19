@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import org.identityconnectors.common.StringPrintWriter;
@@ -67,7 +68,7 @@ public class StdOutLoggerTests {
             System.setOut(tmp);
         }
         // okay check the results..
-        String logRecord = new String(bout.toByteArray(), "UTF-8");
+        String logRecord = new String(bout.toByteArray(), StandardCharsets.UTF_8);
         BufferedReader rdr = new BufferedReader(new StringReader(logRecord));
         String records[] = rdr.readLine().split("\t");
         Map<String, String> map = new HashMap<>();

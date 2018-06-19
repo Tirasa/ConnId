@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.serializer.binary;
 
@@ -28,12 +29,12 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.serializer.BinaryObjectDeserializer;
 import org.identityconnectors.framework.impl.serializer.ObjectDecoder;
@@ -44,8 +45,11 @@ import org.identityconnectors.framework.impl.serializer.ObjectTypeMapper;
 public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeserializer {
 
     private static class ReadState {
-        public Map<String, byte[]> objectFields = new HashMap<String, byte[]>();
-        public List<byte[]> anonymousFields = new ArrayList<byte[]>();
+
+        public Map<String, byte[]> objectFields = new HashMap<>();
+
+        public List<byte[]> anonymousFields = new ArrayList<>();
+
         public DataInputStream currentInput;
 
         public ReadState() {
@@ -75,9 +79,10 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
 
         private boolean firstObject = true;
 
-        private final Map<Integer, String> constantPool = new HashMap<Integer, String>();
+        private final Map<Integer, String> constantPool = new HashMap<>();
 
-        private final Stack<ReadState> readStateStack = new Stack<ReadState>();
+        private final Stack<ReadState> readStateStack = new Stack<>();
+
         private final DataInputStream rootInput;
 
         public InternalDecoder(DataInputStream input) {
@@ -99,7 +104,7 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
             }
 
             // if it's a top-level object, it's proceeded by a constant pool
-            if (readStateStack.size() == 0) {
+            if (readStateStack.isEmpty()) {
                 int size = readInt();
                 for (int i = 0; i < size; i++) {
                     String constant = readString(false);
@@ -254,12 +259,7 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
                 return name;
             }
 
-            try {
-                byte[] bytes = readByteArray();
-                return new String(bytes, "UTF8");
-            } catch (IOException e) {
-                throw ConnectorException.wrap(e);
-            }
+            return new String(readByteArray(), StandardCharsets.UTF_8);
         }
 
         private DataInputStream getCurrentInput() {
@@ -272,7 +272,7 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
         }
     }
 
-    private InternalDecoder internalDecoder;
+    private final InternalDecoder internalDecoder;
 
     public BinaryObjectDecoder(InputStream in) {
         internalDecoder =

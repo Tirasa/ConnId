@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.test.common;
 
@@ -32,11 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
@@ -65,23 +62,24 @@ public final class TestHelpers {
     /**
      * Method for convenient testing of local connectors.
      */
-    public static APIConfiguration createTestConfiguration(final Class<? extends Connector> clazz,
-            final Configuration config) {
+    public static APIConfiguration createTestConfiguration(
+            final Class<? extends Connector> clazz, final Configuration config) {
+
         return getSpi().createTestConfiguration(clazz, config);
     }
 
     /**
      * Method for convenient testing of local connectors.
      */
-    public static APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
-            final PropertyBag configData, String prefix) {
+    public static APIConfiguration createTestConfiguration(
+            Class<? extends Connector> clazz, final PropertyBag configData, String prefix) {
+
         URL url = clazz.getClassLoader().getResource("");
-        Set<String> bundleContents = new HashSet<String>();
+        Set<String> bundleContents = new HashSet<>();
 
         try {
             URI relative = url.toURI();
-            for (File file : FileUtils.listFiles(new File(url.toURI()), TrueFileFilter.INSTANCE,
-                    TrueFileFilter.INSTANCE)) {
+            for (File file : new File(url.toURI()).listFiles()) {
                 bundleContents.add(relative.relativize(file.toURI()).getPath());
             }
             return getSpi().createTestConfiguration(clazz, bundleContents, configData, prefix);
@@ -93,16 +91,12 @@ public final class TestHelpers {
     /**
      * Fills a configuration bean with data from the given map.
      *
-     * The map keys are configuration property names and the values are
-     * configuration property values.
+     * The map keys are configuration property names and the values are configuration property values.
      *
-     * @param config
-     *            the configuration bean.
-     * @param configData
-     *            the map with configuration data.
+     * @param config the configuration bean.
+     * @param configData the map with configuration data.
      */
-    public static void fillConfiguration(final Configuration config,
-            final Map<String, ? extends Object> configData) {
+    public static void fillConfiguration(final Configuration config, final Map<String, ? extends Object> configData) {
         getSpi().fillConfiguration(config, configData);
     }
 
@@ -135,15 +129,11 @@ public final class TestHelpers {
      * Performs a raw, unfiltered search at the SPI level, eliminating
      * duplicates from the result set.
      *
-     * @param search
-     *            The search SPI
-     * @param objectClass
-     *            The object class - passed through to connector so it may be
-     *            null if the connecor allowing it to be null. (This is
-     *            convenient for unit tests, but will not be the case in
-     *            general)
-     * @param filter
-     *            The filter to search on
+     * @param search The search SPI
+     * @param objectClass The object class - passed through to connector so it may be
+     * null if the connecor allowing it to be null. (This is convenient for unit tests, but will not be the case in
+     * general)
+     * @param filter The filter to search on
      * @return The list of results.
      */
     public static List<ConnectorObject> searchToList(final SearchOp<?> search,
@@ -155,18 +145,12 @@ public final class TestHelpers {
      * Performs a raw, unfiltered search at the SPI level, eliminating
      * duplicates from the result set.
      *
-     * @param search
-     *            The search SPI
-     * @param objectClass
-     *            The object class - passed through to connector so it may be
-     *            null if the connecor allowing it to be null. (This is
-     *            convenient for unit tests, but will not be the case in
-     *            general)
-     * @param filter
-     *            The filter to search on
-     * @param options
-     *            The options - may be null - will be cast to an empty
-     *            OperationOptions
+     * @param search The search SPI
+     * @param objectClass The object class - passed through to connector so it may be
+     * null if the connecor allowing it to be null. (This is convenient for unit tests, but will not be the case in
+     * general)
+     * @param filter The filter to search on
+     * @param options The options - may be null - will be cast to an empty OperationOptions
      * @return The list of results.
      */
     public static List<ConnectorObject> searchToList(final SearchOp<?> search,
@@ -180,20 +164,13 @@ public final class TestHelpers {
      * Performs a raw, unfiltered search at the SPI level, eliminating
      * duplicates from the result set.
      *
-     * @param search
-     *            The search SPI
-     * @param objectClass
-     *            The object class - passed through to connector so it may be
-     *            null if the connecor allowing it to be null. (This is
-     *            convenient for unit tests, but will not be the case in
-     *            general)
-     * @param filter
-     *            The filter to search on
-     * @param handler
-     *            The result handler
-     * @param options
-     *            The options - may be null - will be cast to an empty
-     *            OperationOptions
+     * @param search The search SPI
+     * @param objectClass The object class - passed through to connector so it may be
+     * null if the connecor allowing it to be null. (This is convenient for unit tests, but will not be the case in
+     * general)
+     * @param filter The filter to search on
+     * @param handler The result handler
+     * @param options The options - may be null - will be cast to an emptyOperationOptions
      */
     public static void search(final SearchOp<?> search, final ObjectClass objectClass,
             final Filter filter, final ResultsHandler handler, final OperationOptions options) {
@@ -201,8 +178,7 @@ public final class TestHelpers {
     }
 
     // At some point we might make this pluggable, but for now, hard-code
-    private static final String IMPL_NAME =
-            "org.identityconnectors.framework.impl.test.TestHelpersImpl";
+    private static final String IMPL_NAME = "org.identityconnectors.framework.impl.test.TestHelpersImpl";
 
     private static TestHelpersSpi instance;
 
@@ -246,13 +222,9 @@ public final class TestHelpers {
      * </ul>
      * Context classloader is used to load the resources.
      *
-     * @param clazz
-     *            Class which FQN is used as root prefix for loading of
-     *            properties
-     * @return Bag of properties for specified class and optionally passed
-     *         configuration
-     * @throws IllegalStateException
-     *             if context classloader is null
+     * @param clazz Class which FQN is used as root prefix for loading of properties
+     * @return Bag of properties for specified class and optionally passed configuration
+     * @throws IllegalStateException if context classloader is null
      */
     public static PropertyBag getProperties(Class<?> clazz) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -283,15 +255,10 @@ public final class TestHelpers {
      * </ul>
      * Context classloader is used to load the resources.
      *
-     * @param clazz
-     *            Class which FQN is used as root prefix for loading of
-     *            properties
-     * @param environment
-     *            Environment name (Optional)
-     * @return Bag of properties for specified class and optionally passed
-     *         configuration
-     * @throws IllegalStateException
-     *             if context classloader is null
+     * @param clazz Class which FQN is used as root prefix for loading of properties
+     * @param environment Environment name (Optional)
+     * @return Bag of properties for specified class and optionally passed configuration
+     * @throws IllegalStateException if context classloader is null
      */
     public static PropertyBag getProperties(Class<?> clazz, String environment) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -327,7 +294,7 @@ public final class TestHelpers {
         synchronized (LOCK) {
             String key =
                     StringUtil.isBlank(environment) ? clazz.getName() : clazz.getName() + "/"
-                            + environment;
+                    + environment;
             PropertyBag bag = BAGS.get(key);
             if (bag == null) {
                 bag = loadConnectorConfigurationAsResource(clazz.getName(), environment, loader);
@@ -337,9 +304,8 @@ public final class TestHelpers {
         }
     }
 
-    static PropertyBag loadConnectorConfigurationAsResource(String prefix, String environment,
-            ClassLoader loader) {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    static PropertyBag loadConnectorConfigurationAsResource(String prefix, String environment, ClassLoader loader) {
+        Map<String, Object> ret = new HashMap<>();
         String cfg = System.getProperty("testConfig", null);
         // common public config file
         URL url = loader.getResource(prefix + "/config/config.groovy");
@@ -370,16 +336,14 @@ public final class TestHelpers {
 
     static void appendProperties(Map<String, Object> ret, Map<?, ?> props) {
         if (props != null) {
-            for (Entry<?, ?> entry : props.entrySet()) {
-                Object key = entry.getKey();
+            props.forEach((key, value) -> {
                 if (key instanceof String) {
-                    ret.put((String) key, entry.getValue());
+                    ret.put((String) key, value);
                 } else {
                     throw new IllegalStateException(
-                            "Entry in read properties has not string key : " + entry);
+                            "Entry in read properties has not string key : " + key + "," + value);
                 }
-            }
+            });
         }
     }
-
 }

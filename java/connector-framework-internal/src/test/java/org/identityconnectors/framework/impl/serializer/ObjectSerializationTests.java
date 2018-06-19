@@ -505,7 +505,7 @@ public class ObjectSerializationTests {
         v1.setProducerBufferSize(200);
         v1.setSupportedOperations(FrameworkUtil.allAPIOperations());
         Map<Class<? extends APIOperation>, Integer> map =
-                CollectionUtil.<Class<? extends APIOperation>, Integer>newMap(CreateApiOp.class, new Integer(6));
+                CollectionUtil.<Class<? extends APIOperation>, Integer>newMap(CreateApiOp.class, 6);
         v1.setTimeoutMap(map);
 
         APIConfigurationImpl v2 = (APIConfigurationImpl) cloneObject(v1);
