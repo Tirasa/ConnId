@@ -20,22 +20,23 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.contract.data.DataProvider;
 import org.identityconnectors.framework.api.ConfigurationProperties;
 import org.identityconnectors.framework.api.ConfigurationProperty;
 import org.identityconnectors.framework.common.FrameworkUtil;
 import org.identityconnectors.framework.spi.Configuration;
-import org.testng.annotations.Test;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.log4testng.Logger;
-
-import static org.testng.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link Configuration} of the Connector Under Test
@@ -44,13 +45,14 @@ import static org.testng.Assert.*;
  */
 public final class ConfigurationTests {
 
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
+    private static final Log LOG = Log.getLog(ConfigurationTests.class);
+
     private ConfigurationProperties _configProperties = null;
 
     /**
      * Initialize the unit test
      */
-    @BeforeMethod
+    @BeforeEach
     public void init() {
         DataProvider dataProvider = ConnectorHelper.createDataProvider();
         _configProperties = ConnectorHelper.getConfigurationProperties(dataProvider);
@@ -59,7 +61,7 @@ public final class ConfigurationTests {
     /**
      * Free up the resources
      */
-    @AfterMethod
+    @AfterEach
     public void dispose() {
         _configProperties = null;
     }
@@ -69,21 +71,20 @@ public final class ConfigurationTests {
      */
     @Test
     public void testPropertiesType() {
-
         assertNotNull(_configProperties);
 
         List<String> propertyNames = _configProperties.getPropertyNames();
         assertNotNull(propertyNames);
 
-        //go through the properties and check the type
-        for (String propertyName : propertyNames) {
-            ConfigurationProperty property =  _configProperties.getProperty(propertyName);
+        // go through the properties and check the type
+        propertyNames.forEach(propertyName -> {
+            ConfigurationProperty property = _configProperties.getProperty(propertyName);
             assertNotNull(property);
 
             String typeName = property.getType().getName();
-            logger.trace("Property: ''"+property.getName()+"'' type ''"+typeName+"''");
+            LOG.ok("Property: ''" + property.getName() + "'' type ''" + typeName + "''");
             assertTrue(FrameworkUtil.isSupportedConfigurationType(property.getType()),
                     "Type " + typeName + " not allowed in configuration!");
-        }
+        });
     }
 }

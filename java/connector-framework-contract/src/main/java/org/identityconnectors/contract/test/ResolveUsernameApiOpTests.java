@@ -20,8 +20,13 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,19 +40,18 @@ import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.testng.Assert;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * tests for {@link ResolveUsernameApiOp}
+ * tests for {@link ResolveUsernameApiOp}.
  *
  * @author David Adam
  */
-@Test(testName =  ResolveUsernameApiOpTests.TEST_NAME)
 public class ResolveUsernameApiOpTests extends ObjectClassRunner {
 
     public static final String TEST_NAME = "ResolveUsername";
+
     private static final String WRONG_USERNAME = "wrong.username";
 
     @Override
@@ -60,7 +64,8 @@ public class ResolveUsernameApiOpTests extends ObjectClassRunner {
         // empty on purpose.
     }
 
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
+    @ParameterizedTest
+    @MethodSource("objectClasses")
     public void testPositive(ObjectClass objectClass) {
         if (!ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass, getAPIOperations())) {
             return;
@@ -79,7 +84,7 @@ public class ResolveUsernameApiOpTests extends ObjectClassRunner {
             // get the user to make sure it exists now
             ConnectorObject obj = getConnectorFacade().getObject(objectClass, uid,
                     getOperationOptionsByOp(objectClass, GetApiOp.class));
-            Assert.assertNotNull(obj,"Unable to retrieve newly created object");
+            assertNotNull(obj, "Unable to retrieve newly created object");
 
             // compare requested attributes to retrieved attributes
             ConnectorHelper.checkObject(getObjectClassInfo(objectClass), obj, attrs);
@@ -88,9 +93,10 @@ public class ResolveUsernameApiOpTests extends ObjectClassRunner {
              * try resolving the new user
              */
             // get username
-            String username = (String) getDataProvider().getTestSuiteAttribute(objectClass.getObjectClassValue() + "." + AuthenticationApiOpTests.USERNAME_PROP, AuthenticationApiOpTests.TEST_NAME);
+            String username = (String) getDataProvider().getTestSuiteAttribute(objectClass.getObjectClassValue() + "."
+                    + AuthenticationApiOpTests.USERNAME_PROP, AuthenticationApiOpTests.TEST_NAME);
             Uid result = getConnectorFacade().resolveUsername(objectClass, username, null);
-            Assert.assertEquals(uid, result);
+            assertEquals(uid, result);
         } finally {
             if (uid != null) {
                 // delete the object
@@ -100,7 +106,8 @@ public class ResolveUsernameApiOpTests extends ObjectClassRunner {
         }
     }
 
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
+    @ParameterizedTest
+    @MethodSource("objectClasses")
     public void testNegative(ObjectClass objectClass) {
         if (!ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass, getAPIOperations())) {
             return;
@@ -109,14 +116,16 @@ public class ResolveUsernameApiOpTests extends ObjectClassRunner {
         String wrongUsername = null;
         try {
             // retrieves an optional value for wrong username
-            wrongUsername = (String) getDataProvider().getTestSuiteAttribute(WRONG_USERNAME, AuthenticationApiOpTests.TEST_NAME);
+            wrongUsername = (String) getDataProvider().
+                    getTestSuiteAttribute(WRONG_USERNAME, AuthenticationApiOpTests.TEST_NAME);
         } catch (Exception ex) {
             wrongUsername = "unresolvableUsername";
         }
 
         try {
             getConnectorFacade().resolveUsername(objectClass, wrongUsername, null);
-            Assert.fail("Runtime exception should be thrown when attempt to resolve non-existing user: '" + wrongUsername + "'");
+            fail("Runtime exception should be thrown when attempt to resolve non-existing user: '"
+                    + wrongUsername + "'");
         } catch (RuntimeException ex) {
             // OK
         }
@@ -125,7 +134,7 @@ public class ResolveUsernameApiOpTests extends ObjectClassRunner {
 
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> requiredOps = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> requiredOps = new HashSet<>();
         // list of required operations by this test:
         requiredOps.add(CreateApiOp.class);
         requiredOps.add(DeleteApiOp.class);

@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
@@ -28,16 +29,10 @@ import java.util.Set;
 import org.identityconnectors.contract.data.DataProvider;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.api.operations.APIOperation;
-import org.identityconnectors.framework.api.operations.ValidateApiOp;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.testng.ITestContext;
-import org.testng.SkipException;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.log4testng.Logger;
-import com.google.inject.Inject;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Base class of all contract tests.
@@ -46,68 +41,31 @@ import com.google.inject.Inject;
  */
 public abstract class ContractTestBase {
 
-    /**
-     * Name of the ConfigObject
-     */
-    public static final String TESTSUITE = "testsuite";
-
-    /**
-     * Name of TestNG DataProvider to iterate over the supported ObjectClasses
-     */
-    public static final String OBJECTCLASS_DATAPROVIDER = "ObjectClass-DataProvider";
-
-    protected static final String LOG_SEPARATOR = "--------------------------------------------------------------------------------------";
-
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ContractTestBase.class);
+    protected static final String LOG_SEPARATOR =
+            "--------------------------------------------------------------------------------------";
 
     private static DataProvider _dataProvider;
 
-    @Inject
     protected ConnectorFacade _connFacade;
 
-    @BeforeClass
-    public void BeforeClass(ITestContext context) throws Exception {
-        // run test only in case operation is supported
-        if (!getConnectorFacade().getSupportedOperations().containsAll(getAPIOperations())) {
-            StringBuilder sb = new StringBuilder("Skipping test '");
-            sb.append(context.getName()).append("' because the connector does not implement: ");
-            boolean skip = true;
-            for (Class<? extends APIOperation> clazz : getAPIOperations()) {
-                if (skip) {
-                    skip = false;
-                } else {
-                    sb.append(", ");
-                }
-                sb.append(clazz.getSimpleName());
-            }
-            logger.info("--------------------------------");
-            logger.info(sb.toString());
-            logger.info("--------------------------------");
-            throw new SkipException(sb.toString());
+    private static void disposeDataProvider() {
+        if (_dataProvider != null) {
+            _dataProvider.dispose();
         }
     }
 
-    private static void disposeDataProvider() {
-    	if(_dataProvider != null) {
-	        _dataProvider.dispose();
-    	}
-    }
-
-/*    *//**
+    /**
      * Initialize the environment needed to run the test. Called once per test method (@Before).
-     *//*
-    @BeforeMethod
+     */
+    @BeforeEach
     public void init() {
         _connFacade = ConnectorHelper.createConnectorFacade(getDataProvider());
-    }*/
+    }
 
     /**
      * Dispose the test environment, do the cleanup. Called once per test method (@After).
      */
-    //@AfterMethod
+    @AfterEach
     public void dispose() {
         _connFacade = null;
         disposeDataProvider();
@@ -125,6 +83,7 @@ public abstract class ContractTestBase {
     //=================================================================
     /**
      * Gets preconfigured {@link DataProvider} instance
+     *
      * @return {@link DataProvider}
      */
     public synchronized static DataProvider getDataProvider() {
@@ -144,6 +103,7 @@ public abstract class ContractTestBase {
     /**
      * Gets OperationOptions suitable for specified operation.
      * Should be used in all tests requiring OperationOptions unless it's special case.
+     *
      * @return {@link OperationOptions}
      */
     public OperationOptions getOperationOptionsByOp(ObjectClass objectClass, Class<? extends APIOperation> clazz) {

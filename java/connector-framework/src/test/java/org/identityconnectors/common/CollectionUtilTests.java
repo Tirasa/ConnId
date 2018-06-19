@@ -19,13 +19,15 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,8 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class CollectionUtilTests {
 
@@ -78,7 +79,7 @@ public class CollectionUtilTests {
     @Test
     public void testIsEmpty() {
         assertTrue(CollectionUtil.isEmpty((Collection<String>) null));
-        Collection<String> c = new ArrayList<String>();
+        Collection<String> c = new ArrayList<>();
         assertTrue(CollectionUtil.isEmpty(c));
         c.add("dfa");
         assertFalse(CollectionUtil.isEmpty(c));
@@ -86,7 +87,7 @@ public class CollectionUtilTests {
 
     @Test
     public void testUnique() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         list.add("test");
         list.add("test");
         Collection<String> u = CollectionUtil.unique(list);
@@ -96,18 +97,13 @@ public class CollectionUtilTests {
     // <T, K> Map<T, K> newUnmodifiableMap(Map<T, K> map) {
     // <T> Map<T, T> map(T[][] kv)
     // <T, K> Map<T, K> mapFromLists(Collection<T> keys, Collection<K> values)
-
     // <T, K> Map<T, K> asMap(T k0, K v0) {
-
     // <T, K> Map<T, K> asMap(T k0, K v0, T k1, K v1) {
-
     // <T, K> Map<T, K> asMap(T k0, K v0, T k1, K v1, T k2, K v2) {
-
     // <T, K> Map<T, K> asMap(T[] k, K[] v) {
-
     @Test
     public void testAsList() {
-        Collection<Integer> c = new HashSet<Integer>();
+        Collection<Integer> c = new HashSet<>();
         c.add(1);
         c.add(2);
         List<Integer> list = CollectionUtil.newList(c);
@@ -126,7 +122,7 @@ public class CollectionUtilTests {
 
     @Test
     public void testAsSet() {
-        Collection<Integer> c = new ArrayList<Integer>();
+        Collection<Integer> c = new ArrayList<>();
         c.add(1);
         c.add(2);
         Set<Integer> set = CollectionUtil.newSet(c);
@@ -143,42 +139,44 @@ public class CollectionUtilTests {
         assertTrue(set.contains(2));
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testList() {
-        Collection<Integer> c = new HashSet<Integer>();
-        c.add(1);
-        c.add(2);
-        List<Integer> list = CollectionUtil.newReadOnlyList(c);
-        assertTrue(list.remove(Integer.valueOf(1)));
-        assertTrue(list.remove(Integer.valueOf(2)));
-        // make sure asset can handle null..
-        c = null;
-        CollectionUtil.newReadOnlyList(c);
-        // test array..
-        list = CollectionUtil.newReadOnlyList(1, 2);
-        assertTrue(list.contains(1));
-        assertTrue(list.contains(2));
-        // make sure it can *not* be modified..
-        list.add(2);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Collection<Integer> c = new HashSet<>();
+            c.add(1);
+            c.add(2);
+            List<Integer> list = CollectionUtil.newReadOnlyList(c);
+            assertTrue(list.remove(Integer.valueOf(1)));
+            assertTrue(list.remove(Integer.valueOf(2)));
+            // make sure asset can handle null..
+            c = null;
+            CollectionUtil.newReadOnlyList(c);
+            // test array..
+            list = CollectionUtil.newReadOnlyList(1, 2);
+            assertTrue(list.contains(1));
+            assertTrue(list.contains(2));
+            // make sure it can *not* be modified..
+            list.add(2);
+        });
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
     public void testSet() {
-        Collection<Integer> c = new ArrayList<Integer>();
-        c.add(1);
-        c.add(2);
-        Set<Integer> set = CollectionUtil.newReadOnlySet(c);
-        assertTrue(set.contains(1));
-        assertTrue(set.contains(2));
-        // make sure asset can handle null..
-        c = null;
-        CollectionUtil.newReadOnlySet(c);
-        // test vargs..
-        set = CollectionUtil.newReadOnlySet(1, 2);
-        assertTrue(set.contains(1));
-        assertTrue(set.contains(2));
-        // make sure it can *not* be modified..
-        set.add(2);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Collection<Integer> c = new ArrayList<>();
+            c.add(1);
+            c.add(2);
+            Set<Integer> set = CollectionUtil.newReadOnlySet(c);
+            assertTrue(set.contains(1));
+            assertTrue(set.contains(2));
+            // make sure asset can handle null..
+            c = null;
+            CollectionUtil.newReadOnlySet(c);
+            // test vargs..
+            set = CollectionUtil.newReadOnlySet(1, 2);
+            assertTrue(set.contains(1));
+            assertTrue(set.contains(2));
+            // make sure it can *not* be modified..
+            set.add(2);
+        });
     }
 
     // <T> Set<T> union(Collection<T> c1, Collection<T> c2) {
@@ -186,7 +184,6 @@ public class CollectionUtilTests {
     // <T extends Object & Comparable<? super T>> List<T> asSortedList(final
     // Collection<? extends T> col) {
     // <T> List<T> list(final List<T> list) {
-
     @Test
     public void testReadonlyList() {
         String[] data = { "a", "b", "c" };
@@ -220,8 +217,8 @@ public class CollectionUtilTests {
         assertFalse(CollectionUtil.equals(arr2, arr4));
         assertFalse(CollectionUtil.equals(arr2, arr5));
 
-        List<byte[]> list1 = new ArrayList<byte[]>();
-        List<byte[]> list2 = new ArrayList<byte[]>();
+        List<byte[]> list1 = new ArrayList<>();
+        List<byte[]> list2 = new ArrayList<>();
         list1.add(arr1);
         list2.add(arr2);
 
@@ -237,8 +234,8 @@ public class CollectionUtilTests {
         list2.add(arr3);
         assertFalse(CollectionUtil.equals(list1, list2));
 
-        Map<String, byte[]> map1 = new HashMap<String, byte[]>();
-        Map<String, byte[]> map2 = new HashMap<String, byte[]>();
+        Map<String, byte[]> map1 = new HashMap<>();
+        Map<String, byte[]> map2 = new HashMap<>();
         map1.put("key1", arr1);
         map2.put("key1", arr2);
         assertTrue(CollectionUtil.equals(map1, map2));
@@ -249,8 +246,8 @@ public class CollectionUtilTests {
         map1.put("key2", arr3);
         assertFalse(CollectionUtil.equals(map1, map2));
 
-        Set<String> set1 = new HashSet<String>();
-        Set<String> set2 = new HashSet<String>();
+        Set<String> set1 = new HashSet<>();
+        Set<String> set2 = new HashSet<>();
         set1.add("val");
         set2.add("val");
         assertTrue(CollectionUtil.equals(set1, set2));
@@ -276,8 +273,8 @@ public class CollectionUtilTests {
         assertFalse(CollectionUtil.hashCode(arr2) == CollectionUtil.hashCode(arr4));
         assertTrue(CollectionUtil.hashCode(arr2) == CollectionUtil.hashCode(arr5));
 
-        List<byte[]> list1 = new ArrayList<byte[]>();
-        List<byte[]> list2 = new ArrayList<byte[]>();
+        List<byte[]> list1 = new ArrayList<>();
+        List<byte[]> list2 = new ArrayList<>();
         list1.add(arr1);
         list2.add(arr2);
 
@@ -293,8 +290,8 @@ public class CollectionUtilTests {
         list2.add(arr3);
         assertFalse(CollectionUtil.hashCode(list1) == CollectionUtil.hashCode(list2));
 
-        Map<String, byte[]> map1 = new HashMap<String, byte[]>();
-        Map<String, byte[]> map2 = new HashMap<String, byte[]>();
+        Map<String, byte[]> map1 = new HashMap<>();
+        Map<String, byte[]> map2 = new HashMap<>();
         map1.put("key1", arr1);
         map2.put("key1", arr2);
         assertTrue(CollectionUtil.hashCode(map1) == CollectionUtil.hashCode(map2));
@@ -305,14 +302,14 @@ public class CollectionUtilTests {
         map1.put("key2", arr3);
         assertFalse(CollectionUtil.hashCode(map1) == CollectionUtil.hashCode(map2));
 
-        Set<String> set1 = new HashSet<String>();
-        Set<String> set2 = new HashSet<String>();
+        Set<String> set1 = new HashSet<>();
+        Set<String> set2 = new HashSet<>();
         set1.add("val");
         set2.add("val");
         assertTrue(CollectionUtil.hashCode(set1) == CollectionUtil.hashCode(set2));
         set2.add("val2");
         assertFalse(CollectionUtil.hashCode(set1) == CollectionUtil.hashCode(set2));
         set1.add("val2");
-        assertTrue(CollectionUtil.hashCode(set1) ==             CollectionUtil.hashCode(set2));
+        assertTrue(CollectionUtil.hashCode(set1) == CollectionUtil.hashCode(set2));
     }
 }

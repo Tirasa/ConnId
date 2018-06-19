@@ -375,7 +375,7 @@ public class AttributeDeltaBuilder {
     private List<Object> addValuesInternal(final Iterable<?> values, List<Object> ListValues) {
         if (values != null) {
             // make sure the list is ready to receive values.
-            List<Object> ret = new ArrayList<Object>();
+            List<Object> ret = new ArrayList<>();
             if (ListValues != null) {
                 ret.addAll(ListValues);
             }

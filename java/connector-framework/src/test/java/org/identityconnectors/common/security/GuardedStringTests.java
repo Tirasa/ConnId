@@ -19,26 +19,27 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common.security;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GuardedStringTests {
 
-    @BeforeMethod
+    @BeforeEach
     public void setUp() {
         GuardedString.setEncryptor(new SimpleEncryptor());
     }
 
-    @AfterMethod
+    @AfterEach
     public void tearDown() {
         GuardedString.setEncryptor(null);
     }
@@ -128,14 +129,10 @@ public class GuardedStringTests {
             final int expected = i;
             char c = (char) i;
             GuardedString gs = new GuardedString(new char[] { c });
-            gs.access(new GuardedString.Accessor() {
-                @Override
-                public void access(char[] clearChars) {
-                    int v = (int) clearChars[0];
-                    assertEquals(v, expected);
-                }
+            gs.access((char[] clearChars) -> {
+                int v = (int) clearChars[0];
+                assertEquals(v, expected);
             });
-
         }
     }
 
@@ -145,11 +142,8 @@ public class GuardedStringTests {
      */
     private String decryptToString(GuardedString string) {
         final StringBuilder buf = new StringBuilder();
-        string.access(new GuardedString.Accessor() {
-            @Override
-            public void access(char[] chars) {
-                buf.append(chars);
-            }
+        string.access((char[] chars) -> {
+            buf.append(chars);
         });
         return buf.toString();
     }

@@ -19,14 +19,16 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.List;
-
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.common.security.SecurityUtil;
 import org.identityconnectors.framework.api.ConnectorFacadeFactory;
@@ -36,24 +38,23 @@ import org.identityconnectors.framework.api.RemoteFrameworkConnectionInfo;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoManagerImpl;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloResponse;
 import org.identityconnectors.framework.server.ConnectorServer;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
+import org.junit.jupiter.api.Test;
 
 public class RemoteConnectorInfoManagerClearTests extends ConnectorInfoManagerTestBase {
 
     private static ConnectorServer _server;
 
-    final int PORT = 8759;
+    private final int PORT = 8759;
+
     /**
      * To be overridden by subclasses to get different ConnectorInfoManagers
+     *
      * @return
      * @throws Exception
      */
     @Override
     protected ConnectorInfoManager getConnectorInfoManager() throws Exception {
         List<URL> urls = getTestBundles();
-
 
         synchronized (RemoteConnectorInfoManagerClearTests.class) {
             if (_server == null) {
@@ -67,12 +68,10 @@ public class RemoteConnectorInfoManagerClearTests extends ConnectorInfoManagerTe
         }
         ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.getInstance();
 
-        RemoteFrameworkConnectionInfo connInfo = new
-        RemoteFrameworkConnectionInfo("127.0.0.1",PORT,new GuardedString("changeit".toCharArray()),false,null,0);
+        RemoteFrameworkConnectionInfo connInfo = new RemoteFrameworkConnectionInfo(
+                "127.0.0.1", PORT, new GuardedString("changeit".toCharArray()), false, null, 0);
 
-        ConnectorInfoManager manager = fact.getRemoteManager(connInfo);
-
-        return manager;
+        return fact.getRemoteManager(connInfo);
     }
 
     @Override
@@ -88,13 +87,12 @@ public class RemoteConnectorInfoManagerClearTests extends ConnectorInfoManagerTe
         ConnectorInfoManagerFactory.getInstance().clearLocalCache();
     }
 
-
     @Test
     public void testRemoteHelloRequest() throws Exception {
         getConnectorInfoManager();
         RemoteConnectorInfoManagerImpl mgr = new RemoteConnectorInfoManagerImpl(
                 new RemoteFrameworkConnectionInfo("127.0.0.1", PORT, new GuardedString("changeit".toCharArray())));
-        Assert.assertNotNull(mgr.getServerInfo().get(HelloResponse.SERVER_START_TIME));
-        Assert.assertEquals(mgr.getConnectorKeys().size(),4);
+        assertNotNull(mgr.getServerInfo().get(HelloResponse.SERVER_START_TIME));
+        assertEquals(mgr.getConnectorKeys().size(), 4);
     }
 }

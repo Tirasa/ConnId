@@ -19,27 +19,37 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.test.common;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class PropertyBagTests {
-    private PropertyBag bag = createBag();
+
+    private final PropertyBag bag;
+
+    public PropertyBagTests() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("key1", "value1");
+        map.put("key2", null);
+        map.put("key3", 1);
+        map.put("key5", 1L);
+        bag = new PropertyBag(map);
+    }
 
     @Test
     public void testGetProperty() {
         assertEquals(bag.getProperty("key1", String.class), "value1");
         assertNull(bag.getProperty("key2", String.class));
-        assertEquals(bag.getProperty("key3", Integer.class), new Integer(1));
-        assertEquals(bag.getProperty("key5", Long.class), new Long(1));
+        assertEquals(bag.getProperty("key3", Integer.class), Integer.valueOf(1));
+        assertEquals(bag.getProperty("key5", Long.class), Long.valueOf(1));
 
         // try not existing
         try {
@@ -80,14 +90,4 @@ public class PropertyBagTests {
         }
 
     }
-
-    private PropertyBag createBag() {
-        Map<String, Object> bag = new HashMap<String, Object>();
-        bag.put("key1", "value1");
-        bag.put("key2", null);
-        bag.put("key3", new Integer(1));
-        bag.put("key5", new Long(1));
-        return new PropertyBag(bag);
-    }
-
 }

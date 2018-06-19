@@ -19,15 +19,16 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
-
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.api.operations.DeleteApiOp;
@@ -41,16 +42,13 @@ import org.identityconnectors.framework.common.objects.AttributeDeltaUtil;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
 
 /**
  * Contract test of {@link UpdateDeltaApiOp}.
  */
-@Test(testName = UpdateDeltaApiOpTests.TEST_NAME)
 public class UpdateDeltaApiOpTests extends ObjectClassRunner {
 
-    private static final Logger LOG = Logger.getLogger(ValidateApiOpTests.class);
+    private static final Log LOG = Log.getLog(UpdateApiOpTests.class);
 
     protected static final String MODIFIED = "modified";
 
@@ -63,7 +61,7 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
      */
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         // list of required operations by this test:
         s.add(UpdateDeltaApiOp.class);
         s.add(CreateApiOp.class);
@@ -112,7 +110,7 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
             Set<AttributeDelta> removeAttributesDelta = ConnectorHelper.getUpdateableAttributesDelta(getDataProvider(),
                     getObjectClassInfo(objectClass), getTestName(), ADDED, 0, false, true, false);
 
-            Set<AttributeDelta> replaceAndAddAttrsDelta = new HashSet<AttributeDelta>();
+            Set<AttributeDelta> replaceAndAddAttrsDelta = new HashSet<>();
 
             replaceAndAddAttrsDelta.addAll(replaceAttributesDelta);
             replaceAndAddAttrsDelta.addAll(addAttributesDelta);
@@ -185,5 +183,4 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
     public String getTestName() {
         return TEST_NAME;
     }
-
 }

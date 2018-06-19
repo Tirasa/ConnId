@@ -19,18 +19,18 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Map;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.objects.ConnectorMessages;
 import org.identityconnectors.framework.spi.Configuration;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestHelpersImplTests {
 
@@ -50,6 +50,7 @@ public class TestHelpersImplTests {
     public final static class TestConfiguration implements Configuration {
 
         private String host;
+
         private int port;
 
         @Override

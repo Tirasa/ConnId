@@ -19,18 +19,17 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects.filter;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.atIndex;
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class FilterTranslatorTests {
 
@@ -62,7 +61,7 @@ public class FilterTranslatorTests {
         protected String createEqualsExpression(EqualsFilter filter, boolean not) {
             String rv =
                     "( = " + filter.getAttribute().getName() + " "
-                            + filter.getAttribute().getValue() + " )";
+                    + filter.getAttribute().getValue() + " )";
             return not(rv, not);
         }
 
@@ -386,10 +385,11 @@ public class FilterTranslatorTests {
         assertEquals(actual, expected);
 
         List<String> results = new NoOrTranslator().translate(filter);
-        assertThat(results).hasSize(4).contains("( & ( CONTAINS a a ) ( CONTAINS c c ) )",
-                atIndex(0)).contains("( & ( CONTAINS a a ) ( CONTAINS d d ) )", atIndex(1))
-                .contains("( & ( CONTAINS b b ) ( CONTAINS c c ) )", atIndex(2)).contains(
-                        "( & ( CONTAINS b b ) ( CONTAINS d d ) )", atIndex(3));
+        assertEquals(4, results.size());
+        assertEquals("( & ( CONTAINS a a ) ( CONTAINS c c ) )", results.get(0));
+        assertEquals("( & ( CONTAINS a a ) ( CONTAINS d d ) )", results.get(1));
+        assertEquals("( & ( CONTAINS b b ) ( CONTAINS c c ) )", results.get(2));
+        assertEquals("( & ( CONTAINS b b ) ( CONTAINS d d ) )", results.get(3));
     }
 
     // test simplification
@@ -418,8 +418,9 @@ public class FilterTranslatorTests {
 
         Filter filter = FilterBuilder.and(FilterBuilder.or(a, b), FilterBuilder.or(c, d));
         List<String> results = new NoEndsWithNoOrTranslator().translate(filter);
-        assertThat(results).hasSize(2).contains("( CONTAINS a a )", atIndex(0)).contains(
-                "( CONTAINS b b )", atIndex(1));
+        assertEquals(2, results.size());
+        assertEquals("( CONTAINS a a )", results.get(0));
+        assertEquals("( CONTAINS b b )", results.get(1));
     }
 
     // -no and
@@ -466,7 +467,7 @@ public class FilterTranslatorTests {
 
         filter = FilterBuilder.and(FilterBuilder.or(a, b), FilterBuilder.or(c, d));
         List<String> results = new NoAndNoEndsWithTranslator().translate(filter);
-        assertThat(results).hasSize(0);
+        assertTrue(results.isEmpty());
     }
 
     // -no and, no or, no leaf
@@ -479,8 +480,9 @@ public class FilterTranslatorTests {
 
         Filter filter = FilterBuilder.and(FilterBuilder.or(a, b), FilterBuilder.or(c, d));
         List<String> results = new NoAndNoOrNoEndsWithTranslator().translate(filter);
-        assertThat(results).hasSize(2).contains("( CONTAINS a a )", atIndex(0)).contains(
-                "( CONTAINS b b )", atIndex(1));
+        assertEquals(2, results.size());
+        assertEquals("( CONTAINS a a )", results.get(0));
+        assertEquals("( CONTAINS b b )", results.get(1));
 
         a = FilterBuilder.contains(AttributeBuilder.build("a", "a"));
         b = FilterBuilder.endsWith(AttributeBuilder.build("b", "b"));
@@ -488,13 +490,14 @@ public class FilterTranslatorTests {
         d = FilterBuilder.contains(AttributeBuilder.build("d", "d"));
         filter = FilterBuilder.and(FilterBuilder.or(a, b), FilterBuilder.or(c, d));
         results = new NoAndNoOrNoEndsWithTranslator().translate(filter);
-        assertThat(results).hasSize(2).contains("( CONTAINS c c )", atIndex(0)).contains(
-                "( CONTAINS d d )", atIndex(1));
+        assertEquals(2, results.size());
+        assertEquals("( CONTAINS c c )", results.get(0));
+        assertEquals("( CONTAINS d d )", results.get(1));
     }
 
     private static String translateSingle(AbstractFilterTranslator<String> translator, Filter filter) {
         List<String> translated = translator.translate(filter);
-        assertEquals(translated.size(), 1);
+        assertEquals(1, translated.size());
         return translated.get(0);
     }
 }

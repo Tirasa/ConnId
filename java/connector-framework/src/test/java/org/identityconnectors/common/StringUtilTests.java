@@ -19,12 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,10 +33,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-
-import org.testng.annotations.Test;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
 
 public class StringUtilTests {
+
     // ========================================================================
     // JUnit Tests
     // ========================================================================
@@ -90,14 +92,13 @@ public class StringUtilTests {
     @Test
     public void testStripXmlAttribute() {
         final String DATA[][] = {
-                // source, attr, result
-                { null, null, null },
-                { "attr='fads'", "attr", "" },
-                { "at1='fasd' at1=''", "at1", "" }
+            // source, attr, result
+            { null, null, null },
+            { "attr='fads'", "attr", "" },
+            { "at1='fasd' at1=''", "at1", "" }
         };
-        String tst = null;
         for (int i = 0; i < DATA.length; i++) {
-            tst = StringUtil.stripXmlAttribute(DATA[i][0], DATA[i][1]);
+            String tst = StringUtil.stripXmlAttribute(DATA[i][0], DATA[i][1]);
             assertEquals(tst, DATA[i][2]);
         }
     }
@@ -108,9 +109,9 @@ public class StringUtilTests {
     @Test
     public void testStripNewlines() {
         final String[][] TESTS = new String[][] { { null, null },
-                { "afdslf\n", "afdslf" }, { "afds\nfadkfj", "afdsfadkfj" },
-                { "afds \nfadkfj", "afds fadkfj" },
-                { "afds\n fadkfj", "afds fadkfj" } };
+        { "afdslf\n", "afdslf" }, { "afds\nfadkfj", "afdsfadkfj" },
+        { "afds \nfadkfj", "afds fadkfj" },
+        { "afds\n fadkfj", "afds fadkfj" } };
         String tmp;
         for (String[] data : TESTS) {
             tmp = StringUtil.stripNewlines(data[0]);
@@ -123,18 +124,17 @@ public class StringUtilTests {
     @Test
     public void testStripXmlComments() {
         final String DATA[][] = {
-                // test data -> result
-                { null, null }, { "<!--test1-->", "" },
-                { "test data", "test data" },
-                { "<!--test data", "<!--test data" },
-                { "test data-->", "test data-->" },
-                { "test data <!-- fasdkfj -->", "test data " },
-                { "<!-- fasdkfj --> test data", " test data" },
-                { "<!-- fasdkfj --> test data<!-- fadsom-->", " test data" } };
+            // test data -> result
+            { null, null }, { "<!--test1-->", "" },
+            { "test data", "test data" },
+            { "<!--test data", "<!--test data" },
+            { "test data-->", "test data-->" },
+            { "test data <!-- fasdkfj -->", "test data " },
+            { "<!-- fasdkfj --> test data", " test data" },
+            { "<!-- fasdkfj --> test data<!-- fadsom-->", " test data" } };
 
-        String tst = null;
         for (int i = 0; i < DATA.length; i++) {
-            tst = StringUtil.stripXmlComments(DATA[i][0]);
+            String tst = StringUtil.stripXmlComments(DATA[i][0]);
             assertEquals(tst, DATA[i][1]);
         }
     }
@@ -188,7 +188,7 @@ public class StringUtilTests {
     @Test
     public void testReplaceVariables() {
         // test using the following template..
-        Map<String, String> vars = new HashMap<String, String>();
+        Map<String, String> vars = new HashMap<>();
         vars.put(PAUSE_TEXT, "PAUSE");
         vars.put(REFRESH_TIME, "5");
         vars.put(RESUME_TEXT, "RESUME");
@@ -199,7 +199,7 @@ public class StringUtilTests {
             String key = entry.getKey();
             String value = entry.getValue();
             tmpl = StringUtil.replaceVariable(tmpl, key, value);
-            assertTrue(tmpl.indexOf(value) != -1);
+            assertTrue(tmpl.contains(value));
         }
     }
 
@@ -227,7 +227,7 @@ public class StringUtilTests {
     @Test
     public void testParseLine() {
         List<Object> values;
-        values = CollectionUtil.<Object> newReadOnlyList("bob", "george", 4, 23, 230948);
+        values = CollectionUtil.<Object>newReadOnlyList("bob", "george", 4, 23, 230948);
         parseLineTest(TEXTQ, FEILDD, values);
 
     }
@@ -283,16 +283,12 @@ public class StringUtilTests {
      * Converts a {@link List} of objects to a {@link List} of {@link String}s.
      */
     static List<String> toStringList(final List<Object> list) {
-        List<String> ret = new ArrayList<String>();
-        for (Object o : list) {
-            ret.add(o.toString());
-        }
-        return ret;
+        return list.stream().map(Object::toString).collect(Collectors.toList());
     }
 
     static List<Object> randomList(final Random r, final int size, final char[] invalid,
             final char valid) {
-        List<Object> ret = new ArrayList<Object>();
+        List<Object> ret = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             final Object add;
             if (r.nextBoolean()) {
@@ -327,9 +323,9 @@ public class StringUtilTests {
     }
 
     private static final String PROP_TEST[] = {
-      "# Some comment",
-      "prop1=SomeProp",
-      "prop2=OtherProp"
+        "# Some comment",
+        "prop1=SomeProp",
+        "prop2=OtherProp"
     };
 
     @Test

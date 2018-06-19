@@ -20,11 +20,12 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,28 +41,25 @@ import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
 import org.identityconnectors.framework.common.objects.ScriptContext;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
-
+import org.junit.jupiter.api.Test;
 
 /**
  * Contract test of {@link ScriptOnResourceApiOp} operation.
  *
  * @author Zdenek Louzensky
  */
-@Test(testName =  ScriptOnResourceApiOpTests.TEST_NAME)
 public class ScriptOnResourceApiOpTests extends ContractTestBase {
 
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
+    private static final Log LOG = Log.getLog(ScriptOnResourceApiOpTests.class);
 
-    public static final String TEST_NAME="ScriptOnResource";
+    public static final String TEST_NAME = "ScriptOnResource";
+
     private static final String LANGUAGE_PROP_PREFIX = "language";
+
     private static final String SCRIPT_PROP_PREFIX = "script";
+
     private static final String ARGUMENTS_PROP_PREFIX = "arguments";
+
     private static final String RESULT_PROP_PREFIX = "result";
 
     /**
@@ -69,12 +67,11 @@ public class ScriptOnResourceApiOpTests extends ContractTestBase {
      */
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         // list of required operations by this test:
         s.add(ScriptOnResourceApiOp.class);
         return s;
     }
-
 
     /**
      * Tests running a script with correct values from property file.
@@ -102,17 +99,16 @@ public class ScriptOnResourceApiOpTests extends ContractTestBase {
                         getOperationOptionsByOp(null, ScriptOnResourceApiOp.class));
 
                 // check that returned result was expected
-                final String MSG = "Script result was unexpected, expected: '%s', returned: '%s'.";
-                assertEquals(expResult, result,String.format(MSG, expResult, result));
+                final String msg = "Script result was unexpected, expected: '%s', returned: '%s'.";
+                assertEquals(expResult, result, String.format(msg, expResult, result));
             } catch (ObjectNotFoundException ex) {
                 // ok - properties were not provided - test is skipped
-                logger.info("Test properties not set, skipping the test " + TEST_NAME);
+                LOG.info("Test properties not set, skipping the test " + TEST_NAME);
             }
-        }
-        else {
-            logger.info("---------------------------------");
-            logger.info("Skipping test ''testRunScript''.");
-            logger.info("---------------------------------");
+        } else {
+            LOG.info("---------------------------------");
+            LOG.info("Skipping test ''testRunScript''.");
+            LOG.info("---------------------------------");
         }
     }
 
@@ -125,17 +121,15 @@ public class ScriptOnResourceApiOpTests extends ContractTestBase {
         if (ConnectorHelper.operationsSupported(getConnectorFacade(), getAPIOperations())) {
             try {
                 getConnectorFacade().runScriptOnResource(
-                        new ScriptContext("NONEXISTING LANGUAGE", "script",
-                                new HashMap<String, Object>()), null);
+                        new ScriptContext("NONEXISTING LANGUAGE", "script", new HashMap<>()), null);
                 fail("Script language is not supported, should throw an exception.");
             } catch (RuntimeException ex) {
                 // expected
             }
-        }
-        else {
-            logger.info("----------------------------------------------------");
-            logger.info("Skipping test ''testRunScriptFailUnknownLanguage''.");
-            logger.info("----------------------------------------------------");
+        } else {
+            LOG.info("----------------------------------------------------");
+            LOG.info("Skipping test ''testRunScriptFailUnknownLanguage''.");
+            LOG.info("----------------------------------------------------");
         }
     }
 
@@ -147,23 +141,18 @@ public class ScriptOnResourceApiOpTests extends ContractTestBase {
         // run test only in case operation is supported
         if (ConnectorHelper.operationsSupported(getConnectorFacade(), getAPIOperations())) {
             try {
-                getConnectorFacade().runScriptOnResource(
-                        new ScriptContext("LANGUAGE", "", new HashMap<String, Object>()), null);
+                getConnectorFacade().runScriptOnResource(new ScriptContext("LANGUAGE", "", new HashMap<>()), null);
                 fail("Script text is empty and script language is not probably supported, should throw an exception.");
             } catch (RuntimeException ex) {
                 // expected
             }
-        }
-        else {
-            logger.info("----------------------------------------------------");
-            logger.info("Skipping test ''testRunScriptFailEmptyScriptText''.");
-            logger.info("----------------------------------------------------");
+        } else {
+            LOG.info("----------------------------------------------------");
+            LOG.info("Skipping test ''testRunScriptFailEmptyScriptText''.");
+            LOG.info("----------------------------------------------------");
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public OperationOptions getOperationOptionsByOp(ObjectClass objectClass, Class<? extends APIOperation> clazz) {
         if (clazz.equals(ScriptOnResourceApiOp.class)) {
@@ -172,14 +161,16 @@ public class ScriptOnResourceApiOpTests extends ContractTestBase {
             // OperationOptions RUN_AS_USER
             final String user = (String) getProperty(OperationOptions.OP_RUN_AS_USER);
             if (user != null) {
-                logger.info("Using OperationOptions: ''"+OperationOptions.OP_RUN_AS_USER+"'' value: ''"+user+"''.");
+                LOG.info("Using OperationOptions: ''"
+                        + OperationOptions.OP_RUN_AS_USER + "'' value: ''" + user + "''.");
                 builder.setRunAsUser(user);
             }
 
             // OperationOptions RUN_WITH_PASSWORD
             final GuardedString password = (GuardedString) getProperty(OperationOptions.OP_RUN_WITH_PASSWORD);
             if (password != null) {
-                logger.info("Using OperationOptions: ''"+OperationOptions.OP_RUN_WITH_PASSWORD+"'' value: ''"+password+"''.");
+                LOG.info("Using OperationOptions: ''" + OperationOptions.OP_RUN_WITH_PASSWORD + "'' value: ''"
+                        + password + "''.");
                 builder.setRunWithPassword(password);
             }
 
@@ -191,6 +182,7 @@ public class ScriptOnResourceApiOpTests extends ContractTestBase {
 
     /**
      * Returns string property value.
+     *
      * @param name Property name.
      * @return null in case property definition not found.
      */
@@ -198,12 +190,11 @@ public class ScriptOnResourceApiOpTests extends ContractTestBase {
         Object value = null;
         try {
             value = getDataProvider().getTestSuiteAttribute(name, TEST_NAME);
-            logger.info("Property ''"+name+"'' value ''"+value+"''.");
+            LOG.info("Property ''" + name + "'' value ''" + value + "''.");
         } catch (ObjectNotFoundException ex) {
             // ok
         }
 
         return value;
     }
-
 }

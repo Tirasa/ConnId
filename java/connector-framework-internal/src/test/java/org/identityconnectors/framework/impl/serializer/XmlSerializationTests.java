@@ -19,37 +19,34 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.atIndex;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.identityconnectors.framework.common.serializer.ObjectSerializerFactory;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
-import org.identityconnectors.framework.common.serializer.XmlObjectResultsHandler;
 import org.identityconnectors.framework.common.serializer.XmlObjectSerializer;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
 public class XmlSerializationTests extends ObjectSerializationTests {
+
     @Override
     protected Object cloneObject(Object o) {
         String xml = SerializerUtil.serializeXmlObject(o, true);
-        System.out.println(xml);
         o = SerializerUtil.deserializeXmlObject(xml, true);
 
         // pass through a list to make sure dtd correctly defines all xml
         // objects
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         list.add(o);
         xml = SerializerUtil.serializeXmlObject(list, true);
-        System.out.println(xml);
         @SuppressWarnings("unchecked")
         List<Object> rv = (List<Object>) SerializerUtil.deserializeXmlObject(xml, true);
         return rv.get(0);
@@ -64,18 +61,14 @@ public class XmlSerializationTests extends ObjectSerializationTests {
         ser.writeObject("bar");
         ser.close(true);
         String xml = sw.toString();
-        System.out.println(xml);
-        final List<Object> results = new ArrayList<Object>();
-        factory.deserializeXmlStream(new InputSource(new StringReader(xml)),
-                new XmlObjectResultsHandler() {
+        final List<Object> results = new ArrayList<>();
+        factory.deserializeXmlStream(new InputSource(new StringReader(xml)), (Object o) -> {
+            results.add(o);
+            return true;
+        }, true);
 
-                    @Override
-                    public boolean handle(Object o) {
-                        results.add(o);
-                        return true;
-                    }
-                }, true);
-
-        assertThat(results).hasSize(2).contains("foo", atIndex(0)).contains("bar", atIndex(1));
+        assertEquals(2, results.size());
+        assertEquals("foo", results.get(0));
+        assertEquals("bar", results.get(1));
     }
 }

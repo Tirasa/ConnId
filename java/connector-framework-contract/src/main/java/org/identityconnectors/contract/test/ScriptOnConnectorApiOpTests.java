@@ -20,45 +20,41 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.contract.exceptions.ObjectNotFoundException;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
 import org.identityconnectors.framework.common.objects.ScriptContext;
-import org.testng.Reporter;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
-
+import org.junit.jupiter.api.Test;
 
 /**
  * Contract test of {@link ScriptOnConnectorApiOp} operation.
  *
  * @author Zdenek Louzensky
  */
-@Test(testName =  ScriptOnConnectorApiOpTests.TEST_NAME)
 public class ScriptOnConnectorApiOpTests extends ContractTestBase {
 
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
+    private static final Log LOG = Log.getLog(ScriptOnConnectorApiOpTests.class);
 
-    public static final String TEST_NAME="ScriptOnConnector";
+    public static final String TEST_NAME = "ScriptOnConnector";
+
     private static final String LANGUAGE_PROP_PREFIX = "language";
+
     private static final String SCRIPT_PROP_PREFIX = "script";
+
     private static final String ARGUMENTS_PROP_PREFIX = "arguments";
+
     private static final String RESULT_PROP_PREFIX = "result";
 
     /**
@@ -66,7 +62,7 @@ public class ScriptOnConnectorApiOpTests extends ContractTestBase {
      */
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         // list of required operations by this test:
         s.add(ScriptOnConnectorApiOp.class);
         return s;
@@ -98,17 +94,16 @@ public class ScriptOnConnectorApiOpTests extends ContractTestBase {
                         getOperationOptionsByOp(null, ScriptOnConnectorApiOp.class));
 
                 // check that returned result was expected
-                final String MSG = "Script result was unexpected, expected: '%s', returned: '%s'.";
-                assertEquals(expResult, result,String.format(MSG, expResult, result));
+                final String msg = "Script result was unexpected, expected: '%s', returned: '%s'.";
+                assertEquals(expResult, result, String.format(msg, expResult, result));
             } catch (ObjectNotFoundException ex) {
                 // ok - properties were not provided - test is skipped
-                logger.info("Test properties not set, skipping the test " + TEST_NAME);
+                LOG.info("Test properties not set, skipping the test " + TEST_NAME);
             }
-        }
-        else {
-            logger.info("---------------------------------");
-            logger.info("Skipping test ''testRunScript''.");
-            logger.info("---------------------------------");
+        } else {
+            LOG.info("---------------------------------");
+            LOG.info("Skipping test ''testRunScript''.");
+            LOG.info("---------------------------------");
         }
     }
 
@@ -121,17 +116,15 @@ public class ScriptOnConnectorApiOpTests extends ContractTestBase {
         if (ConnectorHelper.operationsSupported(getConnectorFacade(), getAPIOperations())) {
             try {
                 getConnectorFacade().runScriptOnConnector(
-                        new ScriptContext("NONEXISTING LANGUAGE", "script",
-                                new HashMap<String, Object>()), null);
+                        new ScriptContext("NONEXISTING LANGUAGE", "script", new HashMap<>()), null);
                 fail("Script language is not supported, should throw an exception.");
             } catch (RuntimeException ex) {
                 // expected
             }
-        }
-        else {
-            logger.info("----------------------------------------------------");
-            logger.info("Skipping test ''testRunScriptFailUnknownLanguage''.");
-            logger.info("----------------------------------------------------");
+        } else {
+            LOG.info("----------------------------------------------------");
+            LOG.info("Skipping test ''testRunScriptFailUnknownLanguage''.");
+            LOG.info("----------------------------------------------------");
         }
     }
 
@@ -149,14 +142,10 @@ public class ScriptOnConnectorApiOpTests extends ContractTestBase {
             } catch (RuntimeException ex) {
                 // expected
             }
-        }
-        else {
-            logger.info("----------------------------------------------------");
-            logger.info("Skipping test ''testRunScriptFailEmptyScriptText''.");
-            logger.info("----------------------------------------------------");
+        } else {
+            LOG.info("----------------------------------------------------");
+            LOG.info("Skipping test ''testRunScriptFailEmptyScriptText''.");
+            LOG.info("----------------------------------------------------");
         }
     }
-
-
-
 }

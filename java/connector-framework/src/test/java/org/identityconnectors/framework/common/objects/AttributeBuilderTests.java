@@ -20,22 +20,24 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-
+import org.junit.jupiter.api.Test;
 
 public class AttributeBuilderTests {
 
@@ -57,7 +59,7 @@ public class AttributeBuilderTests {
         bld.addValue(false);
         Attribute attr3 = bld.build();
 
-        List<Object> expected = new ArrayList<Object>();
+        List<Object> expected = new ArrayList<>();
         expected.add(true);
         expected.add(false);
         assertEquals(attr1.getValue(), expected);
@@ -65,94 +67,103 @@ public class AttributeBuilderTests {
         testAttributes(attr1, attr2, attr3);
     }
 
-	void testAttributes(Attribute attr1, Attribute attr2, Attribute attr3) {
+    void testAttributes(Attribute attr1, Attribute attr2, Attribute attr3) {
         assertEquals(attr1, attr2);
         assertEquals(attr1, attr1);
-        assertFalse(attr1.equals(null));
+        assertFalse(attr1 == null);
 
-        Set<Attribute> set = new HashSet<Attribute>();
+        Set<Attribute> set = new HashSet<>();
         set.add(attr1);
         set.add(attr2);
         set.add(attr3);
         assertTrue(set.size() == 2);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void uidFromBuilderInteger() {
-        AttributeBuilder.build(Uid.NAME, 1);
+        assertThrows(IllegalArgumentException.class, () -> {
+            AttributeBuilder.build(Uid.NAME, 1);
+        });
     }
-    @Test(expectedExceptions = IllegalArgumentException.class)
+
     public void uidFromBuilderLong() {
-        AttributeBuilder.build(Uid.NAME, 1L);
+        assertThrows(IllegalArgumentException.class, () -> {
+            AttributeBuilder.build(Uid.NAME, 1L);
+        });
     }
-    @Test(expectedExceptions = IllegalArgumentException.class)
+
     public void uidFromBuilderDouble() {
-        AttributeBuilder.build(Uid.NAME, 1.0);
+        assertThrows(IllegalArgumentException.class, () -> {
+            AttributeBuilder.build(Uid.NAME, 1.0);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void nameFromBuilder() {
-        // basic name tests..
-        Name actual = (Name) AttributeBuilder.build(Name.NAME, "daf");
-        assertEquals(actual, new Name("daf"));
-        AttributeBuilder bld = new AttributeBuilder();
-        bld.setName(Name.NAME);
-        bld.addValue("stuff");
-        actual = (Name) bld.build();
-        assertEquals(actual, new Name("stuff"));
-        // throw the exception at the end..
-        AttributeBuilder.build(Name.NAME);
+        assertThrows(IllegalArgumentException.class, () -> {
+            // basic name tests..
+            Name actual = (Name) AttributeBuilder.build(Name.NAME, "daf");
+            assertEquals(actual, new Name("daf"));
+            AttributeBuilder bld = new AttributeBuilder();
+            bld.setName(Name.NAME);
+            bld.addValue("stuff");
+            actual = (Name) bld.build();
+            assertEquals(actual, new Name("stuff"));
+            // throw the exception at the end..
+            AttributeBuilder.build(Name.NAME);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void mapNullAttribute() {
-        HashMap<Object, Object> map = new HashMap<Object, Object>();
-        map.put(null, "NOK");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Map<Object, Object> map = new HashMap<>();
+            map.put(null, "NOK");
 
-        AttributeBuilder.build("map", map);
+            AttributeBuilder.build("map", map);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void mapIntegerAttribute() {
-        HashMap<Object, Object> map = new HashMap<Object, Object>();
-        map.put(1, "NOK");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Map<Object, Object> map = new HashMap<>();
+            map.put(1, "NOK");
 
-        AttributeBuilder bld = new AttributeBuilder();
-        bld.addValue(map);
+            AttributeBuilder bld = new AttributeBuilder();
+            bld.addValue(map);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     @SuppressWarnings("unchecked")
     public void mapShortAttribute() {
-        HashMap<Object, Object> map1 = new HashMap<Object, Object>();
-        map1.put("string", "NOK");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Map<Object, Object> map1 = new HashMap<>();
+            map1.put("string", "NOK");
 
-        HashMap<Object, Object> map2 = new HashMap<Object, Object>();
-        map2.put("map1", map1);
-        map2.put("list", Arrays.asList(1, 2, 3, new Short("5")));
+            Map<Object, Object> map2 = new HashMap<>();
+            map2.put("map1", map1);
+            map2.put("list", Arrays.asList(1, 2, 3, Short.valueOf("5")));
 
-        HashMap<Object, Object> map3 = new HashMap<Object, Object>();
-        map3.put("map2", map2);
+            Map<Object, Object> map3 = new HashMap<>();
+            map3.put("map2", map2);
 
-        HashMap<Object, Object> map4 = new HashMap<Object, Object>();
-        map4.put("map3", map3);
+            Map<Object, Object> map4 = new HashMap<>();
+            map4.put("map3", map3);
 
-        AttributeBuilder.build("map", map4);
+            AttributeBuilder.build("map", map4);
+        });
     }
 
     @Test
     public void mapAttribute() {
-        HashMap<Object, Object> map1 = new HashMap<Object, Object>();
+        Map<Object, Object> map1 = new HashMap<>();
         map1.put("string", "OK");
 
-        HashMap<Object, Object> map2 = new HashMap<Object, Object>();
+        Map<Object, Object> map2 = new HashMap<>();
         map2.put("map1", map1);
         map2.put("list", Arrays.asList(1, 2, 3));
 
-        HashMap<Object, Object> map3 = new HashMap<Object, Object>();
+        Map<Object, Object> map3 = new HashMap<>();
         map3.put("map2", map2);
 
-        HashMap<Object, Object> map4 = new HashMap<Object, Object>();
+        Map<Object, Object> map4 = new HashMap<>();
         map4.put("map3", map3);
 
         AttributeBuilder.build("map", map4);

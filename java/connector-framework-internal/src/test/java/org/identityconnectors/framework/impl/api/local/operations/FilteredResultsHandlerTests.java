@@ -19,11 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 ForgeRock AS. 
+ * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
@@ -32,9 +34,10 @@ import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterVisitor;
 import org.identityconnectors.framework.impl.api.Searches.ConnectorObjectSearch;
 import org.identityconnectors.test.common.ToListResultsHandler;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class FilteredResultsHandlerTests {
+
     @Test
     public void withPassThruFilter() {
 
@@ -100,10 +103,10 @@ public class FilteredResultsHandlerTests {
         assertEquals(actual - EXPECTED_LOW, EXPECTED_HIGH - EXPECTED_LOW);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void nullProducer() {
-        new FilteredResultsHandler(null, new RangeFilter(0, 100));
-
+        assertThrows(IllegalArgumentException.class, () -> {
+            new FilteredResultsHandler(null, new RangeFilter(0, 100));
+        });
     }
 
     /**
@@ -111,6 +114,7 @@ public class FilteredResultsHandlerTests {
      * filter the producer output.
      */
     static class RangeFilter implements Filter {
+
         final long low, high;
 
         public RangeFilter(long low, long high) {
@@ -131,6 +135,7 @@ public class FilteredResultsHandlerTests {
             return ret;
         }
 
+        @Override
         public <R, P> R accept(FilterVisitor<R, P> v, P p) {
             return v.visitExtendedFilter(p, this);
         }

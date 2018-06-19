@@ -19,11 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class EqualsHashCodeBuilderTests {
 
@@ -55,7 +56,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -76,7 +77,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -97,7 +98,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -118,7 +119,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -139,7 +140,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -160,7 +161,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -181,7 +182,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -202,7 +203,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -224,7 +225,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -255,7 +256,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -283,7 +284,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -311,7 +312,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -339,7 +340,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -367,7 +368,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -395,7 +396,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -423,7 +424,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -451,7 +452,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -479,7 +480,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -665,16 +666,16 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
     }
 
     @Test
     public void testList() {
-        List<String> o1 = new ArrayList<String>();
-        List<String> o2 = new ArrayList<String>();
-        List<String> o3 = new ArrayList<String>();
+        List<String> o1 = new ArrayList<>();
+        List<String> o2 = new ArrayList<>();
+        List<String> o3 = new ArrayList<>();
         o1.add("something");
         o2.add("something");
         o3.add("somethingelse");
@@ -688,7 +689,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -696,9 +697,9 @@ public class EqualsHashCodeBuilderTests {
 
     @Test
     public void testSet() {
-        Set<String> o1 = new HashSet<String>();
-        Set<String> o2 = new HashSet<String>();
-        Set<String> o3 = new HashSet<String>();
+        Set<String> o1 = new HashSet<>();
+        Set<String> o2 = new HashSet<>();
+        Set<String> o3 = new HashSet<>();
         o1.add("something");
         o2.add("something");
         o3.add("somethingelse");
@@ -712,7 +713,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -723,7 +724,7 @@ public class EqualsHashCodeBuilderTests {
         EqualsHashCodeBuilder eq = new EqualsHashCodeBuilder();
         try {
             eq.append(Collections.unmodifiableCollection(new ArrayList<String>()));
-            Assert.fail("Should fail because Collections are not supported!");
+            fail("Should fail because Collections are not supported!");
         } catch (IllegalArgumentException e) {
             // success
         }
@@ -732,7 +733,6 @@ public class EqualsHashCodeBuilderTests {
     // =======================================================================
     // Added 'x' to helper methods to prevent eclipse from warning..
     // =======================================================================
-
     //
     // Helper Methods
     //
@@ -747,7 +747,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -756,7 +756,7 @@ public class EqualsHashCodeBuilderTests {
     void xtestHashCode(EqualsHashCodeBuilder eq1, EqualsHashCodeBuilder eq2,
             EqualsHashCodeBuilder eq3) {
         // test hash code part...
-        Set<EqualsHashCodeBuilder> set = new HashSet<EqualsHashCodeBuilder>();
+        Set<EqualsHashCodeBuilder> set = new HashSet<>();
         set.add(eq1);
         set.add(eq2);
         set.add(eq3);
@@ -764,9 +764,9 @@ public class EqualsHashCodeBuilderTests {
     }
 
     void xtestEqualsBuilderHashCode() {
-        Map<String, String> o1 = new HashMap<String, String>();
-        Map<String, String> o2 = new HashMap<String, String>();
-        Map<String, String> o3 = new HashMap<String, String>();
+        Map<String, String> o1 = new HashMap<>();
+        Map<String, String> o2 = new HashMap<>();
+        Map<String, String> o3 = new HashMap<>();
 
         EqualsHashCodeBuilder eq1 = new EqualsHashCodeBuilder();
         EqualsHashCodeBuilder eq2 = new EqualsHashCodeBuilder();
@@ -778,7 +778,7 @@ public class EqualsHashCodeBuilderTests {
         assertTrue(eq1.equals(eq1));
         assertTrue(eq1.equals(eq2));
         assertTrue(eq2.equals(eq1));
-        assertFalse(eq1.equals(null));
+        assertFalse(eq1 == null);
         assertFalse(eq1.equals(eq3));
         assertFalse(eq3.equals(eq1));
         xtestHashCode(eq1, eq2, eq3);
@@ -804,12 +804,16 @@ public class EqualsHashCodeBuilderTests {
     // ========================================================================
     // Helper Classes
     // ========================================================================
-
     public static class TestBean implements Cloneable {
+
         private String arg1;
+
         private int arg2;
+
         private long arg3;
+
         private double arg4;
+
         private byte arg5;
 
         public TestBean(Random r) {
@@ -869,7 +873,9 @@ public class EqualsHashCodeBuilderTests {
     }
 
     static class TestObject {
+
         static final int SEED = 19;
+
         private int a;
 
         public TestObject() {
@@ -908,6 +914,7 @@ public class EqualsHashCodeBuilderTests {
     }
 
     static class TestSubObject extends TestObject {
+
         private int b;
 
         public TestSubObject() {
@@ -948,13 +955,15 @@ public class EqualsHashCodeBuilderTests {
     }
 
     static class TestEmptySubObject extends TestObject {
+
         public TestEmptySubObject(int a) {
             super(a);
         }
     }
 
     public static class TestACanEqualB {
-        private int a;
+
+        private final int a;
 
         public TestACanEqualB(int a) {
             this.a = a;
@@ -987,7 +996,8 @@ public class EqualsHashCodeBuilderTests {
     }
 
     public static class TestBCanEqualA {
-        private int b;
+
+        private final int b;
 
         public TestBCanEqualA(int b) {
             this.b = b;

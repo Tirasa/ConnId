@@ -19,18 +19,19 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.objects.Attribute;
@@ -38,60 +39,66 @@ import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing for the merging of the various attribute during update.
  */
 public class UpdateImplTests {
 
-    @Test(expectedExceptions = NullPointerException.class)
     public void validateUidArg() {
-        UpdateImpl.validateInput(ObjectClass.ACCOUNT, null, new HashSet<Attribute>(), true);
+        assertThrows(NullPointerException.class, () -> {
+            UpdateImpl.validateInput(ObjectClass.ACCOUNT, null, new HashSet<>(), true);
+        });
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
     public void validateObjectClassArg() {
-        UpdateImpl.validateInput(null, new Uid("foo"), new HashSet<Attribute>(), true);
+        assertThrows(NullPointerException.class, () -> {
+            UpdateImpl.validateInput(null, new Uid("foo"), new HashSet<>(), true);
+        });
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
     public void validateAttrsArg() {
-        UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), null, true);
+        assertThrows(NullPointerException.class, () -> {
+            UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), null, true);
+        });
     }
 
-    @Test(expectedExceptions = InvalidAttributeValueException.class)
     public void validateUidAttribute() {
-        Set<Attribute> attrs = new HashSet<Attribute>();
-        attrs.add(new Uid("foo"));
-        UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), attrs, true);
+        assertThrows(InvalidAttributeValueException.class, () -> {
+            Set<Attribute> attrs = new HashSet<>();
+            attrs.add(new Uid("foo"));
+            UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), attrs, true);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void validateAddWithNullAttribute() {
-        Set<Attribute> attrs = new HashSet<Attribute>();
-        attrs.add(AttributeBuilder.build("something"));
-        UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), attrs, true);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Set<Attribute> attrs = new HashSet<>();
+            attrs.add(AttributeBuilder.build("something"));
+            UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), attrs, true);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void validateAttemptToAddName() {
-        Set<Attribute> attrs = new HashSet<Attribute>();
-        attrs.add(new Name("fadf"));
-        UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), attrs, true);
+        assertThrows(NullPointerException.class, () -> {
+            Set<Attribute> attrs = new HashSet<>();
+            attrs.add(new Name("fadf"));
+            UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("foo"), attrs, true);
+        });
     }
 
     @Test
     public void validateAttemptToAddDeleteOperationalAttribute() {
         // list of all the operational attributes..
-        List<Attribute> list = new ArrayList<Attribute>();
+        List<Attribute> list = new ArrayList<>();
         list.add(AttributeBuilder.buildEnabled(false));
         list.add(AttributeBuilder.buildLockOut(true));
         list.add(AttributeBuilder.buildCurrentPassword("fadsf".toCharArray()));
         list.add(AttributeBuilder.buildPasswordExpirationDate(new Date()));
         list.add(AttributeBuilder.buildPassword("fadsf".toCharArray()));
-        for (Attribute attr : list) {
-            Set<Attribute> attrs = new HashSet<Attribute>();
+        list.forEach((attr) -> {
+            Set<Attribute> attrs = new HashSet<>();
             attrs.add(attr);
             try {
                 UpdateImpl.validateInput(ObjectClass.ACCOUNT, new Uid("1"), attrs, true);
@@ -99,16 +106,16 @@ public class UpdateImplTests {
             } catch (IllegalArgumentException e) {
                 // this is a good thing..
             }
-        }
+        });
     }
 
     @Test
     public void mergeAddAttribute() {
         UpdateImpl up = new UpdateImpl(null, null);
         Set<Attribute> actual;
-        Set<Attribute> base = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> expected = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> changeset = CollectionUtil.<Attribute> newSet();
+        Set<Attribute> base = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> expected = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> changeset = CollectionUtil.<Attribute>newSet();
         // attempt to add a value to an attribute..
         Attribute cattr = AttributeBuilder.build("abc", 2);
         changeset.add(cattr);
@@ -121,9 +128,9 @@ public class UpdateImplTests {
     public void mergeAddToExistingAttribute() {
         UpdateImpl up = new UpdateImpl(null, null);
         Set<Attribute> actual;
-        Set<Attribute> base = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> expected = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> changeset = CollectionUtil.<Attribute> newSet();
+        Set<Attribute> base = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> expected = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> changeset = CollectionUtil.<Attribute>newSet();
         // attempt to add a value to an attribute..
         Attribute battr = AttributeBuilder.build("abc", 1);
         Attribute cattr = AttributeBuilder.build("abc", 2);
@@ -138,9 +145,9 @@ public class UpdateImplTests {
     public void mergeDeleteNonExistentAttribute() {
         UpdateImpl up = new UpdateImpl(null, null);
         Set<Attribute> actual;
-        Set<Attribute> base = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> expected = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> changeset = CollectionUtil.<Attribute> newSet();
+        Set<Attribute> base = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> expected = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> changeset = CollectionUtil.<Attribute>newSet();
         // attempt to add a value to an attribute..
         Attribute cattr = AttributeBuilder.build("abc", 2);
         changeset.add(cattr);
@@ -152,9 +159,9 @@ public class UpdateImplTests {
     public void mergeDeleteToExistingAttribute() {
         UpdateImpl up = new UpdateImpl(null, null);
         Set<Attribute> actual;
-        Set<Attribute> base = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> expected = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> changeset = CollectionUtil.<Attribute> newSet();
+        Set<Attribute> base = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> expected = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> changeset = CollectionUtil.<Attribute>newSet();
         // attempt to add a value to an attribute..
         Attribute battr = AttributeBuilder.build("abc", 1, 2);
         Attribute cattr = AttributeBuilder.build("abc", 2);
@@ -169,9 +176,9 @@ public class UpdateImplTests {
     public void mergeDeleteToExistingAttributeCompletely() {
         UpdateImpl up = new UpdateImpl(null, null);
         Set<Attribute> actual;
-        Set<Attribute> base = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> expected = CollectionUtil.<Attribute> newSet();
-        Set<Attribute> changeset = CollectionUtil.<Attribute> newSet();
+        Set<Attribute> base = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> expected = CollectionUtil.<Attribute>newSet();
+        Set<Attribute> changeset = CollectionUtil.<Attribute>newSet();
         // attempt to add a value to an attribute..
         Attribute battr = AttributeBuilder.build("abc", 1, 2);
         Attribute cattr = AttributeBuilder.build("abc", 1, 2);
@@ -181,5 +188,4 @@ public class UpdateImplTests {
         actual = up.merge(changeset, base, false);
         assertEquals(actual, expected);
     }
-
 }

@@ -20,17 +20,17 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashSet;
 import java.util.Set;
-
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.api.operations.DeleteApiOp;
@@ -39,28 +39,24 @@ import org.identityconnectors.framework.common.exceptions.UnknownUidException;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Contract test of {@link DeleteApiOp}
  */
-@Test(testName =  DeleteApiOpTests.TEST_NAME)
 public class DeleteApiOpTests extends ObjectClassRunner {
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
-    public static final String TEST_NAME = "Delete";
 
+    private static final Log LOG = Log.getLog(DeleteApiOpTests.class);
+
+    public static final String TEST_NAME = "Delete";
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> requiredOps = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> requiredOps = new HashSet<>();
         // list of required operations by this test:
         requiredOps.add(DeleteApiOp.class);
         requiredOps.add(CreateApiOp.class);
@@ -79,18 +75,19 @@ public class DeleteApiOpTests extends ObjectClassRunner {
         try {
             // create something to delete - object class is always supported
             uid = ConnectorHelper.createObject(getConnectorFacade(), getDataProvider(),
-                    getObjectClassInfo(objectClass), getTestName(), 0, getOperationOptionsByOp(objectClass, DeleteApiOp.class));
+                    getObjectClassInfo(objectClass), getTestName(), 0, getOperationOptionsByOp(objectClass,
+                    DeleteApiOp.class));
 
             // The object should exist now
             obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
-            assertNotNull(obj,"Unable to perform delete test because object to be deleted cannot be created");
+            assertNotNull(obj, "Unable to perform delete test because object to be deleted cannot be created");
 
             // try to delete object
             getConnectorFacade().delete(objectClass, uid, getOperationOptionsByOp(objectClass, DeleteApiOp.class));
 
             // Try to find it now, it should be deleted
             obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
-            assertNull(obj,"Object wasn't deleted by delete.");
+            assertNull(obj, "Object wasn't deleted by delete.");
 
         } finally {
             // try to delete if previous deletes failed
@@ -102,7 +99,8 @@ public class DeleteApiOpTests extends ObjectClassRunner {
     /**
      * Tests that delete throws {@link UnknownUidException} when object is deleted for the second time.
      */
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
+    @ParameterizedTest
+    @MethodSource("objectClasses")
     public void testDeleteThrowUnknownUid(ObjectClass objectClass) {
         // run the contract test only if delete is supported
         if (ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass, getAPIOperations())) {
@@ -111,33 +109,31 @@ public class DeleteApiOpTests extends ObjectClassRunner {
             try {
                 // create something to delete - object class is always supported
                 uid = ConnectorHelper.createObject(getConnectorFacade(), getDataProvider(),
-                        getObjectClassInfo(objectClass), getTestName(), 1, getOperationOptionsByOp(objectClass, DeleteApiOp.class));
+                        getObjectClassInfo(objectClass), getTestName(), 1, getOperationOptionsByOp(objectClass,
+                        DeleteApiOp.class));
 
                 // delete for the first time
                 getConnectorFacade().delete(objectClass, uid, getOperationOptionsByOp(objectClass, DeleteApiOp.class));
 
                 try {
                     // delete for the second time
-                    getConnectorFacade().delete(objectClass, uid, getOperationOptionsByOp(objectClass, DeleteApiOp.class));
+                    getConnectorFacade().delete(objectClass, uid,
+                            getOperationOptionsByOp(objectClass, DeleteApiOp.class));
                     fail("Delete of previously deleted object should throw UnknownUidException.");
-                }
-                catch (UnknownUidException ex) {
+                } catch (UnknownUidException ex) {
                     // ok
                 }
-            }
-            finally {
+            } finally {
                 // try to delete if anything failed
                 ConnectorHelper.deleteObject(getConnectorFacade(), objectClass, uid, false,
                         getOperationOptionsByOp(objectClass, DeleteApiOp.class));
             }
-        }
-        else {
-            logger.info("----------------------------------------------------------------------------------------");
-            logger.info("Skipping test ''testDeleteThrowUnknownUid'' for object class ''"+objectClass+"''.");
-            logger.info("----------------------------------------------------------------------------------------");
+        } else {
+            LOG.info("----------------------------------------------------------------------------------------");
+            LOG.info("Skipping test ''testDeleteThrowUnknownUid'' for object class ''" + objectClass + "''.");
+            LOG.info("----------------------------------------------------------------------------------------");
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -146,5 +142,4 @@ public class DeleteApiOpTests extends ObjectClassRunner {
     public String getTestName() {
         return TEST_NAME;
     }
-
 }

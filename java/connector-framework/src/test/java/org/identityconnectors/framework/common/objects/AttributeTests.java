@@ -19,25 +19,25 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
 import static org.identityconnectors.framework.common.objects.AttributeBuilder.build;
 import static org.identityconnectors.framework.common.objects.LocaleTestUtil.resetLocaleCache;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeTests {
 
-    @BeforeMethod
+    @BeforeEach
     public void before() {
         resetLocaleCache();
     }
@@ -54,9 +54,9 @@ public class AttributeTests {
 
     @Test
     public void testArrays() {
-        List<byte[]> values1 = new ArrayList<byte[]>();
+        List<byte[]> values1 = new ArrayList<>();
         values1.add(new byte[] { 0, 1 });
-        List<byte[]> values2 = new ArrayList<byte[]>();
+        List<byte[]> values2 = new ArrayList<>();
         values2.add(new byte[] { 0, 1 });
         Attribute attribute1 = build("test", values1);
         Attribute attribute2 = build("test", values2);

@@ -19,32 +19,34 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
 import static org.identityconnectors.framework.common.objects.LocaleTestUtil.resetLocaleCache;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ObjectClassInfoTests {
 
-    @BeforeMethod
+    @BeforeEach
     public void before() {
         resetLocaleCache();
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testNoName() {
-        new ObjectClassInfo(ObjectClass.ACCOUNT_NAME, new HashSet<AttributeInfo>(), false, false);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new ObjectClassInfo(ObjectClass.ACCOUNT_NAME, new HashSet<>(), false, false);
+        });
     }
 
     @Test
@@ -54,20 +56,22 @@ public class ObjectClassInfoTests {
         assertTrue(map.containsKey(Name.NAME));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testDuplicate() {
-        ObjectClassInfoBuilder bld = new ObjectClassInfoBuilder();
-        bld.addAttributeInfo(AttributeInfoBuilder.build("bob"));
-        bld.addAttributeInfo(AttributeInfoBuilder.build("bob"));
+        assertThrows(IllegalArgumentException.class, () -> {
+            ObjectClassInfoBuilder bld = new ObjectClassInfoBuilder();
+            bld.addAttributeInfo(AttributeInfoBuilder.build("bob"));
+            bld.addAttributeInfo(AttributeInfoBuilder.build("bob"));
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testAllDuplicate() {
-        ObjectClassInfoBuilder bld = new ObjectClassInfoBuilder();
-        Set<AttributeInfo> set = new HashSet<AttributeInfo>();
-        set.add(AttributeInfoBuilder.build("bob"));
-        set.add(AttributeInfoBuilder.build("bob", int.class));
-        bld.addAllAttributeInfo(set);
+        assertThrows(IllegalArgumentException.class, () -> {
+            ObjectClassInfoBuilder bld = new ObjectClassInfoBuilder();
+            Set<AttributeInfo> set = new HashSet<>();
+            set.add(AttributeInfoBuilder.build("bob"));
+            set.add(AttributeInfoBuilder.build("bob", int.class));
+            bld.addAllAttributeInfo(set);
+        });
     }
 
     @Test

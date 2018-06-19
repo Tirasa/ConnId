@@ -20,12 +20,16 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -37,11 +41,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-
-
+import java.util.stream.Collectors;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.StringUtil;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.contract.data.DataProvider;
 import org.identityconnectors.contract.data.GroovyDataProvider;
@@ -70,7 +73,6 @@ import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ObjectClassInfo;
 import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncDeltaType;
@@ -79,10 +81,6 @@ import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
-import org.testng.Assert;
-import org.testng.Reporter;
-import org.testng.log4testng.Logger;
-
 
 /**
  * Class holding various helper methods used by contract test suite
@@ -92,12 +90,11 @@ import org.testng.log4testng.Logger;
  * @author Zdenek Louzensky
  */
 public class ConnectorHelper {
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
+
+    private static final Log LOG = Log.getLog(ConnectorHelper.class);
 
     private static final String JVM_ARG_DATA_PROVIDER = "data-provider";
+
     private static final Class<? extends DataProvider> DEFAULT_DATA_PROVIDER = GroovyDataProvider.class;
 
     public static DataProvider createDataProvider() {
@@ -109,19 +106,15 @@ public class ConnectorHelper {
                 dpClass = Class.forName(customDataProvider);
                 if (!DataProvider.class.isAssignableFrom(dpClass)) {
                     /*
-                     * The Class is not an instanceof DataProvider, so we cannot
-                     * use it.
+                     * The Class is not an instanceof DataProvider, so we cannot use it.
                      */
-                    StringBuilder msg = new StringBuilder("Class ").append(customDataProvider).append(
-                            " is not of type ").append(DataProvider.class.getName());
-                    Reporter.log(msg.toString());
-                    logger.info("Class "+customDataProvider+" is not assignable as DataProvider");
+                    LOG.info("Class " + customDataProvider + " is not assignable as DataProvider");
                     throw new Exception("Class " + customDataProvider + " is not of type "
                             + DataProvider.class.getName());
                 }
                 dp = (DataProvider) dpClass.newInstance();
             } else {
-                logger.info("DataProvider class not specified, using default ''"+DEFAULT_DATA_PROVIDER+"''.");
+                LOG.info("DataProvider class not specified, using default ''" + DEFAULT_DATA_PROVIDER + "''.");
                 dp = (DataProvider) DEFAULT_DATA_PROVIDER.newInstance();
             }
         } catch (Exception ex) {
@@ -154,61 +147,62 @@ public class ConnectorHelper {
      */
     private static ConnectorFacade createConnectorFacade(DataProvider dataProvider, final String propertyPrefix) {
         ConnectorInfoManager manager = getInfoManager(dataProvider);
-        Assert.assertNotNull(manager, "Manager can't be null, check configuration properties !");
+        assertNotNull(manager, "Manager can't be null, check configuration properties !");
 
-        APIConfiguration apiConfig = getDefaultConfigurationProperties(
-                dataProvider, manager);
+        APIConfiguration apiConfig = getDefaultConfigurationProperties(dataProvider, manager);
 
         ConfigurationProperties properties = apiConfig.getConfigurationProperties();
 
-        List<String> propertyNames=properties.getPropertyNames();
-        for(String propName : propertyNames) {
-            ConfigurationProperty prop =  properties.getProperty(propName);
-            logger.info("OldValue = " + propName + " = \'" +
-                    prop.getValue() + "\' type = \'" + prop.getType() + "\'");
+        List<String> propertyNames = properties.getPropertyNames();
+        for (String propName : propertyNames) {
+            ConfigurationProperty prop = properties.getProperty(propName);
+            LOG.info("OldValue = " + propName + " = \'" + prop.getValue() + "\' type = \'" + prop.getType() + "\'");
 
             try {
                 final String tmpPropName;
                 if (propertyPrefix != null) {
                     tmpPropName = propertyPrefix + "." + propName;
+                } else {
+                    tmpPropName = propName;
                 }
-                else tmpPropName = propName;
 
                 Object configObject = dataProvider.getConnectorAttribute(
                         tmpPropName);
 
                 if (configObject != null) {
-                    logger.info("Setting property ''"+propName+"'' to value ''"+configObject.toString()+"''");
+                    LOG.info("Setting property ''" + propName + "'' to value ''" + configObject.toString() + "''");
                     properties.setPropertyValue(propName, configObject);
                 } else {
-                    logger.warn(
-                            "No value found for connector property ''"+propName+"''");
+                    LOG.warn(
+                            "No value found for connector property ''" + propName + "''");
                 }
             } catch (ObjectNotFoundException ex) {
-                logger.info("Caught Object not found exception, propName: " + propName);
+                LOG.info("Caught Object not found exception, propName: " + propName);
             }
         }
 
-        logger.info("----------------------------------");
-        for(String propName : propertyNames) {
-            ConfigurationProperty prop =  properties.getProperty(propName);
-            logger.info(propName + " = \'" + prop.getValue() +
-                    "\' type = \'" + prop.getType() + "\'");
-        }
+        LOG.info("----------------------------------");
+        propertyNames.forEach((propName) -> {
+            ConfigurationProperty prop = properties.getProperty(propName);
+            LOG.info(propName + " = \'" + prop.getValue() + "\' type = \'" + prop.getType() + "\'");
+        });
 
         ConnectorFacade connector = ConnectorFacadeFactory.getInstance().newInstance(apiConfig);
-        Assert.assertNotNull(connector, "Unable to create connector");
+        assertNotNull(connector, "Unable to create connector");
 
         return connector;
     }
 
     /**
      * Creates connector facade with wrong configuration.
+     *
      * @param wrongPropertyMap wrong configuration
      */
-    public static ConnectorFacade createConnectorFacadeWithWrongConfiguration(DataProvider dataProvider, final Map<?,?> wrongPropertyMap) {
+    public static ConnectorFacade createConnectorFacadeWithWrongConfiguration(
+            DataProvider dataProvider, final Map<?, ?> wrongPropertyMap) {
+
         ConnectorInfoManager manager = getInfoManager(dataProvider);
-        Assert.assertNotNull(manager, "Manager can't be null, check configuration properties !");
+        assertNotNull(manager, "Manager can't be null, check configuration properties !");
 
         APIConfiguration apiConfig = getDefaultConfigurationProperties(
                 dataProvider, manager);
@@ -216,9 +210,9 @@ public class ConnectorHelper {
         ConfigurationProperties properties = apiConfig.getConfigurationProperties();
 
         List<String> propertyNames = properties.getPropertyNames();
-        for (String propName : propertyNames) {
+        propertyNames.forEach(propName -> {
             ConfigurationProperty prop = properties.getProperty(propName);
-            logger.info("OldValue = " + propName + " = \'" + prop.getValue()
+            LOG.info("OldValue = " + propName + " = \'" + prop.getValue()
                     + "\' type = \'" + prop.getType() + "\'");
 
             final Object wrongProp = wrongPropertyMap.get(propName);
@@ -229,25 +223,24 @@ public class ConnectorHelper {
                 Object setProperty = (!wrongPropertyMap.containsKey(propName)) ? dataProvider
                         .getConnectorAttribute(propName) : wrongProp;
 
-                logger.info("Setting property ''"+propName+"'' to value ''" +
-                        ((setProperty == null) ? "null" : setProperty.toString())+"''");
+                LOG.info("Setting property ''" + propName + "'' to value ''" + ((setProperty == null) ? "null"
+                        : setProperty.toString()) + "''");
 
                 properties.setPropertyValue(propName, setProperty);
-
             } catch (ObjectNotFoundException ex) {
                 // expected
             }
-        }
+        });
 
-        logger.info("--------------- NEW PROPERTIES -------------------");
-        for (String propName : propertyNames) {
+        LOG.info("--------------- NEW PROPERTIES -------------------");
+        propertyNames.forEach((propName) -> {
             ConfigurationProperty prop = properties.getProperty(propName);
-            logger.info(propName + " = \'" + prop.getValue() + "\' type = \'"
+            LOG.info(propName + " = \'" + prop.getValue() + "\' type = \'"
                     + prop.getType() + "\'");
-        }
+        });
 
         ConnectorFacade connector = ConnectorFacadeFactory.getInstance().newInstance(apiConfig);
-        Assert.assertNotNull(connector, "Unable to create connector");
+        assertNotNull(connector, "Unable to create connector");
 
         return connector;
     }
@@ -263,8 +256,8 @@ public class ConnectorHelper {
         if (connector.getSupportedOperations().contains(TestApiOp.class)) {
             connector.test();
         } else {
-            logger.warn("Unable to test validity of connection.  Connector does not suport the Test API. " +
-                    "Trying at least to test validity of configuration.");
+            LOG.warn("Unable to test validity of connection.  Connector does not suport the Test API. "
+                    + "Trying at least to test validity of configuration.");
             connector.validate();
         }
 
@@ -273,22 +266,20 @@ public class ConnectorHelper {
 
     /**
      * Performs search on connector facade and filters only searched object by its name.
+     *
      * @return found object
      */
     static ConnectorObject findObjectByName(ConnectorFacade connectorFacade,
             ObjectClass objClass, String name, OperationOptions opOptions) {
         Filter nameFilter = FilterBuilder.equalTo(new Name(name));
-        final List<ConnectorObject> foundObjects = new ArrayList<ConnectorObject>();
-        connectorFacade.search(objClass, nameFilter,
-                new ResultsHandler() {
-                    @Override
-                    public boolean handle(ConnectorObject obj) {
-                        foundObjects.add(obj);
-                        return false;
-                    }
-                }, opOptions);
-        if(foundObjects.size() > 0) {
-            Assert.assertEquals(foundObjects.size(),1, "Name should be unique, but found multiple objects with the same name");
+        final List<ConnectorObject> foundObjects = new ArrayList<>();
+        connectorFacade.search(objClass, nameFilter, (ConnectorObject obj) -> {
+            foundObjects.add(obj);
+            return false;
+        }, opOptions);
+        if (foundObjects.size() > 0) {
+            assertEquals(foundObjects.size(), 1,
+                    "Name should be unique, but found multiple objects with the same name");
         } else {
             return null;
         }
@@ -298,47 +289,46 @@ public class ConnectorHelper {
 
     /**
      * Performs search on connector facade with specified object class, filter and operation options.
+     *
      * @return list of found objects.
      */
-    public static List<ConnectorObject> search(ConnectorFacade connectorFacade, ObjectClass objClass, Filter filter, OperationOptions opOptions) {
-        final List<ConnectorObject> foundObjects = new ArrayList<ConnectorObject>();
-        connectorFacade.search(objClass, filter,
-                new ResultsHandler() {
-                    @Override
-                    public boolean handle(ConnectorObject obj) {
-                        foundObjects.add(obj);
-                        return true;
-                    }
-                }, opOptions);
+    public static List<ConnectorObject> search(
+            ConnectorFacade connectorFacade, ObjectClass objClass, Filter filter, OperationOptions opOptions) {
+
+        final List<ConnectorObject> foundObjects = new ArrayList<>();
+        connectorFacade.search(objClass, filter, (ConnectorObject obj) -> {
+            foundObjects.add(obj);
+            return true;
+        }, opOptions);
         return foundObjects;
     }
 
     /**
      * Performs search on connector facade with specified object class, filter and operation options.
+     *
      * @return Map of {@link Uid}s to {@link ConnectorObject}s that were found.
      */
-    public static Map<Uid, ConnectorObject> search2Map(ConnectorFacade connectorFacade, ObjectClass objClass, Filter filter, OperationOptions opOptions) {
-        final Map<Uid, ConnectorObject> foundObjects = new Hashtable<Uid, ConnectorObject>();
-        connectorFacade.search(objClass, filter,
-                new ResultsHandler() {
-                    @Override
-                    public boolean handle(ConnectorObject obj) {
-                        foundObjects.put(obj.getUid(), obj);
-                        return true;
-                    }
-                }, opOptions);
+    public static Map<Uid, ConnectorObject> search2Map(
+            ConnectorFacade connectorFacade, ObjectClass objClass, Filter filter, OperationOptions opOptions) {
+        final Map<Uid, ConnectorObject> foundObjects = new Hashtable<>();
+        connectorFacade.search(objClass, filter, (ConnectorObject obj) -> {
+            foundObjects.put(obj.getUid(), obj);
+            return true;
+        }, opOptions);
         return foundObjects;
     }
 
     /**
      * Performs sync on connector facade.
+     *
      * @returns list of deltas
      */
     public static List<SyncDelta> sync(ConnectorFacade connectorFacade, ObjectClass objClass,
             SyncToken token, OperationOptions opOptions) {
-        final List<SyncDelta> returnedDeltas = new ArrayList<SyncDelta>();
+        final List<SyncDelta> returnedDeltas = new ArrayList<>();
 
         connectorFacade.sync(objClass, token, new SyncResultsHandler() {
+
             @Override
             public boolean handle(SyncDelta delta) {
                 returnedDeltas.add(delta);
@@ -357,32 +347,31 @@ public class ConnectorHelper {
             ObjectClass objClass, Uid uid, boolean failOnError, OperationOptions opOptions) {
         boolean deleted = false;
 
-        Assert.assertFalse((failOnError && (uid == null)),
+        assertFalse((failOnError && (uid == null)),
                 "Connector helper deleteObject method received a null Uid, when it was told it should not fail");
 
-        if(uid == null) {
+        if (uid == null) {
             return deleted;
         }
 
         try {
             connectorFacade.delete(objClass, uid, opOptions);
         } catch (Throwable t) {
-            if(failOnError) {
-                Assert.fail("Connector helper deleteObject method caught an exception, when it was told it should not fail");
+            if (failOnError) {
+                fail("Connector helper deleteObject method caught an exception, when it was told it should not fail");
             }
         }
 
-        if(failOnError) {
+        if (failOnError) {
             // at present javadoc for delete is not clear about what
             // happens if delete fails, so I'll verify it's gone by searching
             ConnectorObject obj = connectorFacade.getObject(objClass, uid, opOptions);
-            Assert.assertNull(obj, "The deleted object was found. It should be no longer on the resource.");
+            assertNull(obj, "The deleted object was found. It should be no longer on the resource.");
             deleted = true;
         }
 
         return deleted;
     }
-
 
     /**
      * Checks if object has expected attributes and values. All readable or non-special attributes are checked.
@@ -394,78 +383,76 @@ public class ConnectorHelper {
 
     /**
      * Checks if object has expected attributes and values. All readable or non-special attributes are checked.
+     *
      * @param checkNotReturnedByDefault if true then also attributes not returned by default are checked
      */
     public static boolean checkObject(ObjectClassInfo objectClassInfo, ConnectorObject connectorObj,
             Set<Attribute> requestedAttributes, boolean checkNotReturnedByDefault) {
         boolean success = true;
 
-        for (Attribute attribute : requestedAttributes) {
-            // we will check all attributes that are readable all other attributes
-            // should not be present in connector object
-            if (isReadable(objectClassInfo, attribute)) {
-                if (checkNotReturnedByDefault || isReturnedByDefault(objectClassInfo, attribute)) {
+        requestedAttributes.stream().
+                filter((attribute) -> (isReadable(objectClassInfo, attribute))).
+                filter((attribute) -> (checkNotReturnedByDefault || isReturnedByDefault(objectClassInfo, attribute))).
+                forEachOrdered((attribute) -> {
                     Attribute createdAttribute = connectorObj.getAttributeByName(attribute.getName());
-                    if (createdAttribute == null)
-                        Assert.fail(String.format("Attribute '%s' is missing.", attribute.getName()));
+                    if (createdAttribute == null) {
+                        fail(String.format("Attribute '%s' is missing.", attribute.getName()));
+                    }
 
                     List<Object> fetchedValue = createdAttribute.getValue();
                     List<Object> requestedValue = attribute.getValue();
                     String msg = String.format(
                             "Attribute '%s' was not properly created. Requested values: %s Fetched values: %s",
                             attribute.getName(), requestedValue, fetchedValue);
-                    Assert.assertTrue(checkValue(fetchedValue, requestedValue), msg);
-                }
-            }
-        }
+                    assertTrue(checkValue(fetchedValue, requestedValue), msg);
+                });
 
         return success;
     }
-    
+
     /**
-	 * Checks if object has expected attributesDelta and values. All readable or
-	 * non-special attributesDelta are checked.
-	 */
-	public static boolean checkObjectByAttrDelta(ObjectClassInfo objectClassInfo, ConnectorObject connectorObj,
-			Set<AttributeDelta> requestedAttributesDelta) {
-		return checkObjectByAttrDelta(objectClassInfo, connectorObj, requestedAttributesDelta, true);
-	}
+     * Checks if object has expected attributesDelta and values. All readable or
+     * non-special attributesDelta are checked.
+     */
+    public static boolean checkObjectByAttrDelta(ObjectClassInfo objectClassInfo, ConnectorObject connectorObj,
+            Set<AttributeDelta> requestedAttributesDelta) {
+        return checkObjectByAttrDelta(objectClassInfo, connectorObj, requestedAttributesDelta, true);
+    }
 
-	/**
-	 * Checks if object has expected attributesDelta and values. All readable or
-	 * non-special attributes are checked.
-	 * 
-	 * @param checkNotReturnedByDefault
-	 *            if true then also attributes not returned by default are
-	 *            checked
-	 */
-	public static boolean checkObjectByAttrDelta(ObjectClassInfo objectClassInfo, ConnectorObject connectorObj,
-			Set<AttributeDelta> requestedAttributesDelta, boolean checkNotReturnedByDefault) {
-		boolean success = true;
+    /**
+     * Checks if object has expected attributesDelta and values. All readable or
+     * non-special attributes are checked.
+     *
+     * @param checkNotReturnedByDefault
+     * if true then also attributes not returned by default are
+     * checked
+     */
+    public static boolean checkObjectByAttrDelta(ObjectClassInfo objectClassInfo, ConnectorObject connectorObj,
+            Set<AttributeDelta> requestedAttributesDelta, boolean checkNotReturnedByDefault) {
+        boolean success = true;
 
-		for (AttributeDelta attributeDelta : requestedAttributesDelta) {
-			// we will check all attributesDelta that are readable all other
-			// attributesDelta
-			// should not be present in connector object
-			if (isReadable(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta))) {
-				if (checkNotReturnedByDefault
-						|| isReturnedByDefault(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta))) {
-					Attribute createdAttribute = connectorObj.getAttributeByName(attributeDelta.getName());
-					if (createdAttribute == null)
-						Assert.fail(String.format("Attribute '%s' is missing.", attributeDelta.getName()));
+        requestedAttributesDelta.stream().
+                filter((attributeDelta)
+                        -> (isReadable(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta)))).
+                filter((attributeDelta)
+                        -> (checkNotReturnedByDefault
+                || isReturnedByDefault(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta)))).
+                forEachOrdered((attributeDelta) -> {
+                    Attribute createdAttribute = connectorObj.getAttributeByName(attributeDelta.getName());
+                    if (createdAttribute == null) {
+                        fail(String.format("Attribute '%s' is missing.", attributeDelta.getName()));
+                    }
 
-					List<Object> fetchedValue = createdAttribute.getValue();
-					List<Object> requestedValue = attributeDelta.getValuesToReplace();
-					String msg = String.format(
-							"AttributeDelta '%s' was not properly created. Requested values: %s Fetched values: %s",
-							attributeDelta.getName(), requestedValue, fetchedValue);
-					Assert.assertTrue(checkValue(fetchedValue, requestedValue), msg);
-				}
-			}
-		}
+                    List<Object> fetchedValue = createdAttribute.getValue();
+                    List<Object> requestedValue = attributeDelta.getValuesToReplace();
+                    String msg = String.format(
+                            "AttributeDelta '%s' was not properly created. Requested values: %s Fetched values: %s",
+                            attributeDelta.getName(), requestedValue, fetchedValue);
+                    assertTrue(checkValue(fetchedValue, requestedValue), msg);
+                });
 
-		return success;
-	}
+        return success;
+    }
 
     static <E> boolean checkValue(List<E> fetchedValues, List<E> expectedValues) {
         Iterator<E> e = expectedValues.iterator();
@@ -494,10 +481,11 @@ public class ConnectorHelper {
     /**
      * Check that passed SyncDelta has exptected values.
      */
-    public static void checkSyncDelta(ObjectClassInfo ocInfo, SyncDelta delta, Uid uid, Set<Attribute> attributes, SyncDeltaType deltaType, boolean checkNotReturnedByDefault) {
+    public static void checkSyncDelta(ObjectClassInfo ocInfo, SyncDelta delta, Uid uid, Set<Attribute> attributes,
+            SyncDeltaType deltaType, boolean checkNotReturnedByDefault) {
         // check that Uid is correct
         String msg = "Sync returned wrong Uid, expected: %s, returned: %s.";
-        assertEquals(delta.getUid(), uid,String.format(msg, uid, delta.getUid()));
+        assertEquals(delta.getUid(), uid, String.format(msg, uid, delta.getUid()));
 
         if (deltaType != SyncDeltaType.DELETE) {
             // check that attributes are correct
@@ -506,7 +494,7 @@ public class ConnectorHelper {
 
         // check that delta type is expected
         msg = "Sync delta type should be %s, but returned: %s.";
-        assertTrue(delta.getDeltaType() == deltaType,String.format(msg, deltaType, delta.getDeltaType()));
+        assertTrue(delta.getDeltaType() == deltaType, String.format(msg, deltaType, delta.getDeltaType()));
     }
 
     /**
@@ -515,8 +503,8 @@ public class ConnectorHelper {
     public static boolean isReadable(ObjectClassInfo objectClassInfo, Attribute attribute) {
         boolean isReadable = false;
         Set<AttributeInfo> attributeInfoSet = objectClassInfo.getAttributeInfo();
-        for(AttributeInfo attributeInfo : attributeInfoSet) {
-            if(attributeInfo.is(attribute.getName())) {
+        for (AttributeInfo attributeInfo : attributeInfoSet) {
+            if (attributeInfo.is(attribute.getName())) {
                 isReadable = attributeInfo.isReadable();
                 break;
             }
@@ -530,8 +518,8 @@ public class ConnectorHelper {
     public static boolean isRequired(ObjectClassInfo objectClassInfo, Attribute attribute) {
         boolean isRequired = false;
         Set<AttributeInfo> attributeInfoSet = objectClassInfo.getAttributeInfo();
-        for(AttributeInfo attributeInfo : attributeInfoSet) {
-            if(attributeInfo.is(attribute.getName())) {
+        for (AttributeInfo attributeInfo : attributeInfoSet) {
+            if (attributeInfo.is(attribute.getName())) {
                 isRequired = attributeInfo.isRequired();
                 break;
             }
@@ -545,8 +533,8 @@ public class ConnectorHelper {
     public static boolean isCreateable(ObjectClassInfo objectClassInfo, Attribute attribute) {
         boolean isCreateable = false;
         Set<AttributeInfo> attributeInfoSet = objectClassInfo.getAttributeInfo();
-        for(AttributeInfo attributeInfo : attributeInfoSet) {
-            if(attributeInfo.is(attribute.getName())) {
+        for (AttributeInfo attributeInfo : attributeInfoSet) {
+            if (attributeInfo.is(attribute.getName())) {
                 isCreateable = attributeInfo.isCreateable();
                 break;
             }
@@ -560,8 +548,8 @@ public class ConnectorHelper {
     public static boolean isUpdateable(ObjectClassInfo objectClassInfo, Attribute attribute) {
         boolean isUpdateable = false;
         Set<AttributeInfo> attributeInfoSet = objectClassInfo.getAttributeInfo();
-        for(AttributeInfo attributeInfo : attributeInfoSet) {
-            if(attributeInfo.is(attribute.getName())) {
+        for (AttributeInfo attributeInfo : attributeInfoSet) {
+            if (attributeInfo.is(attribute.getName())) {
                 isUpdateable = attributeInfo.isUpdateable();
                 break;
             }
@@ -575,8 +563,8 @@ public class ConnectorHelper {
     public static boolean isReturnedByDefault(ObjectClassInfo objectClassInfo, Attribute attribute) {
         boolean isReturnedByDefault = false;
         Set<AttributeInfo> attributeInfoSet = objectClassInfo.getAttributeInfo();
-        for(AttributeInfo attributeInfo : attributeInfoSet) {
-            if(attributeInfo.is(attribute.getName())) {
+        for (AttributeInfo attributeInfo : attributeInfoSet) {
+            if (attributeInfo.is(attribute.getName())) {
                 isReturnedByDefault = attributeInfo.isReturnedByDefault();
                 break;
             }
@@ -590,8 +578,8 @@ public class ConnectorHelper {
     public static boolean isMultiValue(ObjectClassInfo objectClassInfo, String attribute) {
         boolean isMultiValue = false;
         Set<AttributeInfo> attributeInfoSet = objectClassInfo.getAttributeInfo();
-        for(AttributeInfo attributeInfo : attributeInfoSet) {
-            if(attributeInfo.is(attribute)) {
+        for (AttributeInfo attributeInfo : attributeInfoSet) {
+            if (attributeInfo.is(attribute)) {
                 isMultiValue = attributeInfo.isMultiValued();
                 break;
             }
@@ -647,12 +635,13 @@ public class ConnectorHelper {
      * properties prefixed by <code>qualifier</code>
      *
      * @param qualifier
-     *            the prefix for values used in update.
+     * the prefix for values used in update.
      */
     public static Set<Attribute> getUpdateableAttributes(DataProvider dataProvider,
             ObjectClassInfo objectClassInfo,
             String testName, String qualifier, int sequenceNumber, boolean checkRequired, boolean onlyMultiValue) {
-        return getAttributes(dataProvider, objectClassInfo, testName, qualifier, sequenceNumber, checkRequired, onlyMultiValue, false, true);
+        return getAttributes(dataProvider, objectClassInfo, testName, qualifier, sequenceNumber, checkRequired,
+                onlyMultiValue, false, true);
     }
 
     /**
@@ -677,25 +666,23 @@ public class ConnectorHelper {
     public static Set<Attribute> getCreateableAttributes(DataProvider dataProvider,
             ObjectClassInfo objectClassInfo,
             String testName, int sequenceNumber, boolean checkRequired, boolean onlyMultiValue) {
-        return getAttributes(dataProvider, objectClassInfo, testName, "", sequenceNumber, checkRequired, onlyMultiValue, true, false);
+        return getAttributes(dataProvider, objectClassInfo, testName, "", sequenceNumber, checkRequired, onlyMultiValue,
+                true, false);
     }
 
     /**
      * Returns set of attributes' names which are readable.
      */
     public static Set<String> getReadableAttributesNames(ObjectClassInfo ocInfo) {
-        Set<String> readableAttrs = new HashSet<String>();
-        for (AttributeInfo ainfo : ocInfo.getAttributeInfo()) {
-            if (ainfo.isReadable()) {
-                readableAttrs.add(ainfo.getName());
-            }
-        }
-
-        return readableAttrs;
+        return ocInfo.getAttributeInfo().stream().
+                filter(AttributeInfo::isReadable).
+                map(AttributeInfo::getName).
+                collect(Collectors.toSet());
     }
 
     /**
      * get attribute values (concatenates the qualifier with the name)
+     *
      * @param dataProvider
      * @param objectClassInfo
      * @param testName
@@ -708,59 +695,56 @@ public class ConnectorHelper {
     public static Set<Attribute> getAttributes(DataProvider dataProvider,
             ObjectClassInfo objectClassInfo, String testName,
             String qualifier, int sequenceNumber,
-            boolean checkRequired, boolean onlyMultiValue, boolean onlyCreateable, boolean onlyUpdateable) throws ObjectNotFoundException {
-        Set<Attribute> attributes = new HashSet<Attribute>();
+            boolean checkRequired, boolean onlyMultiValue, boolean onlyCreateable, boolean onlyUpdateable) throws
+            ObjectNotFoundException {
+        Set<Attribute> attributes = new HashSet<>();
 
+        objectClassInfo.getAttributeInfo().stream().
+                filter((attributeInfo) -> !(onlyMultiValue && !attributeInfo.isMultiValued())).
+                filter((attributeInfo) -> !(onlyCreateable && !attributeInfo.isCreateable())).
+                filter((attributeInfo) -> !(onlyUpdateable && !attributeInfo.isUpdateable())).
+                forEachOrdered((attributeInfo) -> {
+                    String attributeName = attributeInfo.getName();
+                    try {
+                        // if the attribute is not UID, get a value from the dataprovider
+                        // and add an attribute (exception is thrown if value is not present
+                        // values for UID cannot be generated because some connectors have mapping of
+                        // UID and NAME to same values - check test would fail
+                        if (!attributeInfo.is(Uid.NAME)) {
+                            String dataName = attributeName;
+                            if (qualifier.length() > 0) {
+                                dataName = qualifier + "." + dataName;
+                            }
 
-        for(AttributeInfo attributeInfo : objectClassInfo.getAttributeInfo()) {
-            if (onlyMultiValue && !attributeInfo.isMultiValued()) {
-                continue;
-            }
-            if (onlyCreateable && !attributeInfo.isCreateable()) {
-                continue;
-            }
-            if (onlyUpdateable && !attributeInfo.isUpdateable()) {
-                continue;
-            }
-            String attributeName = attributeInfo.getName();
-            try {
-                // if the attribute is not UID, get a value from the dataprovider
-                // and add an attribute (exception is thrown if value is not present
-                // values for UID cannot be generated because some connectors have mapping of
-                // UID and NAME to same values - check test would fail
-                if(!attributeInfo.is(Uid.NAME)) {
-                    String dataName = attributeName;
-                    if (qualifier.length() > 0) {
-                        dataName = qualifier + "." + dataName;
+                            // *multivalue* attributes have different default values. That is why we should
+                            // pass this to get().
+                            Object attributeValue = get(dataProvider, testName, attributeInfo.getType(),
+                                    dataName, objectClassInfo.getType(), sequenceNumber, attributeInfo.isMultiValued());
+
+                            if (attributeValue instanceof Collection<?>) {
+                                attributes.add(AttributeBuilder.build(attributeName, (Collection<?>) attributeValue));
+                            } else {
+                                attributes.add(AttributeBuilder.build(attributeName, attributeValue));
+                            }
+                        }
+                    } catch (ObjectNotFoundException ex) {
+                        // caught an exception because no value was supplied for an attribute
+                        if (checkRequired && attributeInfo.isRequired()) {
+                            // if the attribute was required, it's an error
+                            LOG.error("Could not find a value of REQUIRED attribute type ''" + attributeInfo.getType()
+                                    + "'' for ''" + attributeName + "''", ex);
+                            throw ex;
+                        } else {
+                            // if the attribute was not required, it's a warning
+                            LOG.warn("Could not find a value of type ''" + attributeInfo.getType() + "'' for ''"
+                                    + attributeName + "''");
+                        }
                     }
-
-                    // *multivalue* attributes have different default values. That is why we should
-                    // pass this to get().
-                    Object attributeValue = get(dataProvider, testName, attributeInfo.getType()
-                            , dataName, objectClassInfo.getType(), sequenceNumber, attributeInfo.isMultiValued());
-
-                    if(attributeValue instanceof Collection<?>) {
-                        attributes.add(AttributeBuilder.build(attributeName, (Collection<?>)attributeValue));
-                    } else {
-                        attributes.add(AttributeBuilder.build(attributeName, attributeValue));
-                    }
-                }
-            } catch (ObjectNotFoundException ex) {
-                // caught an exception because no value was supplied for an attribute
-                if(checkRequired && attributeInfo.isRequired()) {
-                    // if the attribute was required, it's an error
-                    logger.error("Could not find a value of REQUIRED attribute type ''"+attributeInfo.getType()+"'' for ''"+attributeName+"''",ex);
-                    throw ex;
-                } else {
-                    // if the attribute was not required, it's a warning
-                    logger.warn("Could not find a value of type ''"+attributeInfo.getType()+"'' for ''"+attributeName+"''");
-                }
-            }
-        }
+                });
 
         return attributes;
     }
-    
+
     /**
      * Get attributeDelta values (concatenates the qualifier with the name).
      *
@@ -777,93 +761,88 @@ public class ConnectorHelper {
             String testName, String qualifier, int sequenceNumber, boolean checkRequired, boolean isMultiValue,
             boolean isAddValues, boolean onlyCreateable, boolean onlyUpdateable)
             throws ObjectNotFoundException {
-        Set<AttributeDelta> attributesDelta = new HashSet<AttributeDelta>();
+        Set<AttributeDelta> attributesDelta = new HashSet<>();
 
-        for (AttributeInfo attributeInfo : objectClassInfo.getAttributeInfo()) {
-            if (isMultiValue && !attributeInfo.isMultiValued()) {
-                continue;
-            }
-            if (!isMultiValue && attributeInfo.isMultiValued()) {
-                continue;
-            }
-            if (onlyCreateable && !attributeInfo.isCreateable()) {
-                continue;
-            }
-            if (onlyUpdateable && !attributeInfo.isUpdateable()) {
-                continue;
-            }
-            String attributeName = attributeInfo.getName();
-            try {
-                // if the attribute is not UID, get a value from the
-                // dataprovider
-                // and add an attribute (exception is thrown if value is not
-                // present
-                // values for UID cannot be generated because some connectors
-                // have mapping of
-                // UID and NAME to same values - check test would fail
-                if (!attributeInfo.is(Uid.NAME)) {
-                    String dataName = attributeName;
-                    if (qualifier.length() > 0) {
-                        dataName = qualifier + "." + dataName;
-                    }
-
-                    // *multivalue* attributes have different default values.
-                    // That is why we should
-                    // pass this to get().
-                    Object attributeValue = get(dataProvider, testName, attributeInfo.getType(), dataName,
-                            objectClassInfo.getType(), sequenceNumber, attributeInfo.isMultiValued());
-                    if (!isMultiValue) {
-                        if (attributeValue instanceof Collection<?>) {
-                            attributesDelta
-                                    .add(AttributeDeltaBuilder.build(attributeName, (Collection<?>) attributeValue));
-                        } else {
-                            attributesDelta.add(AttributeDeltaBuilder.build(attributeName, attributeValue));
-                        }
-                    } else {
-                        if (isAddValues) {
-                            if (attributeValue instanceof Collection<?>) {
-                                attributesDelta.add(AttributeDeltaBuilder.build(attributeName,
-                                        (Collection<?>) attributeValue, null));
-                            } else {
-                                AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
-                                attrBuilder.addValueToAdd(attributeValue);
-                                attrBuilder.setName(attributeName);
-                                attributesDelta.add(attrBuilder.build());
+        objectClassInfo.getAttributeInfo().stream().
+                filter((attributeInfo) -> !(isMultiValue && !attributeInfo.isMultiValued())).
+                filter((attributeInfo) -> !(!isMultiValue && attributeInfo.isMultiValued())).
+                filter((attributeInfo) -> !(onlyCreateable && !attributeInfo.isCreateable())).
+                filter((attributeInfo) -> !(onlyUpdateable && !attributeInfo.isUpdateable())).
+                forEachOrdered((attributeInfo) -> {
+                    String attributeName = attributeInfo.getName();
+                    try {
+                        // if the attribute is not UID, get a value from the
+                        // dataprovider
+                        // and add an attribute (exception is thrown if value is not
+                        // present
+                        // values for UID cannot be generated because some connectors
+                        // have mapping of
+                        // UID and NAME to same values - check test would fail
+                        if (!attributeInfo.is(Uid.NAME)) {
+                            String dataName = attributeName;
+                            if (qualifier.length() > 0) {
+                                dataName = qualifier + "." + dataName;
                             }
-                        } else {
-                            if (attributeValue instanceof Collection<?>) {
-                                attributesDelta.add(AttributeDeltaBuilder.build(attributeName, null,
-                                        (Collection<?>) attributeValue));
+
+                            // *multivalue* attributes have different default values.
+                            // That is why we should
+                            // pass this to get().
+                            Object attributeValue = get(dataProvider, testName, attributeInfo.getType(), dataName,
+                                    objectClassInfo.getType(), sequenceNumber, attributeInfo.isMultiValued());
+                            if (!isMultiValue) {
+                                if (attributeValue instanceof Collection<?>) {
+                                    attributesDelta
+                                            .add(AttributeDeltaBuilder.build(attributeName,
+                                                    (Collection<?>) attributeValue));
+                                } else {
+                                    attributesDelta.add(AttributeDeltaBuilder.build(attributeName, attributeValue));
+                                }
                             } else {
-                                AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
-                                attrBuilder.addValueToRemove(attributeValue);
-                                attrBuilder.setName(attributeName);
-                                attributesDelta.add(attrBuilder.build());
+                                if (isAddValues) {
+                                    if (attributeValue instanceof Collection<?>) {
+                                        attributesDelta.add(AttributeDeltaBuilder.build(attributeName,
+                                                (Collection<?>) attributeValue, null));
+                                    } else {
+                                        AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
+                                        attrBuilder.addValueToAdd(attributeValue);
+                                        attrBuilder.setName(attributeName);
+                                        attributesDelta.add(attrBuilder.build());
+                                    }
+                                } else {
+                                    if (attributeValue instanceof Collection<?>) {
+                                        attributesDelta.add(AttributeDeltaBuilder.build(attributeName, null,
+                                                (Collection<?>) attributeValue));
+                                    } else {
+                                        AttributeDeltaBuilder attrBuilder = new AttributeDeltaBuilder();
+                                        attrBuilder.addValueToRemove(attributeValue);
+                                        attrBuilder.setName(attributeName);
+                                        attributesDelta.add(attrBuilder.build());
+                                    }
+                                }
                             }
                         }
+                    } catch (ObjectNotFoundException ex) {
+                        // caught an exception because no value was supplied for an
+                        // attribute
+                        if (checkRequired && attributeInfo.isRequired()) {
+                            // if the attribute was required, it's an error
+                            LOG.error("Could not find a value of REQUIRED attribute type ''" + attributeInfo.getType()
+                                    + "'' for ''" + attributeName + "''", ex);
+                            throw ex;
+                        } else {
+                            // if the attribute was not required, it's a warning
+                            LOG.warn("Could not find a value of type ''" + attributeInfo.getType() + "'' for ''"
+                                    + attributeName + "''");
+                        }
                     }
-                }
-            } catch (ObjectNotFoundException ex) {
-                // caught an exception because no value was supplied for an
-                // attribute
-                if (checkRequired && attributeInfo.isRequired()) {
-                    // if the attribute was required, it's an error
-                    logger.error("Could not find a value of REQUIRED attribute type ''" + attributeInfo.getType()
-                            + "'' for ''" + attributeName + "''", ex);
-                    throw ex;
-                } else {
-                    // if the attribute was not required, it's a warning
-                    logger.warn("Could not find a value of type ''" + attributeInfo.getType() + "'' for ''"
-                            + attributeName + "''");
-                }
-            }
-        }
+                });
 
         return attributesDelta;
     }
 
     /**
      * gets the attributes for you, appending the qualifier to the attribute name
+     *
      * @param connectorFacade
      * @param dataProvider
      * @param objectClassInfo
@@ -885,6 +864,7 @@ public class ConnectorHelper {
 
     /**
      * gets the attributes for you
+     *
      * @param connectorFacade
      * @param dataProvider
      * @param objectClassInfo
@@ -913,7 +893,7 @@ public class ConnectorHelper {
     public static boolean operationSupported(ConnectorFacade connectorFacade,
             ObjectClass oClass, Class<? extends APIOperation> operation) {
 
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         s.add(operation);
 
         return operationsSupported(connectorFacade, oClass, s);
@@ -932,7 +912,7 @@ public class ConnectorHelper {
             ObjectClass oClass, Class<? extends APIOperation> operation1,
             Class<? extends APIOperation> operation2) {
 
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         s.add(operation1);
         s.add(operation2);
 
@@ -950,11 +930,11 @@ public class ConnectorHelper {
      */
     public static boolean operationsSupported(ConnectorFacade connectorFacade, ObjectClass oClass,
             Set<Class<? extends APIOperation>> operations) {
-        List<Boolean> opsSupported = new ArrayList<Boolean>();
+        List<Boolean> opsSupported = new ArrayList<>();
 
         // get the schema
         Schema schema = connectorFacade.schema();
-        Assert.assertNotNull(schema, "Connector did not return a schema");
+        assertNotNull(schema, "Connector did not return a schema");
         for (Class<? extends APIOperation> op : operations) {
             Set<ObjectClassInfo> ocInfoSet = schema.getSupportedObjectClassesByOperation(op);
 
@@ -986,13 +966,14 @@ public class ConnectorHelper {
 
     /**
      * check to see if ANY objectclass supports a particular operation
+     *
      * @param connectorFacade
      * @param operation
      * @return
      */
     public static boolean operationSupported(ConnectorFacade connectorFacade,
             Class<? extends APIOperation> operation) {
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         s.add(operation);
 
         return operationsSupported(connectorFacade, s);
@@ -1000,6 +981,7 @@ public class ConnectorHelper {
 
     /**
      * check to see if ANY objectclass supports a particular operation
+     *
      * @param connectorFacade
      * @param operations1
      * @param operations2
@@ -1007,7 +989,7 @@ public class ConnectorHelper {
      */
     public static boolean operationSupported(ConnectorFacade connectorFacade,
             Class<? extends APIOperation> operations1, Class<? extends APIOperation> operations2) {
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         s.add(operations1);
         s.add(operations2);
 
@@ -1016,6 +998,7 @@ public class ConnectorHelper {
 
     /**
      * check to see if ANY objectclass supports a particular operations
+     *
      * @param connectorFacade
      * @param operations
      * @return
@@ -1025,11 +1008,12 @@ public class ConnectorHelper {
         boolean opSupported = false;
 
         Schema schema = connectorFacade.schema();
-        Assert.assertNotNull(schema, "Connector did not return a schema");
+        assertNotNull(schema, "Connector did not return a schema");
         Set<ObjectClassInfo> objectClassInfoSet = schema.getObjectClassInfo();
 
-        for(ObjectClassInfo objectClassInfo : objectClassInfoSet) {
-            if(operationsSupported(connectorFacade, ConnectorHelper.getObjectClassFromObjectClassInfo(objectClassInfo), operations)) {
+        for (ObjectClassInfo objectClassInfo : objectClassInfoSet) {
+            if (operationsSupported(connectorFacade, ConnectorHelper.getObjectClassFromObjectClassInfo(objectClassInfo),
+                    operations)) {
                 opSupported = true;
                 break;
             }
@@ -1040,7 +1024,8 @@ public class ConnectorHelper {
 
     /**
      * Tries to create remote or local manager.
-     * Remote manager is created in case all connectorserver properties are set. If connectorserver properties are missing
+     * Remote manager is created in case all connectorserver properties are set. If connectorserver properties are
+     * missing
      * or remote manager creation fails then tries to create local manager.
      */
     public static ConnectorInfoManager getInfoManager(final DataProvider dataProvider) {
@@ -1049,21 +1034,21 @@ public class ConnectorHelper {
 
         String useConnectorServer = System.getProperty("useConnectorServer");
         if ("true".equals(useConnectorServer)) {
-            logger.info("TESTING CONNECTOR ON CONNECTOR SERVER.");
+            LOG.info("TESTING CONNECTOR ON CONNECTOR SERVER.");
             manager = getRemoteManager(dataProvider, fact);
-        }
-        else {
-            logger.info("TESTING LOCAL CONNECTOR.");
+        } else {
+            LOG.info("TESTING LOCAL CONNECTOR.");
             manager = getLocalManager(dataProvider, fact);
         }
 
-        assertNotNull(manager,"Manager wasn't created - check *MANDATORY* properties.");
+        assertNotNull(manager, "Manager wasn't created - check *MANDATORY* properties.");
 
         return manager;
     }
 
     /**
      * Returns local manager or null.
+     *
      * @param dataProvider
      * @param fact
      * @return null in case configuration is NOT provided
@@ -1075,7 +1060,7 @@ public class ConnectorHelper {
 
         // try to load bundleJar property (which should be set by ant)
         File bundleJar = new File(((String) dataProvider.getTestSuiteAttribute("bundleJar")).trim());
-        Assert.assertTrue(bundleJar.isFile(), "BundleJar does not exist: " + bundleJar.getAbsolutePath());
+        assertTrue(bundleJar.isFile(), "BundleJar does not exist: " + bundleJar.getAbsolutePath());
         try {
             manager = fact.getLocalManager(bundleJar.toURI().toURL());
         } catch (MalformedURLException ex) {
@@ -1092,8 +1077,8 @@ public class ConnectorHelper {
      * @param fact
      * @return null in case configuration is NOT provided
      * @throws RuntimeException
-     *             in case creation fails although configuration properties were
-     *             provided
+     * in case creation fails although configuration properties were
+     * provided
      */
     private static ConnectorInfoManager getRemoteManager(final DataProvider dataProvider,
             final ConnectorInfoManagerFactory fact) {
@@ -1104,19 +1089,16 @@ public class ConnectorHelper {
         String key = null;
         // load properties from config file and then override them with system properties
         try {
-            host = (String)dataProvider.getTestSuiteAttribute("serverHost");
-        }
-        catch (ObjectNotFoundException ex) {  //ok
-        }
-        try {
-            port = (Integer)dataProvider.getTestSuiteAttribute("serverPort");
-        }
-        catch (ObjectNotFoundException ex) {  //ok
+            host = (String) dataProvider.getTestSuiteAttribute("serverHost");
+        } catch (ObjectNotFoundException ex) {  //ok
         }
         try {
-            key = (String)dataProvider.getTestSuiteAttribute("serverKey");
+            port = (Integer) dataProvider.getTestSuiteAttribute("serverPort");
+        } catch (ObjectNotFoundException ex) {  //ok
         }
-        catch (ObjectNotFoundException ex) {  //ok
+        try {
+            key = (String) dataProvider.getTestSuiteAttribute("serverKey");
+        } catch (ObjectNotFoundException ex) {  //ok
         }
         // now override with system properties, if set
         if (StringUtil.isNotBlank(System.getProperty("serverHost"))) {
@@ -1129,16 +1111,15 @@ public class ConnectorHelper {
             key = System.getProperty("serverKey");
         }
 
-        Assert.assertTrue(StringUtil.isNotBlank(host), "Connector server host not set.");
-        Assert.assertNotNull(port, "Connector server port not set.");
-        Assert.assertTrue(StringUtil.isNotBlank(key), "Connector server key not set.");
+        assertTrue(StringUtil.isNotBlank(host), "Connector server host not set.");
+        assertNotNull(port, "Connector server port not set.");
+        assertTrue(StringUtil.isNotBlank(key), "Connector server key not set.");
 
         try {
             // try to connect to remote manager
-            manager = fact.getRemoteManager(new RemoteFrameworkConnectionInfo(host, port,
-                new GuardedString(key.toCharArray())));
-        }
-        catch (Throwable t) {
+            manager = fact.getRemoteManager(
+                    new RemoteFrameworkConnectionInfo(host, port, new GuardedString(key.toCharArray())));
+        } catch (Throwable t) {
             // wrap in exception rather to fail to have full stacktrace
             throw new ContractException("Cannot create remote manager. Check connector server settings.", t);
         }
@@ -1154,9 +1135,10 @@ public class ConnectorHelper {
         String connectorName = (String) dataProvider.getTestSuiteAttribute("connectorName");
         ConnectorKey key = new ConnectorKey(bundleName, bundleVersion, connectorName);
         ConnectorInfo info = manager.findConnectorInfo(key);
-        final String MSG = "Connector info wasn't found. Check values of bundleName, bundleVersion and connectorName properties." +
-                            "\nbundleName:%s\nbundleVersion:%s\nconnectorName:%s";
-        Assert.assertNotNull(info, String.format(MSG, bundleName, bundleVersion, connectorName));
+        final String MSG =
+                "Connector info wasn't found. Check values of bundleName, bundleVersion and connectorName properties."
+                + "\nbundleName:%s\nbundleVersion:%s\nconnectorName:%s";
+        assertNotNull(info, String.format(MSG, bundleName, bundleVersion, connectorName));
         APIConfiguration apiConfig = info.createDefaultAPIConfiguration();
 
         return apiConfig;
@@ -1167,10 +1149,11 @@ public class ConnectorHelper {
         sbPath.append(".");
         sbPath.append(name);
         return sbPath.toString();
-   }
+    }
 
     /**
      * no sequence number or qualifier, appends objectclass to name
+     *
      * @param dataProvider
      * @param componentName
      * @param name
@@ -1197,7 +1180,6 @@ public class ConnectorHelper {
         return dataProvider.get(dataTypeName, formatDataName(objectClassName, formatDataName(qualifier, name)),
                 componentName, sequenceNumber, isMultivalue);
     }
-
 
     /**
      * Returns object class based on object class info.

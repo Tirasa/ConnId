@@ -20,10 +20,11 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,24 +39,13 @@ import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.Uid;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
-
 
 /**
- * Contract test of {@link GetApiOp}
+ * Contract test of {@link GetApiOp}.
  */
-@Test(testName =  GetApiOpTests.TEST_NAME)
 public class GetApiOpTests extends ObjectClassRunner {
-    /**
-     * Logging..
-     */
-    @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
+
     public static final String TEST_NAME = "Get";
-
-
 
     /**
      * {@inheritDoc}
@@ -63,7 +53,7 @@ public class GetApiOpTests extends ObjectClassRunner {
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
         // list of required operations by this test:
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         s.add(GetApiOp.class);
         s.add(CreateApiOp.class);
         s.add(SearchApiOp.class);
@@ -90,7 +80,7 @@ public class GetApiOpTests extends ObjectClassRunner {
 
             // retrieve by uid
             obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
-            assertNotNull(obj,"Unable to get object by uid");
+            assertNotNull(obj, "Unable to get object by uid");
 
             ConnectorHelper.checkObject(getObjectClassInfo(objectClass), obj, requestedAttributes);
 
@@ -98,12 +88,11 @@ public class GetApiOpTests extends ObjectClassRunner {
             Name name = obj.getName();
             obj = ConnectorHelper.findObjectByName(getConnectorFacade(), objectClass,
                     name.getNameValue(), getOperationOptionsByOp(objectClass, SearchApiOp.class));
-            assertNotNull(obj,"Unable to get object by name");
+            assertNotNull(obj, "Unable to get object by name");
 
             ConnectorHelper.checkObject(getObjectClassInfo(objectClass), obj, requestedAttributes);
 
             // get by other attributes???
-
         } finally {
             // finally ... get rid of the object
             ConnectorHelper.deleteObject(getConnectorFacade(), objectClass, uid, false,
@@ -118,7 +107,4 @@ public class GetApiOpTests extends ObjectClassRunner {
     public String getTestName() {
         return TEST_NAME;
     }
-
-
-
 }

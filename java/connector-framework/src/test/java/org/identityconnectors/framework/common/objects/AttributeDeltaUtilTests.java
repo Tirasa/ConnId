@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -28,11 +29,12 @@ import static org.identityconnectors.framework.common.objects.AttributeDeltaUtil
 import static org.identityconnectors.framework.common.objects.AttributeDeltaUtil.getStringValue;
 import static org.identityconnectors.framework.common.objects.AttributeDeltaUtil.isSpecial;
 import static org.identityconnectors.framework.common.objects.AttributeDeltaUtil.namesEqual;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -41,28 +43,28 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the {@link AttributeUtil} class.
  */
 public class AttributeDeltaUtilTests {
 
-    @Test(expectedExceptions = ClassCastException.class)
     public void testGetStringValue() {
-        final String TEST_VALUE = "test value";
-        // test normal..
-        AttributeDelta attr = build("string", TEST_VALUE);
-        String value = getStringValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null..
-        attr = build("stirng");
-        value = getStringValue(attr);
-        assertNull(value);
-        // test exception
-        attr = build("string", 1);
-        getStringValue(attr);
+        assertThrows(ClassCastException.class, () -> {
+            final String TEST_VALUE = "test value";
+            // test normal..
+            AttributeDelta attr = build("string", TEST_VALUE);
+            String value = getStringValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null..
+            attr = build("stirng");
+            value = getStringValue(attr);
+            assertNull(value);
+            // test exception
+            attr = build("string", 1);
+            getStringValue(attr);
+        });
     }
 
     @Test
@@ -82,77 +84,81 @@ public class AttributeDeltaUtilTests {
         assertEquals(value, "1");
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
     public void testGetIntegerValue() {
-        final Integer TEST_VALUE = 1;
-        // test normal
-        AttributeDelta attr = build("int", TEST_VALUE);
-        Integer value = getIntegerValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null
-        attr = build("int");
-        value = getIntegerValue(attr);
-        assertNull(value);
-        // test class cast exception
-        attr = build("int", "1");
-        getIntegerValue(attr);
+        assertThrows(ClassCastException.class, () -> {
+            final Integer TEST_VALUE = 1;
+            // test normal
+            AttributeDelta attr = build("int", TEST_VALUE);
+            Integer value = getIntegerValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null
+            attr = build("int");
+            value = getIntegerValue(attr);
+            assertNull(value);
+            // test class cast exception
+            attr = build("int", "1");
+            getIntegerValue(attr);
+        });
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
     public void testGetLongValue() {
-        final Long TEST_VALUE = 1L;
-        // test normal
-        AttributeDelta attr = build("long", TEST_VALUE);
-        Long value = AttributeDeltaUtil.getLongValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null
-        attr = build("long");
-        value = AttributeDeltaUtil.getLongValue(attr);
-        assertNull(value);
-        // test class cast exception
-        attr = build("long", "1");
-        AttributeDeltaUtil.getLongValue(attr);
+        assertThrows(ClassCastException.class, () -> {
+            final Long TEST_VALUE = 1L;
+            // test normal
+            AttributeDelta attr = build("long", TEST_VALUE);
+            Long value = AttributeDeltaUtil.getLongValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null
+            attr = build("long");
+            value = AttributeDeltaUtil.getLongValue(attr);
+            assertNull(value);
+            // test class cast exception
+            attr = build("long", "1");
+            AttributeDeltaUtil.getLongValue(attr);
+        });
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
     public void testBigDecimalValue() {
-        final BigDecimal TEST_VALUE = BigDecimal.ONE;
-        // test normal
-        AttributeDelta attr = build("big", TEST_VALUE);
-        BigDecimal value = AttributeDeltaUtil.getBigDecimalValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null
-        attr = build("big");
-        value = AttributeDeltaUtil.getBigDecimalValue(attr);
-        assertNull(value);
-        // test class cast exception
-        attr = build("big", "1");
-        AttributeDeltaUtil.getBigDecimalValue(attr);
+        assertThrows(ClassCastException.class, () -> {
+            final BigDecimal TEST_VALUE = BigDecimal.ONE;
+            // test normal
+            AttributeDelta attr = build("big", TEST_VALUE);
+            BigDecimal value = AttributeDeltaUtil.getBigDecimalValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null
+            attr = build("big");
+            value = AttributeDeltaUtil.getBigDecimalValue(attr);
+            assertNull(value);
+            // test class cast exception
+            attr = build("big", "1");
+            AttributeDeltaUtil.getBigDecimalValue(attr);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testGetSingleValue() {
-        final Object TEST_VALUE = 1L;
-        // test normal
-        AttributeDelta attr = build("long", TEST_VALUE);
-        Object value = AttributeDeltaUtil.getSingleValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null
-        attr = build("long");
-        value = AttributeDeltaUtil.getSingleValue(attr);
-        assertNull(value);
-        // test empty
-        attr = build("long", Collections.emptyList());
-        value = AttributeDeltaUtil.getSingleValue(attr);
-        assertNull(value);
-        // test illegal argument exception
-        AttributeUtil.getSingleValue(AttributeBuilder.build("bob", 1, 2, 3));
+        assertThrows(ClassCastException.class, () -> {
+            final Object TEST_VALUE = 1L;
+            // test normal
+            AttributeDelta attr = build("long", TEST_VALUE);
+            Object value = AttributeDeltaUtil.getSingleValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null
+            attr = build("long");
+            value = AttributeDeltaUtil.getSingleValue(attr);
+            assertNull(value);
+            // test empty
+            attr = build("long", Collections.emptyList());
+            value = AttributeDeltaUtil.getSingleValue(attr);
+            assertNull(value);
+            // test illegal argument exception
+            AttributeUtil.getSingleValue(AttributeBuilder.build("bob", 1, 2, 3));
+        });
     }
 
     @Test
     public void testToMap() {
         AttributeDelta attr;
-        Map<String, AttributeDelta> expected = new HashMap<String, AttributeDelta>();
+        Map<String, AttributeDelta> expected = new HashMap<>();
         attr = build("daf", "daf");
         expected.put(attr.getName(), attr);
         attr = build("fasdf", "fadsf3");
@@ -163,7 +169,7 @@ public class AttributeDeltaUtilTests {
 
     @Test
     public void testGetUidAttribute() {
-        Set<AttributeDelta> attrs = new HashSet<AttributeDelta>();
+        Set<AttributeDelta> attrs = new HashSet<>();
         AttributeDelta expected = build(Uid.NAME, "1");
         attrs.add(expected);
         AttributeDelta attr = build("bob");
@@ -174,12 +180,12 @@ public class AttributeDeltaUtilTests {
 
     @Test
     public void testGetBasicAttributes() {
-        Set<AttributeDelta> set = new HashSet<AttributeDelta>();
+        Set<AttributeDelta> set = new HashSet<>();
         set.add(build(Uid.NAME, "1"));
         AttributeDelta attr = AttributeDeltaBuilder.build("bob");
         set.add(attr);
         Set<AttributeDelta> actual = AttributeDeltaUtil.getBasicAttributes(set);
-        Set<AttributeDelta> expected = new HashSet<AttributeDelta>();
+        Set<AttributeDelta> expected = new HashSet<>();
         expected.add(attr);
         assertEquals(actual, expected);
     }
@@ -204,7 +210,7 @@ public class AttributeDeltaUtilTests {
     @Test
     public void testFindMethod() {
         AttributeDelta expected = build("FIND_ME");
-        Set<AttributeDelta> attrs = new HashSet<AttributeDelta>();
+        Set<AttributeDelta> attrs = new HashSet<>();
         attrs.add(build("fadsf"));
         attrs.add(build("fadsfadsf"));
         attrs.add(expected);
@@ -215,7 +221,7 @@ public class AttributeDeltaUtilTests {
     @Test
     public void testEnableDate() {
         Date expected = new Date();
-        Set<AttributeDelta> set = new HashSet<AttributeDelta>();
+        Set<AttributeDelta> set = new HashSet<>();
         set.add(AttributeDeltaBuilder.buildEnableDate(expected));
         Date actual = AttributeDeltaUtil.getEnableDate(set);
         assertNotNull(actual);

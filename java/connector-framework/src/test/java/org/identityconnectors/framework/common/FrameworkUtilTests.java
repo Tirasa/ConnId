@@ -19,12 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common;
 
-import static org.testng.Assert.assertEquals;
-import org.testng.annotations.Test;
-import org.testng.Assert;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,6 +36,7 @@ import java.net.URLStreamHandler;
 import java.util.Properties;
 
 import org.identityconnectors.common.Version;
+import org.junit.jupiter.api.Test;
 
 public class FrameworkUtilTests {
 
@@ -48,7 +50,7 @@ public class FrameworkUtilTests {
     public void testFrameworkVersionCannotBeBlank() throws Exception {
         try {
             FrameworkUtil.getFrameworkVersion(new VersionClassLoader(this.getClass().getClassLoader(), " "));
-            Assert.fail();
+            fail();
         } catch (IllegalStateException e) {
             // OK.
         }
@@ -73,22 +75,23 @@ public class FrameworkUtilTests {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             try {
                 props.store(output, null);
-                return new URL("fakejar", null, 0, "connectors-framework.properties",
-                        new URLStreamHandler() {
-                            @Override
-                            protected URLConnection openConnection(URL u) throws IOException {
-                                return new URLConnection(u) {
-                                    @Override
-                                    public void connect() throws IOException {
-                                    }
+                return new URL("fakejar", null, 0, "connectors-framework.properties", new URLStreamHandler() {
 
-                                    @Override
-                                    public InputStream getInputStream() throws IOException {
-                                        return new ByteArrayInputStream(output.toByteArray());
-                                    }
-                                };
+                    @Override
+                    protected URLConnection openConnection(URL u) throws IOException {
+                        return new URLConnection(u) {
+
+                            @Override
+                            public void connect() throws IOException {
                             }
-                        });
+
+                            @Override
+                            public InputStream getInputStream() throws IOException {
+                                return new ByteArrayInputStream(output.toByteArray());
+                            }
+                        };
+                    }
+                });
             } catch (IOException e) {
                 throw new AssertionError(e);
             }

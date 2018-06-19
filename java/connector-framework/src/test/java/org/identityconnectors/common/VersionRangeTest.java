@@ -19,12 +19,15 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
-
 package org.identityconnectors.common;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.Test;
 
 public class VersionRangeTest {
 
@@ -37,58 +40,58 @@ public class VersionRangeTest {
         Version reference4 = new Version(1, 1, 0, 4);
         VersionRange range = VersionRange.parse("[1.1.0.1,1.1.0.3)");
 
-        Assert.assertFalse(range.isInRange(reference0));
-        Assert.assertTrue(range.isInRange(reference1));
-        Assert.assertTrue(range.isInRange(reference2));
-        Assert.assertFalse(range.isInRange(reference3));
-        Assert.assertFalse(range.isInRange(reference4));
+        assertFalse(range.isInRange(reference0));
+        assertTrue(range.isInRange(reference1));
+        assertTrue(range.isInRange(reference2));
+        assertFalse(range.isInRange(reference3));
+        assertFalse(range.isInRange(reference4));
     }
 
     @Test
     public void testIsExact() throws Exception {
-        Assert.assertTrue(VersionRange.parse("1.1.0.0").isExact());
-        Assert.assertTrue(VersionRange.parse("  [  1 , 1 ]  ").isExact());
-        Assert.assertTrue(VersionRange.parse("[  1.1 , 1.1 ]").isExact());
-        Assert.assertTrue(VersionRange.parse("  [1.1.1 , 1.1.1]  ").isExact());
-        Assert.assertTrue(VersionRange.parse("[1.1.0.0,1.1.0.0]").isExact());
-        Assert.assertTrue(VersionRange.parse("(1.1.0.0,1.1.0.2)").isExact());
+        assertTrue(VersionRange.parse("1.1.0.0").isExact());
+        assertTrue(VersionRange.parse("  [  1 , 1 ]  ").isExact());
+        assertTrue(VersionRange.parse("[  1.1 , 1.1 ]").isExact());
+        assertTrue(VersionRange.parse("  [1.1.1 , 1.1.1]  ").isExact());
+        assertTrue(VersionRange.parse("[1.1.0.0,1.1.0.0]").isExact());
+        assertTrue(VersionRange.parse("(1.1.0.0,1.1.0.2)").isExact());
     }
 
     @Test
     public void testIsEmpty() throws Exception {
-        Assert.assertTrue(VersionRange.parse("(1.1.0.0,1.1.0.0)").isEmpty());
-        Assert.assertTrue(VersionRange.parse("(1.2.0.0,1.1.0.0]").isEmpty());
+        assertTrue(VersionRange.parse("(1.1.0.0,1.1.0.0)").isEmpty());
+        assertTrue(VersionRange.parse("(1.2.0.0,1.1.0.0]").isEmpty());
     }
 
     @Test
     public void testValidSyntax() throws Exception {
         try {
             VersionRange.parse("(1.1.0.0)");
-            Assert.fail("Invalid syntax not failed");
+            fail("Invalid syntax not failed");
         } catch (IllegalArgumentException e) {
             // ok
         }
         try {
             VersionRange.parse("1.1.0.0,1.1)]");
-            Assert.fail("Invalid syntax not failed");
+            fail("Invalid syntax not failed");
         } catch (IllegalArgumentException e) {
             // ok
         }
         try {
             VersionRange.parse("(1.1.0.0-1.1)");
-            Assert.fail("Invalid syntax not failed");
+            fail("Invalid syntax not failed");
         } catch (IllegalArgumentException e) {
             // ok
         }
         try {
             VersionRange.parse("1.1.0.0,1.1");
-            Assert.fail("Invalid syntax not failed");
+            fail("Invalid syntax not failed");
         } catch (IllegalArgumentException e) {
             // ok
         }
         try {
             VersionRange.parse("( , 1.1)");
-            Assert.fail("Invalid syntax not failed");
+            fail("Invalid syntax not failed");
         } catch (IllegalArgumentException e) {
             // ok
         }
@@ -98,6 +101,6 @@ public class VersionRangeTest {
     public void testIsEqual() throws Exception {
         VersionRange range1 = VersionRange.parse("[1.1.0.1,1.1.0.3)");
         VersionRange range2 = VersionRange.parse(range1.toString());
-        Assert.assertTrue(range1.equals(range2));
+        assertTrue(range1.equals(range2));
     }
 }

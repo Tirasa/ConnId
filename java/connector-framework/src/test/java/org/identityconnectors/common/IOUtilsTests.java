@@ -19,18 +19,18 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common;
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class IOUtilsTests {
 
@@ -69,8 +69,8 @@ public class IOUtilsTests {
     // public static String getResourceAsString(Class<?> clazz, String res,
     // Charset charset) {
     // public static String getResourceAsString(Class<?> clazz, String res) {
-
     static class ExceptionReader extends Reader {
+
         boolean closeCalled;
 
         @Override
@@ -86,6 +86,7 @@ public class IOUtilsTests {
     }
 
     static class ExceptionInputStream extends InputStream {
+
         boolean closeCalled;
 
         @Override
@@ -101,6 +102,7 @@ public class IOUtilsTests {
     }
 
     static class ExceptionWriter extends Writer {
+
         boolean closeCalled;
 
         @Override
@@ -119,6 +121,7 @@ public class IOUtilsTests {
     }
 
     static class ExceptionOutputStream extends OutputStream {
+
         boolean closeCalled;
 
         @Override

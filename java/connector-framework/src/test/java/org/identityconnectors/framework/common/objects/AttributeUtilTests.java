@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -28,11 +29,12 @@ import static org.identityconnectors.framework.common.objects.AttributeUtil.getI
 import static org.identityconnectors.framework.common.objects.AttributeUtil.getStringValue;
 import static org.identityconnectors.framework.common.objects.AttributeUtil.isSpecial;
 import static org.identityconnectors.framework.common.objects.AttributeUtil.namesEqual;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -41,28 +43,28 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the {@link AttributeUtil} class.
  */
 public class AttributeUtilTests {
 
-    @Test(expectedExceptions = ClassCastException.class)
     public void testGetStringValue() {
-        final String TEST_VALUE = "test value";
-        // test normal..
-        Attribute attr = build("string", TEST_VALUE);
-        String value = getStringValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null..
-        attr = build("stirng");
-        value = getStringValue(attr);
-        assertNull(value);
-        // test exception
-        attr = build("string", 1);
-        getStringValue(attr);
+        assertThrows(ClassCastException.class, () -> {
+            final String TEST_VALUE = "test value";
+            // test normal..
+            Attribute attr = build("string", TEST_VALUE);
+            String value = getStringValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null..
+            attr = build("stirng");
+            value = getStringValue(attr);
+            assertNull(value);
+            // test exception
+            attr = build("string", 1);
+            getStringValue(attr);
+        });
     }
 
     @Test
@@ -82,77 +84,81 @@ public class AttributeUtilTests {
         assertEquals(value, "1");
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
     public void testGetIntegerValue() {
-        final Integer TEST_VALUE = 1;
-        // test normal
-        Attribute attr = build("int", TEST_VALUE);
-        Integer value = getIntegerValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null
-        attr = build("int");
-        value = getIntegerValue(attr);
-        assertNull(value);
-        // test class cast exception
-        attr = build("int", "1");
-        value = getIntegerValue(attr);
+        assertThrows(ClassCastException.class, () -> {
+            final Integer TEST_VALUE = 1;
+            // test normal
+            Attribute attr = build("int", TEST_VALUE);
+            Integer value = getIntegerValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null
+            attr = build("int");
+            value = getIntegerValue(attr);
+            assertNull(value);
+            // test class cast exception
+            attr = build("int", "1");
+            value = getIntegerValue(attr);
+        });
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
     public void testGetLongValue() {
-        final Long TEST_VALUE = 1L;
-        // test normal
-        Attribute attr = AttributeBuilder.build("long", TEST_VALUE);
-        Long value = AttributeUtil.getLongValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null
-        attr = AttributeBuilder.build("long");
-        value = AttributeUtil.getLongValue(attr);
-        assertNull(value);
-        // test class cast exception
-        attr = AttributeBuilder.build("long", "1");
-        value = AttributeUtil.getLongValue(attr);
+        assertThrows(ClassCastException.class, () -> {
+            final Long TEST_VALUE = 1L;
+            // test normal
+            Attribute attr = AttributeBuilder.build("long", TEST_VALUE);
+            Long value = AttributeUtil.getLongValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null
+            attr = AttributeBuilder.build("long");
+            value = AttributeUtil.getLongValue(attr);
+            assertNull(value);
+            // test class cast exception
+            attr = AttributeBuilder.build("long", "1");
+            value = AttributeUtil.getLongValue(attr);
+        });
     }
 
-    @Test(expectedExceptions = ClassCastException.class)
     public void testBigDecimalValue() {
-        final BigDecimal TEST_VALUE = BigDecimal.ONE;
-        // test normal
-        Attribute attr = AttributeBuilder.build("big", TEST_VALUE);
-        BigDecimal value = AttributeUtil.getBigDecimalValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null
-        attr = AttributeBuilder.build("big");
-        value = AttributeUtil.getBigDecimalValue(attr);
-        assertNull(value);
-        // test class cast exception
-        attr = AttributeBuilder.build("big", "1");
-        value = AttributeUtil.getBigDecimalValue(attr);
+        assertThrows(ClassCastException.class, () -> {
+            final BigDecimal TEST_VALUE = BigDecimal.ONE;
+            // test normal
+            Attribute attr = AttributeBuilder.build("big", TEST_VALUE);
+            BigDecimal value = AttributeUtil.getBigDecimalValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null
+            attr = AttributeBuilder.build("big");
+            value = AttributeUtil.getBigDecimalValue(attr);
+            assertNull(value);
+            // test class cast exception
+            attr = AttributeBuilder.build("big", "1");
+            value = AttributeUtil.getBigDecimalValue(attr);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testGetSingleValue() {
-        final Object TEST_VALUE = 1L;
-        // test normal
-        Attribute attr = AttributeBuilder.build("long", TEST_VALUE);
-        Object value = AttributeUtil.getSingleValue(attr);
-        assertEquals(value, TEST_VALUE);
-        // test null
-        attr = AttributeBuilder.build("long");
-        value = AttributeUtil.getSingleValue(attr);
-        assertNull(value);
-        // test empty
-        attr = AttributeBuilder.build("long", Collections.emptyList());
-        value = AttributeUtil.getSingleValue(attr);
-        assertNull(value);
-        // test illegal argument exception
-        AttributeUtil.getSingleValue(AttributeBuilder.build("bob", 1, 2, 3));
+        assertThrows(ClassCastException.class, () -> {
+            final Object TEST_VALUE = 1L;
+            // test normal
+            Attribute attr = AttributeBuilder.build("long", TEST_VALUE);
+            Object value = AttributeUtil.getSingleValue(attr);
+            assertEquals(value, TEST_VALUE);
+            // test null
+            attr = AttributeBuilder.build("long");
+            value = AttributeUtil.getSingleValue(attr);
+            assertNull(value);
+            // test empty
+            attr = AttributeBuilder.build("long", Collections.emptyList());
+            value = AttributeUtil.getSingleValue(attr);
+            assertNull(value);
+            // test illegal argument exception
+            AttributeUtil.getSingleValue(AttributeBuilder.build("bob", 1, 2, 3));
+        });
     }
 
     @Test
     public void testToMap() {
         Attribute attr;
-        Map<String, Attribute> expected = new HashMap<String, Attribute>();
+        Map<String, Attribute> expected = new HashMap<>();
         attr = build("daf", "daf");
         expected.put(attr.getName(), attr);
         attr = build("fasdf", "fadsf3");
@@ -163,7 +169,7 @@ public class AttributeUtilTests {
 
     @Test
     public void testGetUidAttribute() {
-        Set<Attribute> attrs = new HashSet<Attribute>();
+        Set<Attribute> attrs = new HashSet<>();
         Uid expected = new Uid("1");
         attrs.add(expected);
         Attribute attr = AttributeBuilder.build("bob");
@@ -174,12 +180,12 @@ public class AttributeUtilTests {
 
     @Test
     public void testGetBasicAttributes() {
-        Set<Attribute> set = new HashSet<Attribute>();
+        Set<Attribute> set = new HashSet<>();
         set.add(new Uid("1"));
         Attribute attr = AttributeBuilder.build("bob");
         set.add(attr);
         Set<Attribute> actual = AttributeUtil.getBasicAttributes(set);
-        Set<Attribute> expected = new HashSet<Attribute>();
+        Set<Attribute> expected = new HashSet<>();
         expected.add(attr);
         assertEquals(actual, expected);
     }
@@ -204,7 +210,7 @@ public class AttributeUtilTests {
     @Test
     public void testFindMethod() {
         Attribute expected = AttributeBuilder.build("FIND_ME");
-        Set<Attribute> attrs = new HashSet<Attribute>();
+        Set<Attribute> attrs = new HashSet<>();
         attrs.add(build("fadsf"));
         attrs.add(build("fadsfadsf"));
         attrs.add(expected);
@@ -215,7 +221,7 @@ public class AttributeUtilTests {
     @Test
     public void testEnableDate() {
         Date expected = new Date();
-        Set<Attribute> set = new HashSet<Attribute>();
+        Set<Attribute> set = new HashSet<>();
         set.add(AttributeBuilder.buildEnableDate(expected));
         Date actual = AttributeUtil.getEnableDate(set);
         assertNotNull(actual);

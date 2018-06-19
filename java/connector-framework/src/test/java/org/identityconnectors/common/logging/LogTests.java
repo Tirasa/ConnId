@@ -20,25 +20,33 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common.logging;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.identityconnectors.common.logging.Log.Level;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class LogTests {
 
     public static class MockLogSpi implements LogSpi {
+
         public Log.Level _level = null;
+
         public Class<?> _class = null;
+
         public String _message = null;
+
         public String _methodName = null;
+
         public Throwable _exception = null;
+
         public boolean _isloggable = false;
 
         @Override
@@ -305,8 +313,9 @@ public class LogTests {
         }
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void checkGetLog() {
-        Log.getLog(MockLogSpi.class);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Log.getLog(MockLogSpi.class);
+        });
     }
 }

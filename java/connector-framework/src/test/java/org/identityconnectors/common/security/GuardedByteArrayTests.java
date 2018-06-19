@@ -19,41 +19,45 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common.security;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeMethod;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import static org.fest.assertions.api.Assertions.assertThat;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GuardedByteArrayTests {
 
-    @BeforeMethod
-	public void setUp() {
+    @BeforeEach
+    public void setUp() {
         GuardedByteArray.setEncryptor(new SimpleEncryptor());
     }
 
-    @AfterMethod
-	public void tearDown() {
+    @AfterEach
+    public void tearDown() {
         GuardedByteArray.setEncryptor(null);
     }
 
     @Test
     public void testBasics() {
         GuardedByteArray bytes = new GuardedByteArray(new byte[] { 0x00, 0x01, 0x02 });
-        assertThat(decryptToBytes(bytes)).isEqualTo(new byte[] { 0x00, 0x01, 0x02 });
+        assertTrue(Arrays.equals(decryptToBytes(bytes), new byte[] { 0x00, 0x01, 0x02 }));
         assertTrue(Arrays.equals(new byte[] { 0x00, 0x01, 0x02 }, decryptToBytes(bytes)));
         bytes.appendByte((byte) 0x03);
         assertTrue(Arrays.equals(new byte[] { 0x00, 0x01, 0x02, 0x03 }, decryptToBytes(bytes)));
-        assertFalse(bytes.verifyBase64SHA1Hash(SecurityUtil.computeBase64SHA1Hash(new byte[] { 0x00, 0x01, 0x02 })));
-        assertTrue(bytes.verifyBase64SHA1Hash(SecurityUtil.computeBase64SHA1Hash(new byte[] { 0x00, 0x01, 0x02, 0x03 })));
+        assertFalse(bytes.verifyBase64SHA1Hash(
+                SecurityUtil.computeBase64SHA1Hash(new byte[] { 0x00, 0x01, 0x02 })));
+        assertTrue(bytes.verifyBase64SHA1Hash(
+                SecurityUtil.computeBase64SHA1Hash(new byte[] { 0x00, 0x01, 0x02, 0x03 })));
     }
 
     @Test
@@ -94,31 +98,31 @@ public class GuardedByteArrayTests {
             decryptToBytes(str);
             fail("expected exception");
         } catch (IllegalStateException e) {
-           /* ignore */
+            /* ignore */
         }
         try {
             str.isReadOnly();
             fail("expected exception");
         } catch (IllegalStateException e) {
-           /* ignore */
+            /* ignore */
         }
         try {
             str.appendByte((byte) 0x03);
             fail("expected exception");
         } catch (IllegalStateException e) {
-           /* ignore */
+            /* ignore */
         }
         try {
             str.copy();
             fail("expected exception");
         } catch (IllegalStateException e) {
-           /* ignore */
+            /* ignore */
         }
         try {
             str.verifyBase64SHA1Hash("foo");
             fail("expected exception");
         } catch (IllegalStateException e) {
-           /* ignore */
+            /* ignore */
         }
     }
 
@@ -127,12 +131,9 @@ public class GuardedByteArrayTests {
         for (int i = -128; i < 128; i++) {
             final byte expected = (byte) i;
             GuardedByteArray bytes = new GuardedByteArray(new byte[] { (byte) i });
-            bytes.access(new GuardedByteArray.Accessor() {
-                @Override
-                public void access(byte[] clearBytes) {
-                    byte v = clearBytes[0];
-                    assertEquals(v, expected);
-                }
+            bytes.access((byte[] clearBytes) -> {
+                byte v = clearBytes[0];
+                assertEquals(v, expected);
             });
         }
     }
@@ -143,11 +144,8 @@ public class GuardedByteArrayTests {
      */
     private byte[] decryptToBytes(GuardedByteArray bytes) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        bytes.access(new GuardedByteArray.Accessor() {
-            @Override
-            public void access(byte[] bytes) {
-                out.write(bytes, 0, bytes.length);
-            }
+        bytes.access((byte[] bytes1) -> {
+            out.write(bytes1, 0, bytes1.length);
         });
         return out.toByteArray();
     }

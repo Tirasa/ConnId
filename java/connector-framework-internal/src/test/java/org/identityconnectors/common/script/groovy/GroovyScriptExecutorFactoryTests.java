@@ -19,15 +19,16 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common.script.groovy;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.script.ScriptExecutor;
 import org.identityconnectors.common.script.ScriptExecutorFactory;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class GroovyScriptExecutorFactoryTests {
 
@@ -44,11 +45,11 @@ public class GroovyScriptExecutorFactoryTests {
     public void testWithVariables() throws Exception {
         Object actual;
         ScriptExecutor ex = getScriptExecutor("return y != null ? y : x;");
-        actual = ex.execute(CollectionUtil.<String, Object> newMap("x", 1, "y", null));
+        actual = ex.execute(CollectionUtil.<String, Object>newMap("x", 1, "y", null));
         assertEquals(actual, 1);
-        actual = ex.execute(CollectionUtil.<String, Object> newMap("x", 1, "y", 2));
+        actual = ex.execute(CollectionUtil.<String, Object>newMap("x", 1, "y", 2));
         assertEquals(actual, 2);
-        actual = ex.execute(CollectionUtil.<String, Object> newMap("x", 3, "y", null));
+        actual = ex.execute(CollectionUtil.<String, Object>newMap("x", 3, "y", null));
         assertEquals(actual, 3);
     }
 

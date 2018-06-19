@@ -19,28 +19,27 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
-import static org.fest.assertions.api.Assertions.assertThat;
 import static org.identityconnectors.framework.common.objects.LocaleTestUtil.resetLocaleCache;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Make sure to test various methods of the object class.
  */
 public class ObjectClassTests {
 
-    @BeforeMethod
+    @BeforeEach
     public void before() {
         resetLocaleCache();
     }
@@ -71,17 +70,19 @@ public class ObjectClassTests {
 
     @Test
     public void testHashCode() {
-        Set<ObjectClass> set = new HashSet<ObjectClass>();
+        Set<ObjectClass> set = new HashSet<>();
         set.add(ObjectClass.ACCOUNT);
         set.add(ObjectClass.GROUP);
         set.add(ObjectClass.ACCOUNT);
-        assertThat(set).hasSize(2).contains(ObjectClass.ACCOUNT, ObjectClass.GROUP);
+        assertEquals(2, set.size());
+        assertTrue(set.contains(ObjectClass.ACCOUNT));
+        assertTrue(set.contains(ObjectClass.GROUP));
 
         // Test case-insensitivity
         set = new HashSet<ObjectClass>();
         set.add(new ObjectClass("group"));
         set.add(new ObjectClass("Group"));
-        assertThat(set).hasSize(1);
+        assertEquals(1, set.size());
     }
 
     @Test

@@ -20,24 +20,22 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.identityconnectors.common.logging.Log;
 
 import org.identityconnectors.contract.exceptions.ObjectNotFoundException;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.TestApiOp;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
-
+import org.junit.jupiter.api.Test;
 
 /**
  * Contract test of {@link TestApiOp}. Positive test for test() is performed
@@ -46,14 +44,12 @@ import org.testng.log4testng.Logger;
  *
  * Currently there is not ability in API to test contract in case connection is lost.
  */
-@Test(testName =  TestApiOpTests.TEST_NAME)
 public class TestApiOpTests extends ContractTestBase {
 
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
+    private static final Log LOG = Log.getLog(TestApiOpTests.class);
+
     public static final String TEST_NAME = "Test";
+
     private static final String PROPERTY_NAME_INVALID_CONFIG = "invalidConfig";
 
     /**
@@ -62,14 +58,14 @@ public class TestApiOpTests extends ContractTestBase {
     @Test
     public void testTestFail() {
         final String testPropertyName = "testsuite." + TEST_NAME + "."
-        + PROPERTY_NAME_INVALID_CONFIG;
+                + PROPERTY_NAME_INVALID_CONFIG;
 
         // run test only in case operation is supported
         if (ConnectorHelper.operationsSupported(getConnectorFacade(), getAPIOperations())) {
             // READ THE TEST PROPERTY WITH WRONG CONFIGURATIONS THAT OVERRIDE THE DEFAULT CONFIGURATION
             Object o = null;
             try {
-                 o = getDataProvider().getTestSuiteAttribute(PROPERTY_NAME_INVALID_CONFIG, TEST_NAME);
+                o = getDataProvider().getTestSuiteAttribute(PROPERTY_NAME_INVALID_CONFIG, TEST_NAME);
             } catch (ObjectNotFoundException ex) {
                 fail(String.format("Missing test property: '%s'", testPropertyName));
             }
@@ -80,11 +76,11 @@ public class TestApiOpTests extends ContractTestBase {
 
             final List<?> wrongConfigList = (List<?>) o;
 
-            for (Object currentWrongConfigMap : wrongConfigList) {
-                if (!(currentWrongConfigMap instanceof Map<?,?>)) {
+            wrongConfigList.forEach(currentWrongConfigMap -> {
+                if (!(currentWrongConfigMap instanceof Map<?, ?>)) {
                     fail(String.format("Test property '%s' contains other than Map properties.", testPropertyName));
                 }
-                Map<?,?> currentWrongMapConfig = (Map<?,?>) currentWrongConfigMap;
+                Map<?, ?> currentWrongMapConfig = (Map<?, ?>) currentWrongConfigMap;
 
                 _connFacade = ConnectorHelper
                         .createConnectorFacadeWithWrongConfiguration(
@@ -92,17 +88,18 @@ public class TestApiOpTests extends ContractTestBase {
                 try {
                     // should throw RuntimeException
                     getConnectorFacade().test();
-                    String msg = String.format("test() should throw RuntimeException because configuration should be invalid. Wrong properties used: \n%s", currentWrongMapConfig.toString());
+                    String msg = String.format(
+                            "test() should throw RuntimeException because configuration should be invalid. Wrong properties used: \n%s",
+                            currentWrongMapConfig.toString());
                     fail(msg);
                 } catch (RuntimeException ex) {
                     // expected
                 }
-            }
-        }
-        else {
-            logger.info("--------------------------------");
-            logger.info("Skipping test ''testTestFail''.");
-            logger.info("--------------------------------");
+            });
+        } else {
+            LOG.info("--------------------------------");
+            LOG.info("Skipping test ''testTestFail''.");
+            LOG.info("--------------------------------");
         }
     }
 
@@ -111,7 +108,7 @@ public class TestApiOpTests extends ContractTestBase {
      */
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         // list of required operations by this test:
         s.add(TestApiOp.class);
         return s;

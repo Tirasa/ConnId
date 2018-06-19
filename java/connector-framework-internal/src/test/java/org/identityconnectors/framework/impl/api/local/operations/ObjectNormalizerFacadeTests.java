@@ -19,11 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
@@ -39,9 +40,10 @@ import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.spi.AttributeNormalizer;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class ObjectNormalizerFacadeTests {
+
     public static class MyAttributeNormalizer implements AttributeNormalizer {
 
         @Override
@@ -212,6 +214,5 @@ public class ObjectNormalizerFacadeTests {
         SyncDelta expected = builder.build();
         assertEquals(v2, expected);
         assertFalse(expected.equals(v1));
-
     }
 }

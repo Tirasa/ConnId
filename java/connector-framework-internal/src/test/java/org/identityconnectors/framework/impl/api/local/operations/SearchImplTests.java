@@ -19,17 +19,18 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 ForgeRock AS. 
+ * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.identityconnectors.framework.common.objects.filter.FilterVisitor;
-import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
@@ -44,7 +45,7 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.test.common.TestHelpers;
-import org.testng.Assert;
+import org.junit.jupiter.api.Test;
 
 /**
  * Attempt to test Search.
@@ -55,44 +56,43 @@ public class SearchImplTests {
     public void testEliminateDups() {
         List<ConnectorObject> data;
         // create duplicate data..
-        Set<ConnectorObject> expected = new LinkedHashSet<ConnectorObject>();
-        List<List<ConnectorObject>> main = new ArrayList<List<ConnectorObject>>();
+        Set<ConnectorObject> expected = new LinkedHashSet<>();
+        List<List<ConnectorObject>> main = new ArrayList<>();
         // create empty batch
-        main.add(new ArrayList<ConnectorObject>());
+        main.add(new ArrayList<>());
         // create first batch
-        data = new ArrayList<ConnectorObject>();
+        data = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             data.add(createObject(i));
             expected.add(createObject(i));
         }
         main.add(data);
         // create second batch
-        data = new ArrayList<ConnectorObject>();
+        data = new ArrayList<>();
         for (int i = 3; i < 10; i++) {
             data.add(createObject(i));
             expected.add(createObject(i));
         }
         main.add(data);
         // create third batch
-        data = new ArrayList<ConnectorObject>();
+        data = new ArrayList<>();
         for (int i = 8; i < 12; i++) {
             data.add(createObject(i));
             expected.add(createObject(i));
         }
         main.add(data);
         List<ConnectorObject> actual = TestHelpers.searchToList(
-                new DuplicateProvider(), ObjectClass.ACCOUNT, new MockFilter(
-                        main), null);
+                new DuplicateProvider(), ObjectClass.ACCOUNT, new MockFilter(main), null);
         List<ConnectorObject> expecteList = CollectionUtil.newList(expected);
-        Assert.assertEquals(expecteList, actual);
+        assertEquals(expecteList, actual);
     }
 
     @Test
     public void testAttrsToGetQuery() {
         // create duplicate data..
-        Set<ConnectorObject> expected = new LinkedHashSet<ConnectorObject>();
-        List<List<ConnectorObject>> main = new ArrayList<List<ConnectorObject>>();
-        List<ConnectorObject> data = new ArrayList<ConnectorObject>();
+        Set<ConnectorObject> expected = new LinkedHashSet<>();
+        List<List<ConnectorObject>> main = new ArrayList<>();
+        List<ConnectorObject> data = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
             bld.setUid("" + i);
@@ -108,12 +108,11 @@ public class SearchImplTests {
         Connector connector = new DuplicateProvider();
         SearchImpl search = new SearchImpl(null, connector);
         OperationOptionsBuilder bld = new OperationOptionsBuilder();
-        bld.setAttributesToGet(new String[] {"a", "b"});
+        bld.setAttributesToGet(new String[] { "a", "b" });
         OperationOptions options = bld.build();
-        List<ConnectorObject> actual = TestHelpers.searchToList(
-                search, ObjectClass.ACCOUNT, filter, options);
+        List<ConnectorObject> actual = TestHelpers.searchToList(search, ObjectClass.ACCOUNT, filter, options);
         List<ConnectorObject> expecteList = CollectionUtil.newList(expected);
-        Assert.assertEquals(expecteList, actual);
+        assertEquals(expecteList, actual);
     }
 
     ConnectorObject createObject(int uid) {
@@ -126,11 +125,13 @@ public class SearchImplTests {
 
     public static class DuplicateProvider implements
             SearchOp<List<ConnectorObject>>, Connector {
+
         /**
          * Just return something..
          */
         public static class MockFilterTranslator implements
                 FilterTranslator<List<ConnectorObject>> {
+
             @Override
             public List<List<ConnectorObject>> translate(Filter filter) {
                 return ((MockFilter) filter).getObjects();
@@ -180,6 +181,7 @@ public class SearchImplTests {
      * Use the filter to pass objects to the filter translator.
      */
     public static class MockFilter implements Filter {
+
         public final List<List<ConnectorObject>> _objs;
 
         public MockFilter(List<List<ConnectorObject>> objs) {

@@ -19,11 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -34,26 +36,26 @@ import org.identityconnectors.framework.common.exceptions.OperationTimeoutExcept
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class BufferedSearchProxyTests {
 
-    private static class ExpectedTestResults implements ResultsHandler
-    {
+    private static class ExpectedTestResults implements ResultsHandler {
+
         private int _count;
-        private List<ResultsHandler> _resultsHandlers
-                = new ArrayList<ResultsHandler>();
-        public ExpectedTestResults()
-        {
+
+        private final List<ResultsHandler> _resultsHandlers = new ArrayList<>();
+
+        public ExpectedTestResults() {
         }
-        public void addExpectedResult(ResultsHandler handler)
-        {
+
+        public void addExpectedResult(ResultsHandler handler) {
             _resultsHandlers.add(handler);
         }
-        public void addExpectedRange(int start, int size)
-        {
-            for ( int i = 0; i < size; i++ ) {
-                addExpectedResult(new CheckCountHandler(i+start));
+
+        public void addExpectedRange(int start, int size) {
+            for (int i = 0; i < size; i++) {
+                addExpectedResult(new CheckCountHandler(i + start));
             }
         }
 
@@ -66,29 +68,37 @@ public class BufferedSearchProxyTests {
             _count++;
             return rv;
         }
+
         public void assertFinished() {
             assertEquals(_resultsHandlers.size(), _count);
         }
     }
 
     private static class StopResultsHandler implements ResultsHandler {
-        private ResultsHandler _target;
+
+        private final ResultsHandler _target;
+
         public StopResultsHandler(ResultsHandler target) {
             _target = target;
         }
+
         @Override
         public boolean handle(ConnectorObject object) {
-            if (_target != null)
+            if (_target != null) {
                 _target.handle(object);
+            }
             return false;
         }
     }
 
     private static class CheckCountHandler implements ResultsHandler {
+
         private final int _expectedCount;
+
         public CheckCountHandler(int expectedCount) {
             _expectedCount = expectedCount;
         }
+
         @Override
         public boolean handle(ConnectorObject object) {
             assertEquals(object.getAttributeByName("count").getValue().get(0), _expectedCount);
@@ -105,25 +115,26 @@ public class BufferedSearchProxyTests {
             expected.addExpectedRange(0, i);
 
             SearchApiOp search = new Searches.ConnectorObjectSearch(i);
-            SearchApiOp proxy = createSearchProxy(search,i+1,50000);
-            proxy.search(ObjectClass.ACCOUNT, null, expected,null);
+            SearchApiOp proxy = createSearchProxy(search, i + 1, 50000);
+            proxy.search(ObjectClass.ACCOUNT, null, expected, null);
             expected.assertFinished();
         }
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testInvalidSearch() {
-        new BufferedResultsProxy(null, 1, 2);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new BufferedResultsProxy(null, 1, 2);
+        });
     }
 
     @Test
     public void throwTimeoutException() {
         ExpectedTestResults expected = new ExpectedTestResults();
-        SearchApiOp search = new Searches.WaitObjectSearch(10,1000);
-        SearchApiOp proxy = createSearchProxy(search,10+1,20);
+        SearchApiOp search = new Searches.WaitObjectSearch(10, 1000);
+        SearchApiOp proxy = createSearchProxy(search, 10 + 1, 20);
 
         try {
-            proxy.search(ObjectClass.ACCOUNT, null, expected,null);
+            proxy.search(ObjectClass.ACCOUNT, null, expected, null);
             fail("Should throw a IllegalState/TimeoutException??");
         } catch (OperationTimeoutException e) {
         }
@@ -135,8 +146,8 @@ public class BufferedSearchProxyTests {
         ExpectedTestResults expected = new ExpectedTestResults();
         expected.addExpectedRange(0, 5);
         expected.addExpectedResult(new StopResultsHandler(new CheckCountHandler(5)));
-        SearchApiOp search = new Searches.WaitObjectSearch(10,10);
-        SearchApiOp proxy = createSearchProxy(search,10+1,20000);
+        SearchApiOp search = new Searches.WaitObjectSearch(10, 10);
+        SearchApiOp proxy = createSearchProxy(search, 10 + 1, 20000);
 
         proxy.search(ObjectClass.ACCOUNT, null, expected, null);
         expected.assertFinished();
@@ -146,13 +157,12 @@ public class BufferedSearchProxyTests {
     public void passException() {
         ExpectedTestResults expected = new ExpectedTestResults();
         expected.addExpectedRange(0, 5);
-        SearchApiOp search = new Searches.ThrowsExceptionSearch(10,5,new IllegalArgumentException());
-        SearchApiOp proxy = createSearchProxy(search,10+1,20000);
+        SearchApiOp search = new Searches.ThrowsExceptionSearch(10, 5, new IllegalArgumentException());
+        SearchApiOp proxy = createSearchProxy(search, 10 + 1, 20000);
         try {
-            proxy.search(ObjectClass.ACCOUNT, null, expected,null);
+            proxy.search(ObjectClass.ACCOUNT, null, expected, null);
             fail("expected exception");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
 
         }
         expected.assertFinished();
@@ -162,13 +172,12 @@ public class BufferedSearchProxyTests {
     public void passError() {
         ExpectedTestResults expected = new ExpectedTestResults();
         expected.addExpectedRange(0, 5);
-        SearchApiOp search = new Searches.ThrowsExceptionSearch(10,5,null);
-        SearchApiOp proxy = createSearchProxy(search,10+1,20000);
+        SearchApiOp search = new Searches.ThrowsExceptionSearch(10, 5, null);
+        SearchApiOp proxy = createSearchProxy(search, 10 + 1, 20000);
         try {
-            proxy.search(ObjectClass.ACCOUNT, null, expected,null);
+            proxy.search(ObjectClass.ACCOUNT, null, expected, null);
             fail("expected exception");
-        }
-        catch (AssertionError e) {
+        } catch (AssertionError e) {
 
         }
         expected.assertFinished();
@@ -190,9 +199,8 @@ public class BufferedSearchProxyTests {
 
     private static SearchApiOp createSearchProxy(SearchApiOp search, int bufSize, long timeout) {
         BufferedResultsProxy timeoutHandler = new BufferedResultsProxy(search, bufSize, timeout);
-        return (SearchApiOp)Proxy.newProxyInstance(SearchApiOp.class.getClassLoader(),
-                new Class<?>[]{SearchApiOp.class},
+        return (SearchApiOp) Proxy.newProxyInstance(SearchApiOp.class.getClassLoader(),
+                new Class<?>[] { SearchApiOp.class },
                 timeoutHandler);
-
     }
 }

@@ -19,21 +19,22 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.net.URL;
 import java.util.List;
-
 import org.identityconnectors.common.Version;
 import org.identityconnectors.framework.api.ConnectorFacadeFactory;
 import org.identityconnectors.framework.api.ConnectorInfoManager;
 import org.identityconnectors.framework.api.ConnectorInfoManagerFactory;
 import org.identityconnectors.framework.common.FrameworkUtilTestHelpers;
 import org.identityconnectors.framework.common.exceptions.ConfigurationException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
+import org.junit.jupiter.api.Test;
 
 public class LocalConnectorInfoManagerTests extends ConnectorInfoManagerTestBase {
 
@@ -41,19 +42,19 @@ public class LocalConnectorInfoManagerTests extends ConnectorInfoManagerTestBase
      * Tests that the framework refuses to load a bundle that requests a
      * framework version newer than the one present.
      */
-    @Test(priority = -1)
+    @Test
     public void testCheckVersion() throws Exception {
         // The test bundles require framework 1.0, so pretend the framework is
         // older.
         FrameworkUtilTestHelpers.setFrameworkVersion(Version.parse("0.5"));
         try {
             List<URL> urls = getTestBundles();
-            Assert.assertFalse(urls.isEmpty());
+            assertFalse(urls.isEmpty());
             ConnectorInfoManagerFactory.getInstance().getLocalManager(urls.get(0));
-            Assert.fail();
+            fail();
         } catch (ConfigurationException e) {
             if (!e.getMessage().contains("unrecognized framework version")) {
-                Assert.fail();
+                fail();
             }
         }
     }

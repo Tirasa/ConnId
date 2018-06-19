@@ -20,18 +20,20 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.identityconnectors.common.logging.Log;
 
 import org.identityconnectors.contract.exceptions.ObjectNotFoundException;
 import org.identityconnectors.framework.api.operations.APIOperation;
@@ -49,27 +51,26 @@ import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Contract test of {@link SearchApiOp}
+ * Contract test of {@link SearchApiOp}.
  */
-@Test(testName =  SearchApiOpTests.TEST_NAME)
 public class SearchApiOpTests extends ObjectClassRunner {
 
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
+    private static final Log LOG = Log.getLog(SearchApiOpTests.class);
+
     public static final String TEST_NAME = "Search";
+
     /**
      * Properties' prefixes to enable case insensitive search tests
      * (Connectors by default are not capable of this.)
      */
     private static final String CASE_INSENSITIVE_PREFIX = "caseinsensitive";
+
     private static final String DISABLE = "disable";
+
     private static final String COMPARE_BY_UID_ONLY = "compareExistingObjectsByUidOnly";
 
     /**
@@ -77,7 +78,7 @@ public class SearchApiOpTests extends ObjectClassRunner {
      */
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> requiredOps = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> requiredOps = new HashSet<>();
         // list of required operations by this test:
         requiredOps.add(CreateApiOp.class);
         requiredOps.add(SearchApiOp.class);
@@ -91,11 +92,10 @@ public class SearchApiOpTests extends ObjectClassRunner {
     @Override
     protected void testRun(ObjectClass objectClass) {
         Uid uid = null;
-        List<Uid> uids = new ArrayList<Uid>();
-        List<Set<Attribute>> attrs = new ArrayList<Set<Attribute>>();
+        List<Uid> uids = new ArrayList<>();
+        List<Set<Attribute>> attrs = new ArrayList<>();
         ConnectorObject coFound = null;
         final int recordCount = 10;
-
 
         try {
             // obtain objects stored in connector resource, before test inserts
@@ -110,7 +110,8 @@ public class SearchApiOpTests extends ObjectClassRunner {
                 Set<Attribute> attr = ConnectorHelper.getCreateableAttributes(getDataProvider(),
                         getObjectClassInfo(objectClass), getTestName(), i, true, false);
 
-                Uid luid = getConnectorFacade().create(objectClass, attr, getOperationOptionsByOp(objectClass, CreateApiOp.class));
+                Uid luid = getConnectorFacade().create(objectClass, attr, getOperationOptionsByOp(objectClass,
+                        CreateApiOp.class));
                 assertNotNull(luid, "Create returned null uid.");
                 attrs.add(attr);
                 uids.add(luid);
@@ -125,7 +126,8 @@ public class SearchApiOpTests extends ObjectClassRunner {
             Filter fltUid = FilterBuilder.equalTo(uid);
             List<ConnectorObject> coObjects = ConnectorHelper.search(getConnectorFacade(),
                     objectClass, fltUid, getOperationOptionsByOp(objectClass, SearchApiOp.class));
-            assertTrue(coObjects.size() == 1, "Search filter by uid failed, expected to return one object, but returned "
+            assertTrue(coObjects.size() == 1,
+                    "Search filter by uid failed, expected to return one object, but returned "
                     + coObjects.size());
             coFound = coObjects.get(0);
 
@@ -146,10 +148,11 @@ public class SearchApiOpTests extends ObjectClassRunner {
             //search by all non special readable attributes
             Filter fltAllAtts = null;
             // attributes which are used in filter must be the same for all filtered objects
-            Set<Attribute> filteredAttrs = new HashSet<Attribute>();
+            Set<Attribute> filteredAttrs = new HashSet<>();
 
             for (Attribute attribute : searchBy) {
-                if (!AttributeUtil.isSpecial(attribute) && ConnectorHelper.isReadable(getObjectClassInfo(objectClass), attribute)) {
+                if (!AttributeUtil.isSpecial(attribute) && ConnectorHelper.isReadable(getObjectClassInfo(objectClass),
+                        attribute)) {
                     if (fltAllAtts == null) {
                         fltAllAtts = FilterBuilder.equalTo(attribute);
                     } else {
@@ -183,12 +186,14 @@ public class SearchApiOpTests extends ObjectClassRunner {
             }
 
             //check null filter
-            coObjects = ConnectorHelper.search(getConnectorFacade(), objectClass, null, getOperationOptionsByOp(objectClass, SearchApiOp.class));
-            assertTrue(coObjects.size() == uids.size() + coBeforeTest.size(), "Null-filter search failed, wrong number of objects returned, expected: "
+            coObjects = ConnectorHelper.search(getConnectorFacade(), objectClass, null, getOperationOptionsByOp(
+                    objectClass, SearchApiOp.class));
+            assertTrue(coObjects.size() == uids.size() + coBeforeTest.size(),
+                    "Null-filter search failed, wrong number of objects returned, expected: "
                     + (uids.size() + coBeforeTest.size()) + " but found: "
                     + coObjects.size());
 
-            List<Uid> tempUids = new ArrayList<Uid>(uids);
+            List<Uid> tempUids = new ArrayList<>(uids);
 
             for (ConnectorObject cObject : coObjects) {
                 // check if the uid is in list of objects created by test
@@ -209,12 +214,11 @@ public class SearchApiOpTests extends ObjectClassRunner {
                     }
                 }
             }
-            assertTrue(tempUids.size() == 0, "Null-filter search didn't return all created objects by search test.");
-
+            assertTrue(tempUids.isEmpty(), "Null-filter search didn't return all created objects by search test.");
 
         } finally {
             // remove objects created by test
-            for (Uid deluid : uids) {
+            uids.forEach((deluid) -> {
                 try {
                     ConnectorHelper.deleteObject(getConnectorFacade(), objectClass,
                             deluid, false, getOperationOptionsByOp(objectClass, DeleteApiOp.class));
@@ -222,7 +226,7 @@ public class SearchApiOpTests extends ObjectClassRunner {
                     // ok
                     // note: this is thrown, when we delete the same object twice.
                 }
-            }
+            });
         }
 
     }
@@ -231,7 +235,8 @@ public class SearchApiOpTests extends ObjectClassRunner {
      * Test Search without specified OperationOptions attrsToGet which is the default for all other tests.
      * All the other tests contain explicit attrsToGet.
      */
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
+    @ParameterizedTest
+    @MethodSource("objectClasses")
     public void testSearchWithoutAttrsToGet(ObjectClass objectClass) {
         // run the contract test only if search is supported by tested object class
         if (ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass,
@@ -266,9 +271,9 @@ public class SearchApiOpTests extends ObjectClassRunner {
                 }
             }
         } else {
-            logger.info("----------------------------------------------------------------------------------------");
-            logger.info("Skipping test ''testSearchWithoutAttrsToGet'' for object class ''"+objectClass+"''.");
-            logger.info("----------------------------------------------------------------------------------------");
+            LOG.info("----------------------------------------------------------------------------------------");
+            LOG.info("Skipping test ''testSearchWithoutAttrsToGet'' for object class ''" + objectClass + "''.");
+            LOG.info("----------------------------------------------------------------------------------------");
         }
     }
 
@@ -286,12 +291,12 @@ public class SearchApiOpTests extends ObjectClassRunner {
      *
      * There is twice Search performed, once with changed case. The results should be identical.
      */
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
+    @ParameterizedTest
+    @MethodSource("objectClasses")
     public void testCaseInsensitiveSearch(ObjectClass objectClass) {
         // run the contract test only if search is supported by tested object
         // class
-        if (ConnectorHelper.operationsSupported(getConnectorFacade(),
-                objectClass, getAPIOperations())
+        if (ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass, getAPIOperations())
                 && canSearchCaseInsensitive()) {
             Uid uid = null;
 
@@ -311,14 +316,12 @@ public class SearchApiOpTests extends ObjectClassRunner {
                 // get created uid and change its case, than perform 2nd search for uid with changed case
                 String uidStr = uid.getUidValue();
 
-
                 // change the case in UID
                 String caseChngd_uidStr = changeCase(uidStr); // inverts the case of the original uid (example: BvZAO96 --> bVzao96)
 
                 // change the case in NAME
                 String name = getName(objectClass, uid);
                 String caseChngd_NAME = changeCase(name);
-
 
                 //perform search with changed case UID
                 ConnectorObject searchWithChngdCaseResult = searchForUid(objectClass,
@@ -341,10 +344,9 @@ public class SearchApiOpTests extends ObjectClassRunner {
                 }
             }
         } else {
-            logger.info("----------------------------------------------------------------------------------------");
-            logger.info(
-                    "Skipping test ''testCaseInsensitiveSearch'' for object class ''"+objectClass+"''.");
-            logger.info("----------------------------------------------------------------------------------------");
+            LOG.info("----------------------------------------------------------------------------------------");
+            LOG.info("Skipping test ''testCaseInsensitiveSearch'' for object class ''" + objectClass + "''.");
+            LOG.info("----------------------------------------------------------------------------------------");
         }
     }
 
@@ -417,8 +419,7 @@ public class SearchApiOpTests extends ObjectClassRunner {
         Boolean canSearchCIns = true;
         try {
             canSearchCIns = !(Boolean) getDataProvider().getTestSuiteAttribute(
-                    DISABLE + "." + CASE_INSENSITIVE_PREFIX,
-                    TEST_NAME);
+                    DISABLE + "." + CASE_INSENSITIVE_PREFIX, TEST_NAME);
 
         } catch (ObjectNotFoundException ex) {
             // exceptions is throw in case property definition is not found
@@ -435,8 +436,7 @@ public class SearchApiOpTests extends ObjectClassRunner {
         // by default it's supposed that all attributes all compared
         boolean compareByUidOnly = false;
         try {
-            compareByUidOnly = (Boolean) getDataProvider().getTestSuiteAttribute(
-                    COMPARE_BY_UID_ONLY, TEST_NAME);
+            compareByUidOnly = (Boolean) getDataProvider().getTestSuiteAttribute(COMPARE_BY_UID_ONLY, TEST_NAME);
 
         } catch (ObjectNotFoundException ex) {
             // exceptions is throw in case property definition is not found

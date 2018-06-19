@@ -19,19 +19,20 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
 import static org.identityconnectors.framework.common.objects.AttributeInfoBuilder.build;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.identityconnectors.common.security.GuardedString;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class AttributeInfoUtilTests {
 
@@ -44,7 +45,7 @@ public class AttributeInfoUtilTests {
     @Test
     public void testFindMethod() {
         AttributeInfo expected = build("FIND_ME");
-        Set<AttributeInfo> attrs = new HashSet<AttributeInfo>();
+        Set<AttributeInfo> attrs = new HashSet<>();
         attrs.add(build("fadsf"));
         attrs.add(build("fadsfadsf"));
         attrs.add(expected);
@@ -52,14 +53,16 @@ public class AttributeInfoUtilTests {
         assertTrue(AttributeInfoUtil.find("Daffff", attrs) == null);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testPasswordBuild() {
-        AttributeInfoBuilder.build(OperationalAttributes.PASSWORD_NAME);
+        assertThrows(IllegalArgumentException.class, () -> {
+            AttributeInfoBuilder.build(OperationalAttributes.PASSWORD_NAME);
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void testCurrentPasswordBuild() {
-        AttributeInfoBuilder.build(OperationalAttributes.CURRENT_PASSWORD_NAME);
+        assertThrows(IllegalArgumentException.class, () -> {
+            AttributeInfoBuilder.build(OperationalAttributes.CURRENT_PASSWORD_NAME);
+        });
     }
 
     @Test

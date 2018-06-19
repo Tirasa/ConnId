@@ -19,8 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,27 +34,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
-import org.identityconnectors.common.*;
-import org.identityconnectors.contract.exceptions.*;
-import org.identityconnectors.framework.api.operations.*;
-import org.identityconnectors.framework.common.objects.*;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
-
+import org.identityconnectors.common.CollectionUtil;
+import org.identityconnectors.contract.exceptions.ObjectNotFoundException;
+import org.identityconnectors.framework.api.operations.APIOperation;
+import org.identityconnectors.framework.api.operations.SchemaApiOp;
+import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
+import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
+import org.identityconnectors.framework.api.operations.TestApiOp;
+import org.identityconnectors.framework.api.operations.ValidateApiOp;
+import org.identityconnectors.framework.common.objects.AttributeInfo;
+import org.identityconnectors.framework.common.objects.AttributeInfoUtil;
+import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.ObjectClassInfo;
+import org.identityconnectors.framework.common.objects.Schema;
+import org.identityconnectors.framework.common.objects.Uid;
+import org.junit.jupiter.api.Test;
 
 /**
  * Contract test of {@link SchemaApiOp} operation.
  *
  * @author Zdenek Louzensky
- *
  */
-@Test(testName =  SchemaApiOpTests.TEST_NAME)
 public class SchemaApiOpTests extends ContractTestBase {
 
     public static final String TEST_NAME = "Schema";
@@ -58,18 +64,26 @@ public class SchemaApiOpTests extends ContractTestBase {
      * it's added .testsuite.${type.name} after the prefix
      */
     private static final String SUPPORTED_OBJECT_CLASSES_PROPERTY_PREFIX = "oclasses";
+
     private static final String SUPPORTED_OPERATIONS_PROPERTY_PREFIX = "operations";
+
     private static final String STRICT_CHECK_PROPERTY_PREFIX = "strictCheck";
 
     /*
      * AttributeInfo field names used in property configuration:
      */
     private static final String ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT = "returnedByDefault";
+
     private static final String ATTRIBUTE_FIELD_MULTI_VALUE = "multiValue";
+
     private static final String ATTRIBUTE_FIELD_REQUIRED = "required";
+
     private static final String ATTRIBUTE_FIELD_CREATEABLE = "createable";
+
     private static final String ATTRIBUTE_FIELD_UPDATEABLE = "updateable";
+
     private static final String ATTRIBUTE_FILED_READABLE = "readable";
+
     private static final String ATTRIBUTE_FIELD_TYPE = "type";
 
     /**
@@ -77,7 +91,7 @@ public class SchemaApiOpTests extends ContractTestBase {
      */
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> s = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
         // list of required operations by this test:
         s.add(SchemaApiOp.class);
         return s;
@@ -90,13 +104,13 @@ public class SchemaApiOpTests extends ContractTestBase {
     public void testUidNotPresent() {
         final Schema schema = getConnectorFacade().schema();
         Set<ObjectClassInfo> ocInfos = schema.getObjectClassInfo();
-        for (ObjectClassInfo ocInfo : ocInfos) {
-            Set<AttributeInfo> attInfos = ocInfo.getAttributeInfo();
-            for (AttributeInfo attInfo : attInfos) {
-                //ensure there is not Uid present
-                assertTrue(!attInfo.is(Uid.NAME),"Uid can't be present in connector Schema!");
-            }
-        }
+        ocInfos.stream().map((ocInfo) -> ocInfo.getAttributeInfo()).
+                forEachOrdered(attInfos -> {
+                    attInfos.forEach((attInfo) -> {
+                        //ensure there is not Uid present
+                        assertTrue(!attInfo.is(Uid.NAME), "Uid can't be present in connector Schema!");
+                    });
+                });
     }
 
     /**
@@ -106,28 +120,27 @@ public class SchemaApiOpTests extends ContractTestBase {
     public void testNamePresent() {
         final Schema schema = getConnectorFacade().schema();
         Set<ObjectClassInfo> ocInfos = schema.getObjectClassInfo();
-        for (ObjectClassInfo ocInfo : ocInfos) {
+        ocInfos.forEach((ocInfo) -> {
             Set<AttributeInfo> attInfos = ocInfo.getAttributeInfo();
             // ensure there is NAME present
-            boolean found = false;
-            for (AttributeInfo attInfo : attInfos) {
-                if (attInfo.is(Name.NAME)) found = true;
-            }
-            final String MSG = "Name is not present among attributes of object class '%s'.";
-            assertTrue(found,String.format(MSG, ocInfo.getType()));
-        }
+            boolean found = attInfos.stream().anyMatch(attInfo -> attInfo.is(Name.NAME));
+            final String msg = "Name is not present among attributes of object class '%s'.";
+            assertTrue(found, String.format(msg, ocInfo.getType()));
+        });
     }
 
     /**
      * List of all operations which must be supported by all object classes when
      * supported at all.
      */
-    private static final List<Class<? extends APIOperation>> opSupportedByAllOClasses = new LinkedList<Class<? extends APIOperation>>();
+    private static final List<Class<? extends APIOperation>> OP_SUPPORTED_BY_ALL_OCLASSES =
+            new LinkedList<Class<? extends APIOperation>>();
+
     static {
-        opSupportedByAllOClasses.add(ScriptOnConnectorApiOp.class);
-        opSupportedByAllOClasses.add(ScriptOnResourceApiOp.class);
-        opSupportedByAllOClasses.add(TestApiOp.class);
-        opSupportedByAllOClasses.add(ValidateApiOp.class);
+        OP_SUPPORTED_BY_ALL_OCLASSES.add(ScriptOnConnectorApiOp.class);
+        OP_SUPPORTED_BY_ALL_OCLASSES.add(ScriptOnResourceApiOp.class);
+        OP_SUPPORTED_BY_ALL_OCLASSES.add(TestApiOp.class);
+        OP_SUPPORTED_BY_ALL_OCLASSES.add(ValidateApiOp.class);
     }
 
     /**
@@ -139,15 +152,16 @@ public class SchemaApiOpTests extends ContractTestBase {
     public void testOpSupportedByAllOClasses() {
         final Schema schema = getConnectorFacade().schema();
         Set<ObjectClassInfo> ocInfos = schema.getObjectClassInfo();
-        for (Class<? extends APIOperation> apiOp : opSupportedByAllOClasses) {
+        OP_SUPPORTED_BY_ALL_OCLASSES.forEach((apiOp) -> {
             Set<ObjectClassInfo> suppOClasses = schema.getSupportedObjectClassesByOperation(apiOp);
             if (!suppOClasses.isEmpty()) {
                 // operation is supported for at least one object class
                 // then it must be supported for all object classes
-                final String MSG = "Operation %s must be in the schema supported by all object classes which supports connector.";
-                assertTrue(CollectionUtil.equals(suppOClasses, ocInfos),String.format(MSG, apiOp));
+                final String MSG =
+                        "Operation %s must be in the schema supported by all object classes which supports connector.";
+                assertTrue(CollectionUtil.equals(suppOClasses, ocInfos), String.format(MSG, apiOp));
             }
-        }
+        });
     }
 
     /**
@@ -166,7 +180,7 @@ public class SchemaApiOpTests extends ContractTestBase {
         List<String> expOClasses = (List<String>) getTestPropertyOrFail(List.class.getName(),
                 SUPPORTED_OBJECT_CLASSES_PROPERTY_PREFIX, true);
 
-        List<String> testedOClasses = new ArrayList<String>();
+        List<String> testedOClasses = new ArrayList<>();
 
         // iterate over object classes and check that were expected and check
         // their attributes
@@ -174,7 +188,7 @@ public class SchemaApiOpTests extends ContractTestBase {
             boolean expected = expOClasses.contains(ocInfo.getType());
             if (strictCheck) {
                 msg = "Schema returned object class %s that is not expected to be suported.";
-                assertTrue(expected,String.format(msg, ocInfo.getType()));
+                assertTrue(expected, String.format(msg, ocInfo.getType()));
             } else if (!expected) {
                 // this object class was not expected, and we are not checking strictly,
                 // so skip this object class
@@ -187,13 +201,13 @@ public class SchemaApiOpTests extends ContractTestBase {
             @SuppressWarnings("unchecked")
             List<String> expAttrs = (List<String>) getTestPropertyOrFail(List.class.getName(),
                     "attributes." + ocInfo.getType() + "."
-                            + SUPPORTED_OBJECT_CLASSES_PROPERTY_PREFIX, strictCheck);
+                    + SUPPORTED_OBJECT_CLASSES_PROPERTY_PREFIX, strictCheck);
 
             // check object class attributes
             for (AttributeInfo attr : ocInfo.getAttributeInfo()) {
                 if (strictCheck) {
                     msg = "Object class %s contains unexpected attribute: %s.";
-                    assertTrue(expAttrs.contains(attr.getName()),String.format(
+                    assertTrue(expAttrs.contains(attr.getName()), String.format(
                             msg, ocInfo.getType(), attr.getName()));
                 }
 
@@ -201,7 +215,7 @@ public class SchemaApiOpTests extends ContractTestBase {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> expAttrValues = (Map<String, Object>) getTestPropertyOrFail(
                         Map.class.getName(), attr.getName() + ".attribute." + ocInfo.getType()
-                                + "." + SUPPORTED_OBJECT_CLASSES_PROPERTY_PREFIX, strictCheck);
+                        + "." + SUPPORTED_OBJECT_CLASSES_PROPERTY_PREFIX, strictCheck);
 
                 // check attribute's values in case the test is strict or property is provided
                 if (strictCheck || expAttrValues != null) {
@@ -209,7 +223,6 @@ public class SchemaApiOpTests extends ContractTestBase {
                     checkAttributeValues(ocInfo, attr, expAttrValues);
                 }
             }
-
 
             // check that all expected attributes are in schema
             for (String expAttr : expAttrs) {
@@ -220,7 +233,7 @@ public class SchemaApiOpTests extends ContractTestBase {
 
         }
 
-        Set<String> notFoundOClasses = new HashSet<String>(expOClasses);
+        Set<String> notFoundOClasses = new HashSet<>(expOClasses);
         notFoundOClasses.removeAll(testedOClasses);
         if (!notFoundOClasses.isEmpty()) {
             msg = "Schema did not contain expected object class %s.";
@@ -234,14 +247,14 @@ public class SchemaApiOpTests extends ContractTestBase {
         Map<Class<? extends APIOperation>, Set<ObjectClassInfo>> supportedOperations = schema
                 .getSupportedObjectClassesByOperation();
 
-        List<String> testedOps = new ArrayList<String>();
+        List<String> testedOps = new ArrayList<>();
 
         // iterate over operations
         for (Class<? extends APIOperation> operation : supportedOperations.keySet()) {
             boolean expectedOp = expOperations.containsKey(operation.getSimpleName());
             if (strictCheck) {
                 msg = "Schema returned unexpected operation: %s.";
-                assertTrue(expectedOp,String.format(msg, operation.getSimpleName()));
+                assertTrue(expectedOp, String.format(msg, operation.getSimpleName()));
             } else if (!expectedOp) {
                 // this operation was not expected, and we are not checking strictly,
                 // so skip this operation
@@ -254,13 +267,13 @@ public class SchemaApiOpTests extends ContractTestBase {
             List<String> expOClassesForOp = expOperations.get(operation.getSimpleName());
             assertNotNull(expOClassesForOp);
 
-            List<String> testedOClassesForOp = new ArrayList<String>();
+            List<String> testedOClassesForOp = new ArrayList<>();
 
             for (ObjectClassInfo ocInfo : supportedOperations.get(operation)) {
                 boolean expectedOClassForOp = expOClassesForOp.contains(ocInfo.getType());
                 if (strictCheck) {
                     msg = "Operation %s supports unexpected object class: %s.";
-                    assertTrue(expectedOClassForOp,String.format(msg, operation.getSimpleName(), ocInfo.getType()));
+                    assertTrue(expectedOClassForOp, String.format(msg, operation.getSimpleName(), ocInfo.getType()));
                 } else if (!expectedOClassForOp) {
                     // this object class was not expected for this operation, and we are not checking strictly,
                     // so skip this object class
@@ -270,7 +283,7 @@ public class SchemaApiOpTests extends ContractTestBase {
                 testedOClassesForOp.add(ocInfo.getType());
             }
 
-            Set<String> notFoundOClassesForOp = new HashSet<String>(expOClassesForOp);
+            Set<String> notFoundOClassesForOp = new HashSet<>(expOClassesForOp);
             notFoundOClassesForOp.removeAll(testedOClassesForOp);
             if (!notFoundOClassesForOp.isEmpty()) {
                 msg = "Operation %s is not supported by object class %s.";
@@ -278,7 +291,7 @@ public class SchemaApiOpTests extends ContractTestBase {
             }
         }
 
-        Set<String> notFoundOps = new HashSet<String>(expOperations.keySet());
+        Set<String> notFoundOps = new HashSet<>(expOperations.keySet());
         notFoundOps.removeAll(testedOps);
         if (!notFoundOps.isEmpty()) {
             msg = "Schema did not contain expected operation %s.";
@@ -294,31 +307,39 @@ public class SchemaApiOpTests extends ContractTestBase {
             Map<String, Object> expectedValues) {
         // check that all attributes are provided
         String msg = "Missing property definition for field '%s' of attribute '" + attribute.getName()
-                        + "' in object class " + ocInfo.getType();
-        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_TYPE),String.format(msg, ATTRIBUTE_FIELD_TYPE));
-        assertNotNull(expectedValues.get(ATTRIBUTE_FILED_READABLE),String.format(msg, ATTRIBUTE_FILED_READABLE));
-        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_CREATEABLE),String.format(msg, ATTRIBUTE_FIELD_CREATEABLE));
-        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_UPDATEABLE),String.format(msg, ATTRIBUTE_FIELD_UPDATEABLE));
-        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_REQUIRED),String.format(msg, ATTRIBUTE_FIELD_REQUIRED));
-        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_MULTI_VALUE),String.format(msg, ATTRIBUTE_FIELD_MULTI_VALUE));
-        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT),String.format(msg, ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT));
+                + "' in object class " + ocInfo.getType();
+        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_TYPE), String.format(msg, ATTRIBUTE_FIELD_TYPE));
+        assertNotNull(expectedValues.get(ATTRIBUTE_FILED_READABLE), String.format(msg, ATTRIBUTE_FILED_READABLE));
+        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_CREATEABLE), String.format(msg, ATTRIBUTE_FIELD_CREATEABLE));
+        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_UPDATEABLE), String.format(msg, ATTRIBUTE_FIELD_UPDATEABLE));
+        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_REQUIRED), String.format(msg, ATTRIBUTE_FIELD_REQUIRED));
+        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_MULTI_VALUE), String.format(msg, ATTRIBUTE_FIELD_MULTI_VALUE));
+        assertNotNull(expectedValues.get(ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT), String.format(msg,
+                ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT));
 
         msg = "Object class '" + ocInfo.getType() + "', attribute '" + attribute.getName()
                 + "': field '%s' expected value is '%s', but returned '%s'.";
-        assertEquals(attribute.getType(), expectedValues.get(ATTRIBUTE_FIELD_TYPE), String.format(msg, ATTRIBUTE_FIELD_TYPE, expectedValues
-                .get(ATTRIBUTE_FIELD_TYPE), attribute.getType().getName()));
-        assertEquals(attribute.isReadable(), expectedValues.get(ATTRIBUTE_FILED_READABLE), String.format(msg, ATTRIBUTE_FILED_READABLE, expectedValues
-                .get(ATTRIBUTE_FILED_READABLE), attribute.isReadable()));
-        assertEquals(attribute.isCreateable(), expectedValues.get(ATTRIBUTE_FIELD_CREATEABLE), String.format(msg, ATTRIBUTE_FIELD_CREATEABLE, expectedValues
-                .get(ATTRIBUTE_FIELD_CREATEABLE), attribute.isCreateable()));
-        assertEquals(attribute.isUpdateable(), expectedValues.get(ATTRIBUTE_FIELD_UPDATEABLE), String.format(msg, ATTRIBUTE_FIELD_UPDATEABLE, expectedValues
-                .get(ATTRIBUTE_FIELD_UPDATEABLE), attribute.isUpdateable()));
-        assertEquals(attribute.isRequired(), expectedValues.get(ATTRIBUTE_FIELD_REQUIRED), String.format(msg, ATTRIBUTE_FIELD_REQUIRED, expectedValues
-                .get(ATTRIBUTE_FIELD_REQUIRED), attribute.isRequired()));
-        assertEquals(attribute.isMultiValued(), expectedValues.get(ATTRIBUTE_FIELD_MULTI_VALUE), String.format(msg, ATTRIBUTE_FIELD_MULTI_VALUE, expectedValues
-                .get(ATTRIBUTE_FIELD_MULTI_VALUE), attribute.isMultiValued()));
-        assertEquals(attribute.isReturnedByDefault(), expectedValues.get(ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT), String.format(msg, ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT,
-                expectedValues.get(ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT), attribute.isReturnedByDefault()));
+        assertEquals(attribute.getType(), expectedValues.get(ATTRIBUTE_FIELD_TYPE), String.format(msg,
+                ATTRIBUTE_FIELD_TYPE, expectedValues
+                        .get(ATTRIBUTE_FIELD_TYPE), attribute.getType().getName()));
+        assertEquals(attribute.isReadable(), expectedValues.get(ATTRIBUTE_FILED_READABLE), String.format(msg,
+                ATTRIBUTE_FILED_READABLE, expectedValues
+                        .get(ATTRIBUTE_FILED_READABLE), attribute.isReadable()));
+        assertEquals(attribute.isCreateable(), expectedValues.get(ATTRIBUTE_FIELD_CREATEABLE), String.format(msg,
+                ATTRIBUTE_FIELD_CREATEABLE, expectedValues
+                        .get(ATTRIBUTE_FIELD_CREATEABLE), attribute.isCreateable()));
+        assertEquals(attribute.isUpdateable(), expectedValues.get(ATTRIBUTE_FIELD_UPDATEABLE), String.format(msg,
+                ATTRIBUTE_FIELD_UPDATEABLE, expectedValues
+                        .get(ATTRIBUTE_FIELD_UPDATEABLE), attribute.isUpdateable()));
+        assertEquals(attribute.isRequired(), expectedValues.get(ATTRIBUTE_FIELD_REQUIRED), String.format(msg,
+                ATTRIBUTE_FIELD_REQUIRED, expectedValues
+                        .get(ATTRIBUTE_FIELD_REQUIRED), attribute.isRequired()));
+        assertEquals(attribute.isMultiValued(), expectedValues.get(ATTRIBUTE_FIELD_MULTI_VALUE), String.format(msg,
+                ATTRIBUTE_FIELD_MULTI_VALUE, expectedValues
+                        .get(ATTRIBUTE_FIELD_MULTI_VALUE), attribute.isMultiValued()));
+        assertEquals(attribute.isReturnedByDefault(), expectedValues.get(ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT), String.
+                format(msg, ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT,
+                        expectedValues.get(ATTRIBUTE_FIELD_RETURNED_BY_DEFAULT), attribute.isReturnedByDefault()));
     }
 
     /**
@@ -328,9 +349,8 @@ public class SchemaApiOpTests extends ContractTestBase {
     private Boolean getStrictCheckProperty() {
         Boolean strict = true;
         try {
-            strict = (Boolean)getDataProvider().getTestSuiteAttribute(STRICT_CHECK_PROPERTY_PREFIX, TEST_NAME);
-        }
-        catch (ObjectNotFoundException ex) {
+            strict = (Boolean) getDataProvider().getTestSuiteAttribute(STRICT_CHECK_PROPERTY_PREFIX, TEST_NAME);
+        } catch (ObjectNotFoundException ex) {
             // ok - property not defined
         }
 
@@ -346,13 +366,14 @@ public class SchemaApiOpTests extends ContractTestBase {
         try {
             propValue = getDataProvider().getTestSuiteAttribute(propName, TEST_NAME);
         } catch (ObjectNotFoundException ex) {
-            if (failOnError) fail("Property definition not found: " + ex.getMessage());
+            if (failOnError) {
+                fail("Property definition not found: " + ex.getMessage());
+            }
         }
-        if (failOnError) assertNotNull(propValue);
+        if (failOnError) {
+            assertNotNull(propValue);
+        }
 
         return propValue;
     }
-
-
-
 }

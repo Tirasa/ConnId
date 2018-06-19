@@ -19,25 +19,25 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 ForgeRock AS. 
- * Portions Copyrighted 2018 ConnId. 
+ * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId.
  */
 package org.identityconnectors.framework.common.objects;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
 import org.identityconnectors.framework.common.objects.filter.FilterVisitor;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class FilterBuilderTests {
 
     // =======================================================================
     // Equals..
     // =======================================================================
-
     @Test
     public void equalsFilter() {
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
@@ -72,7 +72,6 @@ public class FilterBuilderTests {
     // =======================================================================
     // Comparable..
     // =======================================================================
-
     @Test
     public void greaterThanFilter() {
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
@@ -193,11 +192,10 @@ public class FilterBuilderTests {
         bld.addAttribute("name", "falkjfklj");
         assertFalse(filter.accept(bld.build()));
     }
-    
+
     // =======================================================================
     // Binary Operators
     // =======================================================================
-
     @Test
     public void andFilter() {
         Filter filter;
@@ -233,9 +231,10 @@ public class FilterBuilderTests {
         assertTrue(filter.accept(null));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
     public void illegalArgument() {
-        FilterBuilder.lessThan((Attribute) null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            FilterBuilder.lessThan((Attribute) null);
+        });
     }
 
     // =======================================================================
@@ -268,8 +267,8 @@ public class FilterBuilderTests {
     // =======================================================================
     // Filters
     // =======================================================================
-
     static class TrueFilter implements Filter {
+
         @Override
         public boolean accept(ConnectorObject obj) {
             return true;
@@ -282,6 +281,7 @@ public class FilterBuilderTests {
     }
 
     static class FalseFilter implements Filter {
+
         @Override
         public boolean accept(ConnectorObject obj) {
             return false;

@@ -51,9 +51,45 @@
     <!-- Provided Dependencies -->
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+      <artifactId>groovy</artifactId>
       <scope>provided</scope>
-      <optional>true</optional>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-templates</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-bsf</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-jsr223</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-datetime</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-dateutil</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-sql</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>      
     </dependency>
     <dependency>
       <groupId>net.tirasa.connid</groupId>
@@ -66,13 +102,11 @@
 
     <!-- Test Dependencies -->
     <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert-core</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>net.tirasa.connid</groupId>
       <artifactId>connector-framework</artifactId>
@@ -80,6 +114,7 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+
     <!-- Force to build the test bundles before -->
     <dependency>
       <groupId>net.tirasa.connid</groupId>

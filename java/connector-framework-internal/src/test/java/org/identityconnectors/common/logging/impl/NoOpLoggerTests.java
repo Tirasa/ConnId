@@ -20,14 +20,15 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.common.logging.impl;
 
-import static org.testng.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.logging.LogSpi;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Just make sure the class behavior doesn't change..
@@ -41,6 +42,6 @@ public class NoOpLoggerTests {
             assertFalse(logSpi.isLoggable(String.class, level));
         }
         // hopefully this will throw a NPE if someone changes it..
-        logSpi.log(null, (String)null, null, null, null);
+        logSpi.log(null, (String) null, null, null, null);
     }
 }

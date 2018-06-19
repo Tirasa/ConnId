@@ -19,69 +19,54 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.data;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.identityconnectors.common.security.GuardedString;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
- * JUnit test class for RandomGenerator
+ * JUnit test class for RandomGenerator.
  *
  * @author David Adam
- *
  */
 public class RandomGeneratorTest {
 
     @Test
     public void testRandomLongGenerator() {
-        {
-            Object o = RandomGenerator.generate("#####", Long.class);
-            assertNotNull(o);
-            assertTrue(o instanceof Long);
-            System.out.println(o.toString());
-        }
-
+        Object o = RandomGenerator.generate("#####", Long.class);
+        assertNotNull(o);
+        assertTrue(o instanceof Long);
     }
 
     @Test
     public void testRgen2() {
-        {
-            Object o = RandomGenerator.generate("###X##");
-            assertNotNull(o);
-            assertTrue(o.toString().contains("X"));
-            System.out.println(o.toString());
-        }
+        Object o = RandomGenerator.generate("###X##");
+        assertNotNull(o);
+        assertTrue(o.toString().contains("X"));
     }
 
     @Test
     public void testRgen3() {
-        {
-            Object o = RandomGenerator.generate("###\\.##", Float.class); // this
-                                                                          // means
-            // ###\.##
-            assertNotNull(o);
-            assertTrue(o instanceof Float);
-            assertTrue(o.toString().contains("."));
-            System.out.println(o.toString());
-        }
+        Object o = RandomGenerator.generate("###\\.##", Float.class); // this means ###\.##
+        assertNotNull(o);
+        assertTrue(o instanceof Float);
+        assertTrue(o.toString().contains("."));
     }
 
     @Test
     public void testUnique() {
-        {
-            Object o = RandomGenerator.generate("###X##");
-            Object o2 = RandomGenerator.generate("###X##");
-            assertNotNull(o);
-            assertNotNull(o2);
-            assertTrue(o.toString().contains("X"));
-            assertTrue(o2.toString().contains("X"));
-            assertTrue(!o2.equals(o));
-            System.out.println(o.toString() + "\n" + o2.toString());
-        }
+        Object o = RandomGenerator.generate("###X##");
+        Object o2 = RandomGenerator.generate("###X##");
+        assertNotNull(o);
+        assertNotNull(o2);
+        assertTrue(o.toString().contains("X"));
+        assertTrue(o2.toString().contains("X"));
+        assertTrue(!o2.equals(o));
     }
 
     @Test
@@ -89,13 +74,10 @@ public class RandomGeneratorTest {
         Object o = RandomGenerator.generate("\\a\\h###\\s\\h", GuardedString.class);
         assertTrue(o instanceof GuardedString);
         GuardedString pass = (GuardedString) o;
-        pass.access(new GuardedString.Accessor() {
-            @Override
-            public void access(char[] clearChars) {
-                final String result = new String(clearChars);
-                assertTrue(result.startsWith("ah"));
-                assertTrue(result.endsWith("sh"));
-            }
+        pass.access((char[] clearChars) -> {
+            final String result = new String(clearChars);
+            assertTrue(result.startsWith("ah"));
+            assertTrue(result.endsWith("sh"));
         });
     }
 
@@ -105,5 +87,4 @@ public class RandomGeneratorTest {
         assertNotNull(o);
         assertTrue(o instanceof Character);
     }
-
 }

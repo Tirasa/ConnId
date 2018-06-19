@@ -23,8 +23,8 @@
  */
 package org.identityconnectors.test.common;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -43,7 +43,7 @@ import java.util.Properties;
 
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestHelpersTest {
 
@@ -89,18 +89,23 @@ public class TestHelpersTest {
     }
 
     static class DummyConnector implements Connector {
+
+        @Override
         public void dispose() {
         }
 
+        @Override
         public Configuration getConfiguration() {
             return null;
         }
 
+        @Override
         public void init(Configuration cfg) {
         }
     }
 
     static class ConfigClassLoader extends ClassLoader {
+
         @Override
         public URL getResource(String name) {
             String prefix = DummyConnector.class.getName();
@@ -130,12 +135,14 @@ public class TestHelpersTest {
             return null;
         }
 
+        @Override
         public Enumeration<URL> getResources(String name) throws IOException {
             return new SingleURLEnumeration(null);
         }
     }
 
     private static class SingleURLEnumeration implements Enumeration<URL> {
+
         private URL url;
 
         private SingleURLEnumeration(URL url) {
@@ -143,10 +150,12 @@ public class TestHelpersTest {
             this.url = url;
         }
 
+        @Override
         public boolean hasMoreElements() {
             return url != null;
         }
 
+        @Override
         public URL nextElement() {
             if (url == null) {
                 throw new NoSuchElementException();
@@ -159,9 +168,11 @@ public class TestHelpersTest {
 
     private static URL map2URL(final Properties properties) {
         URLStreamHandler handler = new URLStreamHandler() {
+
             @Override
             protected URLConnection openConnection(URL u) throws IOException {
                 return new URLConnection(u) {
+
                     @Override
                     public void connect() throws IOException {
                     }
@@ -173,14 +184,14 @@ public class TestHelpersTest {
                         // this method adds comment # character which would not
                         // be parsable by Groovy
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        BufferedWriter bfw = new BufferedWriter(new OutputStreamWriter(baos));
-                        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-                            bfw.append(entry.getKey().toString());
-                            bfw.append("=");
-                            bfw.append(entry.getValue().toString());
-                            bfw.newLine();
+                        try (BufferedWriter bfw = new BufferedWriter(new OutputStreamWriter(baos))) {
+                            for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+                                bfw.append(entry.getKey().toString());
+                                bfw.append("=");
+                                bfw.append(entry.getValue().toString());
+                                bfw.newLine();
+                            }
                         }
-                        bfw.close();
                         return new ByteArrayInputStream(baos.toByteArray());
                     }
                 };
@@ -193,5 +204,4 @@ public class TestHelpersTest {
             throw new IllegalStateException("Invalid url", e);
         }
     }
-
 }

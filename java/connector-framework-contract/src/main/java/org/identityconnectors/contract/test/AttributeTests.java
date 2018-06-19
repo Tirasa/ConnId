@@ -20,17 +20,19 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.contract.test;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.api.operations.DeleteApiOp;
@@ -55,9 +57,8 @@ import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
-import org.testng.annotations.Guice;
-import org.testng.annotations.Test;
-import org.testng.log4testng.Logger;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * <p>
@@ -75,18 +76,15 @@ import org.testng.log4testng.Logger;
  *
  * @author David Adam
  */
-@Test(testName = AttributeTests.TEST_NAME)
 public class AttributeTests extends ObjectClassRunner {
 
-    /**
-     * Logging..
-     */
-    private static final Logger logger = Logger.getLogger(ValidateApiOpTests.class);
-    public static final String TEST_NAME = "Attribute";
+    private static final Log LOG = Log.getLog(AttributeTests.class);
+
+    private static final String TEST_NAME = "Attribute";
 
     @Override
     public Set<Class<? extends APIOperation>> getAPIOperations() {
-        Set<Class<? extends APIOperation>> res = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> res = new HashSet<>();
         // list of required operations by this test:
         res.add(CreateApiOp.class);
         res.add(UpdateApiOp.class);
@@ -94,7 +92,6 @@ public class AttributeTests extends ObjectClassRunner {
         res.add(SchemaApiOp.class);
         return res;
     }
-
 
     /**
      * {@inheritDoc}
@@ -120,10 +117,10 @@ public class AttributeTests extends ObjectClassRunner {
      * API operations for acquiring attributes: <code>GetApiOp</code>
      * </p>
      */
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
-    public void testNonReadable(ObjectClass objectClass) {
-        if (ConnectorHelper.operationsSupported(getConnectorFacade(),
-                objectClass, getAPIOperations())) {
+    @ParameterizedTest
+    @MethodSource("objectClasses")
+    public void testNonReadable(final ObjectClass objectClass) {
+        if (ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass, getAPIOperations())) {
             Uid uid = null;
             try {
                 ObjectClassInfo oci = getObjectClassInfo(objectClass);
@@ -138,22 +135,19 @@ public class AttributeTests extends ObjectClassRunner {
                 // get the user to make sure it exists now
                 ConnectorObject obj = getConnectorFacade().getObject(
                         objectClass, uid,
-                        null/* GET returned by default attributes*/);
+                        null/* GET returned by default attributes */);
 
-                assertNotNull(obj,"Unable to retrieve newly created object");
+                assertNotNull(obj, "Unable to retrieve newly created object");
 
                 // check: non readable attributes should not be returned by
                 // default
-                for (Attribute attr : obj.getAttributes()) {
-                    if (!ConnectorHelper.isReadable(oci, attr)) {
-                        String msg = String
-                                .format(
-                                        "Non-readable attribute should not be returned by default: %s",
-                                        attr.getName());
-                        assertTrue( !ConnectorHelper.isReturnedByDefault(
-                                oci, attr),msg);
-                    }
-                }
+                obj.getAttributes().stream().
+                        filter((attr) -> (!ConnectorHelper.isReadable(oci, attr))).
+                        forEachOrdered((attr) -> {
+                            String msg = String.format(
+                                    "Non-readable attribute should not be returned by default: %s", attr.getName());
+                            assertTrue(!ConnectorHelper.isReturnedByDefault(oci, attr), msg);
+                        });
             } finally {
                 if (uid != null) {
                     // delete the object
@@ -180,13 +174,13 @@ public class AttributeTests extends ObjectClassRunner {
      * <li>{@link SyncApiOp}</li>
      * </ul>
      */
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
-    public void testReturnedByDefault(ObjectClass objectClass) {
-        if (ConnectorHelper.operationSupported(getConnectorFacade(),
-                objectClass, CreateApiOp.class)) {
+    @ParameterizedTest
+    @MethodSource("objectClasses")
+    public void testReturnedByDefault(final ObjectClass objectClass) {
+        if (ConnectorHelper.operationSupported(getConnectorFacade(), objectClass, CreateApiOp.class)) {
             // run the test for GetApiOp, SearchApiOp and SyncApiOp
             for (ApiOperations apiop : ApiOperations.values()) {
-                testReturnedByDefault(apiop, objectClass);
+                testReturnedByDefault(objectClass, apiop);
             }
         } else {
             printSkipTestMsg("testReturnedByDefault", objectClass);
@@ -201,16 +195,16 @@ public class AttributeTests extends ObjectClassRunner {
      * API operations for acquiring attributes: {@link GetApiOp}
      * </p>
      */
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
-    public void testNonUpdateable(ObjectClass objectClass) {
+    @ParameterizedTest
+    @MethodSource("objectClasses")
+    public void testNonUpdateable(final ObjectClass objectClass) {
         boolean exceptionCaught = false;
         /** is there any non updateable item? (if not skip this test) */
         boolean isChanged = false;
         /** logging info bean */
         LogInfo logInfo = null;
 
-        if (ConnectorHelper.operationsSupported(getConnectorFacade(),
-                objectClass, getAPIOperations())) {
+        if (ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass, getAPIOperations())) {
             ConnectorObject obj = null;
             Uid uid = null;
 
@@ -219,12 +213,12 @@ public class AttributeTests extends ObjectClassRunner {
                 uid = ConnectorHelper.createObject(getConnectorFacade(),
                         getDataProvider(), getObjectClassInfo(objectClass), getTestName(),
                         1, getOperationOptionsByOp(objectClass, CreateApiOp.class));
-                assertNotNull( uid,"Create returned null Uid.");
+                assertNotNull(uid, "Create returned null Uid.");
 
                 // get by uid
                 obj = getConnectorFacade().getObject(objectClass,
                         uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
-                assertNotNull(obj,"Cannot retrieve created object.");
+                assertNotNull(obj, "Cannot retrieve created object.");
 
                 // ******************************
                 // Acquire updateable attributes
@@ -232,22 +226,20 @@ public class AttributeTests extends ObjectClassRunner {
                 Set<Attribute> nonUpdateableAttrs = getNonUpdateableAttributes(schema, objectClass);
 
                 // null indicates an empty set ==> no non-updateable attributes
-                isChanged = (nonUpdateableAttrs != null)? true : false;
+                isChanged = (nonUpdateableAttrs != null);
 
                 if (isChanged) {
                     //keep logging info
                     logInfo = new LogInfo(objectClass, nonUpdateableAttrs);
 
-                    assertTrue((nonUpdateableAttrs.size() > 0),"no update attributes were found");
+                    assertTrue(!nonUpdateableAttrs.isEmpty(), "no update attributes were found");
                     Uid newUid = getConnectorFacade().update(
                             objectClass,
                             uid,
                             AttributeUtil.filterUid(nonUpdateableAttrs),
                             getOperationOptionsByOp(objectClass, UpdateApiOp.class));
 
-                    // Update change of Uid must be propagated to
-                    // replaceAttributes
-                    // set
+                    // Update change of Uid must be propagated to replaceAttributes set
                     if (!newUid.equals(uid)) {
                         nonUpdateableAttrs.remove(uid);
                         nonUpdateableAttrs.add(newUid);
@@ -258,7 +250,7 @@ public class AttributeTests extends ObjectClassRunner {
                     obj = getConnectorFacade().getObject(
                             objectClass, uid,
                             getOperationOptionsByOp(objectClass, GetApiOp.class));
-                    assertNotNull( obj,"Cannot retrieve updated object.");
+                    assertNotNull(obj, "Cannot retrieve updated object.");
                     ConnectorHelper.checkObject(getObjectClassInfo(objectClass), obj,
                             nonUpdateableAttrs);
                 } else {
@@ -266,7 +258,7 @@ public class AttributeTests extends ObjectClassRunner {
                      * SKIPPING THE TEST
                      * no non-updateable attribute present
                      */
-                    printSkipTestMsg("testNonUpdateable", objectClass);
+                    printSkipNonUpdateableTestMsg(objectClass);
                     return;
                 }
 
@@ -288,7 +280,8 @@ public class AttributeTests extends ObjectClassRunner {
 
             // in case no exception is thrown:
             if (!exceptionCaught) {
-                fail(String.format("No exception thrown when update is performed on non-updateable attribute(s). (hint: throw a RuntimeException) %s", ((logInfo != null)?logInfo.toString():"")));
+                fail(String.format("No exception thrown when update is performed on non-updateable attribute(s). "
+                        + "(hint: throw a RuntimeException) %s", ((logInfo != null) ? logInfo.toString() : "")));
             }
         } else {
             printSkipTestMsg("testNonUpdateable", objectClass);
@@ -298,13 +291,13 @@ public class AttributeTests extends ObjectClassRunner {
 
     /**
      * return the Non-Updateable attributes for currently tested objectclass
+     *
      * @param schema the schema of currently tested connector
      * @param objectClass the currently tested objectclass
      * @return
      */
-    private Set<Attribute> getNonUpdateableAttributes(Schema schema,
-            ObjectClass objectClass) {
-        Set<Attribute> result = new HashSet<Attribute>();
+    private Set<Attribute> getNonUpdateableAttributes(Schema schema, ObjectClass objectClass) {
+        Set<Attribute> result = new HashSet<>();
 
         //objectClass that we search for
         ObjectClassInfoBuilder oib = new ObjectClassInfoBuilder();
@@ -312,48 +305,56 @@ public class AttributeTests extends ObjectClassRunner {
         ObjectClassInfo ocToFind = oib.build();
 
         Set<ObjectClassInfo> oci = schema.getObjectClassInfo();
-        for (ObjectClassInfo objectClassInfo : oci) {
+        oci.forEach(objectClassInfo -> {
             if (objectClassInfo.getType().equals(ocToFind.getType())) {
                 // we found the currently tested object class
 
                 // do a scan through attributes and look for non-updateable ones.
                 Set<AttributeInfo> attrInfo = objectClassInfo.getAttributeInfo();
-                for (AttributeInfo attributeInfo : attrInfo) {
-                    if (!attributeInfo.isUpdateable()) {
-                        // create an empty list value for update
-                        Attribute attr = AttributeBuilder.build(attributeInfo.getName());
-                        // TODO might add some reasonable value for the attribute to update
-                        result.add(attr);
-                    }
-                }
+                attrInfo.stream().
+                        filter(attributeInfo -> !attributeInfo.isUpdateable()).
+                        map(attributeInfo -> AttributeBuilder.build(attributeInfo.getName())).
+                        forEachOrdered((attr) -> {
+                            // create an empty list value for update
+                            // TODO might add some reasonable value for the attribute to update
+                            result.add(attr);
+                        });
             }
-        }
+        });
 
-        return (result.size() == 0)? null : result;
+        return result.isEmpty() ? null : result;
     }
 
     /**
      * prints log message when skipping
-     * {@link AttributeTests#testNonUpdateable(ObjectClass)} test
+     * {@link AttributeTests#testNonUpdateable()} test
+     */
+    private void printSkipNonUpdateableTestMsg(ObjectClass objectClass) {
+        printSkipTestMsg("testNonUpdateable", objectClass);
+    }
+
+    /**
+     * prints log message when skipping
+     * {@link AttributeTests#testNonUpdateable()} test
      *
      * @param testName the name of the test to print
      */
     private void printSkipTestMsg(String testName, ObjectClass objectClass) {
-        logger.info(LOG_SEPARATOR);
-        logger.info("Skipping test ''"+testName+"'' for object class ''"+objectClass+"''. (Reason: non-updateable attrs. are missing)");
-        logger.info(LOG_SEPARATOR);
+        LOG.info(LOG_SEPARATOR);
+        LOG.info("Skipping test ''" + testName + "'' for object class ''" + objectClass + "''. "
+                + "(Reason: non-updateable attrs. are missing)");
+        LOG.info(LOG_SEPARATOR);
     }
 
     /**
      * Required attributes must be creatable. It is a fialure if a required
      * attribute is not creatable.
      */
-    @Test(dataProvider = OBJECTCLASS_DATAPROVIDER)
-    public void testRequirableIsCreatable(ObjectClass objectClass) {
-        if (ConnectorHelper.operationSupported(getConnectorFacade(),
-                objectClass, CreateApiOp.class)
-                && ConnectorHelper.operationSupported(getConnectorFacade(),
-                        objectClass, GetApiOp.class)) {
+    @ParameterizedTest
+    @MethodSource("objectClasses")
+    public void testRequirableIsCreatable(final ObjectClass objectClass) {
+        if (ConnectorHelper.operationSupported(getConnectorFacade(), objectClass, CreateApiOp.class)
+                && ConnectorHelper.operationSupported(getConnectorFacade(), objectClass, GetApiOp.class)) {
             Uid uid = null;
             try {
                 ObjectClassInfo oci = getObjectClassInfo(objectClass);
@@ -370,18 +371,18 @@ public class AttributeTests extends ObjectClassRunner {
                         objectClass, uid,
                         getOperationOptionsByOp(objectClass, GetApiOp.class));
 
-                assertNotNull(obj,"Unable to retrieve newly created object");
+                assertNotNull(obj, "Unable to retrieve newly created object");
 
                 // check: Required attributes must be createable.
-                for (Attribute attr : obj.getAttributes()) {
-                    if (ConnectorHelper.isRequired(oci, attr)) {
-                        if (!ConnectorHelper.isCreateable(oci, attr)) {
+                obj.getAttributes().stream().
+                        filter((attr) -> (ConnectorHelper.isRequired(oci, attr))).
+                        filter((attr) -> (!ConnectorHelper.isCreateable(oci, attr))).
+                        map((attr) -> String.format("Required attribute is not createable. Attribute name: %s",
+                        attr.getName())).
+                        forEachOrdered((msg) -> {
                             //WARN
-                            String msg = String.format("Required attribute is not createable. Attribute name: %s", attr.getName());
                             fail(msg);
-                        }
-                    }
-                }
+                        });
             } finally {
                 if (uid != null) {
                     // delete the object
@@ -390,32 +391,25 @@ public class AttributeTests extends ObjectClassRunner {
                 }
             }
         } else {
-            logger
-                    .info("----------------------------------------------------------------------------------------");
-            logger
-                    .info(
-                            "Skipping test ''testNonReadable'' for object class ''"+objectClass+"''.");
-            logger
-                    .info("----------------------------------------------------------------------------------------");
+            LOG.info(LOG_SEPARATOR);
+            LOG.info("Skipping test ''testNonReadable'' for object class ''{0}''.", objectClass);
+            LOG.info(LOG_SEPARATOR);
         }
     }
 
     /* ******************** HELPER METHODS ******************** */
     /**
-     * {@link AttributeTests#testReturnedByDefault(ObjectClass)}
+     * {@link AttributeTests#testReturnedByDefault()}
      *
-     * @param apiOp
-     *            the type of ApiOperation, that shall be tested.
+     * @param apiOp the type of ApiOperation, that shall be tested.
      */
-    private void testReturnedByDefault(ApiOperations apiOp, ObjectClass objectClass) {
+    private void testReturnedByDefault(final ObjectClass objectClass, final ApiOperations apiOp) {
         /** marker in front of every assert message */
         String testMarkMsg = String.format("[testReturnedByDefault/%s]", apiOp);
 
         // run the contract test only if <strong>apiOp</strong> APIOperation is
         // supported
-        if (ConnectorHelper.operationSupported(getConnectorFacade(),
-                objectClass, apiOp.getClazz())) {
-
+        if (ConnectorHelper.operationSupported(getConnectorFacade(), objectClass, apiOp.getClazz())) {
             // start synchronizing from now
             SyncToken token = null;
             if (apiOp.equals(ApiOperations.SYNC)) { // just for SyncApiOp test
@@ -432,9 +426,8 @@ public class AttributeTests extends ObjectClassRunner {
                 Set<Attribute> attrs = ConnectorHelper.getCreateableAttributes(
                         getDataProvider(), oci, getTestName(), 3, true, false);
                 // should throw UnsupportedObjectClass if not supported
-                uid = getConnectorFacade().create(objectClass, attrs,
-                        null);
-                assertNotNull(uid,testMarkMsg + " Create returned null uid.");
+                uid = getConnectorFacade().create(objectClass, attrs, null);
+                assertNotNull(uid, testMarkMsg + " Create returned null uid.");
 
                 /*
                  * ************ GetApiOp ************
@@ -442,41 +435,41 @@ public class AttributeTests extends ObjectClassRunner {
                 // get the user to make sure it exists now
                 ConnectorObject obj = null;
                 switch (apiOp) {
-                case GET:
-                    /* last _null_ param - no operation option, response contains just attributes returned by default*/
-                    obj = getConnectorFacade().getObject(objectClass, uid, null);
-                    break;// GET
+                    case GET:
+                        /* last _null_ param - no operation option, response contains just attributes returned by
+                         * default */
+                        obj = getConnectorFacade().getObject(objectClass, uid, null);
+                        break;// GET
 
-                case SEARCH:
-                    Filter fltUid = FilterBuilder.equalTo(AttributeBuilder
-                            .build(Uid.NAME, uid.getUidValue()));
+                    case SEARCH:
+                        Filter fltUid = FilterBuilder.equalTo(AttributeBuilder
+                                .build(Uid.NAME, uid.getUidValue()));
 
-                    assertTrue(fltUid != null,testMarkMsg + " filterUid is null");
+                        assertNotNull(fltUid, testMarkMsg + " filterUid is null");
 
-                    List<ConnectorObject> coObjects = ConnectorHelper.search(
-                            getConnectorFacade(), objectClass,
-                            fltUid, null);
+                        List<ConnectorObject> coObjects = ConnectorHelper.search(
+                                getConnectorFacade(), objectClass, fltUid, null);
 
-                    assertTrue(coObjects.size() == 1,testMarkMsg +
-                            " Search filter by uid with no OperationOptions failed, expected to return one object, but returned "
-                                    + coObjects.size());
+                        assertTrue(coObjects.size() == 1, testMarkMsg
+                                + " Search filter by uid with no OperationOptions failed, expected to return one object,"
+                                + " but returned " + coObjects.size());
 
-                    assertNotNull(coObjects.get(0),testMarkMsg + " Unable to retrieve newly created object");
+                        assertNotNull(coObjects.get(0), testMarkMsg + " Unable to retrieve newly created object");
 
-                    obj = coObjects.get(0);
-                    break;// SEARCH
+                        obj = coObjects.get(0);
+                        break;
 
-                case SYNC:
-                    uid = testSync(objectClass, uid, token, attrs, oci, testMarkMsg);
-                    break;// SYNC
-                }//switch
+                    case SYNC:
+                        uid = testSync(objectClass, uid, token, attrs, oci, testMarkMsg);
+                        break;
+                }
 
                 /*
                  * Check if attribute set contains non-returned by default
                  * Attributes. This is specific for AttributeTests
                  */
                 if (!apiOp.equals(ApiOperations.SYNC)) {
-                    assertNotNull(obj,"Unable to retrieve newly created object");
+                    assertNotNull(obj, "Unable to retrieve newly created object");
                     // obj is null for sync tests
                     checkAttributes(obj, oci, apiOp);
                 }
@@ -489,30 +482,26 @@ public class AttributeTests extends ObjectClassRunner {
                 }
             }
         } else {
-            logger
-                    .info("----------------------------------------------------------------------------------------");
-            logger
-                    .info(
-                            "Skipping test ''testReturnedByDefault'' for object class ''"+objectClass+"''.");
-            logger
-                    .info("----------------------------------------------------------------------------------------");
+            LOG.info(LOG_SEPARATOR);
+            LOG.info("Skipping test ''testReturnedByDefault'' for object class ''{0}''.", objectClass);
+            LOG.info(LOG_SEPARATOR);
         }
     }
 
     /**
-     *  Main checking of "no returned by default" attributes
+     * Main checking of "no returned by default" attributes
+     *
      * @param obj
      * @param oci
      * @param apiOp
      */
-     private void checkAttributes(ConnectorObject obj, ObjectClassInfo oci, ApiOperations apiOp) {
+    private void checkAttributes(ConnectorObject obj, ObjectClassInfo oci, ApiOperations apiOp) {
         // Check if attribute set contains non-returned by default
         // Attributes.
         for (Attribute attr : obj.getAttributes()) {
-            String msg = String
-                    .format(
-                            "[testReturnedByDefault / %s]Attribute %s returned. However it is _not_ returned by default.",
-                            apiOp, attr.getName());
+            String msg = String.format(
+                    "[testReturnedByDefault / %s]Attribute %s returned. However it is _not_ returned by default.",
+                    apiOp, attr.getName());
             /*
              * this is a hack that skips control of UID, as it is presently
              * non returned by default, however it is automatically returned.
@@ -520,7 +509,7 @@ public class AttributeTests extends ObjectClassRunner {
              * future TODO: after joining UID to schema, erase the condition.
              */
             if (!attr.getName().equals(Uid.NAME)) {
-                assertTrue(ConnectorHelper.isReturnedByDefault(oci, attr),msg);
+                assertTrue(ConnectorHelper.isReturnedByDefault(oci, attr), msg);
             }
         }
     }
@@ -529,18 +518,19 @@ public class AttributeTests extends ObjectClassRunner {
      * test sync
      *
      * @param token
-     *            initialized token
+     * initialized token
      * @param attrs
-     *            newly created attributes
+     * newly created attributes
      * @param uid
-     *            the newly created object
+     * the newly created object
      * @param oci
-     *            object class info
+     * object class info
      * @param testMarkMsg test marker
      * @return the updated Uid
      */
     private Uid testSync(ObjectClass objectClass, Uid uid, SyncToken token,
             Set<Attribute> attrs, ObjectClassInfo oci, String testMarkMsg) {
+
         List<SyncDelta> deltas = null;
         String msg = null;
 
@@ -548,7 +538,6 @@ public class AttributeTests extends ObjectClassRunner {
          * CREATE: (was handled in the calling method, result of create is in
          * param uid, cleanup is also in caller method.)
          */
-
         if (SyncApiOpTests.canSyncAfterOp(CreateApiOp.class)) {
             // sync after create
             deltas = ConnectorHelper.sync(getConnectorFacade(),
@@ -557,7 +546,7 @@ public class AttributeTests extends ObjectClassRunner {
 
             // check that returned one delta
             msg = "%s Sync should have returned one sync delta after creation of one object, but returned: %d";
-            assertTrue(deltas.size() == 1,String.format(msg, testMarkMsg, deltas.size()));
+            assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
 
             // check delta
             ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas.get(0),
@@ -574,9 +563,7 @@ public class AttributeTests extends ObjectClassRunner {
         }
 
         /* UPDATE: */
-
-        if (ConnectorHelper.operationSupported(getConnectorFacade(),
-                UpdateApiOp.class)
+        if (ConnectorHelper.operationSupported(getConnectorFacade(), UpdateApiOp.class)
                 && SyncApiOpTests.canSyncAfterOp(UpdateApiOp.class)) {
 
             Set<Attribute> replaceAttributes = ConnectorHelper
@@ -588,7 +575,7 @@ public class AttributeTests extends ObjectClassRunner {
             if (replaceAttributes.size() > 0) {
                 replaceAttributes.add(uid);
 
-                assertTrue((replaceAttributes.size() > 0),testMarkMsg + " no update attributes were found");
+                assertTrue(replaceAttributes.size() > 0, testMarkMsg + " no update attributes were found");
                 Uid newUid = getConnectorFacade().update(
                         objectClass,
                         uid,
@@ -610,11 +597,11 @@ public class AttributeTests extends ObjectClassRunner {
 
                 // check that returned one delta
                 msg = "%s Sync should have returned one sync delta after update of one object, but returned: %d";
-                assertTrue(deltas.size() == 1,String.format(msg, testMarkMsg, deltas.size()));
+                assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
 
                 // check delta
-                ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas
-                        .get(0), uid, replaceAttributes,
+                ConnectorHelper.checkSyncDelta(
+                        getObjectClassInfo(objectClass), deltas.get(0), uid, replaceAttributes,
                         SyncDeltaType.CREATE_OR_UPDATE, false);
 
                 /*
@@ -629,7 +616,6 @@ public class AttributeTests extends ObjectClassRunner {
         }
 
         /* DELETE: */
-
         if (SyncApiOpTests.canSyncAfterOp(DeleteApiOp.class)) {
             // delete object
             getConnectorFacade().delete(objectClass, uid,
@@ -642,7 +628,7 @@ public class AttributeTests extends ObjectClassRunner {
 
             // check that returned one delta
             msg = "%s Sync should have returned one sync delta after delete of one object, but returned: %d";
-            assertTrue(deltas.size() == 1,String.format(msg, testMarkMsg, deltas.size()));
+            assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
 
             // check delta
             ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas.get(0),
@@ -662,8 +648,12 @@ public class AttributeTests extends ObjectClassRunner {
 
 /** helper inner class for passing the type of tested operations */
 enum ApiOperations {
-    SEARCH(SearchApiOp.class), GET(GetApiOp.class), SYNC(SyncApiOp.class);
+    SEARCH(SearchApiOp.class),
+    GET(GetApiOp.class),
+    SYNC(SyncApiOp.class);
+
     private final String s;
+
     private final Class<? extends APIOperation> clazz;
 
     private ApiOperations(Class<? extends APIOperation> c) {
@@ -679,15 +669,16 @@ enum ApiOperations {
     public Class<? extends APIOperation> getClazz() {
         return clazz;
     }
-}// end of enum ApiOperations
+}
 
 /** helper inner class for saving log information */
 class LogInfo {
+
     /** attribute set */
-    private Set<Attribute> attrSet;
+    private final Set<Attribute> attrSet;
 
     /** object class */
-    private ObjectClass oc;
+    private final ObjectClass oc;
 
     public LogInfo(ObjectClass oc, Set<Attribute> attrSet) {
         this.oc = oc;
@@ -706,4 +697,4 @@ class LogInfo {
     public String toString() {
         return " \n ObjectClass: " + oc.toString() + "\n AttributeSet: " + attrSet.toString();
     }
-}// end of LogInfo
+}

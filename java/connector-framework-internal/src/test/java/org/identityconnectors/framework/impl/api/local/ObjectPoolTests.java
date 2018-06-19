@@ -19,25 +19,28 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.api.local.ObjectPool.Statistics;
-
+import org.junit.jupiter.api.Test;
 
 public class ObjectPoolTests {
 
-    private class MyTestConnection  {
+    private class MyTestConnection {
 
         private boolean _isGood = true;
 
         @Test
-		public void test() {
+        public void test() {
             if (!_isGood) {
                 throw new ConnectorException("Connection is bad");
             }
@@ -53,7 +56,9 @@ public class ObjectPoolTests {
     }
 
     private class MyTestConnectionFactory implements ObjectPoolHandler<MyTestConnection> {
+
         private boolean _createBadConnection = false;
+
         private int _totalCreatedConnections = 0;
 
         @Override
@@ -73,11 +78,13 @@ public class ObjectPoolTests {
             }
             return rv;
         }
+
         @Test
         @Override
-		public void testObject(MyTestConnection object) {
+        public void testObject(MyTestConnection object) {
             object.test();
         }
+
         @Override
         public void disposeObject(MyTestConnection object) {
             object.dispose();
@@ -86,7 +93,6 @@ public class ObjectPoolTests {
         public int getTotalCreatedConnections() {
             return _totalCreatedConnections;
         }
-
 
         public void setCreateBadConnection(boolean v) {
             _createBadConnection = v;
@@ -98,28 +104,32 @@ public class ObjectPoolTests {
     }
 
     private class MyTestThread extends Thread {
+
         private final ObjectPool<MyTestConnection> _pool;
+
         private final int _numIterations;
+
         private Exception _exception;
+
         public MyTestThread(ObjectPool<MyTestConnection> pool,
                 int numIterations) {
             _pool = pool;
             _numIterations = numIterations;
         }
+
         @Override
         public void run() {
             try {
-                for ( int i = 0; i < _numIterations; i++ ) {
-                    ObjectPoolEntry<MyTestConnection> con =
-                        _pool.borrowObject();
-                    Thread.sleep(300);
-                    con.close();
+                for (int i = 0; i < _numIterations; i++) {
+                    try (ObjectPoolEntry<MyTestConnection> con = _pool.borrowObject()) {
+                        Thread.sleep(300);
+                    }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 _exception = e;
             }
         }
+
         public void shutdown() throws Exception {
             join();
             if (_exception != null) {
@@ -133,20 +143,20 @@ public class ObjectPoolTests {
     public void testWithManyThreads() throws Exception {
         final int NUM_ITERATIONS = 10;
         final int NUM_THREADS = 10;
-        final int MAX_CONNECTIONS = NUM_THREADS-3; //make sure we get some waiting
+        final int MAX_CONNECTIONS = NUM_THREADS - 3; //make sure we get some waiting
         ObjectPoolConfiguration config = new ObjectPoolConfiguration();
         config.setMaxObjects(MAX_CONNECTIONS);
         config.setMaxIdle(MAX_CONNECTIONS);
         config.setMinIdle(MAX_CONNECTIONS);
-        config.setMinEvictableIdleTimeMillis(60*1000);
-        config.setMaxWait(60*1000);
+        config.setMinEvictableIdleTimeMillis(60 * 1000);
+        config.setMaxWait(60 * 1000);
         MyTestConnectionFactory fact = new MyTestConnectionFactory();
 
-        ObjectPool<MyTestConnection> pool = new ObjectPool<MyTestConnection>(fact,config);
+        ObjectPool<MyTestConnection> pool = new ObjectPool<>(fact, config);
 
-        MyTestThread [] threads = new MyTestThread[NUM_THREADS];
+        MyTestThread[] threads = new MyTestThread[NUM_THREADS];
         for (int i = 0; i < threads.length; i++) {
-            threads[i] = new MyTestThread(pool,NUM_ITERATIONS);
+            threads[i] = new MyTestThread(pool, NUM_ITERATIONS);
             threads[i].start();
         }
 
@@ -156,15 +166,15 @@ public class ObjectPoolTests {
 
         //these should be the same since we never
         //should have disposed anything
-        Assert.assertEquals(MAX_CONNECTIONS, fact.getTotalCreatedConnections());
+        assertEquals(MAX_CONNECTIONS, fact.getTotalCreatedConnections());
         Statistics stats = pool.getStatistics();
-        Assert.assertEquals(stats.getNumActive(), 0);
-        Assert.assertEquals(MAX_CONNECTIONS, stats.getNumIdle());
+        assertEquals(stats.getNumActive(), 0);
+        assertEquals(MAX_CONNECTIONS, stats.getNumIdle());
 
         pool.shutdown();
         stats = pool.getStatistics();
-        Assert.assertEquals(0, stats.getNumActive());
-        Assert.assertEquals(0, stats.getNumIdle());
+        assertEquals(0, stats.getNumActive());
+        assertEquals(0, stats.getNumIdle());
 
     }
 
@@ -175,30 +185,30 @@ public class ObjectPoolTests {
         config.setMaxObjects(MAX_CONNECTIONS);
         config.setMaxIdle(MAX_CONNECTIONS);
         config.setMinIdle(MAX_CONNECTIONS);
-        config.setMinEvictableIdleTimeMillis(60*1000);
-        config.setMaxWait(60*1000);
+        config.setMinEvictableIdleTimeMillis(60 * 1000);
+        config.setMaxWait(60 * 1000);
         MyTestConnectionFactory fact = new MyTestConnectionFactory();
 
-        ObjectPool<MyTestConnection> pool = new ObjectPool<MyTestConnection>(fact,config);
+        ObjectPool<MyTestConnection> pool = new ObjectPool<>(fact, config);
 
         //borrow first connection and return
         ObjectPoolEntry<MyTestConnection> conn = pool.borrowObject();
-        Assert.assertEquals(1, fact.getTotalCreatedConnections());
+        assertEquals(1, fact.getTotalCreatedConnections());
         conn.close();
-        Assert.assertEquals(1, fact.getTotalCreatedConnections());
+        assertEquals(1, fact.getTotalCreatedConnections());
 
         //re-borrow same connection and return
         conn = pool.borrowObject();
-        Assert.assertEquals(1, fact.getTotalCreatedConnections());
+        assertEquals(1, fact.getTotalCreatedConnections());
         conn.close();
-        Assert.assertEquals(1, fact.getTotalCreatedConnections());
+        assertEquals(1, fact.getTotalCreatedConnections());
 
         //dispose and make sure we get a new connection
         conn.getPooledObject().dispose();
         conn = pool.borrowObject();
-        Assert.assertEquals(2, fact.getTotalCreatedConnections());
+        assertEquals(2, fact.getTotalCreatedConnections());
         conn.close();
-        Assert.assertEquals(2, fact.getTotalCreatedConnections());
+        assertEquals(2, fact.getTotalCreatedConnections());
     }
 
     @Test
@@ -208,49 +218,46 @@ public class ObjectPoolTests {
         config.setMaxIdle(2);
         config.setMinIdle(1);
         config.setMinEvictableIdleTimeMillis(3000);
-        config.setMaxWait(60*1000);
+        config.setMaxWait(60 * 1000);
         MyTestConnectionFactory fact = new MyTestConnectionFactory();
 
-        ObjectPool<MyTestConnection> pool = new ObjectPool<MyTestConnection>(fact,config);
+        ObjectPool<MyTestConnection> pool = new ObjectPool<>(fact, config);
 
         ObjectPoolEntry<MyTestConnection> conn1 = pool.borrowObject();
         ObjectPoolEntry<MyTestConnection> conn2 = pool.borrowObject();
         ObjectPoolEntry<MyTestConnection> conn3 = pool.borrowObject();
 
-        Assert.assertEquals(3, fact.getTotalCreatedConnections());
+        assertEquals(3, fact.getTotalCreatedConnections());
         conn1.close();
-        Assert.assertEquals(1, pool.getStatistics().getNumIdle());
+        assertEquals(1, pool.getStatistics().getNumIdle());
         conn2.close();
-        Assert.assertEquals(pool.getStatistics().getNumIdle(), 2);
+        assertEquals(pool.getStatistics().getNumIdle(), 2);
         conn3.close();
-        Assert.assertEquals(pool.getStatistics().getNumIdle(), 2);
-        Assert.assertEquals(false, conn1.getPooledObject().isGood());
-        Assert.assertEquals(true, conn2.getPooledObject().isGood());
-        Assert.assertEquals(true, conn3.getPooledObject().isGood());
-        Thread.sleep(config.getMinEvictableIdleTimeMillis()+1000);
+        assertEquals(pool.getStatistics().getNumIdle(), 2);
+        assertEquals(false, conn1.getPooledObject().isGood());
+        assertEquals(true, conn2.getPooledObject().isGood());
+        assertEquals(true, conn3.getPooledObject().isGood());
+        Thread.sleep(config.getMinEvictableIdleTimeMillis() + 1000);
         ObjectPoolEntry<MyTestConnection> conn4 = pool.borrowObject();
-        Assert.assertSame(conn3, conn4);
-        Assert.assertEquals(false, conn1.getPooledObject().isGood());
-        Assert.assertEquals(false, conn2.getPooledObject().isGood());
-        Assert.assertEquals(true, conn3.getPooledObject().isGood());
-        Assert.assertEquals(true, conn4.getPooledObject().isGood());
+        assertSame(conn3, conn4);
+        assertEquals(false, conn1.getPooledObject().isGood());
+        assertEquals(false, conn2.getPooledObject().isGood());
+        assertEquals(true, conn3.getPooledObject().isGood());
+        assertEquals(true, conn4.getPooledObject().isGood());
     }
 
     @Test
     public void testCreateBadConnection()
-        throws Exception
-    {
+            throws Exception {
         MyTestConnectionFactory fact = new MyTestConnectionFactory();
         fact.setCreateBadConnection(true);
 
-        ObjectPool<MyTestConnection> pool = new ObjectPool<MyTestConnection>(fact,new ObjectPoolConfiguration());
+        ObjectPool<MyTestConnection> pool = new ObjectPool<>(fact, new ObjectPoolConfiguration());
         try {
             pool.borrowObject();
-            Assert.fail("expected exception");
-        }
-        catch (ConnectorException e) {
-            Assert.assertEquals("Connection is bad", e.getMessage());
+            fail("expected exception");
+        } catch (ConnectorException e) {
+            assertEquals("Connection is bad", e.getMessage());
         }
     }
-
 }
