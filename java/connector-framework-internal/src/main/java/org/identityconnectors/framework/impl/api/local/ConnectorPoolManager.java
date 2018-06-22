@@ -129,6 +129,7 @@ public class ConnectorPoolManager {
 
                     connector = (PoolableConnector) clazz.newInstance();
                     connector.init(config);
+                    ConnectorLifecycleUtil.setConnectorInstanceName(connector, apiConfiguration.getInstanceName());
                 } else {
                     throw new ConnectorException("The Connector is not PoolableConnector: "
                             + localConnectorInfo.getConnectorKey());

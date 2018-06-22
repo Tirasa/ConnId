@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -83,5 +84,9 @@ public class ConnectorOperationalContext extends OperationalContext {
             ConnectorPoolManager.dispose(connectorPoolKey);
             connectorPoolKey = null;
         }
+    }
+    
+    public String getInstanceName() {
+    	return apiConfiguration.getInstanceName();
     }
 }

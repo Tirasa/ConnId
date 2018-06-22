@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -64,33 +64,20 @@ public class ResolveUsernameImpl extends ConnectorAPIOperationRunner implements
             options = new OperationOptionsBuilder().build();
         }
         
-        if (isLoggable()) {
-        	StringBuilder bld = new StringBuilder();
-            bld.append("Enter: resolveUsername(");
-            bld.append(objectClass).append(", ");
-            bld.append(username).append(", ");
-            bld.append(options).append(")");
-            final String msg = bld.toString();
-            OP_LOG.log(ResolveUsernameOp.class, "resolveUsername", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
-        }
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), ResolveUsernameOp.class, "resolveUsername", 
+        		objectClass, username, options);
         
         Uid uid;
         try {
         	uid = ((ResolveUsernameOp) getConnector()).resolveUsername(objectClass, username, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, ResolveUsernameOp.class, "resolveUsername", e);
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), ResolveUsernameOp.class, "resolveUsername", e);
         	throw e;
         }
-        
-        if (isLoggable()) {
-        	OP_LOG.log(ResolveUsernameOp.class, "resolveUsername", SpiOperationLoggingUtil.LOG_LEVEL,
-        			"Return: "+uid, null);
-        }
-        
+
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), ResolveUsernameOp.class, "resolveUsername", uid);
+
         return uid;
     }
     
-    private static boolean isLoggable() {
-		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-	}
 }

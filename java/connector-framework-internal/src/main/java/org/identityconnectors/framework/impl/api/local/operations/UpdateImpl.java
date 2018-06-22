@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  * Portions Copyrighted 2017 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
@@ -100,7 +100,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
         try {
             ret = op.update(objectClass, uid, replaceAttributes, options);
         } catch (RuntimeException e) {
-            SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class, "update", e);
+            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), UpdateOp.class, "update", e);
             throw e;
         }
 
@@ -130,7 +130,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
             try {
                 ret = valueOp.addAttributeValues(objclass, uid, valuesToAdd, options);
             } catch (RuntimeException e) {
-                SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class, "addAttributeValues", e);
+                logOpException("addAttributeValues", e);
                 throw e;
             }
             logOpExit("addAttributeValues", ret);
@@ -141,7 +141,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
             try {
                 ret = op.update(objclass, uid, replaceAttributes, options);
             } catch (RuntimeException e) {
-                SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class, "update", e);
+                logOpException("update", e);
                 throw e;
             }
             logOpExit("update", ret);
@@ -170,7 +170,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
             try {
                 ret = valueOp.removeAttributeValues(objclass, uid, valuesToRemove, options);
             } catch (RuntimeException e) {
-                SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class, "removeAttributeValues", e);
+                logOpException("removeAttributeValues", e);
                 throw e;
             }
             logOpExit("removeAttributeValues", ret);
@@ -181,7 +181,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
             try {
                 ret = op.update(objclass, uid, replaceAttributes, options);
             } catch (RuntimeException e) {
-                SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class, "update", e);
+                logOpException("update", e);
                 throw e;
             }
             logOpExit("update", ret);
@@ -312,29 +312,18 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
         }
     }
 
-    private static void logOpEntry(String opName, ObjectClass objectClass, Uid uid, Set<Attribute> attrs,
+    private void logOpEntry(String opName, ObjectClass objectClass, Uid uid, Set<Attribute> attrs,
             OperationOptions options) {
-        if (!isLoggable()) {
-            return;
-        }
-        StringBuilder bld = new StringBuilder();
-        bld.append("Enter: ").append(opName).append("(");
-        bld.append(objectClass).append(", ");
-        bld.append(uid).append(", ");
-        bld.append(attrs).append(", ");
-        bld.append(options).append(")");
-        final String msg = bld.toString();
-        OP_LOG.log(UpdateOp.class, opName, SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), UpdateOp.class, opName, 
+        		objectClass, uid, attrs, options);
     }
 
-    private static void logOpExit(String opName, Uid uid) {
-        if (!isLoggable()) {
-            return;
-        }
-        OP_LOG.log(UpdateOp.class, opName, SpiOperationLoggingUtil.LOG_LEVEL, "Return: " + uid, null);
+    private void logOpExit(String opName, Uid uid) {
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), UpdateOp.class, opName, uid);
+    }
+    
+    private void logOpException(String opName, RuntimeException e) {
+        SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), UpdateOp.class, opName, e);
     }
 
-    private static boolean isLoggable() {
-        return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-    }
 }

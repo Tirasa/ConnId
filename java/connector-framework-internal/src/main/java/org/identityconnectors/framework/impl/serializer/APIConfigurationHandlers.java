@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -190,6 +191,7 @@ class APIConfigurationHandlers {
                         (Set) decoder.readObjectField("SupportedOperations", Set.class, null);
                 rv.setSupportedOperations(set);
                 rv.setProducerBufferSize(decoder.readIntField("producerBufferSize", 0));
+                rv.setInstanceName(decoder.readStringField("instanceName", null));
                 return rv;
             }
 
@@ -206,6 +208,7 @@ class APIConfigurationHandlers {
                         .getConfigurationProperties(), true);
                 encoder.writeObjectField("timeoutMap", val.getTimeoutMap(), false);
                 encoder.writeObjectField("SupportedOperations", val.getSupportedOperations(), true);
+                encoder.writeStringField("instanceName", val.getInstanceName());
             }
         });
 

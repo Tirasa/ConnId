@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.api;
 
@@ -116,5 +117,17 @@ public interface APIConfiguration {
      * operation.
      */
     ResultsHandlerConfiguration getResultsHandlerConfiguration();
+    
+    /**
+     * Set name of the instance that this facade represents. The name should represent
+     * the system that the connector connects to. This is also known as "resource" name,
+     * "connector instance" name, "target system" name, etc. 
+     * The name will be used mostly for diagnostic purposes, e.g. it will may be included
+     * in log messages to distinguish individual instances of the same connector. 
+     * 
+     * @param instanceName Name of the instance that this facade represents.
+     * @since 1.5.0.0
+     */
+    void setInstanceName(String instanceName);
 
 }

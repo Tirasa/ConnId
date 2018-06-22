@@ -19,7 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -50,27 +50,19 @@ public class SchemaImpl extends ConnectorAPIOperationRunner implements
     @Override
     public Schema schema() {
     	
-    	if (isLoggable()) {
-            OP_LOG.log(SchemaOp.class, "schema", SpiOperationLoggingUtil.LOG_LEVEL, "Enter: schema()", null);
-        }
+    	SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), SchemaOp.class, "schema");
         
     	Schema schema;
     	try {
     		schema = ((SchemaOp)getConnector()).schema();
     	} catch (RuntimeException e) {
-    		SpiOperationLoggingUtil.logOpException(OP_LOG, SchemaOp.class, "schema", e);
+    		SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), SchemaOp.class, "schema", e);
         	throw e;
     	}
     	
-    	if (isLoggable()) {
-        	OP_LOG.log(SchemaOp.class, "schema", SpiOperationLoggingUtil.LOG_LEVEL,
-        			"Return: "+schema, null);
-        }
+    	SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), SchemaOp.class, "schema", schema);
     	
     	return schema;
     }
     
-    private static boolean isLoggable() {
-		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-	}
 }

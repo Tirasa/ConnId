@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.framework.impl.api.local.ConnectorLifecycleUtil;
 import org.identityconnectors.framework.impl.api.local.ObjectPool;
 import org.identityconnectors.framework.impl.api.local.ObjectPoolEntry;
 import org.identityconnectors.framework.spi.Connector;
@@ -92,6 +93,7 @@ public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
                 connector = connectorClazz.newInstance();
                 // initialize the connector..
                 connector.init(context.getConfiguration());
+                ConnectorLifecycleUtil.setConnectorInstanceName(connector, context.getInstanceName());
             }
             APIOperationRunner runner =
                 runnerImplConstructor.newInstance(context,connector);

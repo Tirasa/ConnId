@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -137,17 +137,17 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
         if (conector instanceof UpdateDeltaOp) {
             UpdateDeltaOp deltaOp = (UpdateDeltaOp) conector;
 
-            logDeltaOpEntry("updateDelta", objclass, uid, modifications, options);
+            logOpEntry("updateDelta", objclass, uid, modifications, options);
 
             Set<AttributeDelta> attrsDelta;
             try {
                 attrsDelta = deltaOp.updateDelta(objclass, uid, modifications, options);
             } catch (RuntimeException e) {
-                SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateDeltaOp.class, "updateDelta", e);
+                logOpException("updateDelta", e);
                 throw e;
             }
 
-            logDeltaOpExit("updateDelta", attrsDelta);
+            logOpExit("updateDelta", attrsDelta);
 
             // return set of side-effect modifications
             return normalizeSetAttributesDelta(normalizer, attrsDelta);
@@ -179,7 +179,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                     //execute update for valuesToReplace
                     newUid = op.update(objclass, uid, valuesToReplace, options);
                 } catch (RuntimeException e) {
-                    SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class, "update", e);
+                    logOpException("update", e);
                     throw e;
                 }
 
@@ -293,7 +293,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                 //execute update for valuesToReplace
                 ret = op.update(objclass, uid, attributesForUpdate, options);
             } catch (RuntimeException e) {
-                SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class, "update", e);
+                logOpException("update", e);
                 throw e;
             }
 
@@ -323,7 +323,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                 ret = valueOp.addAttributeValues(objclass, uid, valuesToUpdate, options);
             }
         } catch (RuntimeException e) {
-            SpiOperationLoggingUtil.logOpException(OP_LOG, UpdateOp.class, method, e);
+            logOpException(method, e);
             throw e;
         }
         logOpExit(method, ret);
@@ -384,54 +384,17 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
 
     private static final String OPERATIONAL_ATTRIBUTE_ERR =
             "Operational attribute '%s' can not be added or removed.";
-
-    private static void logOpEntry(String opName, ObjectClass objectClass, Uid uid, Set<Attribute> attrs,
-            OperationOptions options) {
-        if (!isLoggable()) {
-            return;
-        }
-        StringBuilder bld = new StringBuilder();
-        bld.append("Enter: ").append(opName).append("(");
-        bld.append(objectClass).append(", ");
-        bld.append(uid).append(", ");
-        bld.append(attrs).append(", ");
-        bld.append(options).append(")");
-        final String msg = bld.toString();
-        OP_LOG.log(UpdateOp.class, opName, SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
+    
+    
+    private void logOpEntry(String opName, Object... params) {
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), UpdateDeltaOp.class, opName, params);
     }
 
-    private static void logOpExit(String opName, Uid uid) {
-        if (!isLoggable()) {
-            return;
-        }
-        OP_LOG.log(UpdateOp.class, opName, SpiOperationLoggingUtil.LOG_LEVEL, "Return: " + uid, null);
+    private void logOpExit(String opName, Object returnValue) {
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), UpdateOp.class, opName, returnValue);
     }
-
-    private static void logDeltaOpEntry(String opName, ObjectClass objectClass, Uid uid, Set<AttributeDelta> attrsDelta,
-            OperationOptions options) {
-        if (!isLoggable()) {
-            return;
-        }
-        StringBuilder bld = new StringBuilder();
-        bld.append("Enter: ").append(opName).append("(");
-        bld.append(objectClass).append(", ");
-        bld.append(uid).append(", ");
-        bld.append(attrsDelta).append(", ");
-        bld.append(options).append(")");
-        final String msg = bld.toString();
-        OP_LOG.log(UpdateDeltaOp.class, opName, SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
-    }
-
-    private static void logDeltaOpExit(String opName, Set<AttributeDelta> attrsDelta) {
-        if (!isLoggable()) {
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("Return: ").append(attrsDelta);
-        OP_LOG.log(UpdateDeltaOp.class, opName, SpiOperationLoggingUtil.LOG_LEVEL, sb.toString(), null);
-    }
-
-    private static boolean isLoggable() {
-        return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
+    
+    private void logOpException(String opName, RuntimeException e) {
+        SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), UpdateOp.class, opName, e);
     }
 }

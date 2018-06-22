@@ -31,6 +31,7 @@ import java.text.MessageFormat;
 import java.util.Base64;
 import java.util.Set;
 import org.identityconnectors.common.Assertions;
+import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.api.operations.APIOperation;
@@ -67,6 +68,8 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
  * Implements all the methods of the facade.
  */
 public abstract class AbstractConnectorFacade implements ConnectorFacade {
+	
+	private static final Log LOG = Log.getLog(AbstractConnectorFacade.class);
 
     private final APIConfigurationImpl configuration;
 
@@ -174,7 +177,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
             ResultsHandler handler, final OperationOptions options) {
 
         if (LoggingProxy.isLoggable()) {
-            handler = new SearchResultsHandlerLoggingProxy(handler);
+            handler = new SearchResultsHandlerLoggingProxy(handler, LOG, null);
         }
         return ((SearchApiOp) this.getOperationCheckSupported(SearchApiOp.class)).
                 search(objectClass, filter, handler, options);

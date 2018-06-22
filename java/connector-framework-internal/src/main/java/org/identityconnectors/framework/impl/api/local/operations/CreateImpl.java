@@ -91,28 +91,17 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
         final Set<Attribute> normalizedAttributes =
                 normalizer.normalizeAttributes(createAttributes);
         
-        if (isLoggable()) {
-        	StringBuilder bld = new StringBuilder();
-            bld.append("Enter: create(");
-            bld.append(objectClass).append(", ");
-            bld.append(normalizedAttributes).append(", ");
-            bld.append(options).append(")");
-            final String msg = bld.toString();
-            OP_LOG.log(CreateOp.class, "create", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
-        }
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), CreateOp.class, "create", objectClass, normalizedAttributes, options);
         
         final Uid connectorUid;
         try {
 	        // create the object..
 	        connectorUid = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, CreateOp.class, "create", e);
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), CreateOp.class, "create", e);
         	throw e;
         }
-        if (isLoggable()) {
-        	OP_LOG.log(CreateOp.class, "create", SpiOperationLoggingUtil.LOG_LEVEL,
-        			"Return: "+connectorUid, null);
-        }
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), CreateOp.class, "create", connectorUid);
         
         Uid uid = (Uid) normalizer.normalizeAttribute(connectorUid);
         

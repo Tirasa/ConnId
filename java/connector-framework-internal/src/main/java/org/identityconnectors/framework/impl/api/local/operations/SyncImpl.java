@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -30,13 +30,11 @@ import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.ResultsHandlerConfiguration;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
-import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
 import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
-import org.identityconnectors.framework.common.objects.SyncDeltaType;
 import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.spi.AttributeNormalizer;
@@ -92,7 +90,7 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
             	try {
             		result.compareAndSet(null, token);
             	} catch (RuntimeException e) {
-                	SpiOperationLoggingUtil.logOpException(HANDLER_LOG, SyncTokenResultsHandler.class, "handleResult", e);
+                	SpiOperationLoggingUtil.logOpException(HANDLER_LOG, getOperationalContext(), SyncTokenResultsHandler.class, "handleResult", e);
                 	throw e;
                 }
                 if (HANDLER_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL)) {
@@ -111,7 +109,7 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
                 try {
                 	ret = handlerChain.handle(delta);
                 } catch (RuntimeException e) {
-                	SpiOperationLoggingUtil.logOpException(HANDLER_LOG, SyncTokenResultsHandler.class, "handle", e);
+                	SpiOperationLoggingUtil.logOpException(HANDLER_LOG, getOperationalContext(), SyncTokenResultsHandler.class, "handle", e);
                 	throw e;
                 }
                 if (HANDLER_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL)) {
@@ -122,28 +120,17 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
             }
         };
         
-        if (isLoggable()) {
-        	StringBuilder bld = new StringBuilder();
-            bld.append("Enter: sync(");
-            bld.append(objectClass).append(", ");
-            bld.append(token).append(", ");
-            bld.append(syncHandler).append(", ");
-            bld.append(options).append(")");
-            final String msg = bld.toString();
-            OP_LOG.log(SyncOp.class, "sync", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
-        }
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), SyncOp.class, "sync", 
+        		objectClass, token, syncHandler, options);
         
         try {
 	        ((SyncOp) getConnector()).sync(objectClass, token, syncHandler, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, SyncOp.class,"sync",e);
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), SyncOp.class, "sync", e);
     		throw e;
         }
         
-        if (isLoggable()) {
-        	OP_LOG.log(SyncOp.class, "sync", SpiOperationLoggingUtil.LOG_LEVEL,
-        			"Return", null);
-        }
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), SyncOp.class, "sync");
         
         return result.get();
     }
@@ -178,7 +165,4 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
         }
     }
     
-    private static boolean isLoggable() {
-		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-	}
 }

@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -70,30 +70,16 @@ public class DeleteImpl extends ConnectorAPIOperationRunner implements
             getNormalizer(objectClass);
         Uid normalizedUid = (Uid)normalizer.normalizeAttribute(uid);
         
-        if (isLoggable()) {
-        	StringBuilder bld = new StringBuilder();
-            bld.append("Enter: delete(");
-            bld.append(objectClass).append(", ");
-            bld.append(normalizedUid).append(", ");
-            bld.append(options).append(")");
-            final String msg = bld.toString();
-            OP_LOG.log(DeleteOp.class, "delete", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
-        }
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), DeleteOp.class, "delete", 
+        		objectClass, normalizedUid, options);
         
         try {
         	((DeleteOp) connector).delete(objectClass, normalizedUid, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, DeleteOp.class, "delete", e);
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), DeleteOp.class, "delete", e);
         	throw e;
         }
         
-        if (isLoggable()) {
-        	OP_LOG.log(DeleteOp.class, "delete", SpiOperationLoggingUtil.LOG_LEVEL,
-        			"Return", null);
-        }
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), DeleteOp.class, "delete");
     }
-    
-    private static boolean isLoggable() {
-		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-	}
 }

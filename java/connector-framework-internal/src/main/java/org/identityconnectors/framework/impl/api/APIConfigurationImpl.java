@@ -49,6 +49,8 @@ public class APIConfigurationImpl implements APIConfiguration {
     private boolean isConnectorPoolingSupported;
 
     private ConfigurationPropertiesImpl configurationProperties;
+    
+    private String instanceName;
 
     /**
      * Default size of the buffer.
@@ -232,4 +234,16 @@ public class APIConfigurationImpl implements APIConfiguration {
     public void setResultsHandlerConfiguration(ResultsHandlerConfiguration config) {
         this.resultsHandlerConfiguration = config;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public void setInstanceName(String instanceName) {
+		this.instanceName = instanceName;
+	}
+    
+	public String getInstanceName() {
+		return instanceName;
+	}
 }

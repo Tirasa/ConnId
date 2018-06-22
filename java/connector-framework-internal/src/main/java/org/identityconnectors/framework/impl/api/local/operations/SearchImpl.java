@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
@@ -141,37 +141,38 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             public boolean handle(final ConnectorObject connectorObject) {
                 return handlerChain.handle(connectorObject);
             }
-        }, options);
+        }, options, getOperationalContext());
 
         return result[0];
     }
 
     /**
-     * Public because it is used by TestHelpersImpl. Raw, SPI-level search.
+     * Public static because it is used by TestHelpersImpl. Raw, SPI-level search.
      *
      * @param search The underlying implementation of search (generally the connector itself)
      * @param objectClass The object class
      * @param filter The filter
      * @param handler The handler
      * @param options The options
+     * @param operationalContext 
      */
     public static void rawSearch(final SearchOp<?> search, final ObjectClass objectClass, final Filter filter,
-            SearchResultsHandler handler, final OperationOptions options) {
+            SearchResultsHandler handler, final OperationOptions options, ConnectorOperationalContext operationalContext) {
 
         FilterTranslator<?> translator = search.createFilterTranslator(objectClass, options);
         List<?> queries = translator.translate(filter);
 
         if (isLoggable()) {
-            handler = new SearchResultsHandlerLoggingProxy(handler);
+            handler = new SearchResultsHandlerLoggingProxy(handler, OP_LOG, operationalContext);
         }
 
         if (queries.isEmpty()) {
-            logOpEntry(objectClass, null, handler, options);
+            logOpEntry(operationalContext, objectClass, null, handler, options);
             try {
                 search.executeQuery(objectClass, null, handler, options);
-                logOpExit();
+                logOpExit(operationalContext);
             } catch (RuntimeException e) {
-                SpiOperationLoggingUtil.logOpException(OP_LOG, SearchOp.class, "executeQuery", e);
+                SpiOperationLoggingUtil.logOpException(OP_LOG, operationalContext, SearchOp.class, "executeQuery", e);
                 throw e;
             }
         } else {
@@ -188,12 +189,12 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             for (Object query : queries) {
                 @SuppressWarnings("unchecked")
                 SearchOp<Object> hack = (SearchOp<Object>) search;
-                logOpEntry(objectClass, query, handler, options);
+                logOpEntry(operationalContext, objectClass, query, handler, options);
                 try {
                     hack.executeQuery(objectClass, query, handler, options);
-                    logOpExit();
+                    logOpExit(operationalContext);
                 } catch (RuntimeException e) {
-                    SpiOperationLoggingUtil.logOpException(OP_LOG, SearchOp.class, "executeQuery", e);
+                    SpiOperationLoggingUtil.logOpException(OP_LOG, operationalContext, SearchOp.class, "executeQuery", e);
                     throw e;
                 }
                 // don't run any more queries if the consumer has stopped
@@ -206,35 +207,23 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             }
         }
     }
-
+    
     private static boolean isLoggable() {
         return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
     }
 
-    private static void logOpEntry(ObjectClass objectClass, Object object, SearchResultsHandler handler,
+    private static void logOpEntry(ConnectorOperationalContext operationalContext, ObjectClass objectClass, Object object, SearchResultsHandler handler,
             OperationOptions options) {
-        if (!isLoggable()) {
-            return;
-        }
-        StringBuilder bld = new StringBuilder();
-        bld.append("Enter: executeQuery(");
-        bld.append(objectClass).append(", ");
-        bld.append(object).append(", ");
+        ResultsHandler origHandler = handler;
         if (handler instanceof SearchResultsHandlerLoggingProxy) {
-            bld.append(((SearchResultsHandlerLoggingProxy) handler).getOrigHandler()).append(", ");
-        } else {
-            bld.append(handler).append(", ");
+        	origHandler = ((SearchResultsHandlerLoggingProxy) handler).getOrigHandler();
         }
-        bld.append(options).append(")");
-        final String msg = bld.toString();
-        OP_LOG.log(SearchOp.class, "executeQuery", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
+    	SpiOperationLoggingUtil.logOpEntry(OP_LOG, operationalContext, SearchOp.class, "executeQuery", 
+    			objectClass, object, origHandler);
     }
 
-    private static void logOpExit() {
-        if (!isLoggable()) {
-            return;
-        }
-        OP_LOG.log(SearchOp.class, "executeQuery", SpiOperationLoggingUtil.LOG_LEVEL, "Return", null);
+    private static void logOpExit(ConnectorOperationalContext operationalContext) {
+    	SpiOperationLoggingUtil.logOpExit(OP_LOG, operationalContext, SearchOp.class, "executeQuery");
     }
 
     private ResultsHandler getAttributesToGetResultsHandler(

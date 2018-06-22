@@ -50,6 +50,7 @@ import org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl;
 import org.identityconnectors.framework.impl.api.ConnectorMessagesImpl;
 import org.identityconnectors.framework.impl.api.local.JavaClassProperties;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
+import org.identityconnectors.framework.impl.api.local.operations.ConnectorOperationalContext;
 import org.identityconnectors.framework.impl.api.local.operations.SearchImpl;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
@@ -183,7 +184,7 @@ public class TestHelpersImpl implements TestHelpersSpi {
             public boolean handle(final ConnectorObject connectorObject) {
                 return handler.handle(connectorObject);
             }
-        }, options);
+        }, options, null);
         return result.get();
     }
 

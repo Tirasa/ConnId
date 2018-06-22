@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2014 Evolveum. All rights reserved.
+ * Copyright 2014-2018 Evolveum. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -23,18 +23,65 @@
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.logging.Log;
-import org.identityconnectors.framework.spi.SearchResultsHandler;
-import org.identityconnectors.framework.spi.operations.SPIOperation;
 
 public class SpiOperationLoggingUtil {
 
 	static final Log.Level LOG_LEVEL = Log.Level.OK;
 
-	public static void logOpException(Log opLog, Class<?> opClass, String methodName, RuntimeException e) {
+	public static void logOpEntry(Log opLog, ConnectorOperationalContext opContext, Class<?> opClass, String methodName, Object... parameters) {
 		if (!opLog.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL)) {
 			return;
 		}
-		opLog.log(opClass, methodName, SpiOperationLoggingUtil.LOG_LEVEL, "Exception: ", e);
+		StringBuilder sb = new StringBuilder();
+		appendInstanceName(sb, opContext);
+		
+		sb.append("Enter: ").append(methodName).append("(");
+		for (int i = 0; i < parameters.length; i++) {
+			sb.append(parameters[i]);
+			if (i < parameters.length - 1) {
+				sb.append(", ");
+			}
+		}
+		sb.append(")");
+		opLog.log(opClass, methodName, SpiOperationLoggingUtil.LOG_LEVEL, sb.toString(), null);
 	}
 	
+	public static void logOpExit(Log opLog, ConnectorOperationalContext opContext, Class<?> opClass, String methodName, Object returnValue) {
+		if (!opLog.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL)) {
+			return;
+		}
+		StringBuilder sb = new StringBuilder();
+		appendInstanceName(sb, opContext);
+		sb.append("Return: ").append(returnValue);
+		opLog.log(opClass, methodName, SpiOperationLoggingUtil.LOG_LEVEL, sb.toString(), null);
+	}
+	
+	public static void logOpExit(Log opLog, ConnectorOperationalContext opContext, Class<?> opClass, String methodName) {
+		if (!opLog.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL)) {
+			return;
+		}
+		StringBuilder sb = new StringBuilder();
+		appendInstanceName(sb, opContext);
+		sb.append("Return");
+		opLog.log(opClass, methodName, SpiOperationLoggingUtil.LOG_LEVEL, sb.toString(), null);
+	}
+	
+	public static void logOpException(Log opLog, ConnectorOperationalContext opContext, Class<?> opClass, String methodName, RuntimeException e) {
+		if (!opLog.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL)) {
+			return;
+		}
+		StringBuilder sb = new StringBuilder();
+		appendInstanceName(sb, opContext);
+		sb.append("Exception: ");
+		opLog.log(opClass, methodName, SpiOperationLoggingUtil.LOG_LEVEL, sb.toString(), e);
+	}
+
+	private static void appendInstanceName(StringBuilder sb, ConnectorOperationalContext opContext) {
+		if (opContext == null) {
+			return;
+		}
+		if (opContext.getInstanceName() != null) {
+			sb.append("instance='").append(opContext.getInstanceName()).append("' ");
+		}
+	}
 }

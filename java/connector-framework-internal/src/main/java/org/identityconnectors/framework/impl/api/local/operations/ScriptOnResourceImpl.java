@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -52,32 +52,20 @@ public class ScriptOnResourceImpl extends ConnectorAPIOperationRunner implements
             options = new OperationOptionsBuilder().build();
         }
         
-        if (isLoggable()) {
-        	StringBuilder bld = new StringBuilder();
-            bld.append("Enter: runScriptOnResource(");
-            bld.append(request).append(", ");
-            bld.append(options).append(")");
-            final String msg = bld.toString();
-            OP_LOG.log(ScriptOnResourceOp.class, "runScriptOnResource", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
-        }
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class, "runScriptOnResource", 
+        		request, options);
         
         Object rv;
         try {
         	rv = ((ScriptOnResourceOp) getConnector()).runScriptOnResource(request, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, ScriptOnResourceOp.class, "runScriptOnResource", e);
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class, "runScriptOnResource", e);
         	throw e;
         }
         
-        if (isLoggable()) {
-        	OP_LOG.log(ScriptOnResourceOp.class, "runScriptOnResource", SpiOperationLoggingUtil.LOG_LEVEL,
-        			"Return: "+rv, null);
-        }
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class, "runScriptOnResource", rv);
         
         return SerializerUtil.cloneObject(rv);
     }
 
-    private static boolean isLoggable() {
-		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-	}
 }

@@ -50,25 +50,14 @@ public class TestImpl extends ConnectorAPIOperationRunner implements TestApiOp {
      */
     @Override
     public void test() {
-    	if (isLoggable()) {
-            OP_LOG.log(TestOp.class, "test", SpiOperationLoggingUtil.LOG_LEVEL, "Enter: test()", null);
-        }
+    	SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), TestOp.class, "test");
     	
     	try {
     		((TestOp) getConnector()).test();
     	} catch (RuntimeException e) {
-    		SpiOperationLoggingUtil.logOpException(OP_LOG, TestOp.class, "test", e);
+    		SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), TestOp.class, "test", e);
         	throw e;
     	}
-    	
-    	if (isLoggable()) {
-        	OP_LOG.log(TestOp.class, "test", SpiOperationLoggingUtil.LOG_LEVEL,
-        			"Return", null);
-        }
+    	SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), TestOp.class, "test");
     }
-    
-    private static boolean isLoggable() {
-		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-	}
-
 }

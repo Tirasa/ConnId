@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -68,35 +68,21 @@ public class AuthenticationImpl extends ConnectorAPIOperationRunner implements
             options = new OperationOptionsBuilder().build();
         }
         
-        if (isLoggable()) {
-        	StringBuilder bld = new StringBuilder();
-            bld.append("Enter: authenticate(");
-            bld.append(objectClass).append(", ");
-            bld.append(username).append(", ");
-            // This is GuardedString. toString() method should be safe.
-            bld.append(password).append(", ");
-            bld.append(options).append(")");
-            final String msg = bld.toString();
-            OP_LOG.log(AuthenticateOp.class, "authenticate", SpiOperationLoggingUtil.LOG_LEVEL, msg, null);
-        }
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), AuthenticateOp.class, "authenticate", 
+        		objectClass, username, password, options);
+        	// Password is GuardedString. toString() method should be safe.
+
         Uid uid;
         
         try {
         	uid = ((AuthenticateOp) getConnector()).authenticate(objectClass, username, password,options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, AuthenticateOp.class, "authenticate", e);
+        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), AuthenticateOp.class, "authenticate", e);
         	throw e;
         }
         
-        if (isLoggable()) {
-        	OP_LOG.log(AuthenticateOp.class, "authenticate", SpiOperationLoggingUtil.LOG_LEVEL,
-        			"Return: "+uid, null);
-        }
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), AuthenticateOp.class, "authenticate", uid);
         
         return uid;
     }
-    
-    private static boolean isLoggable() {
-		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-	}
 }
