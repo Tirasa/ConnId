@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
  * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -363,7 +364,7 @@ class Primitives {
                 encoder.writeClassContents(val);
             }
         });
-        
+
         HANDLERS.add(new AbstractObjectSerializationHandler(ZonedDateTime.class, "ZonedDateTime") {
 
             @Override
@@ -418,18 +419,15 @@ class Primitives {
             public Object deserialize(final ObjectDecoder decoder) {
                 final boolean caseInsensitive = decoder.readBooleanField("caseInsensitive", false);
                 if (caseInsensitive) {
-                    final SortedMap<String, Object> rv =
-                            CollectionUtil.<Object>newCaseInsensitiveMap();
-                    final int count = decoder.getNumSubObjects();
-                    for (int i = 0; i < count; i++) {
+                    final SortedMap<String, Object> rv = CollectionUtil.<Object>newCaseInsensitiveMap();
+                    for (int i = 0; i < decoder.getNumSubObjects(); i++) {
                         final MapEntry entry = (MapEntry) decoder.readObjectContents(i);
                         rv.put(String.valueOf(entry.key), entry.value);
                     }
                     return rv;
                 } else {
-                    final Map<Object, Object> rv = new HashMap<Object, Object>();
-                    final int count = decoder.getNumSubObjects();
-                    for (int i = 0; i < count; i++) {
+                    final Map<Object, Object> rv = new HashMap<>();
+                    for (int i = 0; i < decoder.getNumSubObjects(); i++) {
                         final MapEntry entry = (MapEntry) decoder.readObjectContents(i);
                         rv.put(entry.key, entry.value);
                     }
@@ -448,10 +446,9 @@ class Primitives {
                 else if (map instanceof SortedMap) {
                     throw new IllegalArgumentException("Serialization of SortedMap not supported");
                 }
-                for (Map.Entry<?, ?> entry : map.entrySet()) {
-                    final MapEntry myEntry = new MapEntry(entry.getKey(), entry.getValue());
-                    encoder.writeObjectContents(myEntry);
-                }
+                map.forEach((key, value) -> {
+                    encoder.writeObjectContents(new MapEntry(key, value));
+                });
             }
 
             @Override
@@ -464,9 +461,8 @@ class Primitives {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
-                final List<Object> rv = new ArrayList<Object>();
-                final int count = decoder.getNumSubObjects();
-                for (int i = 0; i < count; i++) {
+                final List<Object> rv = new ArrayList<>();
+                for (int i = 0; i < decoder.getNumSubObjects(); i++) {
                     rv.add(decoder.readObjectContents(i));
                 }
                 return rv;
@@ -475,9 +471,9 @@ class Primitives {
             @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final List<?> list = (List<?>) object;
-                for (Object obj : list) {
+                list.forEach((obj) -> {
                     encoder.writeObjectContents(obj);
-                }
+                });
             }
 
             @Override
@@ -493,15 +489,13 @@ class Primitives {
                 final boolean caseInsensitive = decoder.readBooleanField("caseInsensitive", false);
                 if (caseInsensitive) {
                     final Set<String> rv = CollectionUtil.newCaseInsensitiveSet();
-                    final int count = decoder.getNumSubObjects();
-                    for (int i = 0; i < count; i++) {
+                    for (int i = 0; i < decoder.getNumSubObjects(); i++) {
                         rv.add(String.valueOf(decoder.readObjectContents(i)));
                     }
                     return rv;
                 } else {
-                    final Set<Object> rv = new HashSet<Object>();
-                    final int count = decoder.getNumSubObjects();
-                    for (int i = 0; i < count; i++) {
+                    final Set<Object> rv = new HashSet<>();
+                    for (int i = 0; i < decoder.getNumSubObjects(); i++) {
                         rv.add(decoder.readObjectContents(i));
                     }
                     return rv;
@@ -519,9 +513,9 @@ class Primitives {
                 else if (set instanceof SortedSet) {
                     throw new IllegalArgumentException("Serialization of SortedSet not supported");
                 }
-                for (Object obj : set) {
+                set.forEach((obj) -> {
                     encoder.writeObjectContents(obj);
-                }
+                });
             }
 
             @Override
@@ -573,29 +567,22 @@ class Primitives {
             @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final GuardedString val = (GuardedString) object;
-                val.access(new GuardedString.Accessor() {
-
-                    @Override
-                    public void access(final char[] clearChars) {
-                        byte[] encryptedBytes = null;
-                        byte[] clearBytes = null;
-                        try {
-                            clearBytes = SecurityUtil.charsToBytes(clearChars);
-                            encryptedBytes =
-                                    EncryptorFactory.getInstance().getDefaultEncryptor().encrypt(
-                                            clearBytes);
-                            encoder.writeByteArrayContents(encryptedBytes);
-                        } finally {
-                            SecurityUtil.clear(encryptedBytes);
-                            SecurityUtil.clear(clearBytes);
-                        }
+                val.access((final char[] clearChars) -> {
+                    byte[] encryptedBytes = null;
+                    byte[] clearBytes = null;
+                    try {
+                        clearBytes = SecurityUtil.charsToBytes(clearChars);
+                        encryptedBytes = EncryptorFactory.getInstance().getDefaultEncryptor().encrypt(clearBytes);
+                        encoder.writeByteArrayContents(encryptedBytes);
+                    } finally {
+                        SecurityUtil.clear(encryptedBytes);
+                        SecurityUtil.clear(clearBytes);
                     }
                 });
             }
 
         });
-        HANDLERS.add(new AbstractObjectSerializationHandler(GuardedByteArray.class,
-                "GuardedByteArray") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(GuardedByteArray.class, "GuardedByteArray") {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
@@ -603,9 +590,7 @@ class Primitives {
                 byte[] clearBytes = null;
                 try {
                     encryptedBytes = decoder.readByteArrayContents();
-                    clearBytes =
-                            EncryptorFactory.getInstance().getDefaultEncryptor().decrypt(
-                                    encryptedBytes);
+                    clearBytes = EncryptorFactory.getInstance().getDefaultEncryptor().decrypt(encryptedBytes);
                     return new GuardedByteArray(clearBytes);
                 } finally {
                     SecurityUtil.clear(encryptedBytes);
@@ -616,18 +601,13 @@ class Primitives {
             @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final GuardedByteArray val = (GuardedByteArray) object;
-                val.access(new GuardedByteArray.Accessor() {
-
-                    @Override
-                    public void access(byte[] clearBytes) {
-                        byte[] encryptedBytes = null;
-                        try {
-                            encryptedBytes = EncryptorFactory.getInstance().getDefaultEncryptor().
-                                    encrypt(clearBytes);
-                            encoder.writeByteArrayContents(encryptedBytes);
-                        } finally {
-                            SecurityUtil.clear(encryptedBytes);
-                        }
+                val.access((byte[] clearBytes) -> {
+                    byte[] encryptedBytes = null;
+                    try {
+                        encryptedBytes = EncryptorFactory.getInstance().getDefaultEncryptor().encrypt(clearBytes);
+                        encoder.writeByteArrayContents(encryptedBytes);
+                    } finally {
+                        SecurityUtil.clear(encryptedBytes);
                     }
                 });
             }
