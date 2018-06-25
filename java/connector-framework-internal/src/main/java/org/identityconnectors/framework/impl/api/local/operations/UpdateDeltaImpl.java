@@ -369,7 +369,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
             ObjectNormalizerFacade normalizer, String name, List<Object> values) {
 
         return values.stream().
-                map(value -> normalizer.normalizeAttribute(AttributeBuilder.build(name, value))).
+                map(value -> normalizer.normalizeAttribute(AttributeBuilder.build(name, value)).getValue().get(0)).
                 collect(Collectors.toList());
     }
 
