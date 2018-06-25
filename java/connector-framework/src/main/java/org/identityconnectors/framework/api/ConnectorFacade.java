@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.api;
 
@@ -76,5 +77,17 @@ public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, 
      * Get an instance of an operation that this facade supports.
      */
     APIOperation getOperation(Class<? extends APIOperation> clazz);
+    
+    /**
+     * Dispose of any resources associated with this facade (except for facade classes).
+     * This will dispose of any connector instances in the connector pool. The purpose
+     * of this method is to reduce resource waste for connectors that are no longer used.
+     * But it can also be used to implement "logout and login" functionality for connectors,
+     * e.g. in cases when server-side configuration has changed and the operator needs to
+     * force closing and re-opening of all connector connections.
+     * 
+     * @since 1.5.0.0
+     */
+    void dispose();
 
 }

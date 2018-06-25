@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.impl.api.remote;
 
@@ -79,4 +80,9 @@ public class RemoteConnectorFacadeImpl extends AbstractConnectorFacade {
 
         return proxy;
     }
+
+	@Override
+	public void dispose() {
+		// Nothing to do here. No connection pools are maintained for remote connectors.
+	}
 }
