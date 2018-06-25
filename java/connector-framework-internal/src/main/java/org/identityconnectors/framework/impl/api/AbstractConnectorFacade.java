@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
  * Portions Copyrighted 2015 ConnId
  */
 package org.identityconnectors.framework.impl.api;
@@ -386,6 +386,10 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     protected final APIOperation createLoggingProxy(
             final Class<? extends APIOperation> api, final APIOperation target) {
 
-        return newAPIOperationProxy(api, new LoggingProxy(api, target));
+        return newAPIOperationProxy(api, new LoggingProxy(api, target, getInstanceName()));
+    }
+    
+    protected String getInstanceName() {
+    	return getAPIConfiguration().getInstanceName();
     }
 }
