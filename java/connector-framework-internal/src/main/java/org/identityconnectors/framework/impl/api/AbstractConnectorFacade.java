@@ -21,7 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
- * Portions Copyrighted 2015 ConnId
+ * Portions Copyrighted 2015-2018 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -68,8 +68,8 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
  * Implements all the methods of the facade.
  */
 public abstract class AbstractConnectorFacade implements ConnectorFacade {
-	
-	private static final Log LOG = Log.getLog(AbstractConnectorFacade.class);
+
+    private static final Log LOG = Log.getLog(AbstractConnectorFacade.class);
 
     private final APIConfigurationImpl configuration;
 
@@ -388,8 +388,8 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
 
         return newAPIOperationProxy(api, new LoggingProxy(api, target, getInstanceName()));
     }
-    
+
     protected String getInstanceName() {
-    	return getAPIConfiguration().getInstanceName();
+        return getAPIConfiguration().getInstanceName();
     }
 }

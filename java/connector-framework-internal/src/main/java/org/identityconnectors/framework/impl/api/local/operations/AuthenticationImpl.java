@@ -21,12 +21,14 @@
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
+import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
@@ -34,17 +36,16 @@ import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.AuthenticateOp;
 
-public class AuthenticationImpl extends ConnectorAPIOperationRunner implements
-        org.identityconnectors.framework.api.operations.AuthenticationApiOp {
-	
-	// Special logger with SPI operation log name. Used for logging operation entry/exit
+public class AuthenticationImpl extends ConnectorAPIOperationRunner implements AuthenticationApiOp {
+
+    // Special logger with SPI operation log name. Used for logging operation entry/exit
     private static final Log OP_LOG = Log.getLog(AuthenticateOp.class);
+
     /**
      * Pass the configuration etc to the abstract class.
      */
-    public AuthenticationImpl(final ConnectorOperationalContext context,
-            final Connector connector) {
-        super(context,connector);
+    public AuthenticationImpl(final ConnectorOperationalContext context, final Connector connector) {
+        super(context, connector);
     }
 
     /**
@@ -53,9 +54,12 @@ public class AuthenticationImpl extends ConnectorAPIOperationRunner implements
      * @see AuthenticationOpTests#authenticate(String, String)
      */
     @Override
-    public Uid authenticate(final ObjectClass objectClass, final String username,
+    public Uid authenticate(
+            final ObjectClass objectClass,
+            final String username,
             final GuardedString password,
             OperationOptions options) {
+
         Assertions.nullCheck(objectClass, "objectClass");
         if (ObjectClass.ALL.equals(objectClass)) {
             throw new UnsupportedOperationException(
@@ -63,26 +67,26 @@ public class AuthenticationImpl extends ConnectorAPIOperationRunner implements
         }
         Assertions.nullCheck(username, "username");
         Assertions.nullCheck(password, "password");
-        //cast null as empty
-        if ( options == null ) {
+        // cast null as empty
+        if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
-        
-        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), AuthenticateOp.class, "authenticate", 
-        		objectClass, username, password, options);
-        	// Password is GuardedString. toString() method should be safe.
+
+        // Password is GuardedString. toString() method should be safe.
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), AuthenticateOp.class, "authenticate",
+                objectClass, username, password, options);
 
         Uid uid;
-        
         try {
-        	uid = ((AuthenticateOp) getConnector()).authenticate(objectClass, username, password,options);
+            uid = ((AuthenticateOp) getConnector()).authenticate(objectClass, username, password, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), AuthenticateOp.class, "authenticate", e);
-        	throw e;
+            SpiOperationLoggingUtil.
+                    logOpException(OP_LOG, getOperationalContext(), AuthenticateOp.class, "authenticate", e);
+            throw e;
         }
-        
+
         SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), AuthenticateOp.class, "authenticate", uid);
-        
+
         return uid;
     }
 }

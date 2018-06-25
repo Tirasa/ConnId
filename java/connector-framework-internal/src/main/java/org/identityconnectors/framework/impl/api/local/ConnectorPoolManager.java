@@ -20,13 +20,12 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
  */
-
 package org.identityconnectors.framework.impl.api.local;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.identityconnectors.common.Pair;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
@@ -43,8 +42,11 @@ import org.identityconnectors.framework.spi.PoolableConnector;
 public class ConnectorPoolManager {
 
     public static class ConnectorPoolKey {
+
         private final ConnectorKey connectorKey;
+
         private final ConfigurationPropertiesImpl configProperties;
+
         private final ObjectPoolConfiguration poolingConfig;
 
         public ConnectorPoolKey(final ConnectorKey connectorKey,
@@ -81,17 +83,21 @@ public class ConnectorPoolManager {
     }
 
     private static class ConnectorPoolHandler implements ObjectPoolHandler<PoolableConnector> {
+
         private final APIConfigurationImpl apiConfiguration;
+
         private final LocalConnectorInfoImpl localConnectorInfo;
+
         private final OperationalContext context;
 
-        public ConnectorPoolHandler(final APIConfigurationImpl apiConfiguration,
+        public ConnectorPoolHandler(
+                final APIConfigurationImpl apiConfiguration,
                 final LocalConnectorInfoImpl localInfo) {
 
             this.apiConfiguration = apiConfiguration;
-            localConnectorInfo = localInfo;
+            this.localConnectorInfo = localInfo;
             if (localConnectorInfo.isConfigurationStateless()) {
-                context = null;
+                this.context = null;
             } else {
                 this.context = new OperationalContext(localInfo, apiConfiguration);
             }
@@ -107,8 +113,7 @@ public class ConnectorPoolManager {
 
         @Override
         public PoolableConnector makeObject() {
-            // setup classloader for constructor and
-            // initialization of config bean and connector
+            // setup classloader for constructor and initialization of config bean and connector
             ThreadClassLoaderManager.getInstance().pushClassLoader(
                     localConnectorInfo.getConnectorClass().getClassLoader());
             try {
@@ -122,7 +127,7 @@ public class ConnectorPoolManager {
                         config =
                                 JavaClassProperties.createBean(apiConfiguration
                                         .getConfigurationProperties(), localConnectorInfo
-                                        .getConnectorConfigurationClass());
+                                                .getConnectorConfigurationClass());
                     } else {
                         config = context.getConfiguration();
                     }
@@ -214,10 +219,8 @@ public class ConnectorPoolManager {
             if (pool == null) {
                 LOG.info("Creating new pool: {0}", impl.getConnectorInfo().getConnectorKey());
                 // this instance is strictly used for the pool..
-                pool =
-                        new ObjectPool<PoolableConnector>(
-                                new ConnectorPoolHandler(impl, localInfo), impl
-                                        .getConnectorPoolConfiguration());
+                pool = new ObjectPool<>(
+                        new ConnectorPoolHandler(impl, localInfo), impl.getConnectorPoolConfiguration());
                 // add back to the map of POOLS..
 
                 ObjectPool<PoolableConnector> previousPool = POOLS.putIfAbsent(key, pool);
@@ -250,16 +253,15 @@ public class ConnectorPoolManager {
     public static void dispose() {
         synchronized (POOLS) {
             // close each pool..
-            for (ObjectPool<PoolableConnector> pool : POOLS.values()) {
+            POOLS.values().forEach(pool -> {
                 try {
                     pool.shutdown();
                 } catch (Exception e) {
                     LOG.warn(e, "Failed to close pool: {0}", pool);
                 }
-            }
+            });
             // clear the map of all POOLS..
             POOLS.clear();
         }
     }
-
 }

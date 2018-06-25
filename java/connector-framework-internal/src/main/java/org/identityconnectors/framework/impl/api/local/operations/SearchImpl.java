@@ -21,7 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
- * Portions Copyrighted 2015 ConnId
+ * Portions Copyrighted 2015-2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -65,8 +65,11 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
      * @see SearchOp#executeQuery
      */
     @Override
-    public SearchResult search(final ObjectClass objectClass, final Filter originalFilter,
-            ResultsHandler handler, OperationOptions options) {
+    public SearchResult search(
+            final ObjectClass objectClass,
+            final Filter originalFilter,
+            ResultsHandler handler,
+            OperationOptions options) {
 
         Assertions.nullCheck(objectClass, "objectClass");
         if (ObjectClass.ALL.equals(objectClass)) {
@@ -78,9 +81,9 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             options = new OperationOptionsBuilder().build();
         }
 
-        ResultsHandlerConfiguration hdlCfg =
-                null != getOperationalContext() ? getOperationalContext()
-                        .getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
+        ResultsHandlerConfiguration hdlCfg = null != getOperationalContext()
+                ? getOperationalContext().getResultsHandlerConfiguration()
+                : new ResultsHandlerConfiguration();
 
         // actualFilter is used for chaining filters - it points to the filter where new filters should be chained
         Filter actualFilter = originalFilter;
@@ -154,7 +157,7 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
      * @param filter The filter
      * @param handler The handler
      * @param options The options
-     * @param operationalContext 
+     * @param operationalContext
      */
     public static void rawSearch(final SearchOp<?> search, final ObjectClass objectClass, final Filter filter,
             SearchResultsHandler handler, final OperationOptions options, ConnectorOperationalContext operationalContext) {
@@ -167,7 +170,7 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
         }
 
         if (queries.isEmpty()) {
-            logOpEntry(operationalContext, objectClass, null, handler, options);
+            logOpEntry(operationalContext, objectClass, null, handler);
             try {
                 search.executeQuery(objectClass, null, handler, options);
                 logOpExit(operationalContext);
@@ -189,12 +192,13 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             for (Object query : queries) {
                 @SuppressWarnings("unchecked")
                 SearchOp<Object> hack = (SearchOp<Object>) search;
-                logOpEntry(operationalContext, objectClass, query, handler, options);
+                logOpEntry(operationalContext, objectClass, query, handler);
                 try {
                     hack.executeQuery(objectClass, query, handler, options);
                     logOpExit(operationalContext);
                 } catch (RuntimeException e) {
-                    SpiOperationLoggingUtil.logOpException(OP_LOG, operationalContext, SearchOp.class, "executeQuery", e);
+                    SpiOperationLoggingUtil.logOpException(
+                            OP_LOG, operationalContext, SearchOp.class, "executeQuery", e);
                     throw e;
                 }
                 // don't run any more queries if the consumer has stopped
@@ -207,23 +211,27 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             }
         }
     }
-    
+
     private static boolean isLoggable() {
         return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
     }
 
-    private static void logOpEntry(ConnectorOperationalContext operationalContext, ObjectClass objectClass, Object object, SearchResultsHandler handler,
-            OperationOptions options) {
+    private static void logOpEntry(
+            ConnectorOperationalContext operationalContext,
+            ObjectClass objectClass,
+            Object object,
+            SearchResultsHandler handler) {
+
         ResultsHandler origHandler = handler;
         if (handler instanceof SearchResultsHandlerLoggingProxy) {
-        	origHandler = ((SearchResultsHandlerLoggingProxy) handler).getOrigHandler();
+            origHandler = ((SearchResultsHandlerLoggingProxy) handler).getOrigHandler();
         }
-    	SpiOperationLoggingUtil.logOpEntry(OP_LOG, operationalContext, SearchOp.class, "executeQuery", 
-    			objectClass, object, origHandler);
+        SpiOperationLoggingUtil.logOpEntry(
+                OP_LOG, operationalContext, SearchOp.class, "executeQuery", objectClass, object, origHandler);
     }
 
     private static void logOpExit(ConnectorOperationalContext operationalContext) {
-    	SpiOperationLoggingUtil.logOpExit(OP_LOG, operationalContext, SearchOp.class, "executeQuery");
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, operationalContext, SearchOp.class, "executeQuery");
     }
 
     private ResultsHandler getAttributesToGetResultsHandler(

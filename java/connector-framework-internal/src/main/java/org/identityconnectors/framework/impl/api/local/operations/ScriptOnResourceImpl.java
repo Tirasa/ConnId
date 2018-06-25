@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -34,10 +35,9 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.ScriptOnResourceOp;
 
-public class ScriptOnResourceImpl extends ConnectorAPIOperationRunner implements
-        ScriptOnResourceApiOp {
-	
-	// Special logger with SPI operation log name. Used for logging operation entry/exit
+public class ScriptOnResourceImpl extends ConnectorAPIOperationRunner implements ScriptOnResourceApiOp {
+
+    // Special logger with SPI operation log name. Used for logging operation entry/exit
     private static final Log OP_LOG = Log.getLog(ScriptOnResourceOp.class);
 
     public ScriptOnResourceImpl(final ConnectorOperationalContext context, final Connector connector) {
@@ -51,21 +51,22 @@ public class ScriptOnResourceImpl extends ConnectorAPIOperationRunner implements
         if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
-        
-        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class, "runScriptOnResource", 
-        		request, options);
-        
+
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class,
+                "runScriptOnResource", request, options);
+
         Object rv;
         try {
-        	rv = ((ScriptOnResourceOp) getConnector()).runScriptOnResource(request, options);
+            rv = ((ScriptOnResourceOp) getConnector()).runScriptOnResource(request, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class, "runScriptOnResource", e);
-        	throw e;
+            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class,
+                    "runScriptOnResource", e);
+            throw e;
         }
-        
-        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class, "runScriptOnResource", rv);
-        
+
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), ScriptOnResourceOp.class,
+                "runScriptOnResource", rv);
+
         return SerializerUtil.cloneObject(rv);
     }
-
 }

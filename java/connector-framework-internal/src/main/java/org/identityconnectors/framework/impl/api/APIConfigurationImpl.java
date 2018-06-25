@@ -20,6 +20,8 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -49,7 +51,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     private boolean isConnectorPoolingSupported;
 
     private ConfigurationPropertiesImpl configurationProperties;
-    
+
     private String instanceName;
 
     /**
@@ -60,8 +62,7 @@ public class APIConfigurationImpl implements APIConfiguration {
     /**
      * Map of timeout per operation.
      */
-    private Map<Class<? extends APIOperation>, Integer> timeoutMap =
-            new HashMap<Class<? extends APIOperation>, Integer>();
+    private Map<Class<? extends APIOperation>, Integer> timeoutMap = new HashMap<>();
 
     /**
      * Set of supported operations;
@@ -93,8 +94,8 @@ public class APIConfigurationImpl implements APIConfiguration {
         this.setConfigurationProperties(prop);
 
         this.bufferSize = other.bufferSize;
-        this.timeoutMap = new HashMap<Class<? extends APIOperation>, Integer>(other.timeoutMap);
-        this.supportedOperations = new HashSet<Class<? extends APIOperation>>(other.supportedOperations);
+        this.timeoutMap = new HashMap<>(other.timeoutMap);
+        this.supportedOperations = new HashSet<>(other.supportedOperations);
 
         this.connectorInfo = other.connectorInfo;
     }
@@ -234,16 +235,16 @@ public class APIConfigurationImpl implements APIConfiguration {
     public void setResultsHandlerConfiguration(ResultsHandlerConfiguration config) {
         this.resultsHandlerConfiguration = config;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-	public void setInstanceName(String instanceName) {
-		this.instanceName = instanceName;
-	}
-    
-	public String getInstanceName() {
-		return instanceName;
-	}
+    public void setInstanceName(String instanceName) {
+        this.instanceName = instanceName;
+    }
+
+    public String getInstanceName() {
+        return instanceName;
+    }
 }

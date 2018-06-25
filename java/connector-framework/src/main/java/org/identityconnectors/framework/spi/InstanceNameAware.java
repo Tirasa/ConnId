@@ -29,7 +29,7 @@ package org.identityconnectors.framework.spi;
  * Therefore we are solving the issue by creating this optional interface.
  */
 public interface InstanceNameAware {
-	
-	void setInstanceName(String instanceName);
+
+    void setInstanceName(String instanceName);
 
 }

@@ -20,26 +20,26 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014-2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.framework.api.operations.SchemaApiOp;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SchemaOp;
 
-public class SchemaImpl extends ConnectorAPIOperationRunner implements
-        org.identityconnectors.framework.api.operations.SchemaApiOp {
-	
-	// Special logger with SPI operation log name. Used for logging operation entry/exit
+public class SchemaImpl extends ConnectorAPIOperationRunner implements SchemaApiOp {
+
+    // Special logger with SPI operation log name. Used for logging operation entry/exit
     private static final Log OP_LOG = Log.getLog(SchemaOp.class);
-	
+
     /**
      * Initializes the operation works.
      */
-    public SchemaImpl(final ConnectorOperationalContext context,
-            final Connector connector) {
-        super(context,connector);
+    public SchemaImpl(final ConnectorOperationalContext context, final Connector connector) {
+        super(context, connector);
     }
 
     /**
@@ -49,20 +49,18 @@ public class SchemaImpl extends ConnectorAPIOperationRunner implements
      */
     @Override
     public Schema schema() {
-    	
-    	SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), SchemaOp.class, "schema");
-        
-    	Schema schema;
-    	try {
-    		schema = ((SchemaOp)getConnector()).schema();
-    	} catch (RuntimeException e) {
-    		SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), SchemaOp.class, "schema", e);
-        	throw e;
-    	}
-    	
-    	SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), SchemaOp.class, "schema", schema);
-    	
-    	return schema;
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), SchemaOp.class, "schema");
+
+        Schema schema;
+        try {
+            schema = ((SchemaOp) getConnector()).schema();
+        } catch (RuntimeException e) {
+            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), SchemaOp.class, "schema", e);
+            throw e;
+        }
+
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), SchemaOp.class, "schema", schema);
+
+        return schema;
     }
-    
 }

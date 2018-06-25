@@ -21,16 +21,16 @@
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.stream.Collectors;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.logging.Log;
@@ -57,8 +57,7 @@ import org.identityconnectors.framework.spi.operations.UpdateDeltaOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
 
 /**
- * Handles both version of update this include simple replace and the advance
- * update.
+ * Handles both version of update this include simple replace and the advance update.
  */
 public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements UpdateDeltaApiOp {
 
@@ -66,21 +65,23 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
     private static final Log OP_LOG = Log.getLog(UpdateDeltaOp.class);
 
     /**
+     * All the operational attributes that can not be added or deleted.
+     */
+    private static final Set<String> OPERATIONAL_ATTRIBUTE_NAMES = new HashSet<String>();
+
+    static {
+        OPERATIONAL_ATTRIBUTE_NAMES.addAll(OperationalAttributes.getOperationalAttributeNames());
+        OPERATIONAL_ATTRIBUTE_NAMES.add(Name.NAME);
+    }
+
+    private static final String OPERATIONAL_ATTRIBUTE_ERR = "Operational attribute '%s' can not be added or removed.";
+
+    /**
      * Determines which type of update a connector supports and then uses that
      * handler.
      */
     public UpdateDeltaImpl(final ConnectorOperationalContext context, final Connector connector) {
         super(context, connector);
-    }
-
-    /**
-     * All the operational attributes that can not be added or deleted.
-     */
-    static final Set<String> OPERATIONAL_ATTRIBUTE_NAMES = new HashSet<String>();
-
-    static {
-        OPERATIONAL_ATTRIBUTE_NAMES.addAll(OperationalAttributes.getOperationalAttributeNames());
-        OPERATIONAL_ATTRIBUTE_NAMES.add(Name.NAME);
     }
 
     @Override
@@ -155,9 +156,9 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
             UpdateOp op = (UpdateOp) conector;
             UpdateAttributeValuesOp valueOp = (UpdateAttributeValuesOp) conector;
 
-            Set<Attribute> valuesToRemove = new HashSet<Attribute>();
-            Set<Attribute> valuesToAdd = new HashSet<Attribute>();
-            Set<Attribute> valuesToReplace = new HashSet<Attribute>();
+            Set<Attribute> valuesToRemove = new HashSet<>();
+            Set<Attribute> valuesToAdd = new HashSet<>();
+            Set<Attribute> valuesToReplace = new HashSet<>();
 
             //allocation of attribute's values for addAttributeValues, removeAttributeValues and update
             for (AttributeDelta attrDelta : modifications) {
@@ -208,7 +209,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                 }
             }
 
-            Set<AttributeDelta> sideEffectAttributesDelta = new HashSet<AttributeDelta>();
+            Set<AttributeDelta> sideEffectAttributesDelta = new HashSet<>();
             if (newUid != null && !uid.getUidValue().equals(newUid.getUidValue())) {
                 sideEffectAttributesDelta.add(AttributeDeltaBuilder.build(Uid.NAME, newUid.getUidValue()));
             }
@@ -225,11 +226,10 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                 throw new UnsupportedOperationException("Connector must support: " + SearchOp.class);
             }
 
-            // add attrs to get to operation options, so that the
-            // object we fetch has exactly the set of attributes we require
-            // (there may be ones that are not in the default set)
+            // add attrs to get to operation options, so that the object we fetch has exactly the set of attributes we
+            // require (there may be ones that are not in the default set)
             OperationOptionsBuilder builder = new OperationOptionsBuilder(options);
-            Set<String> attrNames = new HashSet<String>();
+            Set<String> attrNames = new HashSet<>();
             for (AttributeDelta attributeDelta : modifications) {
                 attrNames.add(attributeDelta.getName());
             }
@@ -244,7 +244,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
             // get actual attributes
             Set<Attribute> attrsFromSearch = o.getAttributes();
             // create set attributes for update operation
-            Set<Attribute> attributesForUpdate = new HashSet<Attribute>();
+            Set<Attribute> attributesForUpdate = new HashSet<>();
             // create map that can be modified to get the subset of changes
             Map<String, Attribute> attrsFromSearchMap = AttributeUtil.toMap(attrsFromSearch);
             // run through attributesDelta of the current object..
@@ -273,9 +273,9 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                         }
                         if (attrFromModification.getValuesToRemove() != null) {
                             //remove values if exist on target
-                            for (Object val : attrFromModification.getValuesToRemove()) {
+                            attrFromModification.getValuesToRemove().forEach((val) -> {
                                 values.remove(val);
-                            }
+                            });
                         }
 
                         // create attribute with edit values
@@ -302,7 +302,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                 return null;
             }
 
-            Set<AttributeDelta> sideEffectAttributesDelta = new HashSet<AttributeDelta>();
+            Set<AttributeDelta> sideEffectAttributesDelta = new HashSet<>();
             if (!uid.equals(ret)) {
                 sideEffectAttributesDelta.add(AttributeDeltaBuilder.build(Uid.NAME, ret.getValue()));
             }
@@ -312,8 +312,10 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
         }
     }
 
-    private Uid executeUpdateAttributeValues(UpdateAttributeValuesOp valueOp, String method, ObjectClass objclass,
+    private Uid executeUpdateAttributeValues(
+            UpdateAttributeValuesOp valueOp, String method, ObjectClass objclass,
             Uid uid, Set<Attribute> valuesToUpdate, OperationOptions options, boolean add) {
+
         logOpEntry(method, objclass, uid, valuesToUpdate, options);
         Uid ret = null;
         try {
@@ -335,7 +337,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
         if (attrsDelta == null) {
             return null;
         }
-        Set<AttributeDelta> normalizeModifications = new HashSet<AttributeDelta>();
+        Set<AttributeDelta> normalizeModifications = new HashSet<>();
         List<Object> replaceValues;
         List<Object> addValues = null;
         List<Object> removeValues = null;
@@ -363,14 +365,12 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
         return Collections.unmodifiableSet(normalizeModifications);
     }
 
-    private List<Object> normalizeListAttributesValues(ObjectNormalizerFacade normalizer, String name,
-            List<Object> values) {
-        List<Object> resultsValues = new ArrayList<Object>();
-        for (Object value : values) {
-            Attribute normalizeAttr = normalizer.normalizeAttribute(AttributeBuilder.build(name, value));
-            resultsValues.add(normalizeAttr.getValue().get(0));
-        }
-        return resultsValues;
+    private List<Object> normalizeListAttributesValues(
+            ObjectNormalizerFacade normalizer, String name, List<Object> values) {
+
+        return values.stream().
+                map(value -> normalizer.normalizeAttribute(AttributeBuilder.build(name, value))).
+                collect(Collectors.toList());
     }
 
     /**
@@ -382,10 +382,6 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
         return get.getObject(oclass, uid, options);
     }
 
-    private static final String OPERATIONAL_ATTRIBUTE_ERR =
-            "Operational attribute '%s' can not be added or removed.";
-    
-    
     private void logOpEntry(String opName, Object... params) {
         SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), UpdateDeltaOp.class, opName, params);
     }
@@ -393,7 +389,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
     private void logOpExit(String opName, Object returnValue) {
         SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), UpdateOp.class, opName, returnValue);
     }
-    
+
     private void logOpException(String opName, RuntimeException e) {
         SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), UpdateOp.class, opName, e);
     }

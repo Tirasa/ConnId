@@ -19,7 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -29,20 +30,19 @@ import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.TestOp;
 
 /**
- * Provides a method for the API to call the SPI's test method on the
- * connector. The test method is intended to determine if the {@link Connector}
+ * Provides a method for the API to call the SPI's test method on the connector.
+ * The test method is intended to determine if the {@link Connector}
  * is ready to perform the various operations it supports.
  *
  * @author Will Droste
- *
  */
 public class TestImpl extends ConnectorAPIOperationRunner implements TestApiOp {
-	
-	// Special logger with SPI operation log name. Used for logging operation entry/exit
+
+    // Special logger with SPI operation log name. Used for logging operation entry/exit
     private static final Log OP_LOG = Log.getLog(TestOp.class);
 
     public TestImpl(ConnectorOperationalContext context, Connector connector) {
-        super(context,connector);
+        super(context, connector);
     }
 
     /**
@@ -50,14 +50,14 @@ public class TestImpl extends ConnectorAPIOperationRunner implements TestApiOp {
      */
     @Override
     public void test() {
-    	SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), TestOp.class, "test");
-    	
-    	try {
-    		((TestOp) getConnector()).test();
-    	} catch (RuntimeException e) {
-    		SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), TestOp.class, "test", e);
-        	throw e;
-    	}
-    	SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), TestOp.class, "test");
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), TestOp.class, "test");
+
+        try {
+            ((TestOp) getConnector()).test();
+        } catch (RuntimeException e) {
+            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), TestOp.class, "test", e);
+            throw e;
+        }
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), TestOp.class, "test");
     }
 }

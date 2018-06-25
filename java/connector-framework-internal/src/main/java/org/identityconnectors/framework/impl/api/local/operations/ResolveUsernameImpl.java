@@ -21,11 +21,13 @@
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
@@ -33,26 +35,23 @@ import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.ResolveUsernameOp;
 
-public class ResolveUsernameImpl extends ConnectorAPIOperationRunner implements
-        org.identityconnectors.framework.api.operations.ResolveUsernameApiOp {
-	
-	// Special logger with SPI operation log name. Used for logging operation entry/exit
+public class ResolveUsernameImpl extends ConnectorAPIOperationRunner implements ResolveUsernameApiOp {
+
+    // Special logger with SPI operation log name. Used for logging operation entry/exit
     private static final Log OP_LOG = Log.getLog(ResolveUsernameOp.class);
-    
+
     /**
      * Pass the configuration etc to the abstract class.
      */
-    public ResolveUsernameImpl(final ConnectorOperationalContext context,
-            final Connector connector) {
-        super(context,connector);
+    public ResolveUsernameImpl(final ConnectorOperationalContext context, final Connector connector) {
+        super(context, connector);
     }
 
     /**
      * Resolve the username to an <code>Uid</code>.
      */
     @Override
-    public Uid resolveUsername(final ObjectClass objectClass, final String username,
-            OperationOptions options) {
+    public Uid resolveUsername(final ObjectClass objectClass, final String username, OperationOptions options) {
         Assertions.nullCheck(objectClass, "objectClass");
         if (ObjectClass.ALL.equals(objectClass)) {
             throw new UnsupportedOperationException(
@@ -60,24 +59,25 @@ public class ResolveUsernameImpl extends ConnectorAPIOperationRunner implements
         }
         Assertions.nullCheck(username, "username");
         //cast null as empty
-        if ( options == null ) {
+        if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
-        
-        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), ResolveUsernameOp.class, "resolveUsername", 
-        		objectClass, username, options);
-        
+
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), ResolveUsernameOp.class, "resolveUsername",
+                objectClass, username, options);
+
         Uid uid;
         try {
-        	uid = ((ResolveUsernameOp) getConnector()).resolveUsername(objectClass, username, options);
+            uid = ((ResolveUsernameOp) getConnector()).resolveUsername(objectClass, username, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), ResolveUsernameOp.class, "resolveUsername", e);
-        	throw e;
+            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), ResolveUsernameOp.class,
+                    "resolveUsername", e);
+            throw e;
         }
 
-        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), ResolveUsernameOp.class, "resolveUsername", uid);
+        SpiOperationLoggingUtil.logOpExit(
+                OP_LOG, getOperationalContext(), ResolveUsernameOp.class, "resolveUsername", uid);
 
         return uid;
     }
-    
 }

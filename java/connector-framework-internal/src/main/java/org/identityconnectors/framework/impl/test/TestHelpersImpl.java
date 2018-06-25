@@ -20,17 +20,15 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.test;
-
-import static org.identityconnectors.framework.impl.api.local.LocalConnectorInfoManagerImpl.createDefaultAPIConfiguration;
-import static org.identityconnectors.framework.impl.api.local.LocalConnectorInfoManagerImpl.loadMessageCatalog;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.APIConfiguration;
@@ -46,11 +44,10 @@ import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.ConfigurationPropertiesImpl;
-import org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl;
 import org.identityconnectors.framework.impl.api.ConnectorMessagesImpl;
 import org.identityconnectors.framework.impl.api.local.JavaClassProperties;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
-import org.identityconnectors.framework.impl.api.local.operations.ConnectorOperationalContext;
+import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoManagerImpl;
 import org.identityconnectors.framework.impl.api.local.operations.SearchImpl;
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
@@ -78,7 +75,7 @@ public class TestHelpersImpl implements TestHelpersSpi {
         info.setConnectorKey(new ConnectorKey(clazz.getName() + ".bundle", "1.0", clazz.getName()));
         info.setMessages(createDummyMessages());
         try {
-            final APIConfigurationImpl rv = createDefaultAPIConfiguration(info);
+            final APIConfigurationImpl rv = LocalConnectorInfoManagerImpl.createDefaultAPIConfiguration(info);
             rv.setConfigurationProperties(JavaClassProperties.createConfigurationProperties(config));
 
             info.setDefaultAPIConfiguration(rv);
@@ -107,19 +104,19 @@ public class TestHelpersImpl implements TestHelpersSpi {
         if (null == bundleContents || bundleContents.isEmpty()) {
             info.setMessages(createDummyMessages());
         } else {
-            final ConnectorMessagesImpl messages =
-                    loadMessageCatalog(bundleContents, clazz.getClassLoader(), info.getConnectorClass());
+            ConnectorMessagesImpl messages = LocalConnectorInfoManagerImpl.loadMessageCatalog(
+                    bundleContents, clazz.getClassLoader(), info.getConnectorClass());
             info.setMessages(messages);
         }
 
-        final APIConfigurationImpl impl = createDefaultAPIConfiguration(info);
+        final APIConfigurationImpl impl = LocalConnectorInfoManagerImpl.createDefaultAPIConfiguration(info);
         info.setDefaultAPIConfiguration(impl);
 
         final ConfigurationPropertiesImpl configProps = impl.getConfigurationProperties();
 
         final String fullPrefix = StringUtil.isBlank(prefix) ? null : prefix + ".";
 
-        for (ConfigurationPropertyImpl property : configProps.getProperties()) {
+        configProps.getProperties().forEach(property -> {
             @SuppressWarnings("unchecked")
             Object value = configData.getProperty(
                     null == fullPrefix ? property.getName() : fullPrefix + property.getName(),
@@ -127,28 +124,26 @@ public class TestHelpersImpl implements TestHelpersSpi {
             if (value != null) {
                 property.setValue(value);
             }
-        }
+        });
         return impl;
     }
 
     @Override
     public void fillConfiguration(final Configuration config, final Map<String, ? extends Object> configData) {
-        final Map<String, Object> configDataCopy = new HashMap<String, Object>(configData);
+        final Map<String, Object> configDataCopy = new HashMap<>(configData);
         final ConfigurationPropertiesImpl configProps = JavaClassProperties.createConfigurationProperties(config);
-        for (String propName : configProps.getPropertyNames()) {
+        configProps.getPropertyNames().forEach(propName -> {
             // Remove the entry from the config map, so that at the end
-            // the map only contains entries that were not assigned to a config
-            // property.
+            // the map only contains entries that were not assigned to a config property.
             final Object value = configDataCopy.remove(propName);
             if (value != null) {
                 configProps.setPropertyValue(propName, value);
             }
-        }
-        // The config map now contains entries that were not assigned to a
-        // config property.
-        for (String propName : configDataCopy.keySet()) {
+        });
+        // The config map now contains entries that were not assigned to a config property.
+        configDataCopy.keySet().forEach((propName) -> {
             LOG.warn("Configuration property {0} does not exist!", propName);
-        }
+        });
         JavaClassProperties.mergeIntoBean(configProps, config);
     }
 
@@ -171,7 +166,7 @@ public class TestHelpersImpl implements TestHelpersSpi {
         if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
-        final AtomicReference<SearchResult> result = new AtomicReference<SearchResult>(null);
+        final AtomicReference<SearchResult> result = new AtomicReference<>(null);
 
         SearchImpl.rawSearch(search, objectClass, filter, new SearchResultsHandler() {
 
@@ -209,5 +204,4 @@ public class TestHelpersImpl implements TestHelpersSpi {
             return builder.toString();
         }
     }
-
 }

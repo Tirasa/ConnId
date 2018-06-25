@@ -20,6 +20,8 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -27,7 +29,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.impl.api.local.ConnectorLifecycleUtil;
 import org.identityconnectors.framework.impl.api.local.ObjectPool;
@@ -35,12 +36,10 @@ import org.identityconnectors.framework.impl.api.local.ObjectPoolEntry;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.PoolableConnector;
 
-
 /**
  * Proxy for APIOperationRunner that takes care of setting up underlying
  * connector and creating the implementation of APIOperationRunner.
- * The implementation of APIOperationRunner gets created whenever the
- * actual method is invoked.
+ * The implementation of APIOperationRunner gets created whenever the actual method is invoked.
  */
 public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
 
@@ -59,6 +58,7 @@ public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
 
     /**
      * Create an APIOperationRunnerProxy
+     *
      * @param context The operational context
      * @param runnerImplConstructor The implementation constructor. Implementation
      * must define a two-argument constructor(OperationalContext,Connector)
@@ -87,8 +87,7 @@ public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
             if (pool != null) {
                 poolEntry = pool.borrowObject();
                 connector = poolEntry.getPooledObject();
-            }
-            else {
+            } else {
                 // get a new instance of the connector..
                 connector = connectorClazz.newInstance();
                 // initialize the connector..
@@ -96,7 +95,7 @@ public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
                 ConnectorLifecycleUtil.setConnectorInstanceName(connector, context.getInstanceName());
             }
             APIOperationRunner runner =
-                runnerImplConstructor.newInstance(context,connector);
+                    runnerImplConstructor.newInstance(context, connector);
             ret = method.invoke(runner, args);
             // call out to the operation..
         } catch (InvocationTargetException e) {
@@ -109,25 +108,18 @@ public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
                 // determine if there was a pool..
                 if (poolEntry != null) {
                     try {
-                        //try to return it to the pool even though an
-                        //exception may have happened that leaves it in
-                        //a bad state. The contract of checkAlive
-                        //is that it will tell you if the connector is
-                        //still valid and so we leave it up to the pool
-                        //and connector to work it out.
+                        //try to return it to the pool even though an exception may have happened that leaves it in
+                        //a bad state. The contract of checkAlive is that it will tell you if the connector is
+                        //still valid and so we leave it up to the pool and connector to work it out.
                         poolEntry.close();
                     } catch (Exception e) {
-                        //don't let pool exceptions propagate or mask
-                        //other exceptions. do log it though.
+                        //don't let pool exceptions propagate or mask other exceptions. do log it though.
                         LOG.error(e, null);
                     }
-                }
-                //not pooled - just dispose
+                } //not pooled - just dispose
                 else {
-                    //dispose it not supposed to throw, but just in case,
-                    //catch the exception and log it so we know about it
-                    //but don't let the exception prevent additional
-                    //cleanup that needs to happen
+                    //dispose it not supposed to throw, but just in case, catch the exception and log it so we know about it
+                    //but don't let the exception prevent additional cleanup that needs to happen
                     try {
                         connector.dispose();
                     } catch (Exception e) {

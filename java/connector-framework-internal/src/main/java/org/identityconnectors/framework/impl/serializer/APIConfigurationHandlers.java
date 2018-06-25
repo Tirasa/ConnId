@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -28,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
 import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.api.ResultsHandlerConfiguration;
@@ -47,10 +47,10 @@ class APIConfigurationHandlers {
     public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<ObjectTypeMapper>();
 
     static {
-
         HANDLERS.add(new AbstractObjectSerializationHandler(ObjectPoolConfiguration.class,
                 "ObjectPoolConfiguration") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final ObjectPoolConfiguration rv = new ObjectPoolConfiguration();
                 rv.setMaxObjects(decoder.readIntField("maxObjects", rv.getMaxObjects()));
@@ -62,13 +62,13 @@ class APIConfigurationHandlers {
                 return rv;
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 ObjectPoolConfiguration val = (ObjectPoolConfiguration) object;
                 encoder.writeIntField("maxObjects", val.getMaxObjects());
                 encoder.writeIntField("maxIdle", val.getMaxIdle());
                 encoder.writeLongField("maxWait", val.getMaxWait());
-                encoder.writeLongField("minEvictableIdleTimeMillis", val
-                        .getMinEvictableIdleTimeMillis());
+                encoder.writeLongField("minEvictableIdleTimeMillis", val.getMinEvictableIdleTimeMillis());
                 encoder.writeIntField("minIdle", val.getMinIdle());
             }
 
@@ -77,6 +77,7 @@ class APIConfigurationHandlers {
         HANDLERS.add(new AbstractObjectSerializationHandler(ResultsHandlerConfiguration.class,
                 "ResultsHandlerConfiguration") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 ResultsHandlerConfiguration rv = new ResultsHandlerConfiguration();
                 rv.setEnableNormalizingResultsHandler(decoder.readBooleanField(
@@ -93,6 +94,7 @@ class APIConfigurationHandlers {
                 return rv;
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 ResultsHandlerConfiguration val = (ResultsHandlerConfiguration) object;
                 encoder.writeBooleanField("enableNormalizingResultsHandler", val
@@ -111,6 +113,7 @@ class APIConfigurationHandlers {
         HANDLERS.add(new AbstractObjectSerializationHandler(ConfigurationPropertyImpl.class,
                 "ConfigurationProperty") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final ConfigurationPropertyImpl rv = new ConfigurationPropertyImpl();
 
@@ -124,12 +127,12 @@ class APIConfigurationHandlers {
                 rv.setType(decoder.readClassField("type", null));
                 rv.setValue(decoder.readObjectField("value", null, null));
                 @SuppressWarnings("unchecked")
-                Set<Class<? extends APIOperation>> ops =
-                        (Set) decoder.readObjectField("operations", Set.class, null);
+                Set<Class<? extends APIOperation>> ops = (Set) decoder.readObjectField("operations", Set.class, null);
                 rv.setOperations(ops);
                 return rv;
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final ConfigurationPropertyImpl val = (ConfigurationPropertyImpl) object;
                 encoder.writeIntField("order", val.getOrder());
@@ -148,10 +151,10 @@ class APIConfigurationHandlers {
         HANDLERS.add(new AbstractObjectSerializationHandler(ConfigurationPropertiesImpl.class,
                 "ConfigurationProperties") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final ConfigurationPropertiesImpl rv = new ConfigurationPropertiesImpl();
-                final List<ConfigurationPropertyImpl> props =
-                        new ArrayList<ConfigurationPropertyImpl>();
+                final List<ConfigurationPropertyImpl> props = new ArrayList<>();
                 final int count = decoder.getNumSubObjects();
                 for (int i = 0; i < count; i++) {
                     props.add((ConfigurationPropertyImpl) decoder.readObjectContents(i));
@@ -160,17 +163,19 @@ class APIConfigurationHandlers {
                 return rv;
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final ConfigurationPropertiesImpl val = (ConfigurationPropertiesImpl) object;
-                for (ConfigurationPropertyImpl prop : val.getProperties()) {
+                val.getProperties().forEach((prop) -> {
                     encoder.writeObjectContents(prop);
-                }
+                });
             }
         });
 
         HANDLERS.add(new AbstractObjectSerializationHandler(APIConfigurationImpl.class,
                 "APIConfiguration") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final APIConfigurationImpl rv = new APIConfigurationImpl();
                 rv.setConnectorPoolingSupported(decoder.readBooleanField(
@@ -195,6 +200,7 @@ class APIConfigurationHandlers {
                 return rv;
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final APIConfigurationImpl val = (APIConfigurationImpl) object;
                 encoder.writeIntField("producerBufferSize", val.getProducerBufferSize());
@@ -215,6 +221,7 @@ class APIConfigurationHandlers {
         HANDLERS.add(new AbstractObjectSerializationHandler(ConnectorMessagesImpl.class,
                 "ConnectorMessages") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final ConnectorMessagesImpl rv = new ConnectorMessagesImpl();
                 @SuppressWarnings("unchecked")
@@ -224,6 +231,7 @@ class APIConfigurationHandlers {
                 return rv;
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final ConnectorMessagesImpl val = (ConnectorMessagesImpl) object;
                 encoder.writeObjectField("catalogs", val.getCatalogs(), false);
@@ -232,6 +240,7 @@ class APIConfigurationHandlers {
 
         HANDLERS.add(new AbstractObjectSerializationHandler(ConnectorKey.class, "ConnectorKey") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final String bundleName = decoder.readStringField("bundleName", null);
                 final String bundleVersion = decoder.readStringField("bundleVersion", null);
@@ -239,6 +248,7 @@ class APIConfigurationHandlers {
                 return new ConnectorKey(bundleName, bundleVersion, connectorName);
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final ConnectorKey val = (ConnectorKey) object;
                 encoder.writeStringField("bundleName", val.getBundleName());
@@ -250,6 +260,7 @@ class APIConfigurationHandlers {
         HANDLERS.add(new AbstractObjectSerializationHandler(RemoteConnectorInfoImpl.class,
                 "ConnectorInfo") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 RemoteConnectorInfoImpl rv = new RemoteConnectorInfoImpl();
                 rv.setConnectorDisplayNameKey(decoder.readStringField("connectorDisplayNameKey",
@@ -264,10 +275,10 @@ class APIConfigurationHandlers {
                 return rv;
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final RemoteConnectorInfoImpl val = (RemoteConnectorInfoImpl) object;
-                encoder.writeStringField("connectorDisplayNameKey", val
-                        .getConnectorDisplayNameKey());
+                encoder.writeStringField("connectorDisplayNameKey", val.getConnectorDisplayNameKey());
                 encoder.writeStringField("connectorCategoryKey", val.getConnectorCategoryKey());
                 encoder.writeObjectField("ConnectorKey", val.getConnectorKey(), true);
                 encoder.writeObjectField("ConnectorMessages", val.getMessages(), true);

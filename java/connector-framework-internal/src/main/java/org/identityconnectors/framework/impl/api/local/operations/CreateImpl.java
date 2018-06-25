@@ -20,15 +20,16 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
- * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2014-2018 Evolveum
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
@@ -39,10 +40,9 @@ import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 
-public class CreateImpl extends ConnectorAPIOperationRunner implements
-        org.identityconnectors.framework.api.operations.CreateApiOp {
-	
-	// Special logger with SPI operation log name. Used for logging operation entry/exit
+public class CreateImpl extends ConnectorAPIOperationRunner implements CreateApiOp {
+
+    // Special logger with SPI operation log name. Used for logging operation entry/exit
     private static final Log OP_LOG = Log.getLog(CreateOp.class);
 
     /**
@@ -56,12 +56,11 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
      * Calls the create method on the Connector side.
      *
      * @see CreateOp#create(org.identityconnectors.framework.common.objects.ObjectClass,
-     *      java.util.Set,
-     *      org.identityconnectors.framework.common.objects.OperationOptions)
+     * java.util.Set,
+     * org.identityconnectors.framework.common.objects.OperationOptions)
      */
     @Override
-    public Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes,
-            OperationOptions options) {
+    public Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes, OperationOptions options) {
         Assertions.nullCheck(objectClass, "objectClass");
         if (ObjectClass.ALL.equals(objectClass)) {
             throw new UnsupportedOperationException(
@@ -77,38 +76,33 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements
             options = new OperationOptionsBuilder().build();
         }
         // validate input..
-        final Set<String> dups = new HashSet<String>();
-        for (Attribute attr : createAttributes) {
+        final Set<String> dups = new HashSet<>();
+        createAttributes.forEach(attr -> {
             if (dups.contains(attr.getName())) {
                 throw new InvalidAttributeValueException("Duplicate attribute name exits: " + attr.getName());
             }
             // add for the detection..s
             dups.add(attr.getName());
-        }
+        });
 
         final Connector connector = getConnector();
         final ObjectNormalizerFacade normalizer = getNormalizer(objectClass);
-        final Set<Attribute> normalizedAttributes =
-                normalizer.normalizeAttributes(createAttributes);
-        
-        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), CreateOp.class, "create", objectClass, normalizedAttributes, options);
-        
+        final Set<Attribute> normalizedAttributes = normalizer.normalizeAttributes(createAttributes);
+
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), CreateOp.class, "create", objectClass,
+                normalizedAttributes, options);
+
         final Uid connectorUid;
         try {
-	        // create the object..
-	        connectorUid = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
+            // create the object..
+            connectorUid = ((CreateOp) connector).create(objectClass, normalizedAttributes, options);
         } catch (RuntimeException e) {
-        	SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), CreateOp.class, "create", e);
-        	throw e;
+            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), CreateOp.class, "create", e);
+            throw e;
         }
         SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), CreateOp.class, "create", connectorUid);
-        
+
         Uid uid = (Uid) normalizer.normalizeAttribute(connectorUid);
-        
         return uid;
     }
-    
-    private static boolean isLoggable() {
-		return OP_LOG.isLoggable(SpiOperationLoggingUtil.LOG_LEVEL);
-	}
 }

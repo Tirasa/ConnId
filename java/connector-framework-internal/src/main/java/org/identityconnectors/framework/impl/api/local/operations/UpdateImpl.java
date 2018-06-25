@@ -21,7 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
- * Portions Copyrighted 2017 ConnId
+ * Portions Copyrighted 2017-2018 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.logging.Log;
@@ -53,13 +52,24 @@ import org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp;
 import org.identityconnectors.framework.spi.operations.UpdateOp;
 
 /**
- * Handles both version of update this include simple replace and the advance
- * update.
+ * Handles both version of update this include simple replace and the advance update.
  */
 public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApiOp {
 
     // Special logger with SPI operation log name. Used for logging operation entry/exit
     private static final Log OP_LOG = Log.getLog(UpdateOp.class);
+
+    /**
+     * All the operational attributes that can not be added or deleted.
+     */
+    private static final Set<String> OPERATIONAL_ATTRIBUTE_NAMES = new HashSet<String>();
+
+    static {
+        OPERATIONAL_ATTRIBUTE_NAMES.addAll(OperationalAttributes.getOperationalAttributeNames());
+        OPERATIONAL_ATTRIBUTE_NAMES.add(Name.NAME);
+    }
+
+    private static final String OPERATIONAL_ATTRIBUTE_ERR = "Operational attribute '%s' can not be added or removed.";
 
     /**
      * Determines which type of update a connector supports and then uses that
@@ -69,19 +79,10 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
         super(context, connector);
     }
 
-    /**
-     * All the operational attributes that can not be added or deleted.
-     */
-    static final Set<String> OPERATIONAL_ATTRIBUTE_NAMES = new HashSet<String>();
-
-    static {
-        OPERATIONAL_ATTRIBUTE_NAMES.addAll(OperationalAttributes.getOperationalAttributeNames());
-        OPERATIONAL_ATTRIBUTE_NAMES.add(Name.NAME);
-    }
-
     @Override
-    public Uid update(final ObjectClass objectClass, Uid uid, Set<Attribute> replaceAttributes,
-            OperationOptions options) {
+    public Uid update(
+            final ObjectClass objectClass, Uid uid, Set<Attribute> replaceAttributes, OperationOptions options) {
+
         // validate all the parameters..
         validateInput(objectClass, uid, replaceAttributes, false);
         // cast null as empty
@@ -110,8 +111,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
     }
 
     @Override
-    public Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd,
-            OperationOptions options) {
+    public Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd, OperationOptions options) {
         // validate all the parameters..
         validateInput(objclass, uid, valuesToAdd, true);
         // cast null as empty
@@ -135,8 +135,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
             }
             logOpExit("addAttributeValues", ret);
         } else {
-            Set<Attribute> replaceAttributes =
-                    fetchAndMerge(objclass, uid, valuesToAdd, true, options);
+            Set<Attribute> replaceAttributes = fetchAndMerge(objclass, uid, valuesToAdd, true, options);
             logOpEntry("update", objclass, uid, replaceAttributes, options);
             try {
                 ret = op.update(objclass, uid, replaceAttributes, options);
@@ -150,8 +149,9 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
     }
 
     @Override
-    public Uid removeAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToRemove,
-            OperationOptions options) {
+    public Uid removeAttributeValues(
+            ObjectClass objclass, Uid uid, Set<Attribute> valuesToRemove, OperationOptions options) {
+
         // validate all the parameters..
         validateInput(objclass, uid, valuesToRemove, true);
         // cast null as empty
@@ -175,8 +175,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
             }
             logOpExit("removeAttributeValues", ret);
         } else {
-            Set<Attribute> replaceAttributes =
-                    fetchAndMerge(objclass, uid, valuesToRemove, false, options);
+            Set<Attribute> replaceAttributes = fetchAndMerge(objclass, uid, valuesToRemove, false, options);
             logOpEntry("update", objclass, uid, replaceAttributes, options);
             try {
                 ret = op.update(objclass, uid, replaceAttributes, options);
@@ -191,6 +190,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
 
     private Set<Attribute> fetchAndMerge(ObjectClass objclass, Uid uid,
             Set<Attribute> valuesToChange, boolean add, OperationOptions options) {
+
         // check that this connector supports Search..
         if (!(getConnector() instanceof SearchOp)) {
             throw new UnsupportedOperationException("Connector must support: " + SearchOp.class);
@@ -200,10 +200,10 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
         // object we fetch has exactly the set of attributes we require
         // (there may be ones that are not in the default set)
         OperationOptionsBuilder builder = new OperationOptionsBuilder(options);
-        Set<String> attrNames = new HashSet<String>();
-        for (Attribute attribute : valuesToChange) {
+        Set<String> attrNames = new HashSet<>();
+        valuesToChange.forEach((attribute) -> {
             attrNames.add(attribute.getName());
-        }
+        });
         builder.setAttributesToGet(attrNames);
         options = builder.build();
 
@@ -222,7 +222,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
      */
     public Set<Attribute> merge(Set<Attribute> updateAttrs, Set<Attribute> baseAttrs, boolean add) {
         // return the merged attributes
-        Set<Attribute> ret = new HashSet<Attribute>();
+        Set<Attribute> ret = new HashSet<>();
         // create map that can be modified to get the subset of changes
         Map<String, Attribute> baseAttrMap = AttributeUtil.toMap(baseAttrs);
         // run through attributes of the current object..
@@ -249,9 +249,9 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
                 } else {
                     // create a list with the base attribute to remove from..
                     values = CollectionUtil.newList(baseAttr.getValue());
-                    for (Object val : updateAttr.getValue()) {
+                    updateAttr.getValue().forEach((val) -> {
                         values.remove(val);
-                    }
+                    });
                     // if the values are empty send a null to the connector..
                     if (values.isEmpty()) {
                         modifiedAttr = AttributeBuilder.build(name);
@@ -274,14 +274,12 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
         return get.getObject(oclass, uid, options);
     }
 
-    private static final String OPERATIONAL_ATTRIBUTE_ERR =
-            "Operational attribute '%s' can not be added or removed.";
-
     /**
      * Makes things easier if you can trust the input.
      */
     public static void validateInput(final ObjectClass objectClass, final Uid uid,
             final Set<Attribute> replaceAttributes, boolean isDelta) {
+
         Assertions.nullCheck(uid, "uid");
         Assertions.nullCheck(objectClass, "objectClass");
         if (ObjectClass.ALL.equals(objectClass)) {
@@ -295,7 +293,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
         }
         // check for things only valid during ADD/DELETE
         if (isDelta) {
-            for (Attribute attr : replaceAttributes) {
+            replaceAttributes.forEach(attr -> {
                 Assertions.nullCheck(attr, "replaceAttributes");
                 // make sure that none of the values are null..
                 if (attr.getValue() == null) {
@@ -308,22 +306,21 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
                     String msg = String.format(OPERATIONAL_ATTRIBUTE_ERR, name);
                     throw new IllegalArgumentException(msg);
                 }
-            }
+            });
         }
     }
 
     private void logOpEntry(String opName, ObjectClass objectClass, Uid uid, Set<Attribute> attrs,
             OperationOptions options) {
-        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), UpdateOp.class, opName, 
-        		objectClass, uid, attrs, options);
+        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), UpdateOp.class, opName,
+                objectClass, uid, attrs, options);
     }
 
     private void logOpExit(String opName, Uid uid) {
         SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), UpdateOp.class, opName, uid);
     }
-    
+
     private void logOpException(String opName, RuntimeException e) {
         SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), UpdateOp.class, opName, e);
     }
-
 }

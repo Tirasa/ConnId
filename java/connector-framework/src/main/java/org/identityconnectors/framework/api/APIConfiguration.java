@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2018 ConnIds
  */
 package org.identityconnectors.framework.api;
 
@@ -51,8 +52,7 @@ public interface APIConfiguration {
      * Determines if this {@link Connector} uses the framework's connector
      * pooling.
      *
-     * @return true if the {@link Connector} uses the framework's connector
-     *         pooling feature.
+     * @return true if the {@link Connector} uses the framework's connector pooling feature.
      */
     boolean isConnectorPoolingSupported();
 
@@ -78,22 +78,17 @@ public interface APIConfiguration {
     /**
      * Sets the timeout value for the operation provided.
      *
-     * @param operation
-     *            particular operation that requires a timeout.
-     * @param timeout
-     *            milliseconds that the operation will wait in order to
-     *            complete. Values less than or equal to zero are considered to
-     *            disable the timeout property.
+     * @param operation particular operation that requires a timeout.
+     * @param timeout milliseconds that the operation will wait in order to
+     * complete. Values less than or equal to zero are considered to disable the timeout property.
      */
     void setTimeout(Class<? extends APIOperation> operation, int timeout);
 
     /**
      * Gets the timeout in milliseconds based on the operation provided.
      *
-     * @param operation
-     *            particular operation to get a timeout for.
-     * @return milliseconds to wait for an operation to complete before throwing
-     *         an error.
+     * @param operation particular operation to get a timeout for.
+     * @return milliseconds to wait for an operation to complete before throwing an error.
      */
     int getTimeout(Class<? extends APIOperation> operation);
 
@@ -101,9 +96,7 @@ public interface APIConfiguration {
      * Sets the size of the buffer for {@link Connector} the support
      * {@link SearchOp} and what the results of the producer buffered.
      *
-     * @param size
-     *            default is 100, if size is set to zero or less will disable
-     *            buffering.
+     * @param size default is 100, if size is set to zero or less will disable buffering.
      */
     void setProducerBufferSize(int size);
 
@@ -113,21 +106,19 @@ public interface APIConfiguration {
     int getProducerBufferSize();
 
     /**
-     * Get the configuration of the ResultsHandler chain of the Search
-     * operation.
+     * Get the configuration of the ResultsHandler chain of the Search operation.
      */
     ResultsHandlerConfiguration getResultsHandlerConfiguration();
-    
+
     /**
      * Set name of the instance that this facade represents. The name should represent
      * the system that the connector connects to. This is also known as "resource" name,
-     * "connector instance" name, "target system" name, etc. 
+     * "connector instance" name, "target system" name, etc.
      * The name will be used mostly for diagnostic purposes, e.g. it will may be included
-     * in log messages to distinguish individual instances of the same connector. 
-     * 
+     * in log messages to distinguish individual instances of the same connector.
+     *
      * @param instanceName Name of the instance that this facade represents.
      * @since 1.5.0.0
      */
     void setInstanceName(String instanceName);
-
 }

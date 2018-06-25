@@ -85,8 +85,8 @@ public class ConnectorOperationalContext extends OperationalContext {
             connectorPoolKey = null;
         }
     }
-    
+
     public String getInstanceName() {
-    	return apiConfiguration.getInstanceName();
+        return apiConfiguration.getInstanceName();
     }
 }

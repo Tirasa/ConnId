@@ -34,10 +34,9 @@ import org.identityconnectors.framework.spi.InstanceNameAware;
  */
 public class ConnectorLifecycleUtil {
 
-	public static void setConnectorInstanceName(Connector connector, String instanceName) {
-		if (connector instanceof InstanceNameAware) {
-			((InstanceNameAware)connector).setInstanceName(instanceName);
-		}
-	}
-
+    public static void setConnectorInstanceName(Connector connector, String instanceName) {
+        if (connector instanceof InstanceNameAware) {
+            ((InstanceNameAware) connector).setInstanceName(instanceName);
+        }
+    }
 }
