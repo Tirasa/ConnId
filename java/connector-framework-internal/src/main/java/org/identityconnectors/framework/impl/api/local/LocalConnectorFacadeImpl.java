@@ -152,6 +152,7 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
         }
     }
 
+    @Override
     public void dispose() {
         if (null != operationalContext) {
             operationalContext.dispose();
