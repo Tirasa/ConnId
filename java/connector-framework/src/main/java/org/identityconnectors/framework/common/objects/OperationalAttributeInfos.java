@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -86,5 +87,13 @@ public final class OperationalAttributeInfos {
      */
     public static final AttributeInfo PASSWORD_EXPIRED = AttributeInfoBuilder.build(
             OperationalAttributes.PASSWORD_EXPIRED_NAME, boolean.class);
+    
+    /**
+     * Gets/sets flag that forces immediate password change by the user (e.g. during next log on).
+     * This can be used to set temporary password and the force user to change it to a permanent password.
+     * @since 1.5.0.0
+     */
+    public static final AttributeInfo FORCE_PASSWORD_CHANGE = AttributeInfoBuilder.build(
+            OperationalAttributes.FORCE_PASSWORD_CHANGE_NAME, boolean.class);
 
 }
