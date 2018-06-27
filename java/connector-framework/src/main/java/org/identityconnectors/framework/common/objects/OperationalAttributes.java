@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -88,6 +89,13 @@ public final class OperationalAttributes {
      * requires the current password.
      */
     public static final String CURRENT_PASSWORD_NAME = createSpecialName("CURRENT_PASSWORD");
+    
+    /**
+     * Gets/sets flag that forces immediate password change by the user (e.g. during next log on).
+     * This can be used to set temporary password and the force user to change it to a permanent password.
+     * @since 1.5.0.0
+     */
+    public static final String FORCE_PASSWORD_CHANGE_NAME = createSpecialName("FORCE_PASSWORD_CHANGE");
 
     // =======================================================================
     // Helper Methods..
@@ -95,7 +103,7 @@ public final class OperationalAttributes {
     public final static Set<String> OPERATIONAL_ATTRIBUTE_NAMES = CollectionUtil.newReadOnlySet(
             LOCK_OUT_NAME, ENABLE_NAME, ENABLE_DATE_NAME, DISABLE_DATE_NAME,
             PASSWORD_EXPIRATION_DATE_NAME, PASSWORD_NAME, CURRENT_PASSWORD_NAME,
-            PASSWORD_EXPIRED_NAME);
+            PASSWORD_EXPIRED_NAME, FORCE_PASSWORD_CHANGE_NAME);
 
     public static Set<String> getOperationalAttributeNames() {
         return CollectionUtil.newReadOnlySet(OPERATIONAL_ATTRIBUTE_NAMES);
