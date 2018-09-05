@@ -20,6 +20,8 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2018 ConnId
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -35,14 +37,12 @@ import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.api.operations.DeleteApiOp;
 import org.identityconnectors.framework.api.operations.GetApiOp;
 import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
-import org.identityconnectors.framework.api.operations.SchemaApiOp;
 import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
 import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
-import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
-import org.identityconnectors.framework.api.operations.ValidateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
 import org.identityconnectors.framework.common.FrameworkUtil;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SPIOperation;
@@ -83,24 +83,20 @@ public final class SchemaBuilder {
     }
 
     private boolean objectClassOperation(Class<? extends APIOperation> op) {
-        if (AuthenticationApiOp.class.equals(op) || CreateApiOp.class.equals(op)
+        return AuthenticationApiOp.class.equals(op) || CreateApiOp.class.equals(op)
                 || DeleteApiOp.class.equals(op) || GetApiOp.class.equals(op)
                 || ResolveUsernameApiOp.class.equals(op) || SearchApiOp.class.equals(op)
-                || SyncApiOp.class.equals(op) || UpdateApiOp.class.equals(op)) {
-            return true;
-        }
-        return false;
+                || SyncApiOp.class.equals(op) || UpdateApiOp.class.equals(op)
+                || UpdateDeltaApiOp.class.equals(op);
     }
 
     private boolean operationOptionOperation(Class<? extends APIOperation> op) {
-        if (AuthenticationApiOp.class.equals(op) || CreateApiOp.class.equals(op)
+        return AuthenticationApiOp.class.equals(op) || CreateApiOp.class.equals(op)
                 || DeleteApiOp.class.equals(op) || GetApiOp.class.equals(op)
                 || ResolveUsernameApiOp.class.equals(op) || ScriptOnConnectorApiOp.class.equals(op)
                 || ScriptOnResourceApiOp.class.equals(op) || SearchApiOp.class.equals(op)
-                || SyncApiOp.class.equals(op) || UpdateApiOp.class.equals(op)) {
-            return true;
-        }
-        return false;
+                || SyncApiOp.class.equals(op) || UpdateApiOp.class.equals(op)
+                || UpdateDeltaApiOp.class.equals(op);
     }
 
     /**
