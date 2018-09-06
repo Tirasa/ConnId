@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
  * Portions Copyrighted 2018 ConnId
+ * Portions Copyrighted 2018 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -41,6 +42,7 @@ import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
 import org.identityconnectors.framework.common.FrameworkUtil;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.SPIOperation;
@@ -83,7 +85,8 @@ public final class SchemaBuilder {
         return AuthenticationApiOp.class.equals(op) || CreateApiOp.class.equals(op)
                 || DeleteApiOp.class.equals(op) || GetApiOp.class.equals(op)
                 || ResolveUsernameApiOp.class.equals(op) || SearchApiOp.class.equals(op)
-                || SyncApiOp.class.equals(op) || UpdateApiOp.class.equals(op);
+                || SyncApiOp.class.equals(op) || UpdateApiOp.class.equals(op)
+                || UpdateDeltaApiOp.class.equals(op);
     }
 
     private boolean operationOptionOperation(Class<? extends APIOperation> op) {
@@ -91,7 +94,8 @@ public final class SchemaBuilder {
                 || DeleteApiOp.class.equals(op) || GetApiOp.class.equals(op)
                 || ResolveUsernameApiOp.class.equals(op) || ScriptOnConnectorApiOp.class.equals(op)
                 || ScriptOnResourceApiOp.class.equals(op) || SearchApiOp.class.equals(op)
-                || SyncApiOp.class.equals(op) || UpdateApiOp.class.equals(op);
+                || SyncApiOp.class.equals(op) || UpdateApiOp.class.equals(op)
+                || UpdateDeltaApiOp.class.equals(op);
     }
 
     /**
