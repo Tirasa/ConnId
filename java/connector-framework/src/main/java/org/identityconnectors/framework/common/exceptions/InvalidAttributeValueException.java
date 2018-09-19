@@ -19,9 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 Evolveum
  */
 
 package org.identityconnectors.framework.common.exceptions;
+
+import java.util.Collection;
 
 /**
  * InvalidAttributeValueException is thrown when an attempt is made to add to an
@@ -33,6 +36,9 @@ package org.identityconnectors.framework.common.exceptions;
  * attempting to add a value that conflicts with the type of the attribute or if
  * attempting to add a value that conflicts with the syntax of the attribute.
  * <p>
+ * This may also happen during an attempt to set a password that does not
+ * comply with password policy on target resource. In that case the password
+ * attribute should be included in the affectedAttributeNames.
  *
  * @author Laszlo Hordos
  * @since 1.4
@@ -40,6 +46,12 @@ package org.identityconnectors.framework.common.exceptions;
 public class InvalidAttributeValueException extends ConnectorException {
 
     private static final long serialVersionUID = 1L;
+    
+    /**
+     * Collection of attribute names that are affected by this error. 
+     * I.e. collection of attribute names that might have been cause of the error.
+     */
+    Collection<String> affectedAttributeNames;
 
     /**
      * Constructs a new InvalidAttributeValueException exception with
@@ -102,4 +114,22 @@ public class InvalidAttributeValueException extends ConnectorException {
     public InvalidAttributeValueException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    /**
+     * Returns collection of attribute names that are affected by this error. 
+     * I.e. collection of attribute names that might have been cause of the error.
+     */
+	public Collection<String> getAffectedAttributeNames() {
+		return affectedAttributeNames;
+	}
+
+	/**
+     * Sets collection of attribute names that are affected by this error. 
+     * I.e. collection of attribute names that might have been cause of the error.
+     */
+	public void setAffectedAttributeNames(Collection<String> affectedAttributeNames) {
+		this.affectedAttributeNames = affectedAttributeNames;
+	}
+    
+    
 }

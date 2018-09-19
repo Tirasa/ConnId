@@ -28,6 +28,15 @@ package org.identityconnectors.framework.common.exceptions;
  * This exception is thrown by Connector if authentication failed. For example,
  * a <code>Connector</code> throws this exception if the user entered an
  * incorrect password.
+ * <p>
+ * This exception should be used only when incorrect credential is entered by a user,
+ * for example in authenticate() method. It should NOT be used in case that connection
+ * to the resource cannot be established because connection credentials are wrong.
+ * Use ConnectionFailedException instead.
+ * <p>
+ * Note: Since framework version 1.5.0.0 it is recommended to use
+ * InvalidAttributeValueException in case that credential change operation failed.
+ * Please indicate credential as an affected attribute in the exception.
  *
  * @see javax.security.auth.login.FailedLoginException
  */
