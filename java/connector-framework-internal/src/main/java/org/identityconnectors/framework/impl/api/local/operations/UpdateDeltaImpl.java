@@ -114,7 +114,15 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                 // make sure that if this an delete/add that it doesn't include
                 // certain attributes because it doesn't make any sense..
                 String name = attrDelta.getName();
-                if (OPERATIONAL_ATTRIBUTE_NAMES.contains(name)) {
+                if (OperationalAttributes.PASSWORD_NAME.equals(name)) {
+                	// Password can be added/removed in case of self-service password change
+                	if (attrDelta.getValuesToAdd() == null) {
+                		throw new IllegalArgumentException("Missing values to add in non-replace password operation");
+                	}
+                	if (attrDelta.getValuesToRemove() == null) {
+                		throw new IllegalArgumentException("Missing values to remove in non-replace password operation");
+                	}
+                } else if (OPERATIONAL_ATTRIBUTE_NAMES.contains(name)) {
                     String msg = String.format(OPERATIONAL_ATTRIBUTE_ERR, name);
                     throw new IllegalArgumentException(msg);
                 }

@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2017 Evolveum. All rights reserved.
+ * Copyright 2017-2018 Evolveum. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -58,6 +58,14 @@ import org.identityconnectors.common.StringUtil;
  * The delta does not guarantee ordering of the values. It is not guaranteed that the added attributes will
  * be appended at the end. Nor is the resulting order of values after application of remove delta guaranteed.
  * This behavior is connector-specific.
+ * </p>
+ * <p>
+ * Password delta note: Password is often quite an special attribute. There are two related-but somehow
+ * distinct password operations: password reset and password change. Password reset is usually initiated
+ * by an administrator and it does not need old/current password value. It is represented as replace delta.
+ * Password change is usually a self-service operation and it does require old/current password value.
+ * Password change should be represented as add/delete delta, new password value being added, old/current
+ * password value being removed. 
  * </p>
  * <p>
  * Terminology note: The term "delete" would be better than "remove", especially because "remove" may be
