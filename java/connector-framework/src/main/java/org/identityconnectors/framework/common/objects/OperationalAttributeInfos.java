@@ -77,6 +77,12 @@ public final class OperationalAttributeInfos {
      * Used in conjunction with password to do an account level password change.
      * This is for a non-administrator change of the password and therefore
      * requires the current password.
+     * <p>
+     * Note: This pseudo attribute is not a clean solution. It is mostly just a legacy.
+     * In original framework there was no clear way how to pass old/current password
+     * to an update operation. Therefore this pseudo-attribute was used. 
+     * Do not use this this pseudo-attribute with newer operations, such as delta-based update
+     * operation. Delta-based update has a better was to dead with old/current password values.
      */
     public static final AttributeInfo CURRENT_PASSWORD = AttributeInfoBuilder.build(
             OperationalAttributes.CURRENT_PASSWORD_NAME, GuardedString.class, EnumSet.of(
