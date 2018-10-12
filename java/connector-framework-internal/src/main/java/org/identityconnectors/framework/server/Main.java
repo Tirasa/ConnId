@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2018 ConnId
  */
 package org.identityconnectors.framework.server;
 
@@ -32,22 +33,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.LogManager;
-
 import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.SecurityUtil;
 import org.identityconnectors.framework.api.ConnectorInfoManagerFactory;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
-
 public final class Main {
 
     private static final String PROP_PORT = "connectorserver.port";
+
     private static final String PROP_BUNDLE_DIR = "connectorserver.bundleDir";
+
     private static final String PROP_LIB_DIR = "connectorserver.libDir";
-    private static final String PROP_SSL  = "connectorserver.usessl";
+
+    private static final String PROP_SSL = "connectorserver.usessl";
+
     private static final String PROP_IFADDRESS = "connectorserver.ifaddress";
+
     private static final String PROP_KEY = "connectorserver.key";
+
     private static final String PROP_LOGGER_CLASS = "connectorserver.loggerClass";
 
     private static final String DEFAULT_LOG_SPI = "org.identityconnectors.common.logging.StdOutLogger";
@@ -107,11 +112,9 @@ public final class Main {
                 usage();
                 return;
             }
-            IOUtil.extractResourceToFile(Main.class, "connectorserver.properties", new File(
-                    propertiesFileName));
+            IOUtil.extractResourceToFile(Main.class, "connectorserver.properties", new File(propertiesFileName));
         } else {
             usage();
-            return;
         }
     }
 
