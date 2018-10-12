@@ -63,15 +63,11 @@
   </fileSets>
   <dependencySets>
     <dependencySet>
-      <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>connid-connector-server/lib/framework</outputDirectory>
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
-      <includes>
-        <include>net.tirasa.connid:connector-framework*</include>
-        <include>org.slf4j:*</include>
-        <include>ch.qos.logback:*</include>
-        <include>org.codehaus.groovy:*</include>
-      </includes>
+      <useProjectArtifact>false</useProjectArtifact>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
     </dependencySet>
   </dependencySets>
 </assembly>

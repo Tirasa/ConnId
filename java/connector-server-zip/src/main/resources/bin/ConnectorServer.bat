@@ -21,6 +21,7 @@
 @REM "Portions Copyrighted [year] [name of copyright owner]"
 @REM ====================
 @REM Portions Copyrighted 2012 ForgeRock
+@REM Portions Copyrighted 2018 ConnId
 @REM
 
 SETLOCAL ENABLEDELAYEDEXPANSION
@@ -74,8 +75,8 @@ set CP=%CP%;lib\framework\groovy-dateutil.jar
 set CP=%CP%;lib\framework\groovy-sql.jar
 set CP=%CP%;lib\framework\groovy-xml.jar
 set CP=%CP%;lib\framework\groovy.jar
-set CP=%CP%;lib\framework\icfl-over-slf4j.jar
 set CP=%CP%;lib\framework\slf4j-api.jar
+set CP=%CP%;lib\framework\slf4j-logging.jar
 set CP=%CP%;lib\framework\logback-core.jar
 set CP=%CP%;lib\framework\logback-classic.jar
 
