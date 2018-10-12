@@ -57,6 +57,13 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>${basedir}/../connector-framework-internal/src/main/resources/org/identityconnectors/framework/server</directory>
+      <outputDirectory>connid-connector-server/conf</outputDirectory>
+      <includes>
+        <include>connectorserver.properties</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>${basedir}/src/main/resources</directory>
       <outputDirectory>connid-connector-server/</outputDirectory>
     </fileSet>
