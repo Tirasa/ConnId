@@ -51,13 +51,11 @@ import java.util.Set;
  * <li>{@link #createContainsExpression(ContainsFilter, boolean)}</li>
  * <li>{@link #createEndsWithExpression(EndsWithFilter, boolean)}</li>
  * <li>{@link #createEqualsExpression(EqualsFilter, boolean)}</li>
+ * <li>{@link #createEqualsIgnoreCaseExpression(EqualsIgnoreCaseFilter, boolean)}</li>
  * <li>{@link #createGreaterThanExpression(GreaterThanFilter, boolean)}</li>
- * <li>
- * {@link #createGreaterThanOrEqualExpression(GreaterThanOrEqualFilter, boolean)}
- * </li>
+ * <li>{@link #createGreaterThanOrEqualExpression(GreaterThanOrEqualFilter, boolean)}</li>
  * <li>{@link #createStartsWithExpression(StartsWithFilter, boolean)}</li>
- * <li>
- * {@link #createContainsAllValuesExpression(ContainsAllValuesFilter, boolean)}</li>
+ * <li>{@link #createContainsAllValuesExpression(ContainsAllValuesFilter, boolean)}</li>
  * </ol>
  * <p>
  * Translation can then be performed using {@link #translate(Filter)}.
@@ -423,6 +421,8 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
             return createEndsWithExpression((EndsWithFilter) filter, not);
         } else if (filter instanceof EqualsFilter) {
             return createEqualsExpression((EqualsFilter) filter, not);
+        } else if (filter instanceof EqualsIgnoreCaseFilter) {
+            return createEqualsIgnoreCaseExpression((EqualsIgnoreCaseFilter) filter, not);
         } else if (filter instanceof GreaterThanFilter) {
             return createGreaterThanExpression((GreaterThanFilter) filter, not);
         } else if (filter instanceof GreaterThanOrEqualFilter) {
@@ -528,6 +528,25 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      *         possible, you should implement this method.
      */
     protected T createEqualsExpression(EqualsFilter filter, boolean not) {
+        return null;
+    }
+
+    /**
+     * Should be overridden by subclasses to create a EQUALSIGNORECASE expression if the
+     * native resource supports EQUALSIGNORECASE.
+     *
+     * @param filter
+     *            The contains filter. Will never be null.
+     * @param not
+     *            True if this should be a NOT EQUALSIGNORECASE
+     * @return The EQUALSIGNORECASE expression. A return value of null means a native
+     *         EQUALSIGNORECASE query cannot be created for the given filter. In this
+     *         case, {@link #translate} may return an empty query set, meaning
+     *         fetch <b>everything</b>. The filter will be re-applied in memory
+     *         to the resulting object stream. This does not scale well, so if
+     *         possible, you should implement this method.
+     */
+    protected T createEqualsIgnoreCaseExpression(EqualsIgnoreCaseFilter filter, boolean not) {
         return null;
     }
 
