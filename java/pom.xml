@@ -83,12 +83,12 @@
   <properties>
     <parent.path>${basedir}</parent.path>
 
-    <groovy.version>2.5.2</groovy.version>
+    <groovy.version>2.5.5</groovy.version>
 
     <logback.version>1.2.3</logback.version>
     <slf4j.version>1.7.25</slf4j.version>
 
-    <junit.version>5.3.1</junit.version>
+    <junit.version>5.3.2</junit.version>
 
     <targetJdk>1.8</targetJdk>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
