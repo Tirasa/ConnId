@@ -66,6 +66,12 @@ public class FilterTranslatorTests {
         }
 
         @Override
+        protected String createEqualsIgnoreCaseExpression(EqualsIgnoreCaseFilter filter, boolean not) {
+            String rv = "( EQUALSIGNORECASE " + filter.getName() + " " + filter.getValue() + " )";
+            return not(rv, not);
+        }
+
+        @Override
         protected String createGreaterThanExpression(GreaterThanFilter filter, boolean not) {
             String rv = "( > " + filter.getName() + " " + filter.getValue() + " )";
             return not(rv, not);
@@ -235,6 +241,18 @@ public class FilterTranslatorTests {
         {
             Filter filter = FilterBuilder.equalTo(attribute);
             String expected = "( = att-name [att-value] )";
+            String actual = translateSingle(translator, filter);
+            assertEquals(actual, expected);
+
+            filter = FilterBuilder.not(filter);
+            expected = "( ! " + expected + " )";
+            actual = translateSingle(translator, filter);
+            assertEquals(actual, expected);
+        }
+
+        {
+            Filter filter = FilterBuilder.equalsIgnoreCase(attribute);
+            String expected = "( EQUALSIGNORECASE att-name att-value )";
             String actual = translateSingle(translator, filter);
             assertEquals(actual, expected);
 
@@ -495,7 +513,7 @@ public class FilterTranslatorTests {
         assertEquals("( CONTAINS d d )", results.get(1));
     }
 
-    private static String translateSingle(AbstractFilterTranslator<String> translator, Filter filter) {
+    private static String translateSingle(FilterTranslator<String> translator, Filter filter) {
         List<String> translated = translator.translate(filter);
         assertEquals(1, translated.size());
         return translated.get(0);
