@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2019 Evolveum
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -113,14 +114,15 @@ public class MethodTimeoutProxy implements InvocationHandler {
             }
         };
 
+        // package in a future task so we can set a timeout..
+        FutureTask<Object> t = new FutureTask<Object>(callable);
         try {
-            // package in a future task so we can set a timeout..
-            FutureTask<Object> t = new FutureTask<Object>(callable);
             // execute it in the thread pool so we don't waste resources.
             THREADPOOL.execute(t);
             // execute and hope it doesn't timeout :)
             return t.get(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (TimeoutException ex) {
+        	t.cancel(true);
             throw new OperationTimeoutException(ex);
         } catch (ExecutionException ex) {
             throw ex.getCause();
