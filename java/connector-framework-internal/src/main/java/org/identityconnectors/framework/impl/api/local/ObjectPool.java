@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
- * Portions Copyrighted 2015 Evolveum
+ * Portions Copyrighted 2015-2019 Evolveum
  */
 
 package org.identityconnectors.framework.impl.api.local;
@@ -68,6 +68,12 @@ public class ObjectPool<T> {
         public int getNumActive() {
             return numActive - numIdle;
         }
+
+		@Override
+		public String toString() {
+			return "Statistics(numIdle=" + numIdle + ", numActive=" + numActive + ")";
+		}
+        
     }
 
     /**
@@ -110,7 +116,7 @@ public class ObjectPool<T> {
             try {
                 returnObject(this);
             } catch (InterruptedException e) {
-                LOG.error(e, "Failed to close/dispose PooledObject object");
+                LOG.error(e, "Failed to close/dispose PooledObject object {0} from pool {1}: {2}", this, getPoolName(), e.getMessage());
             }
         }
 
@@ -122,7 +128,7 @@ public class ObjectPool<T> {
             isNew = n;
         }
 
-        public void setActive(final boolean v) {
+		public void setActive(final boolean v) {
             if (isActive != v) {
                 touch();
                 isActive = v;
@@ -136,6 +142,13 @@ public class ObjectPool<T> {
         public boolean isOlderThan(long maxAge) {
             return maxAge < (System.currentTimeMillis() - lastStateChangeTimestamp);
         }
+
+		@Override
+		public String toString() {
+			return "PooledObject(object=" + object + ", isActive=" + isActive + ", lastStateChangeTimestamp="
+					+ lastStateChangeTimestamp + ", isNew=" + isNew + ")";
+		}
+        
     }
 
     /**
@@ -174,11 +187,18 @@ public class ObjectPool<T> {
      * Configuration for this pool.
      */
     private final ObjectPoolConfiguration poolConfiguration;
+    
+    /**
+     * Human readable name for the pool. Used for diagnostics.
+     */
+    private String poolName;
 
     /**
      * Is the pool shutdown
      */
     private volatile boolean isShutdown = false;
+    
+    private volatile boolean isDisposing = false;
 
     /**
      * Create a new ObjectPool
@@ -209,14 +229,29 @@ public class ObjectPool<T> {
         return isShutdown;
     }
 
-    /**
+    public boolean isDisposing() {
+		return isDisposing;
+	}
+
+	public String getPoolName() {
+		return poolName;
+	}
+
+	public void setPoolName(String poolName) {
+		this.poolName = poolName;
+	}
+
+	/**
      * Return an object to the pool
      *
      * @param pooled
      */
     private void returnObject(PooledObject pooled) throws InterruptedException {
-        if (isShutdown() || poolConfiguration.getMaxIdle() < 1) {
+        if (isShutdown() || isDisposing() || poolConfiguration.getMaxIdle() < 1) {
             dispose(pooled);
+        	if (LOG.isOk()) {
+        		LOG.ok("Returned object to pool {0}, disposing immediately: {1}", getPoolName(), pooled);
+        	}
         } else {
             try {
                 for (PooledObject entry : idleObjects) {
@@ -224,6 +259,9 @@ public class ObjectPool<T> {
                             || entry.isOlderThan(poolConfiguration.getMinEvictableIdleTimeMillis())) {
                         if (idleObjects.remove(entry)) {
                             dispose(entry);
+                            if (LOG.isOk()) {
+                        		LOG.ok("Disposed pool {0} entry (expired): {1}", getPoolName(), entry);
+                        	}
                         }
                     }
                 }
@@ -233,6 +271,9 @@ public class ObjectPool<T> {
                 idleObjects.add(pooled);
                 signalNotEmpty();
             }
+        }
+        if (LOG.isOk()) {
+        	LOG.ok("returned object to {0}: {1}", this, pooled);
         }
     }
 
@@ -264,6 +305,9 @@ public class ObjectPool<T> {
         } catch (InterruptedException e) {
             LOG.error(e, "Failed to borrow object from pool.");
             throw ConnectorException.wrap(e);
+        }
+        if (LOG.isOk()) {
+        	LOG.ok("Borrowed object from pool {0}: {1}", this, rv);
         }
         return rv;
     }
@@ -349,6 +393,39 @@ public class ObjectPool<T> {
         }
         return null;
     }
+    
+    /**
+     * Disposes all objects in the pool.
+     * <p/>
+     * Existing active objects will remain alive and be allowed to shutdown
+     * gracefully. Unlike shutdown, the pool will be able to work on and create
+     * new objects.
+     */
+    public void disposeAllObjects() {
+    	final ReentrantLock lock = this.takeLock;
+        try {
+        	lock.lockInterruptibly();
+        	
+        	isDisposing = true;
+    		LOG.ok("Disposing all objects from {0}", this);
+	        // just evict idle objects
+	        // if there are any active objects still
+	        // going, leave them alone so they can return
+	        // gracefully
+	        for (PooledObject entry = idleObjects.poll(); entry != null; entry = idleObjects.poll()) {
+	            try {
+	                dispose(entry);
+	            } catch (InterruptedException e) {
+	                LOG.error(e, "Interrupted disposal of PooledObject object {0}", entry);
+	            }
+	        }
+	        
+        } catch (Exception e) {
+            LOG.warn(e, "Error disposing of all objects from pool {0}: {1}", this, e.getMessage());
+        } finally {
+            lock.unlock();
+        }
+    }
 
     /**
      * Closes any idle objects in the pool.
@@ -358,18 +435,8 @@ public class ObjectPool<T> {
      */
     public void shutdown() {
         isShutdown = true;
-        // just evict idle objects
-        // if there are any active objects still
-        // going, leave them alone so they can return
-        // gracefully
         try {
-            for (PooledObject entry = idleObjects.poll(); entry != null; entry = idleObjects.poll()) {
-                try {
-                    dispose(entry);
-                } catch (InterruptedException e) {
-                    LOG.error(e, "Failed to dispose PooledObject object");
-                }
-            }
+        	disposeAllObjects();
         } finally {
             handler.shutdown();
         }
@@ -420,7 +487,7 @@ public class ObjectPool<T> {
                 }
             }
         } catch (Exception e) {
-            LOG.warn(e, "disposeObject() is not supposed to throw");
+            LOG.warn(e, "Unexpected error from disposeObject() method: {0}", e.getMessage());
         } finally {
             totalPermit.release();
             notEmpty.signal();
@@ -440,4 +507,21 @@ public class ObjectPool<T> {
             takeLock.unlock();
         }
     }
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("ObjectPool(");
+		sb.append(poolName);
+		if (isDisposing) {
+			sb.append(", DISPOSING");
+		}
+		if (isShutdown) {
+			sb.append(", SHUTTING DOWN");
+		}
+		sb.append(", idle=").append(idleObjects.size());
+		sb.append(", active=").append(activeObjects.size());
+		sb.append(")");
+		return sb.toString();
+	}
+    
 }

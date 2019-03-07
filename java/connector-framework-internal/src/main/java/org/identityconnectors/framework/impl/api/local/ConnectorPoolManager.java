@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2018 ConnId
+ * Portions Copyrighted 2019 Evolveum
  */
 package org.identityconnectors.framework.impl.api.local;
 
@@ -213,23 +214,32 @@ public class ConnectorPoolManager {
                     new ConnectorPoolKey(impl.getConnectorInfo().getConnectorKey(), impl
                             .getConfigurationProperties(), impl.getConnectorPoolConfiguration());
 
-            // get the pool associated..
-            ObjectPool<PoolableConnector> pool = POOLS.get(key);
-            // create a new pool if it doesn't exist..
-            if (pool == null) {
-                LOG.info("Creating new pool: {0}", impl.getConnectorInfo().getConnectorKey());
-                // this instance is strictly used for the pool..
-                pool = new ObjectPool<>(
-                        new ConnectorPoolHandler(impl, localInfo), impl.getConnectorPoolConfiguration());
-                // add back to the map of POOLS..
-
-                ObjectPool<PoolableConnector> previousPool = POOLS.putIfAbsent(key, pool);
-                // Use the pool made by other thread
-                if (previousPool != null) {
-                    pool = previousPool;
-                }
+            synchronized (POOLS) {
+	            // get the pool associated..
+	            ObjectPool<PoolableConnector> pool = POOLS.get(key);
+	            // create a new pool if it doesn't exist..
+	            if (pool == null) {
+	            	String poolName;
+	            	if (impl.getInstanceName() != null) {
+	            		poolName = impl.getInstanceName();
+	                } else {
+	                	poolName = impl.getConnectorInfo().getConnectorKey().toString();
+	                }
+	                LOG.info("Creating new pool: {0}", poolName);
+	                // this instance is strictly used for the pool..
+	                pool = new ObjectPool<>(
+	                        new ConnectorPoolHandler(impl, localInfo), impl.getConnectorPoolConfiguration());
+                	pool.setPoolName(poolName);
+	                // add back to the map of POOLS..
+	
+	                ObjectPool<PoolableConnector> previousPool = POOLS.putIfAbsent(key, pool);
+	                // Use the pool made by other thread
+	                if (previousPool != null) {
+	                    pool = previousPool;
+	                }
+	            }
+	            return Pair.of(key, pool);
             }
-            return Pair.of(key, pool);
         } else if (!localInfo.isConfigurationStateless()) {
             return Pair.of(new ConnectorPoolKey(impl.getConnectorInfo().getConnectorKey(), impl
                     .getConfigurationProperties(), impl.getConnectorPoolConfiguration()), null);
@@ -237,27 +247,41 @@ public class ConnectorPoolManager {
         return Pair.of(null, null);
     }
 
+    /**
+     * Disposes of all connector instances of a particular connector.
+     * This cleans up the pool and marks all existing objects for disposal.
+     * Unlike shutdown, creating new connector instances will be possible after
+     * pool content disposal. This is needed, as this pool instance may still
+     * be "in circulation" and new new objects may be created due to race
+     * conditions. We do not really mind if a connector is created while
+     * the pool is disposing. But we really want to make sure that all connector
+     * instances will be disposed of immediately after they are returned to the pool.
+     */
     public static void dispose(final ConnectorPoolKey connectorPoolKey) {
         synchronized (POOLS) {
             ObjectPool<PoolableConnector> pool = POOLS.remove(connectorPoolKey);
             if (null != pool) {
                 try {
-                    pool.shutdown();
+                    pool.disposeAllObjects();
                 } catch (Exception e) {
-                    LOG.warn(e, "Failed to close pool: {0}", pool);
+                    LOG.warn(e, "Failed to dispose objects in pool {0}: {1}", pool.getPoolName(), e.getMessage());
                 }
             }
         }
     }
 
-    public static void dispose() {
+    /**
+     * Shuts down the connector pool. No more connectors will be created.
+     */
+    public static void shutdown() {
+    	LOG.info("Shutting down all connector pools");
         synchronized (POOLS) {
             // close each pool..
             POOLS.values().forEach(pool -> {
                 try {
                     pool.shutdown();
                 } catch (Exception e) {
-                    LOG.warn(e, "Failed to close pool: {0}", pool);
+                    LOG.warn(e, "Failed to shutdown pool {0}: {1}", pool.getPoolName(), e.getMessage());
                 }
             });
             // clear the map of all POOLS..

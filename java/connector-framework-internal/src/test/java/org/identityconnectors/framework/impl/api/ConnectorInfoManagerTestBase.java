@@ -502,7 +502,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
     @Test
     public void testConnectionPooling() throws Exception {
-        ConnectorPoolManager.dispose();
+        ConnectorPoolManager.shutdown();
         ConnectorInfoManager manager = getConnectorInfoManager();
         ConnectorInfo info1 = findConnectorInfo(manager,
                 "1.0.0.0",
