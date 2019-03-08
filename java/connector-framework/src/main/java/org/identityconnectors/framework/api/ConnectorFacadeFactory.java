@@ -79,7 +79,9 @@ public abstract class ConnectorFacadeFactory {
     }
 
     /**
-     * Dispose of all connector pools, resources, etc.
+     * Shut down of all connector pools, resources, etc.
+     * The framework will release all the resources.
+     * No operations will be possible until the framework is re-initialized.
      */
     public abstract void dispose();
 
