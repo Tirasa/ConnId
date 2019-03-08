@@ -214,32 +214,30 @@ public class ConnectorPoolManager {
                     new ConnectorPoolKey(impl.getConnectorInfo().getConnectorKey(), impl
                             .getConfigurationProperties(), impl.getConnectorPoolConfiguration());
 
-            synchronized (POOLS) {
-	            // get the pool associated..
-	            ObjectPool<PoolableConnector> pool = POOLS.get(key);
-	            // create a new pool if it doesn't exist..
-	            if (pool == null) {
-	            	String poolName;
-	            	if (impl.getInstanceName() != null) {
-	            		poolName = impl.getInstanceName();
-	                } else {
-	                	poolName = impl.getConnectorInfo().getConnectorKey().toString();
-	                }
-	                LOG.info("Creating new pool: {0}", poolName);
-	                // this instance is strictly used for the pool..
-	                pool = new ObjectPool<>(
-	                        new ConnectorPoolHandler(impl, localInfo), impl.getConnectorPoolConfiguration());
-                	pool.setPoolName(poolName);
-	                // add back to the map of POOLS..
-	
-	                ObjectPool<PoolableConnector> previousPool = POOLS.putIfAbsent(key, pool);
-	                // Use the pool made by other thread
-	                if (previousPool != null) {
-	                    pool = previousPool;
-	                }
-	            }
-	            return Pair.of(key, pool);
+            // get the pool associated..
+            ObjectPool<PoolableConnector> pool = POOLS.get(key);
+            // create a new pool if it doesn't exist..
+            if (pool == null) {
+                String poolName;
+                if (impl.getInstanceName() != null) {
+                    poolName = impl.getInstanceName();
+                } else {
+                    poolName = impl.getConnectorInfo().getConnectorKey().toString();
+                }
+                LOG.info("Creating new pool: {0}", poolName);
+                // this instance is strictly used for the pool..
+                pool = new ObjectPool<>(
+                        new ConnectorPoolHandler(impl, localInfo), impl.getConnectorPoolConfiguration());
+                pool.setPoolName(poolName);
+                // add back to the map of POOLS..
+
+                ObjectPool<PoolableConnector> previousPool = POOLS.putIfAbsent(key, pool);
+                // Use the pool made by other thread
+                if (previousPool != null) {
+                    pool = previousPool;
+                }
             }
+            return Pair.of(key, pool);
         } else if (!localInfo.isConfigurationStateless()) {
             return Pair.of(new ConnectorPoolKey(impl.getConnectorInfo().getConnectorKey(), impl
                     .getConfigurationProperties(), impl.getConnectorPoolConfiguration()), null);
