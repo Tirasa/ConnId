@@ -588,7 +588,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
     @Test
     public void testConnectionPooling() throws Exception {
-        ConnectorPoolManager.dispose();
+        ConnectorPoolManager.shutdown();
         ConnectorInfoManager manager = getConnectorInfoManager();
         ConnectorInfo info1 =
                 findConnectorInfo(manager, "1.0.0.0",
@@ -631,7 +631,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
     @Test
     public void testConnectorContext() throws Exception {
-        ConnectorPoolManager.dispose();
+        ConnectorPoolManager.shutdown();
         ConnectorInfoManager manager = getConnectorInfoManager();
         ConnectorInfo info1 =
                 findConnectorInfo(manager, "1.0.0.0",
@@ -669,7 +669,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
     @Test
     public void testAttributeTypeMap() throws Exception {
-        ConnectorPoolManager.dispose();
+        ConnectorPoolManager.shutdown();
         ConnectorInfoManager manager = getConnectorInfoManager();
         ConnectorInfo info =
                 findConnectorInfo(manager, "1.0.0.0",
@@ -701,7 +701,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
     @Test
     public void testPagedSearch() throws Exception {
-        ConnectorPoolManager.dispose();
+        ConnectorPoolManager.shutdown();
         ConnectorInfoManager manager = getConnectorInfoManager();
         ConnectorInfo info1 =
                 findConnectorInfo(manager, "1.0.0.0",

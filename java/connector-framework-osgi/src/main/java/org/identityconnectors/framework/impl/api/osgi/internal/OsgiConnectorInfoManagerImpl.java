@@ -118,7 +118,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
 
     @Override
     public void dispose() {
-        ConnectorPoolManager.dispose();
+        ConnectorPoolManager.shutdown();
     }
 
     @Override
