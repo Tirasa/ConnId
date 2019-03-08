@@ -69,10 +69,10 @@ public class ObjectPool<T> {
             return numActive - numIdle;
         }
 
-		@Override
-		public String toString() {
-			return "Statistics(numIdle=" + numIdle + ", numActive=" + numActive + ")";
-		}
+        @Override
+        public String toString() {
+            return "Statistics(numIdle=" + numIdle + ", numActive=" + numActive + ")";
+        }
         
     }
 
@@ -128,7 +128,7 @@ public class ObjectPool<T> {
             isNew = n;
         }
 
-		public void setActive(final boolean v) {
+        public void setActive(final boolean v) {
             if (isActive != v) {
                 touch();
                 isActive = v;
@@ -143,12 +143,12 @@ public class ObjectPool<T> {
             return maxAge < (System.currentTimeMillis() - lastStateChangeTimestamp);
         }
 
-		@Override
-		public String toString() {
-			return "PooledObject(object=" + object + ", isActive=" + isActive + ", lastStateChangeTimestamp="
-					+ lastStateChangeTimestamp + ", isNew=" + isNew + ")";
-		}
-        
+        @Override
+        public String toString() {
+            return "PooledObject(object=" + object + ", isActive=" + isActive + ", lastStateChangeTimestamp="
+                + lastStateChangeTimestamp + ", isNew=" + isNew + ")";
+        }
+
     }
 
     /**
@@ -230,16 +230,16 @@ public class ObjectPool<T> {
     }
 
     public boolean isDisposing() {
-		return isDisposing;
-	}
+        return isDisposing;
+    }
 
-	public String getPoolName() {
-		return poolName;
-	}
+    public String getPoolName() {
+        return poolName;
+    }
 
-	public void setPoolName(String poolName) {
-		this.poolName = poolName;
-	}
+    public void setPoolName(String poolName) {
+        this.poolName = poolName;
+    }
 
 	/**
      * Return an object to the pool
@@ -249,9 +249,7 @@ public class ObjectPool<T> {
     private void returnObject(PooledObject pooled) throws InterruptedException {
         if (isShutdown() || isDisposing() || poolConfiguration.getMaxIdle() < 1) {
             dispose(pooled);
-        	if (LOG.isOk()) {
-        		LOG.ok("Returned object to pool {0}, disposing immediately: {1}", getPoolName(), pooled);
-        	}
+            LOG.ok("Returned object to pool {0}, disposing immediately: {1}", getPoolName(), pooled);
         } else {
             try {
                 for (PooledObject entry : idleObjects) {
@@ -259,9 +257,7 @@ public class ObjectPool<T> {
                             || entry.isOlderThan(poolConfiguration.getMinEvictableIdleTimeMillis())) {
                         if (idleObjects.remove(entry)) {
                             dispose(entry);
-                            if (LOG.isOk()) {
-                        		LOG.ok("Disposed pool {0} entry (expired): {1}", getPoolName(), entry);
-                        	}
+                            LOG.ok("Disposed pool {0} entry (expired): {1}", getPoolName(), entry);
                         }
                     }
                 }
@@ -272,9 +268,7 @@ public class ObjectPool<T> {
                 signalNotEmpty();
             }
         }
-        if (LOG.isOk()) {
-        	LOG.ok("returned object to {0}: {1}", this, pooled);
-        }
+        LOG.ok("returned object to {0}: {1}", this, pooled);
     }
 
     /**
@@ -306,9 +300,7 @@ public class ObjectPool<T> {
             LOG.error(e, "Failed to borrow object from pool.");
             throw ConnectorException.wrap(e);
         }
-        if (LOG.isOk()) {
-        	LOG.ok("Borrowed object from pool {0}: {1}", this, rv);
-        }
+        LOG.ok("Borrowed object from pool {0}: {1}", this, rv);
         return rv;
     }
 
