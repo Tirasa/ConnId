@@ -23,6 +23,7 @@
  */
 package org.identityconnectors.framework.common.objects.filter;
 
+import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
@@ -61,7 +62,7 @@ public abstract class StringFilter extends SingleValueAttributeFilter {
     public boolean accept(ConnectorObject obj) {
         boolean ret = false;
         Attribute attr = obj.getAttributeByName(getName());
-        if (attr != null && attr.getValue() != null) {
+        if (attr != null && !CollectionUtil.isEmpty(attr.getValue())) {
             if (!(attr.getValue().get(0) instanceof String)) {
                 throw new IllegalArgumentException("Value must be a string!");
             }
