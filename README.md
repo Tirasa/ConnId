@@ -113,6 +113,13 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://travis-ci.org/Tirasa/ConnIdLDAPBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdLDAPBundle.png"/></a></td>
  </tr>
  <tr>
+  <td>Okta</td>
+  <td>https://github.com/Tirasa/ConnIdOktaBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/Okta">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/OKTA">issues</a></td>
+  <td><a href="https://travis-ci.org/Tirasa/ConnIdOktaBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdOktaBundle.png"/></a></td>
+ </tr>
+ <tr>
   <td>OpenAM</td>
   <td>https://github.com/Tirasa/ConnIdOpenAMBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/OpenAM">wiki</a></td>
