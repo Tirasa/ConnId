@@ -79,7 +79,7 @@ public class CreateImpl extends ConnectorAPIOperationRunner implements CreateApi
         final Set<String> dups = new HashSet<>();
         createAttributes.forEach(attr -> {
             if (dups.contains(attr.getName())) {
-                throw new InvalidAttributeValueException("Duplicate attribute name exits: " + attr.getName());
+                throw new InvalidAttributeValueException("Duplicate attribute name exists: " + attr.getName());
             }
             // add for the detection..s
             dups.add(attr.getName());
