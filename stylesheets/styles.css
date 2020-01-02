@@ -383,7 +383,7 @@ footer {
   }
 }
 
-@media print, screen and (max-width: 480px) {
+@media print, screen and (max-width: 480 px) {
 
   header ul li.download {
     display:none;
