@@ -67,6 +67,8 @@ public final class EqualsFilter extends AttributeFilter {
         Attribute attr = obj.getAttributeByName(thisAttr.getName());
         if (attr != null) {
             ret = thisAttr.equals(attr);
+        } else if (thisAttr.getValue() == null) {
+            ret = true;
         }
         return ret;
     }
