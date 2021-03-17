@@ -21,8 +21,8 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2015-2019 Evolveum
+ * Portions Copyrighted 2011 ConnId
  */
-
 package org.identityconnectors.framework.impl.api.local;
 
 import java.io.IOException;
@@ -33,7 +33,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
@@ -47,7 +46,9 @@ public class ObjectPool<T> {
      * Statistics bean
      */
     public static final class Statistics {
+
         private final int numIdle;
+
         private final int numActive;
 
         private Statistics(final int numIdle, final int numActive) {
@@ -73,13 +74,13 @@ public class ObjectPool<T> {
         public String toString() {
             return "Statistics(numIdle=" + numIdle + ", numActive=" + numActive + ")";
         }
-        
     }
 
     /**
      * An object plus additional book-keeping information about the object
      */
     private class PooledObject implements ObjectPoolEntry<T> {
+
         /**
          * The underlying object
          */
@@ -116,7 +117,8 @@ public class ObjectPool<T> {
             try {
                 returnObject(this);
             } catch (InterruptedException e) {
-                LOG.error(e, "Failed to close/dispose PooledObject object {0} from pool {1}: {2}", this, getPoolName(), e.getMessage());
+                LOG.error(e, "Failed to close/dispose PooledObject object {0} from pool {1}: {2}",
+                        this, getPoolName(), e.getMessage());
             }
         }
 
@@ -145,29 +147,29 @@ public class ObjectPool<T> {
 
         @Override
         public String toString() {
-            return "PooledObject(object=" + object + ", isActive=" + isActive + ", lastStateChangeTimestamp="
-                + lastStateChangeTimestamp + ", isNew=" + isNew + ")";
+            return "PooledObject(object=" + object
+                    + ", isActive=" + isActive
+                    + ", lastStateChangeTimestamp=" + lastStateChangeTimestamp
+                    + ", isNew=" + isNew + ")";
         }
-
     }
 
     /**
      * Set contains all the PooledObject was made by this pool. It contains all
      * idle and borrowed(active) objects.
      */
-    private Set<PooledObject> activeObjects;
+    private final Set<PooledObject> activeObjects;
 
     /**
      * Queue of idle objects. The one that has been idle for the longest comes
      * first in the queue
      */
-    private final ConcurrentLinkedQueue<PooledObject> idleObjects =
-            new ConcurrentLinkedQueue<PooledObject>();
+    private final ConcurrentLinkedQueue<PooledObject> idleObjects = new ConcurrentLinkedQueue<>();
 
     /**
      * Limits the maximum available pooled object in the pool.
      */
-    private Semaphore totalPermit;
+    private final Semaphore totalPermit;
 
     /**
      * Lock to maintain the state changes of the pool.
@@ -187,7 +189,7 @@ public class ObjectPool<T> {
      * Configuration for this pool.
      */
     private final ObjectPoolConfiguration poolConfiguration;
-    
+
     /**
      * Human readable name for the pool. Used for diagnostics.
      */
@@ -197,26 +199,23 @@ public class ObjectPool<T> {
      * Is the pool shutdown
      */
     private volatile boolean isShutdown = false;
-    
+
     private volatile boolean isDisposing = false;
 
     /**
      * Create a new ObjectPool
      *
-     * @param handler
-     *            Handler for objects
-     * @param config
-     *            Configuration for the pool
+     * @param handler Handler for objects
+     * @param config Configuration for the pool
      */
     public ObjectPool(final ObjectPoolHandler<T> handler, final ObjectPoolConfiguration config) {
-
         Assertions.nullCheck(handler, "handler");
         Assertions.nullCheck(config, "config");
 
         this.handler = handler;
         // clone it
         poolConfiguration = this.handler.validate(config);
-        activeObjects = new HashSet<PooledObject>(poolConfiguration.getMaxObjects());
+        activeObjects = new HashSet<>(poolConfiguration.getMaxObjects());
         totalPermit = new Semaphore(poolConfiguration.getMaxObjects());
     }
 
@@ -241,7 +240,7 @@ public class ObjectPool<T> {
         this.poolName = poolName;
     }
 
-	/**
+    /**
      * Return an object to the pool
      *
      * @param pooled
@@ -286,8 +285,7 @@ public class ObjectPool<T> {
                 } catch (Exception e) {
                     if (null != rv) {
                         dispose(rv);
-                        // if it's a new object, break out of the loop
-                        // immediately
+                        // if it's a new object, break out of the loop immediately
                         if (rv.isNew()) {
                             throw ConnectorException.wrap(e);
                         }
@@ -324,24 +322,23 @@ public class ObjectPool<T> {
             try {
                 do {
                     if (totalPermit.tryAcquire()) {
-                    	try {
-	                        // If the pool is empty and there are available permits
-	                        // then create a new instance.
-	                        return makeObject();
-                    	} catch (RuntimeException e) {
-                    		totalPermit.release();
-                    		throw e;
-                    	} catch (Error e) {
-                    		totalPermit.release();
-                    		throw e;
-                    	}
+                        try {
+                            // If the pool is empty and there are available permits then create a new instance.
+                            return makeObject();
+                        } catch (RuntimeException e) {
+                            totalPermit.release();
+                            throw e;
+                        } catch (Error e) {
+                            totalPermit.release();
+                            throw e;
+                        }
                     } else {
                         // Wait for permit or object to became available
                         try {
                             nanos = notEmpty.awaitNanos(nanos);
                         } catch (InterruptedException ie) {
                             notEmpty.signal(); // propagate to non-interrupted
-                                               // thread
+                            // thread
                             throw ConnectorException.wrap(ie);
                         }
 
@@ -365,19 +362,19 @@ public class ObjectPool<T> {
     /**
      * Polls the head object from the queue.
      * <p/>
-     * Polls the head object and before it returns it checks the {@code MaxIdle}
-     * size and the {@code MinEvictableIdleTime} before accepts the object.
+     * Polls the head object and before it returns it checks the {@code MaxIdle} size and the
+     * {@code MinEvictableIdleTime} before accepts the object.
      *
      * @return null if there was no fresh/new object in the queue.
      * @throws InterruptedException
      */
     private PooledObject borrowIdleObject() throws InterruptedException {
-        for (PooledObject pooledConn = idleObjects.poll(); pooledConn != null; pooledConn =
-                idleObjects.poll()) {
+        for (PooledObject pooledConn = idleObjects.poll(); pooledConn != null; pooledConn = idleObjects.poll()) {
             int size = idleObjects.size();
             if (poolConfiguration.getMinIdle() < size + 1
-                    && ((poolConfiguration.getMaxIdle() < size) || pooledConn
-                            .isOlderThan(poolConfiguration.getMinEvictableIdleTimeMillis()))) {
+                    && ((poolConfiguration.getMaxIdle() < size)
+                    || pooledConn.isOlderThan(poolConfiguration.getMinEvictableIdleTimeMillis()))) {
+
                 dispose(pooledConn);
             } else {
                 return pooledConn;
@@ -385,33 +382,29 @@ public class ObjectPool<T> {
         }
         return null;
     }
-    
+
     /**
      * Disposes all objects in the pool.
      * <p/>
-     * Existing active objects will remain alive and be allowed to shutdown
-     * gracefully. Unlike shutdown, the pool will be able to work on and create
-     * new objects.
+     * Existing active objects will remain alive and be allowed to shutdown gracefully.
+     * Unlike shutdown, the pool will be able to work on and create new objects.
      */
     public void disposeAllObjects() {
-    	final ReentrantLock lock = this.takeLock;
+        final ReentrantLock lock = this.takeLock;
         try {
-        	lock.lockInterruptibly();
-        	
-        	isDisposing = true;
-    		LOG.ok("Disposing all objects from {0}", this);
-	        // just evict idle objects
-	        // if there are any active objects still
-	        // going, leave them alone so they can return
-	        // gracefully
-	        for (PooledObject entry = idleObjects.poll(); entry != null; entry = idleObjects.poll()) {
-	            try {
-	                dispose(entry);
-	            } catch (InterruptedException e) {
-	                LOG.error(e, "Interrupted disposal of PooledObject object {0}", entry);
-	            }
-	        }
-	        
+            lock.lockInterruptibly();
+
+            isDisposing = true;
+            LOG.ok("Disposing all objects from {0}", this);
+            // just evict idle objects if there are any active objects still going,
+            // leave them alone so they can return gracefully
+            for (PooledObject entry = idleObjects.poll(); entry != null; entry = idleObjects.poll()) {
+                try {
+                    dispose(entry);
+                } catch (InterruptedException e) {
+                    LOG.error(e, "Interrupted disposal of PooledObject object {0}", entry);
+                }
+            }
         } catch (Exception e) {
             LOG.warn(e, "Error disposing of all objects from pool {0}: {1}", this, e.getMessage());
         } finally {
@@ -422,13 +415,13 @@ public class ObjectPool<T> {
     /**
      * Closes any idle objects in the pool.
      * <p/>
-     * Existing active objects will remain alive and be allowed to shutdown
-     * gracefully, but no more objects will be allocated.
+     * Existing active objects will remain alive and be allowed to shutdown gracefully,
+     * but no more objects will be allocated.
      */
     public void shutdown() {
         isShutdown = true;
         try {
-        	disposeAllObjects();
+            disposeAllObjects();
         } finally {
             handler.shutdown();
         }
@@ -447,14 +440,11 @@ public class ObjectPool<T> {
      * This is a long running process to create and init the connector instance.
      * <p/>
      *
-     * @throws ConnectorException
-     *             if something happens.
+     * @throws ConnectorException if something happens.
      */
     private PooledObject makeObject() {
         synchronized (activeObjects) {
-            PooledObject pooledConn =
-                    new PooledObject((activeObjects.size() > 0) ? handler.makeObject() : handler
-                            .makeObject());
+            PooledObject pooledConn = new PooledObject(handler.makeObject());
             activeObjects.add(pooledConn);
             return pooledConn;
         }
@@ -470,13 +460,9 @@ public class ObjectPool<T> {
         lock.lockInterruptibly();
         try {
             synchronized (activeObjects) {
-                // Make sure the disposed object was the last item in the
-                // activeObjects
-                if (activeObjects.remove(entry) && activeObjects.isEmpty()) {
-                    handler.disposeObject(entry.getPooledObject());
-                } else {
-                    handler.disposeObject(entry.getPooledObject());
-                }
+                // Make sure the disposed object was the last item in the activeObjects
+                activeObjects.remove(entry);
+                handler.disposeObject(entry.getPooledObject());
             }
         } catch (Exception e) {
             LOG.warn(e, "Unexpected error from disposeObject() method: {0}", e.getMessage());
@@ -500,20 +486,19 @@ public class ObjectPool<T> {
         }
     }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder("ObjectPool(");
-		sb.append(poolName);
-		if (isDisposing) {
-			sb.append(", DISPOSING");
-		}
-		if (isShutdown) {
-			sb.append(", SHUTTING DOWN");
-		}
-		sb.append(", idle=").append(idleObjects.size());
-		sb.append(", active=").append(activeObjects.size());
-		sb.append(")");
-		return sb.toString();
-	}
-    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("ObjectPool(");
+        sb.append(poolName);
+        if (isDisposing) {
+            sb.append(", DISPOSING");
+        }
+        if (isShutdown) {
+            sb.append(", SHUTTING DOWN");
+        }
+        sb.append(", idle=").append(idleObjects.size());
+        sb.append(", active=").append(activeObjects.size());
+        sb.append(")");
+        return sb.toString();
+    }
 }
