@@ -133,7 +133,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdRESTBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/REST">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/REST">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdRESTBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdRESTBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdRESTBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdRESTBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>SCIM 1.1</td>
@@ -168,7 +168,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdZimbraBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/Zimbra">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/Zimbra">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdZimbraBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdZimbraBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdZimbraBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdZimbraBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  </tbody>
 </table>
