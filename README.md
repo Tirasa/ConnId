@@ -56,7 +56,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdADBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/pages/viewpage.action?pageId=360482">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/AD">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdADBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdADBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdADBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdADBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>Azure</td>
@@ -105,21 +105,21 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdGoogleAppsBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/Google+Apps">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/GOOGLEAPPS">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdGoogleAppsBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdGoogleAppsBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdGoogleAppsBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdGoogleAppsBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>LDAP</td>
   <td>https://github.com/Tirasa/ConnIdLDAPBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/LDAP">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/LDAP">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdLDAPBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdLDAPBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdLDAPBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdLDAPBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>Okta</td>
   <td>https://github.com/Tirasa/ConnIdOktaBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/Okta">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/OKTA">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdOktaBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdOktaBundle.png"/></a></td>
+ <td><a href="https://github.com/Tirasa/ConnIdOktaBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdOktaBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>OpenAM</td>
