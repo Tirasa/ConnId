@@ -63,7 +63,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdAzureBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/Azure">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/AZURE">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdAzureBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdAzureBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdAzureBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdAzureBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
   <tr>
   <td>CMD</td>
@@ -140,7 +140,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdSCIMv11Bundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/SCIM+1.1">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/SCIMV11">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdSCIMv11Bundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdSCIMv11Bundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdSCIMv11Bundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdSCIMv11Bundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>ServiceNow</td>
