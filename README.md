@@ -77,14 +77,14 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdCSVDirBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/CSV+Directory">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/CSVDIR">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdCSVDirBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdCSVDirBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdCSVDirBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdCSVDirBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>Database</td>
   <td>https://github.com/Tirasa/ConnIdDBBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/Database">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/DB">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdDBBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdDBBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdDBBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdDBBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>Flat File</td>
