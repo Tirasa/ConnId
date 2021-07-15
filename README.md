@@ -70,7 +70,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdCMDBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/CMD">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/CMD">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdCMDBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdCMDBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdCMDBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdCMDBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>CSV Directory</td>
