@@ -20,7 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
- * Portions Copyrighted 2015-2019 Evolveum
+ * Portions Copyrighted 2015-2021 Evolveum
  * Portions Copyrighted 2011 ConnId
  */
 package org.identityconnectors.framework.impl.api.local;
@@ -256,7 +256,7 @@ public class ObjectPool<T> {
                             || entry.isOlderThan(poolConfiguration.getMinEvictableIdleTimeMillis())) {
                         if (idleObjects.remove(entry)) {
                             dispose(entry);
-                            LOG.ok("Disposed pool {0} entry (expired): {1}", getPoolName(), entry);
+                            LOG.ok("Disposed pool {0} entry (too many idle objects): {1}", getPoolName(), entry);
                         }
                     }
                 }
@@ -280,16 +280,32 @@ public class ObjectPool<T> {
         try {
             do {
                 rv = borrowObjectNoTest();
-                try {
-                    handler.testObject(rv.getPooledObject());
-                } catch (Exception e) {
-                    if (null != rv) {
-                        dispose(rv);
-                        // if it's a new object, break out of the loop immediately
-                        if (rv.isNew()) {
-                            throw ConnectorException.wrap(e);
+                if (rv != null && poolConfiguration.getMaxIdleTimeMillis() > 0 && rv.isOlderThan(poolConfiguration.getMaxIdleTimeMillis())) {
+                    // Note: this implementation of maxIdleTimeMillis is not perfect.
+                    // Idle connector instance may be kept in the pool for a long time, it gets disposed only when
+                    // there is an attempt to use the instance. Therefore this implementation cannot be used to
+                    // limit the lifetime of a connector connection, forcibly closing it after some time period.
+                    // However, it is useful to avoid reuse of potentially timed-out or stale connection
+                    // in connectors that were left in the pool for a long time.
+                    //
+                    // This implementation could be improved, however, that would need a special thread to watch
+                    // the pool and dispose idle connectors. We do not want to complicate the framework by adding
+                    // such thread now.
+                    LOG.ok("Disposed pool {0} entry (max idle time expired): {1}", getPoolName(), rv);
+                    dispose(rv);
+                    rv = null;
+                } else {
+                    try {
+                        handler.testObject(rv.getPooledObject());
+                    } catch (Exception e) {
+                        if (null != rv) {
+                            dispose(rv);
+                            // if it's a new object, break out of the loop immediately
+                            if (rv.isNew()) {
+                                throw ConnectorException.wrap(e);
+                            }
+                            rv = null;
                         }
-                        rv = null;
                     }
                 }
             } while (null == rv);

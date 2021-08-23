@@ -419,6 +419,7 @@ public class ObjectSerializationTests {
         v1.setMaxWait(3);
         v1.setMinEvictableIdleTimeMillis(4);
         v1.setMinIdle(5);
+        v1.setMaxIdleTimeMillis(6);
 
         ObjectPoolConfiguration v2 =
                 (ObjectPoolConfiguration) cloneObject(v1);
@@ -430,6 +431,7 @@ public class ObjectSerializationTests {
         assertEquals(3, v2.getMaxWait());
         assertEquals(4, v2.getMinEvictableIdleTimeMillis());
         assertEquals(5, v2.getMinIdle());
+        assertEquals(6, v2.getMaxIdleTimeMillis());
     }
 
     @Test
