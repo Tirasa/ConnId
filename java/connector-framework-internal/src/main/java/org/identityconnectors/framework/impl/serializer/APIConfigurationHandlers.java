@@ -59,6 +59,8 @@ class APIConfigurationHandlers {
                 rv.setMinEvictableIdleTimeMillis(decoder.readLongField(
                         "minEvictableIdleTimeMillis", rv.getMinEvictableIdleTimeMillis()));
                 rv.setMinIdle(decoder.readIntField("minIdle", rv.getMinIdle()));
+                rv.setMaxIdleTimeMillis(decoder.readLongField(
+                        "maxIdleTimeMillis", rv.getMaxIdleTimeMillis()));
                 return rv;
             }
 
@@ -70,6 +72,7 @@ class APIConfigurationHandlers {
                 encoder.writeLongField("maxWait", val.getMaxWait());
                 encoder.writeLongField("minEvictableIdleTimeMillis", val.getMinEvictableIdleTimeMillis());
                 encoder.writeIntField("minIdle", val.getMinIdle());
+                encoder.writeLongField("maxIdleTimeMillis", val.getMaxIdleTimeMillis());
             }
 
         });

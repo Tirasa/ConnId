@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2021 Evolveum
  */
 package org.identityconnectors.common.pooling;
 
@@ -38,6 +39,7 @@ public final class ObjectPoolConfiguration {
         this.setMaxIdle(other.getMaxIdle());
         this.setMaxWait(other.getMaxWait());
         this.setMinEvictableIdleTimeMillis(other.getMinEvictableIdleTimeMillis());
+        this.setMaxIdleTimeMillis(other.getMaxIdleTimeMillis());
         this.setMinIdle(other.getMinIdle());
     }
 
@@ -62,6 +64,13 @@ public final class ObjectPoolConfiguration {
      * wait
      */
     private long minEvictableIdleTimeMillis = 120 * 1000;
+
+    /**
+     * Maximum time that an idle object will be kept in the pool (in milliseconds).
+     * Connectors will not be re-used if they are kept idle in the pool for longer than this interval.
+     * Zero means no time limitation.
+     */
+    private long maxIdleTimeMillis = 0;
 
     /**
      * Minimum number of idle objects.
@@ -130,6 +139,24 @@ public final class ObjectPoolConfiguration {
     }
 
     /**
+     * Maximum time that an idle object will be kept in the pool (in milliseconds).
+     * Connectors will not be re-used if they are kept idle in the pool for longer than this interval.
+     * Zero means no time limitation.
+     */
+    public long getMaxIdleTimeMillis() {
+        return maxIdleTimeMillis;
+    }
+
+    /**
+     * Maximum time that an idle object will be kept in the pool (in milliseconds).
+     * Connectors will not be re-used if they are kept idle in the pool for longer than this interval.
+     * Zero means no time limitation.
+     */
+    public void setMaxIdleTimeMillis(long maxIdleTimeMillis) {
+        this.maxIdleTimeMillis = maxIdleTimeMillis;
+    }
+
+    /**
      * Minimum number of idle objects.
      */
     public int getMinIdle() {
@@ -159,6 +186,12 @@ public final class ObjectPoolConfiguration {
         if (minEvictableIdleTimeMillis < 0) {
             throw new IllegalArgumentException("Min evictable idle time millis less than zero.");
         }
+        if (maxIdleTimeMillis < 0) {
+            throw new IllegalArgumentException("Max idle time millis less than zero.");
+        }
+        if (maxIdleTimeMillis > 0 && maxIdleTimeMillis < minEvictableIdleTimeMillis) {
+            throw new IllegalArgumentException("Max idle time millis less than min evictable idle time millis.");
+        }
         if (minIdle > maxIdle) {
             throw new IllegalArgumentException("Min idle is greater than max idle.");
         }
@@ -170,7 +203,7 @@ public final class ObjectPoolConfiguration {
     @Override
     public int hashCode() {
         return (int) (getMaxObjects() + getMaxIdle() + getMaxWait()
-                + getMinEvictableIdleTimeMillis() + getMinIdle());
+                + getMinEvictableIdleTimeMillis() + getMinIdle() + getMaxIdleTimeMillis());
     }
 
     @Override
@@ -193,6 +226,9 @@ public final class ObjectPoolConfiguration {
             if (getMinIdle() != other.getMinIdle()) {
                 return false;
             }
+            if (getMaxIdleTimeMillis() != other.getMaxIdleTimeMillis()) {
+                return false;
+            }
             return true;
         }
         return false;
@@ -207,6 +243,7 @@ public final class ObjectPoolConfiguration {
         bld.put("MaxWait", getMaxWait());
         bld.put("MinEvictableIdleTimeMillis", getMinEvictableIdleTimeMillis());
         bld.put("MinIdle", getMinIdle());
+        bld.put("MaxLifetimeMillis", getMaxIdleTimeMillis());
         return bld.toString();
     }
 }

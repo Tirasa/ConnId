@@ -23,7 +23,7 @@
     "Portions Copyrighted [year] [name of copyright owner]"
     ====================
     Portions Copyrighted 2010-2014 ForgeRock AS.
-    Portions Copyrighted 2015-2016 Evolveum
+    Portions Copyrighted 2015-2021 Evolveum
 
 -->
 
@@ -167,6 +167,7 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
     maxWait CDATA #IMPLIED
     minEvictableIdleTimeMillis CDATA #IMPLIED
     minIdle CDATA #IMPLIED
+    maxIdleTimeMillis CDATA #IMPLIED
 >
 
 <!ELEMENT ResultsHandlerConfiguration EMPTY>

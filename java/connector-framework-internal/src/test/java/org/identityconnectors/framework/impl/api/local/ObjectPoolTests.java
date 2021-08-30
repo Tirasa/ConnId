@@ -25,6 +25,7 @@ package org.identityconnectors.framework.impl.api.local;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
@@ -217,8 +218,9 @@ public class ObjectPoolTests {
         config.setMaxObjects(3);
         config.setMaxIdle(2);
         config.setMinIdle(1);
-        config.setMinEvictableIdleTimeMillis(3000);
+        config.setMinEvictableIdleTimeMillis(1000);
         config.setMaxWait(60 * 1000);
+        config.setMaxIdleTimeMillis(2500);
         MyTestConnectionFactory fact = new MyTestConnectionFactory();
 
         ObjectPool<MyTestConnection> pool = new ObjectPool<>(fact, config);
@@ -231,19 +233,38 @@ public class ObjectPoolTests {
         conn1.close();
         assertEquals(1, pool.getStatistics().getNumIdle());
         conn2.close();
-        assertEquals(pool.getStatistics().getNumIdle(), 2);
+        assertEquals(2, pool.getStatistics().getNumIdle());
         conn3.close();
-        assertEquals(pool.getStatistics().getNumIdle(), 2);
+        assertEquals(2, pool.getStatistics().getNumIdle());
         assertEquals(false, conn1.getPooledObject().isGood());
         assertEquals(true, conn2.getPooledObject().isGood());
         assertEquals(true, conn3.getPooledObject().isGood());
-        Thread.sleep(config.getMinEvictableIdleTimeMillis() + 1000);
+        Thread.sleep(config.getMinEvictableIdleTimeMillis() + 500);
         ObjectPoolEntry<MyTestConnection> conn4 = pool.borrowObject();
         assertSame(conn3, conn4);
+        assertEquals(0, pool.getStatistics().getNumIdle());
+        assertEquals(1, pool.getStatistics().getNumActive());
         assertEquals(false, conn1.getPooledObject().isGood());
         assertEquals(false, conn2.getPooledObject().isGood());
         assertEquals(true, conn3.getPooledObject().isGood());
         assertEquals(true, conn4.getPooledObject().isGood());
+        conn4.close();
+        assertEquals(1, pool.getStatistics().getNumIdle());
+        assertEquals(0, pool.getStatistics().getNumActive());
+        // BASE-80
+        Thread.sleep(config.getMaxIdleTimeMillis() + 500);
+        ObjectPoolEntry<MyTestConnection> conn5 = pool.borrowObject();
+        assertNotSame(conn4, conn5);
+        assertEquals(false, conn1.getPooledObject().isGood());
+        assertEquals(false, conn2.getPooledObject().isGood());
+        assertEquals(false, conn3.getPooledObject().isGood());
+        assertEquals(false, conn4.getPooledObject().isGood());
+        assertEquals(true, conn5.getPooledObject().isGood());
+        assertEquals(0, pool.getStatistics().getNumIdle());
+        assertEquals(1, pool.getStatistics().getNumActive());
+        conn5.close();
+        assertEquals(1, pool.getStatistics().getNumIdle());
+        assertEquals(0, pool.getStatistics().getNumActive());
     }
 
     @Test
