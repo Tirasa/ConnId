@@ -442,7 +442,7 @@
             <exclude>**/*.log</exclude>
             <exclude>.externalToolBuilders/**</exclude>
             <exclude>.git/**</exclude>
-            <exclude>.idea/**</exclude>
+            <exclude>**/.idea/**</exclude>
             <exclude>**/.*</exclude>
             <exclude>build-number.txt</exclude>
             <exclude>**/cov-int/**</exclude>

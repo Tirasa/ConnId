@@ -16,6 +16,7 @@ java/archetype/src/main/resources/archetype-resources/pom.xml
 #IntelliJ IDEA stuff
 java/.idea/
 *.iml
+.idea/
 
 #Visual C# stuff
 
