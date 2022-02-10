@@ -69,29 +69,7 @@ import org.identityconnectors.framework.common.exceptions.OperationTimeoutExcept
 import org.identityconnectors.framework.common.exceptions.PasswordExpiredException;
 import org.identityconnectors.framework.common.exceptions.PermissionDeniedException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.AttributeBuilder;
-import org.identityconnectors.framework.common.objects.AttributeInfo;
-import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
-import org.identityconnectors.framework.common.objects.AttributeUtil;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.ObjectClassInfo;
-import org.identityconnectors.framework.common.objects.ObjectClassInfoBuilder;
-import org.identityconnectors.framework.common.objects.OperationOptionInfo;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
-import org.identityconnectors.framework.common.objects.QualifiedUid;
-import org.identityconnectors.framework.common.objects.Schema;
-import org.identityconnectors.framework.common.objects.ScriptContext;
-import org.identityconnectors.framework.common.objects.ScriptContextBuilder;
-import org.identityconnectors.framework.common.objects.SyncDelta;
-import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
-import org.identityconnectors.framework.common.objects.SyncDeltaType;
-import org.identityconnectors.framework.common.objects.SyncToken;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 import org.identityconnectors.framework.common.objects.filter.AndFilter;
 import org.identityconnectors.framework.common.objects.filter.ContainsAllValuesFilter;
@@ -285,7 +263,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testByteArray() throws Exception {
-        byte[] v1 = { 1, 2, 3 };
+        byte[] v1 = {1, 2, 3};
         byte[] v2 = (byte[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals(1, v2[0]);
@@ -331,7 +309,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testArrays() throws Exception {
-        int[] v1 = { 1, 2, 3 };
+        int[] v1 = {1, 2, 3};
         int[] v2 = (int[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals(1, v2[0]);
@@ -341,7 +319,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testObjectArrays() throws Exception {
-        Object[] v1 = { "1", "2", "3" };
+        Object[] v1 = {"1", "2", "3"};
         Object[] v2 = (Object[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals("1", v2[0]);
@@ -1106,9 +1084,9 @@ public class ObjectSerializationTests {
 
     @Test
     public void testGuardedByteArray() {
-        GuardedByteArray v1 = new GuardedByteArray(new byte[] { 0x00, 0x01, 0x02, 0x03 });
+        GuardedByteArray v1 = new GuardedByteArray(new byte[]{0x00, 0x01, 0x02, 0x03});
         GuardedByteArray v2 = (GuardedByteArray) cloneObject(v1);
-        assertTrue(Arrays.equals(new byte[] { 0x00, 0x01, 0x02, 0x03 }, decryptToBytes(v2)));
+        assertTrue(Arrays.equals(new byte[]{0x00, 0x01, 0x02, 0x03}, decryptToBytes(v2)));
     }
 
     @Test
@@ -1118,6 +1096,20 @@ public class ObjectSerializationTests {
         assertEquals(v1, v2);
         assertTrue(v2.getObjectClass().is("myclass"));
         assertEquals("myuid", v2.getUid().getUidValue());
+    }
+
+    @Test
+    public void testAttributeDeltaAddRemove() {
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", "A", null);
+        AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
+        assertEquals(v1, v2);
+    }
+
+    @Test
+    public void testAttributeDeltaReplace() {
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", "A");
+        AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
+        assertEquals(v1, v2);
     }
 
     /**
