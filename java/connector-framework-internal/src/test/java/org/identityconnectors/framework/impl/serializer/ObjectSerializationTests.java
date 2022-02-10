@@ -643,6 +643,13 @@ public class ObjectSerializationTests {
     }
 
     @Test
+    public void testUidWithNameHint() {
+        Uid v1 = new Uid("test",new Name("TestNameHint"));
+        Uid v2 = (Uid) cloneObject(v1);
+        assertEquals(v1, v2);
+    }
+
+    @Test
     public void testOperationOptionInfo() {
         OperationOptionInfo v1 =
                 new OperationOptionInfo("name", Integer.class);

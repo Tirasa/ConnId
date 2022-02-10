@@ -571,8 +571,11 @@ class CommonObjectHandlers {
             public Object deserialize(final ObjectDecoder decoder) {
                 final String val = decoder.readStringField("uid", null);
                 final String revision = decoder.readStringField("revision", null);
-                if (null == revision) {
+                final Name nameHint = (Name) decoder.readObjectField("nameHint", Name.class, null);
+                if (null == revision && null == nameHint) {
                     return new Uid(val);
+                } else if (null == revision && null != nameHint) {
+                    return new Uid(val, nameHint);
                 } else {
                     return new Uid(val, revision);
                 }
