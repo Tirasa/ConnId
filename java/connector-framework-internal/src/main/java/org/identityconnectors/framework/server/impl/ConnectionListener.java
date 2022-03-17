@@ -69,10 +69,8 @@ class ConnectionListener extends CCLWatchThread {
     /**
      * Creates the listener thread
      *
-     * @param server
-     *            The server object
-     * @param socket
-     *            The socket (should already be bound)
+     * @param server The server object
+     * @param socket The socket (should already be bound)
      */
     public ConnectionListener(ConnectorServer server, ServerSocket socket) {
         super("ConnectionListener");
@@ -82,8 +80,10 @@ class ConnectionListener extends CCLWatchThread {
         threadPool =
                 new ThreadPoolExecutor(server.getMinWorkers(), server.getMaxWorkers(), 30,
                         TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(INTERNAL_QUEUE_SIZE,
-                                true), // fair
+                        true), // fair
                         new CCLWatchThreadFactory());
+        LOG.ok("Initialized instance of Connection listener with min amount of worker threads: {0} ,and " +
+                "max worker threads: {1}", server.getMinWorkers(), server.getMaxWorkers());
     }
 
     @Override
@@ -103,24 +103,29 @@ class ConnectionListener extends CCLWatchThread {
                         threadPool.execute(processor);
                         break;
                     } catch (RejectedExecutionException e) {
+                        LOG.warn(e, "Execution exception occurred during Connector Server connection runtime: {0}", e.getLocalizedMessage());
                         try {
                             Thread.sleep(100);
                         } catch (Exception e2) {
                             /* ignore */
+                            LOG.warn(e, "Handled exception occurred during Connector Server connection runtime: {0}", e2.getLocalizedMessage());
                         }
                     }
                 }
             } catch (Throwable e) {
                 // log the error unless it's because we've stopped
                 if (!isStopped() || !(e instanceof SocketException)) {
-                    LOG.error(e, "Error processing request");
+
+                    LOG.error(e, "Error processing request: {0}", e.getLocalizedMessage());
                 }
                 // wait a second before trying again
                 if (!isStopped()) {
                     try {
+                        LOG.ok("Retry of connection execution.");
                         Thread.sleep(1000);
                     } catch (Exception e2) {
                         /* ignore */
+                        LOG.warn(e, "Handled exception occurred during Connector Server connection runtime: {0}", e2.getLocalizedMessage());
                     }
                 }
             }
@@ -145,12 +150,18 @@ class ConnectionListener extends CCLWatchThread {
                 // shutdown and don't log the SocketException
                 markStopped();
                 // close the socket - this causes accept to throw an exception
+
+                LOG.info("About do close the Connector Server connection socket.");
                 socket.close();
                 // wait for the main listener thread to die so we don't
                 // get any new requests
                 join();
                 // wait for all in-progress requests to finish
+
+                LOG.info("Shutting down Connector Server connection thread pool.");
                 threadPool.shutdown();
+
+                LOG.info("Connector Server connection shutdown complete");
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);
             }

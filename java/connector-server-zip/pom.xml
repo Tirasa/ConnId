@@ -85,6 +85,13 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
+
+    <!-- JUL to SLF4J bridge-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>connid-connector-server-java-${project.version}</finalName>
