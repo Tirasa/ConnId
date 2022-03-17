@@ -31,15 +31,7 @@ import java.util.Map;
 import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
-import org.identityconnectors.framework.impl.api.remote.messages.EchoMessage;
-import org.identityconnectors.framework.impl.api.remote.messages.HelloRequest;
-import org.identityconnectors.framework.impl.api.remote.messages.HelloResponse;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationRequest;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationRequestMoreData;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationRequestStopData;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationResponseEnd;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePart;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePause;
+import org.identityconnectors.framework.impl.api.remote.messages.*;
 
 /**
  * Serialization handles for remote messages.
@@ -194,6 +186,20 @@ class MessageHandlers {
                 final EchoMessage val = (EchoMessage) object;
                 encoder.writeObjectField("value", val.getObject(), false);
                 encoder.writeObjectField("objectXml", val.getXml(), true);
+            }
+        });
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(ErrorResponse.class, "ErrorResponse") {
+
+            public Object deserialize(final ObjectDecoder decoder) {
+                final Throwable exception =
+                        (Throwable) decoder.readObjectField("exception", null, null);
+                return new ErrorResponse(exception);
+            }
+
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final ErrorResponse val = (ErrorResponse) object;
+                encoder.writeObjectField("exception", val.getException(), false);
             }
         });
     }

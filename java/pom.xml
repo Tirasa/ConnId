@@ -171,6 +171,13 @@
         <scope>provided</scope>
       </dependency>
 
+<!-- JUL to SLF4J bridge-->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+
       <!-- TEST -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>

@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.framework.api.RemoteFrameworkConnectionInfo;
@@ -35,12 +36,7 @@ import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.api.ObjectStreamHandler;
 import org.identityconnectors.framework.impl.api.StreamHandlerUtil;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationRequest;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationRequestMoreData;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationRequestStopData;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationResponseEnd;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePart;
-import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePause;
+import org.identityconnectors.framework.impl.api.remote.messages.*;
 
 /**
  * Invocation handler for all of our operations.
@@ -93,11 +89,31 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
             }
 
             // finally return the actual return value
-            OperationResponsePart response = (OperationResponsePart) connection.readObject();
-            if (response.getException() != null) {
-                throw response.getException();
+
+            Object response = connection.readObject();
+
+            if (response instanceof OperationResponsePart) {
+
+                OperationResponsePart part = (OperationResponsePart) response;
+
+                if (part.getException() != null) {
+                    throw part.getException();
+                }
+                return part.getResult();
+            } else if (response instanceof ErrorResponse) {
+                ErrorResponse error = (ErrorResponse) response;
+
+                if (error.getException() != null) {
+                    throw error.getException();
+                } else {
+
+                    throw new ConnectorException("Received an invalid Error response object, exception parameter missing");
+                }
+            } else {
+
+                throw new ConnectorException("Received unknown response object type: " + response.getClass().getCanonicalName());
             }
-            return response.getResult();
+
         } finally {
             if (null != connection) {
                 connection.close();
@@ -132,7 +148,20 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
                 }
             } else if (response instanceof OperationResponseEnd) {
                 break;
-            } else {
+            } else if (response instanceof ErrorResponse) {
+
+                ErrorResponse error = (ErrorResponse) response;
+
+                if (error.getException() != null) {
+
+                    throw ConnectorException.wrap(error.getException());
+                } else {
+
+                    throw new ConnectorException("Received an invalid Error response object, exception parameter missing");
+                }
+
+            }else {
+
                 throw new ConnectorException("Unexpected response: " + response);
             }
         }
