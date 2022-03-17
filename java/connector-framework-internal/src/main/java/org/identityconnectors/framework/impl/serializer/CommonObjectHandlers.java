@@ -758,12 +758,19 @@ class CommonObjectHandlers {
                 final AttributeDeltaBuilder builder = new AttributeDeltaBuilder();
                 builder.setName((String) decoder.readObjectField("Name",
                         AttributeDelta.class, null));
-                builder.addValueToAdd((List) decoder
-                        .readObjectField("ValuesToAdd", List.class, null));
-                builder.addValueToRemove((List) decoder
-                        .readObjectField("ValuesToRemove", List.class, null));
-                builder.addValueToReplace((List) decoder
-                        .readObjectField("ValuesToReplace", List.class, null));
+
+                List addList = (List) decoder.readObjectField("ValuesToAdd", List.class, null);
+                List removeList = (List) decoder.readObjectField("ValuesToRemove", List.class, null);
+                List replaceList =(List) decoder.readObjectField("ValuesToReplace", List.class, null);
+
+                if ((addList != null || removeList != null)) {
+
+                    builder.addValueToAdd(addList);
+                    builder.addValueToRemove(removeList);
+                } else {
+
+                    builder.addValueToReplace(replaceList);
+                }
                 return builder.build();
             }
 
