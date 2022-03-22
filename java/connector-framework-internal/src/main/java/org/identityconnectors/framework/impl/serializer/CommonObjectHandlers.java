@@ -757,7 +757,7 @@ class CommonObjectHandlers {
             public Object deserialize(final ObjectDecoder decoder) {
                 final AttributeDeltaBuilder builder = new AttributeDeltaBuilder();
                 builder.setName((String) decoder.readObjectField("Name",
-                        AttributeDelta.class, null));
+                        String.class, null));
 
                 List addList = (List) decoder.readObjectField("ValuesToAdd", List.class, null);
                 List removeList = (List) decoder.readObjectField("ValuesToRemove", List.class, null);

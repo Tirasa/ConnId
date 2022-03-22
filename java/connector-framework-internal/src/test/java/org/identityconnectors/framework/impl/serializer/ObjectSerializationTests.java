@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
@@ -1107,14 +1108,14 @@ public class ObjectSerializationTests {
 
     @Test
     public void testAttributeDeltaAddRemove() {
-        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", "A", null);
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A") , Collections.emptyList());
         AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
         assertEquals(v1, v2);
     }
 
     @Test
     public void testAttributeDeltaReplace() {
-        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", "A");
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A"));
         AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
         assertEquals(v1, v2);
     }

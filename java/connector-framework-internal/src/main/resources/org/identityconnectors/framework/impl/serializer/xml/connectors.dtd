@@ -79,7 +79,7 @@ ObjectPoolConfiguration | ResultsHandlerConfiguration | ConfigurationProperty | 
 APIConfiguration | ConnectorMessages | ConnectorKey | ConnectorInfo |
 UpdateApiOpType | AttributeInfo | ConnectorObject | ObjectClass |
 ObjectClassInfo | Schema | Script | ScriptContext | OperationOptions |
-OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
+OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid | AttributeDelta
 ">
 
 
@@ -398,6 +398,10 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid
 
 <!ELEMENT QualifiedUid (ObjectClass,Uid)>
 
+<!ELEMENT AttributeDelta (Name,ValuesToAdd*,ValuesToRemove*,ValuesToReplace*)>
+<!ELEMENT ValuesToAdd ((%xmlObject;)*)>
+<!ELEMENT ValuesToRemove ((%xmlObject;)*)>
+<!ELEMENT ValuesToReplace ((%xmlObject;)*)>
 
 <!--=======================================================-->
 <!--=                                                     =-->
