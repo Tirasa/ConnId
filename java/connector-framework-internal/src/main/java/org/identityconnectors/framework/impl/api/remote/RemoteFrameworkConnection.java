@@ -64,6 +64,7 @@ public class RemoteFrameworkConnection implements Closeable {
 
     public RemoteFrameworkConnection(Socket socket) {
         try {
+            LOG.ok("About to initialize socket for remote framework connection");
             init(socket);
         } catch (SocketException e) {
             throw new ConnectorIOException("Failed to init remote connection to "
@@ -104,9 +105,11 @@ public class RemoteFrameworkConnection implements Closeable {
             }
         } catch (Exception e) {
             try {
+                LOG.warn("Closing socket for remote framework connection because of error {}", e.getLocalizedMessage());
                 socket.close();
             } catch (Exception e2) {
                 /* ignore */
+                LOG.warn("Error while closing socket for remote framework connection {}", e.getLocalizedMessage());
             }
             throw e;
         }
@@ -133,6 +136,7 @@ public class RemoteFrameworkConnection implements Closeable {
                 socket.shutdownOutput();
                 socket.shutdownInput();
                 socket.close();
+                LOG.info("Remote framework connection has been closed");
             }
         } catch (Exception e) {
             LOG.info(e, "Failed to close connection.");

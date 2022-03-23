@@ -24,20 +24,25 @@
 package org.identityconnectors.framework.server;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.LogManager;
+
 import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.SecurityUtil;
 import org.identityconnectors.framework.api.ConnectorInfoManagerFactory;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public final class Main {
 
@@ -77,6 +82,7 @@ public final class Main {
             usage();
             return;
         }
+
         String propertiesFileName = null;
         String key = null;
         for (int i = 1; i < args.length; i += 2) {
@@ -144,11 +150,18 @@ public final class Main {
         }
 
         if (loggerClass == null) {
+
+
+            System.out.println("Logger Class is null");
             loggerClass = DEFAULT_LOG_SPI;
         }
         ensureLoggingNotInitialized();
         System.setProperty(Log.LOGSPI_PROP, loggerClass);
 
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
+        getLog().info("Logger class on connector server set to: " + loggerClass);
         int port = Integer.parseInt(portStr);
 
         // Work around issue 604. It seems that sometimes procrun will run
@@ -162,7 +175,9 @@ public final class Main {
         connectorServer.setPort(port);
         connectorServer.setBundleURLs(buildBundleURLs(new File(bundleDirStr)));
         if (libDirStr != null) {
-            connectorServer.setBundleParentClassLoader(buildLibClassLoader(new File(libDirStr)));
+            ClassLoader cl = buildLibClassLoader(new File(libDirStr));
+            connectorServer.setBundleParentClassLoader(cl);
+
         }
         connectorServer.setKeyHash(keyHash);
         if (useSSLStr != null) {
@@ -214,7 +229,7 @@ public final class Main {
     private static List<URL> buildBundleURLs(File dir) throws MalformedURLException {
         List<URL> rv = getJarFiles(dir);
         if (rv.isEmpty()) {
-            getLog().warn("No bundles found in the bundles directory");
+            getLog().warn("No bundles found in the bundles directory.");
         }
         return rv;
     }

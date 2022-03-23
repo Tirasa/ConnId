@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
@@ -71,6 +72,8 @@ import org.identityconnectors.framework.common.exceptions.PermissionDeniedExcept
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
+import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
 import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
@@ -285,7 +288,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testByteArray() throws Exception {
-        byte[] v1 = { 1, 2, 3 };
+        byte[] v1 = {1, 2, 3};
         byte[] v2 = (byte[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals(1, v2[0]);
@@ -331,7 +334,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testArrays() throws Exception {
-        int[] v1 = { 1, 2, 3 };
+        int[] v1 = {1, 2, 3};
         int[] v2 = (int[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals(1, v2[0]);
@@ -341,7 +344,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testObjectArrays() throws Exception {
-        Object[] v1 = { "1", "2", "3" };
+        Object[] v1 = {"1", "2", "3"};
         Object[] v2 = (Object[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals("1", v2[0]);
@@ -660,6 +663,13 @@ public class ObjectSerializationTests {
     @Test
     public void testUid() {
         Uid v1 = new Uid("test");
+        Uid v2 = (Uid) cloneObject(v1);
+        assertEquals(v1, v2);
+    }
+
+    @Test
+    public void testUidWithNameHint() {
+        Uid v1 = new Uid("test",new Name("TestNameHint"));
         Uid v2 = (Uid) cloneObject(v1);
         assertEquals(v1, v2);
     }
@@ -1106,9 +1116,9 @@ public class ObjectSerializationTests {
 
     @Test
     public void testGuardedByteArray() {
-        GuardedByteArray v1 = new GuardedByteArray(new byte[] { 0x00, 0x01, 0x02, 0x03 });
+        GuardedByteArray v1 = new GuardedByteArray(new byte[]{0x00, 0x01, 0x02, 0x03});
         GuardedByteArray v2 = (GuardedByteArray) cloneObject(v1);
-        assertTrue(Arrays.equals(new byte[] { 0x00, 0x01, 0x02, 0x03 }, decryptToBytes(v2)));
+        assertTrue(Arrays.equals(new byte[]{0x00, 0x01, 0x02, 0x03}, decryptToBytes(v2)));
     }
 
     @Test
@@ -1118,6 +1128,20 @@ public class ObjectSerializationTests {
         assertEquals(v1, v2);
         assertTrue(v2.getObjectClass().is("myclass"));
         assertEquals("myuid", v2.getUid().getUidValue());
+    }
+
+    @Test
+    public void testAttributeDeltaAddRemove() {
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A") , Collections.emptyList());
+        AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
+        assertEquals(v1, v2);
+    }
+
+    @Test
+    public void testAttributeDeltaReplace() {
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A"));
+        AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
+        assertEquals(v1, v2);
     }
 
     /**

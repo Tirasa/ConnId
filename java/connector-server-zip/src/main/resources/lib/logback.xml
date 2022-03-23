@@ -25,8 +25,8 @@
 -->
 <configuration>
 
-    <property name="SERVER_LEVEL" value="INFO" />
-    <property name="LOGS_FOLDER" value="${CONNECTOR_SERVER_HOME}/logs" />
+    <property name="SERVER_LEVEL" value="INFO"/>
+    <property name="LOGS_FOLDER" value="${CONNECTOR_SERVER_HOME}/logs"/>
     <appender name="SERVER-FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/ConnectorServer.log</file>
         <append>true</append>
@@ -34,7 +34,7 @@
             <fileNamePattern>logs/ConnectorServer-%d{yyyyMMdd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+            <pattern>%date [%thread] %-5level %logger{35} - %msg %n</pattern>
         </encoder>
     </appender>
     <appender name="CONNECTOR-FILE" class="ch.qos.logback.core.FileAppender">
@@ -51,12 +51,12 @@
             <maxFileSize>10MB</maxFileSize>
         </triggeringPolicy-->
         <encoder>
-            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n</pattern>
+            <pattern>%date [%thread] %-5level %logger{35} - %msg %n</pattern>
         </encoder>
     </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+            <pattern>%date [%thread] %-5level %logger{35} - %msg %n</pattern>
         </layout>
     </appender>
 
@@ -67,46 +67,46 @@
     <logger name="org.identityconnectors.connectors" level="INFO" additivity="false">
         <appender-ref ref="CONNECTOR-FILE"/>
     </logger>
-    <logger name="org.identityconnectors.framework" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER-FILE"/>
-    </logger>
-    <logger name="org.identityconnectors.common" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER-FILE"/>
-    </logger>
-    <logger name="org.identityconnectors.contract" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER-FILE"/>
-    </logger>
-    <logger name="org.identityconnectors.test" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER-FILE"/>
-    </logger>
-    <logger name="org.identityconnectors.common" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER-FILE"/>
-    </logger>
-    <logger name="org.identityconnectors.framework" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER-FILE"/>
-    </logger>
-    <logger name="org.identityconnectors.contract" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SERVER-FILE"/>
-    </logger>
-    <logger name="org.identityconnectors.test" level="INFO" additivity="false">
+
+    <logger name="org.identityconnectors.framework" level="${SERVER_LEVEL}" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="SERVER-FILE"/>
     </logger>
 
+    <!--SPI Logger to divide low lever operation info in case of server trace because of high verbosity-->
+    <logger name="org.identityconnectors.framework.spi" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SERVER-FILE"/>
+    </logger>
+
+    <!--API Logger to divide low lever operation info in case of server trace because of high verbosity-->
+    <logger name="org.identityconnectors.framework.api" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SERVER-FILE"/>
+    </logger>
+
+    <logger name="org.identityconnectors.common" level="${SERVER_LEVEL}" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SERVER-FILE"/>
+    </logger>
+    <logger name="org.identityconnectors.contract" level="${SERVER_LEVEL}" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SERVER-FILE"/>
+    </logger>
+    <logger name="org.identityconnectors.test" level="${SERVER_LEVEL}" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SERVER-FILE"/>
+    </logger>
     <!-- Legacy connectors -->
     <logger name="org.identityconnectors" level="INFO" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
-  
+
     <root level="debug">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
-    
+
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
 </configuration>

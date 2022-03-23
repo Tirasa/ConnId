@@ -42,6 +42,7 @@ import org.identityconnectors.framework.api.RemoteFrameworkConnectionInfo;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.exceptions.ConnectorIOException;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
+import org.identityconnectors.framework.impl.api.remote.messages.ErrorResponse;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloRequest;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloResponse;
 
@@ -86,7 +87,10 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
             connection.writeObject(CurrentLocale.get());
             connection.writeObject(frameworkConnectionInfo.getKey());
             connection.writeObject(new HelloRequest(HelloRequest.CONNECTOR_INFO));
-            response = (HelloResponse) connection.readObject();
+            response = fetchHelloResponse(connection);
+        } catch (Throwable e) {
+
+            throw ConnectorException.wrap(e);
         } finally {
             connection.close();
         }
@@ -138,6 +142,28 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
                     notifyListeners(
                             new ConnectorEvent(ConnectorEvent.CONNECTOR_REGISTERED, newCi.getConnectorKey()));
                 });
+    }
+
+    private HelloResponse fetchHelloResponse(RemoteFrameworkConnection connection) throws Throwable {
+
+        Object response = connection.readObject();
+        if (response instanceof HelloResponse) {
+
+            return (HelloResponse) response;
+        } else if (response instanceof ErrorResponse) {
+
+            ErrorResponse error = (ErrorResponse) response;
+            if (error.getException() != null) {
+                throw error.getException();
+            } else {
+
+                throw new ConnectorException("Received an invalid Error response object, exception parameter missing");
+            }
+        } else {
+
+            throw new ConnectorException("Received unknown response object type: " + response.getClass().getCanonicalName());
+        }
+
     }
 
     /**

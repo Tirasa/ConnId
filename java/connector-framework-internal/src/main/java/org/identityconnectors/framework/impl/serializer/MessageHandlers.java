@@ -32,6 +32,7 @@ import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.remote.messages.EchoMessage;
+import org.identityconnectors.framework.impl.api.remote.messages.ErrorResponse;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloRequest;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloResponse;
 import org.identityconnectors.framework.impl.api.remote.messages.OperationRequest;
@@ -194,6 +195,20 @@ class MessageHandlers {
                 final EchoMessage val = (EchoMessage) object;
                 encoder.writeObjectField("value", val.getObject(), false);
                 encoder.writeObjectField("objectXml", val.getXml(), true);
+            }
+        });
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(ErrorResponse.class, "ErrorResponse") {
+
+            public Object deserialize(final ObjectDecoder decoder) {
+                final Throwable exception =
+                        (Throwable) decoder.readObjectField("exception", null, null);
+                return new ErrorResponse(exception);
+            }
+
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final ErrorResponse val = (ErrorResponse) object;
+                encoder.writeObjectField("exception", val.getException(), false);
             }
         });
     }

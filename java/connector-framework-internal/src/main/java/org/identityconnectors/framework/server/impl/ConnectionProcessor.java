@@ -56,6 +56,7 @@ import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.remote.RemoteFrameworkConnection;
 import org.identityconnectors.framework.impl.api.remote.messages.EchoMessage;
+import org.identityconnectors.framework.impl.api.remote.messages.ErrorResponse;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloRequest;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloResponse;
 import org.identityconnectors.framework.impl.api.remote.messages.OperationRequest;
@@ -123,13 +124,17 @@ public class ConnectionProcessor implements Runnable {
                 }
             } finally {
                 try {
+
+                    LOG.ok("Attempting to close the current connection chanel");
                     connection.close();
                 } catch (Exception e) {
-                    LOG.error(e, null);
+
+                    LOG.error(e, "Exception occurred during connection termination: {0}", e.getLocalizedMessage());
                 }
             }
         } catch (Throwable e) {
-            LOG.error(e, null);
+
+            LOG.error(e, "The following exception occurred during the processing of the current request: {0}", e.getLocalizedMessage());
         }
     }
 
@@ -139,11 +144,16 @@ public class ConnectionProcessor implements Runnable {
             locale = (Locale) connection.readObject();
         } catch (RuntimeException e) {
             if (e.getCause() instanceof EOFException) {
+
+                LOG.warn("Handled exception occurred while processing request: {0}", e.getLocalizedMessage());
+
                 return false;
             }
             throw e;
         }
         CurrentLocale.set(locale);
+
+        LOG.ok("The request locale: {0}", locale.toString());
         GuardedString key = (GuardedString) connection.readObject();
 
         boolean authorized;
@@ -154,11 +164,28 @@ public class ConnectionProcessor implements Runnable {
         }
         InvalidCredentialException authException = null;
         if (!authorized) {
-            authException = new InvalidCredentialException("Remote framework key is invalid");
+            authException = new InvalidCredentialException("Remote framework key is invalid.");
 
+            LOG.ok("Un-authorized, remote framework key is invalid");
+        } else {
+
+            LOG.ok("Request authorized, remote framework key is valid");
         }
-        Object requestObject = connection.readObject();
+
+        Object requestObject;
+        try {
+            requestObject = connection.readObject();
+        } catch (Exception e) {
+
+                LOG.error(e,"An exception was thrown from initial connection object read: {0}",e.getLocalizedMessage());
+            ErrorResponse errorMessage = new ErrorResponse(e);
+            connection.writeObject(errorMessage);
+            throw e;
+        }
+
         if (requestObject instanceof HelloRequest) {
+
+            LOG.ok("Processing HelloRequest");
             if (authException != null) {
                 HelloResponse response = new HelloResponse(authException, null, null, null);
                 connection.writeObject(response);
@@ -167,6 +194,8 @@ public class ConnectionProcessor implements Runnable {
                 connection.writeObject(response);
             }
         } else if (requestObject instanceof OperationRequest) {
+
+            LOG.ok("Processing operation request");
             if (authException != null) {
                 OperationResponsePart part = new OperationResponsePart(authException, null);
                 connection.writeObject(part);
@@ -176,6 +205,8 @@ public class ConnectionProcessor implements Runnable {
                 connection.writeObject(part);
             }
         } else if (requestObject instanceof EchoMessage) {
+
+            LOG.ok("Processing EchoMessage");
             if (authException != null) {
                 // echo message probably doesn't need auth, but
                 // it couldn't hurt - actually it does for test connection
@@ -214,14 +245,24 @@ public class ConnectionProcessor implements Runnable {
             serverInfo = new HashMap<String, Object>(1);
             if (request.isServerInfo()) {
                 serverInfo.put(HelloResponse.SERVER_START_TIME, connectorServer.getStartTime());
+
+                LOG.ok("Appended Server information to the Hello Request response");
             }
             if (request.isConnectorKeys()) {
                 ConnectorInfoManager manager = getConnectorInfoManager();
                 List<ConnectorInfo> localInfos = manager.getConnectorInfos();
                 connectorKeys = new ArrayList<ConnectorKey>();
                 for (ConnectorInfo localInfo : localInfos) {
-                    connectorKeys.add(localInfo.getConnectorKey());
+                    ConnectorKey connectorKey = localInfo.getConnectorKey();
+                    connectorKeys.add(connectorKey);
+
+                    LOG.ok("Appended connector name {0}, connector version {1} to server hello response", connectorKey.getBundleName(), connectorKey.getBundleVersion());
                 }
+                if (!connectorKeys.isEmpty()) {
+
+                    LOG.ok("Appended Connector Keys information to the Hello Request response");
+                }
+
                 if (request.isConnectorInfo()) {
                     connectorInfo = new ArrayList<RemoteConnectorInfoImpl>();
                     for (ConnectorInfo localInfo : localInfos) {
@@ -229,9 +270,14 @@ public class ConnectionProcessor implements Runnable {
                         RemoteConnectorInfoImpl remoteInfo = localInfoImpl.toRemote();
                         connectorInfo.add(remoteInfo);
                     }
+                    if (!connectorInfo.isEmpty()) {
+
+                        LOG.ok("Finished adding Connector information to the Hello Request response.");
+                    }
                 }
             }
         } catch (Exception e) {
+            LOG.error(e, "Exception occurred during the processing of the HelloRequest: {0} ", e.getLocalizedMessage());
             exception = e;
             connectorInfo = null;
         }
@@ -239,21 +285,22 @@ public class ConnectionProcessor implements Runnable {
     }
 
     private Method getOperationMethod(OperationRequest request) {
-        Method[] methods = request.getOperation().getDeclaredMethods();
+        Class<? extends APIOperation> operation = request.getOperation();
+        Method[] methods = operation.getDeclaredMethods();
         Method found = null;
         for (Method m : methods) {
             if (m.getName().equalsIgnoreCase(request.getOperationMethodName())) {
                 if (found != null) {
                     throw new ConnectorException("APIOperations are expected "
                             + "to have exactly one method of a given name: "
-                            + request.getOperation());
+                            + operation);
                 }
                 found = m;
             }
         }
         if (found == null) {
             throw new ConnectorException("APIOperations are expected "
-                    + "to have exactly one method of a given name: " + request.getOperation());
+                    + "to have exactly one method of a given name: " + operation);
         }
         return found;
     }
@@ -268,7 +315,19 @@ public class ConnectionProcessor implements Runnable {
             List<Object> arguments = request.getArguments();
             List<Object> argumentsAndStreamHandlers =
                     populateStreamHandlers(method.getParameterTypes(), arguments);
+
             try {
+
+                LOG.ok("Request of the API Operation: {0}, invoking the API Method: {1}",
+                        operation.getClass().getSimpleName(), method.getName());
+
+                if (LOG.isOk()) {
+                    if (arguments != null && !arguments.isEmpty()) {
+                    } else {
+                        LOG.ok("Request being processed does not contain any arguments");
+                    }
+                }
+
                 result = method.invoke(operation, argumentsAndStreamHandlers.toArray());
             } catch (InvocationTargetException e) {
                 throw e.getCause();
@@ -276,6 +335,7 @@ public class ConnectionProcessor implements Runnable {
             boolean anyStreams = argumentsAndStreamHandlers.size() > arguments.size();
             if (anyStreams) {
                 try {
+                    LOG.ok("Writing blank operation response");
                     connection.writeObject(new OperationResponseEnd());
                 } catch (RuntimeException e) {
                     if (e.getCause() instanceof IOException) {
@@ -289,10 +349,11 @@ public class ConnectionProcessor implements Runnable {
             // at this point the stream is broken - just give up
             throw w.getIOException();
         } catch (Throwable e) {
-            LOG.error(e, null);
+            LOG.error(e, "Exception occurred during the processing of an operation request: {0}", e.getLocalizedMessage());
             exception = e;
             result = null;
         }
+        LOG.ok("Writing the processed request result out as operation response");
         return new OperationResponsePart(exception, result);
     }
 
@@ -319,6 +380,9 @@ public class ConnectionProcessor implements Runnable {
     private APIOperation getAPIOperation(OperationRequest request) throws Exception {
         ConnectorInfoManager manager = getConnectorInfoManager();
         ConnectorInfo info = manager.findConnectorInfo(request.getConnectorKey());
+        Class<? extends APIOperation> requestedOperation = request.getOperation();
+
+        LOG.ok("About to get the operation {0}", requestedOperation.getSimpleName());
         if (info == null) {
             throw new ConnectorException("No such connector: " + request.getConnectorKey() + " ");
         }
@@ -327,7 +391,7 @@ public class ConnectionProcessor implements Runnable {
         ConnectorFacade facade =
                 ConnectorFacadeFactory.getManagedInstance().newInstance(info, connectorFacadeKey);
 
-        return facade.getOperation(request.getOperation());
+        return facade.getOperation(requestedOperation);
     }
 
     private static class BrokenConnectionException extends ConnectorException {

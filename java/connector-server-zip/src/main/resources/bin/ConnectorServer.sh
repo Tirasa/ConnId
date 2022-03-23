@@ -34,7 +34,8 @@ lib/framework/groovy.jar:\
 lib/framework/slf4j-api.jar:\
 lib/framework/slf4j-logging.jar:\
 lib/framework/logback-core.jar:\
-lib/framework/logback-classic.jar
+lib/framework/logback-classic.jar:\
+lib/framework/jul-to-slf4j.jar
 
 java -Xmx500m -Dlogback.configurationFile=lib/logback.xml -classpath "$CLASSPATH" \
  org.identityconnectors.framework.server.Main "$@"

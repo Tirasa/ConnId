@@ -54,6 +54,8 @@ import org.identityconnectors.framework.common.exceptions.RetryableException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
+import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
 import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
@@ -73,6 +75,7 @@ import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
 import org.identityconnectors.framework.common.objects.SyncDeltaType;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 import org.identityconnectors.framework.impl.api.remote.RemoteWrappedException;
 
 /**
@@ -306,7 +309,7 @@ class CommonObjectHandlers {
                 String message =
                         decoder.readStringField(RemoteWrappedException.FIELD_MESSAGE, null);
                 RemoteWrappedException cause =
-                        (RemoteWrappedException) decoder.readObjectField("RemoteWrappedException", 
+                        (RemoteWrappedException) decoder.readObjectField("RemoteWrappedException",
                                 RemoteWrappedException.class, null);
                 String stackTrace =
                         decoder.readStringField(RemoteWrappedException.FIELD_STACK_TRACE, null);
@@ -591,13 +594,16 @@ class CommonObjectHandlers {
         });
 
         HANDLERS.add(new AbstractObjectSerializationHandler(Uid.class, "Uid") {
-            
+
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final String val = decoder.readStringField("uid", null);
                 final String revision = decoder.readStringField("revision", null);
-                if (null == revision) {
+                final Name nameHint = (Name) decoder.readObjectField("nameHint", Name.class, null);
+                if (null == revision && null == nameHint) {
                     return new Uid(val);
+                } else if (null == revision && null != nameHint) {
+                    return new Uid(val, nameHint);
                 } else {
                     return new Uid(val, revision);
                 }
@@ -710,6 +716,7 @@ class CommonObjectHandlers {
             }
         });
 
+
         HANDLERS.add(new AbstractObjectSerializationHandler(OperationOptionInfo.class,
                 "OperationOptionInfo") {
 
@@ -772,6 +779,39 @@ class CommonObjectHandlers {
                 encoder.writeObjectField("ObjectClass", val.getObjectClass(), true);
                 encoder.writeObjectField("Uid", val.getUid(), true);
                 encoder.writeObjectField("ConnectorObject", val.getObject(), true);
+            }
+        });
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(AttributeDelta.class, "AttributeDelta") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final AttributeDeltaBuilder builder = new AttributeDeltaBuilder();
+                builder.setName((String) decoder.readObjectField("Name",
+                        String.class, null));
+
+                List addList = (List) decoder.readObjectField("ValuesToAdd", List.class, null);
+                List removeList = (List) decoder.readObjectField("ValuesToRemove", List.class, null);
+                List replaceList =(List) decoder.readObjectField("ValuesToReplace", List.class, null);
+
+                if ((addList != null || removeList != null)) {
+
+                    builder.addValueToAdd(addList);
+                    builder.addValueToRemove(removeList);
+                } else {
+
+                    builder.addValueToReplace(replaceList);
+                }
+                return builder.build();
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final AttributeDelta val = (AttributeDelta) object;
+                encoder.writeObjectField("Name", val.getName(), true);
+                encoder.writeObjectField("ValuesToAdd", val.getValuesToAdd(), true);
+                encoder.writeObjectField("ValuesToRemove", val.getValuesToRemove(), true);
+                encoder.writeObjectField("ValuesToReplace", val.getValuesToReplace(), true);
             }
         });
 
