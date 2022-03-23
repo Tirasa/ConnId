@@ -148,7 +148,7 @@ public abstract class ConnectorServer {
      *
      * @param max
      *            The max connections to queue.
-     */ // TODO not used amongst others
+     */
     public void setMaxConnections(final int max) {
         assertNotStarted();
         maxConnections = max;

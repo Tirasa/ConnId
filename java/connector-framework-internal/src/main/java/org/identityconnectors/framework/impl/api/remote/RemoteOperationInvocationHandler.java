@@ -36,7 +36,13 @@ import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.api.ObjectStreamHandler;
 import org.identityconnectors.framework.impl.api.StreamHandlerUtil;
-import org.identityconnectors.framework.impl.api.remote.messages.*;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationRequest;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationRequestMoreData;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationRequestStopData;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationResponseEnd;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePart;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePause;
+import org.identityconnectors.framework.impl.api.remote.messages.ErrorResponse;
 
 /**
  * Invocation handler for all of our operations.

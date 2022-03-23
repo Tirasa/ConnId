@@ -55,7 +55,15 @@ import org.identityconnectors.framework.impl.api.StreamHandlerUtil;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
 import org.identityconnectors.framework.impl.api.remote.RemoteFrameworkConnection;
-import org.identityconnectors.framework.impl.api.remote.messages.*;
+import org.identityconnectors.framework.impl.api.remote.messages.EchoMessage;
+import org.identityconnectors.framework.impl.api.remote.messages.ErrorResponse;
+import org.identityconnectors.framework.impl.api.remote.messages.HelloRequest;
+import org.identityconnectors.framework.impl.api.remote.messages.HelloResponse;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationRequest;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationRequestMoreData;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationResponseEnd;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePart;
+import org.identityconnectors.framework.impl.api.remote.messages.OperationResponsePause;
 import org.identityconnectors.framework.server.ConnectorServer;
 
 public class ConnectionProcessor implements Runnable {

@@ -52,7 +52,29 @@ import org.identityconnectors.framework.common.exceptions.PreconditionFailedExce
 import org.identityconnectors.framework.common.exceptions.PreconditionRequiredException;
 import org.identityconnectors.framework.common.exceptions.RetryableException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
+import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
+import org.identityconnectors.framework.common.objects.AttributeInfo;
+import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
+import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
+import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.ObjectClassInfo;
+import org.identityconnectors.framework.common.objects.OperationOptionInfo;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.QualifiedUid;
+import org.identityconnectors.framework.common.objects.Schema;
+import org.identityconnectors.framework.common.objects.ScriptContext;
+import org.identityconnectors.framework.common.objects.SearchResult;
+import org.identityconnectors.framework.common.objects.SortKey;
+import org.identityconnectors.framework.common.objects.SyncDelta;
+import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.SyncDeltaType;
+import org.identityconnectors.framework.common.objects.SyncToken;
+import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 import org.identityconnectors.framework.impl.api.remote.RemoteWrappedException;
 
@@ -73,7 +95,8 @@ class CommonObjectHandlers {
         @Override
         public final Object deserialize(final ObjectDecoder decoder) {
             final String name = decoder.readStringField("name", null);
-            @SuppressWarnings("unchecked") final List<Object> value = (List) decoder.readObjectField("Values", List.class, null);
+            @SuppressWarnings("unchecked")
+            final List<Object> value = (List) decoder.readObjectField("Values", List.class, null);
             return createAttribute(name, value);
         }
 
@@ -455,7 +478,8 @@ class CommonObjectHandlers {
                 final boolean container = decoder.readBooleanField("container", false);
                 final boolean auxiliary = decoder.readBooleanField("auxiliary", false);
 
-                @SuppressWarnings("unchecked") final Set<AttributeInfo> attrInfo =
+                @SuppressWarnings("unchecked")
+                final Set<AttributeInfo> attrInfo =
                         (Set) decoder.readObjectField("AttributeInfos", Set.class, null);
 
                 return new ObjectClassInfo(type, attrInfo, container, auxiliary);
@@ -476,23 +500,27 @@ class CommonObjectHandlers {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
-                @SuppressWarnings("unchecked") final Set<ObjectClassInfo> objectClasses =
+                @SuppressWarnings("unchecked")
+                final Set<ObjectClassInfo> objectClasses =
                         (Set) decoder.readObjectField("ObjectClassInfos", Set.class, null);
                 final Map<String, ObjectClassInfo> objectClassesByName =
                         new HashMap<String, ObjectClassInfo>();
                 for (ObjectClassInfo info : objectClasses) {
                     objectClassesByName.put(info.getType(), info);
                 }
-                @SuppressWarnings("unchecked") final Set<OperationOptionInfo> operationOptions =
+                @SuppressWarnings("unchecked")
+                final Set<OperationOptionInfo> operationOptions =
                         (Set) decoder.readObjectField("OperationOptionInfos", Set.class, null);
                 final Map<String, OperationOptionInfo> optionsByName =
                         new HashMap<String, OperationOptionInfo>();
                 for (OperationOptionInfo info : operationOptions) {
                     optionsByName.put(info.getName(), info);
                 }
-                @SuppressWarnings("unchecked") final Map<Class<? extends APIOperation>, Set<String>> objectClassNamesByOperation =
+                @SuppressWarnings("unchecked")
+                final Map<Class<? extends APIOperation>, Set<String>> objectClassNamesByOperation =
                         (Map) decoder.readObjectField("objectClassesByOperation", null, null);
-                @SuppressWarnings("unchecked") final Map<Class<? extends APIOperation>, Set<String>> optionsNamesByOperation =
+                @SuppressWarnings("unchecked")
+                final Map<Class<? extends APIOperation>, Set<String>> optionsNamesByOperation =
                         (Map) decoder.readObjectField("optionsByOperation", null, null);
                 final Map<Class<? extends APIOperation>, Set<ObjectClassInfo>> objectClassesByOperation =
                         new HashMap<Class<? extends APIOperation>, Set<ObjectClassInfo>>();
@@ -614,7 +642,8 @@ class CommonObjectHandlers {
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final String scriptLanguage = decoder.readStringField("scriptLanguage", null);
-                @SuppressWarnings("unchecked") final Map<String, Object> arguments =
+                @SuppressWarnings("unchecked")
+                final Map<String, Object> arguments =
                         (Map<String, Object>) decoder
                                 .readObjectField("scriptArguments", null, null);
                 // don't used string field - don't want it to be an attribute

@@ -128,12 +128,10 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-    <!-- JUL to SLF4J bridge-->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
       <scope>provided</scope>
-      <version>${slf4j.version}</version>
     </dependency>
 
   </dependencies>
