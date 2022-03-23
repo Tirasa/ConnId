@@ -663,57 +663,59 @@ class CommonObjectHandlers {
 
         HANDLERS.add(
 
-                new AbstractObjectSerializationHandler(OperationOptions.class, "OperationOptions") {
+        new AbstractObjectSerializationHandler(OperationOptions.class, "OperationOptions") {
 
-                    @Override
-                    public Object deserialize(final ObjectDecoder decoder) {
-                        @SuppressWarnings("unchecked") final Map<String, Object> options =
-                                (Map<String, Object>) decoder.readObjectField("options", null, null);
-                        return new OperationOptions(options);
-                    }
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                @SuppressWarnings("unchecked")
+                final Map<String, Object> options =
+                        (Map<String, Object>) decoder.readObjectField("options", null, null);
+                return new OperationOptions(options);
+            }
 
-                    @Override
-                    public void serialize(final Object object, final ObjectEncoder encoder) {
-                        final OperationOptions val = (OperationOptions) object;
-                        encoder.writeObjectField("options", val.getOptions(), false);
-                    }
-                });
-
-        HANDLERS.add(
-
-                new AbstractObjectSerializationHandler(SearchResult.class, "SearchResult") {
-
-                    @Override
-                    public Object deserialize(final ObjectDecoder decoder) {
-                        return new SearchResult(decoder.readStringField("pagedResultsCookie", null),
-                                decoder.readIntField("remainingPagedResults", -1));
-                    }
-
-                    @Override
-                    public void serialize(final Object object, final ObjectEncoder encoder) {
-                        final SearchResult val = (SearchResult) object;
-                        encoder.writeStringField("pagedResultsCookie", val.getPagedResultsCookie());
-                        encoder.writeIntField("remainingPagedResults", val.getRemainingPagedResults());
-                    }
-                });
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final OperationOptions val = (OperationOptions) object;
+                encoder.writeObjectField("options", val.getOptions(), false);
+            }
+        });
 
         HANDLERS.add(
 
-                new AbstractObjectSerializationHandler(SortKey.class, "SortKey") {
+        new AbstractObjectSerializationHandler(SearchResult.class, "SearchResult") {
 
-                    @Override
-                    public Object deserialize(final ObjectDecoder decoder) {
-                        return new SortKey(decoder.readStringField("field", null), decoder
-                                .readBooleanField("isAscending", true));
-                    }
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                return new SearchResult(decoder.readStringField("pagedResultsCookie", null),
+                        decoder.readIntField("remainingPagedResults", -1));
+            }
 
-                    @Override
-                    public void serialize(final Object object, final ObjectEncoder encoder) {
-                        final SortKey val = (SortKey) object;
-                        encoder.writeStringField("field", val.getField());
-                        encoder.writeBooleanField("isAscending", val.isAscendingOrder());
-                    }
-                });
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final SearchResult val = (SearchResult) object;
+                encoder.writeStringField("pagedResultsCookie", val.getPagedResultsCookie());
+                encoder.writeIntField("remainingPagedResults", val.getRemainingPagedResults());
+            }
+        });
+
+        HANDLERS.add(
+
+        new AbstractObjectSerializationHandler(SortKey.class, "SortKey") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                return new SortKey(decoder.readStringField("field", null), decoder
+                        .readBooleanField("isAscending", true));
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final SortKey val = (SortKey) object;
+                encoder.writeStringField("field", val.getField());
+                encoder.writeBooleanField("isAscending", val.isAscendingOrder());
+            }
+        });
+
 
         HANDLERS.add(new AbstractObjectSerializationHandler(OperationOptionInfo.class,
                 "OperationOptionInfo") {
