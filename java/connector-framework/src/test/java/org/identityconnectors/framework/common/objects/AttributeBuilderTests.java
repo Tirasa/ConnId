@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
  * Portions Copyrighted 2018 ConnId
+ * Portions Copyrighted 2022 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -168,4 +169,18 @@ public class AttributeBuilderTests {
 
         AttributeBuilder.build("map", map4);
     }
+
+    // BASE-78
+    @Test
+    public void nullPasswordAttribute() {
+        AttributeBuilder bld = new AttributeBuilder();
+        bld.setName(OperationalAttributes.PASSWORD_NAME);
+        Attribute attr = bld.build();
+        assertEquals(OperationalAttributes.PASSWORD_NAME, attr.getName());
+        assertNull(attr.getValue());
+        assertNull(AttributeBuilder.build(OperationalAttributes.PASSWORD_NAME).getValue());
+    }
+
+    // Note: test for password attribute with actual GuardedString value has to be in GuardedStringTests
+    // GuardedString.setEncryptor() method is package-private, therefore it cannot be initialized in this class.
 }

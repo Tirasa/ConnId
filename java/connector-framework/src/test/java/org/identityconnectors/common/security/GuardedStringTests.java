@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2018 ConnId
+ * Portions Copyrighted 2022 Evolveum
  */
 package org.identityconnectors.common.security;
 
@@ -28,6 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.OperationalAttributes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -146,5 +150,19 @@ public class GuardedStringTests {
             buf.append(chars);
         });
         return buf.toString();
+    }
+
+    // This test must be here, even though it would be better to have it in AttributeBuilderTests
+    // GuardedString.setEncryptor() method is package-private, therefore it cannot be initialized in AttributeBuilderTests.
+    @Test
+    public void passwordAttribute() {
+        AttributeBuilder bld = new AttributeBuilder();
+        bld.setName(OperationalAttributes.PASSWORD_NAME);
+        bld.addValue(new GuardedString("foobar".toCharArray()));
+        Attribute attr = bld.build();
+        assertEquals(OperationalAttributes.PASSWORD_NAME, attr.getName());
+        assertEquals(1, attr.getValue().size());
+        assertTrue(attr.getValue().get(0) instanceof GuardedString);
+        assertEquals("foobar", decryptToString((GuardedString)attr.getValue().get(0)));
     }
 }
