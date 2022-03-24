@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2022 ConnId
  */
 package org.identityconnectors.framework.api;
 
@@ -51,7 +52,7 @@ public abstract class ConnectorFacadeFactory {
         if (instance == null) {
             try {
                 final Class<?> clazz = Class.forName(IMPL_NAME);
-                final Object object = clazz.newInstance();
+                final Object object = clazz.getDeclaredConstructor().newInstance();
                 instance = ConnectorFacadeFactory.class.cast(object);
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);
@@ -69,7 +70,7 @@ public abstract class ConnectorFacadeFactory {
         if (managedInstance == null) {
             try {
                 final Class<?> clazz = Class.forName(IMPL_NAME_MANAGED);
-                final Object object = clazz.newInstance();
+                final Object object = clazz.getDeclaredConstructor().newInstance();
                 managedInstance = ConnectorFacadeFactory.class.cast(object);
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);

@@ -189,7 +189,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                     IOUtil.quietClose(stream2);
                 }
             }
-            final TreeMap<String, URL> libURLs = new TreeMap<String, URL>();
+            final TreeMap<String, URL> libURLs = new TreeMap<>();
             try {
                 stream = new JarInputStream(url.openStream());
                 // only parse the manifest for top-level bundles
@@ -201,7 +201,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                     info.setManifest(parser.parse());
                 }
 
-                JarEntry entry = null;
+                JarEntry entry;
                 while ((entry = stream.getNextJarEntry()) != null) {
                     final String name = entry.getName();
                     info.getImmediateBundleContents().add(name);
@@ -328,7 +328,8 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
         try {
             final Class<? extends Connector> connectorClass = localInfo.getConnectorClass();
             final APIConfigurationImpl rv = new APIConfigurationImpl();
-            final Configuration config = localInfo.getConnectorConfigurationClass().newInstance();
+            final Configuration config = 
+                    localInfo.getConnectorConfigurationClass().getDeclaredConstructor().newInstance();
             final boolean pooling = PoolableConnector.class.isAssignableFrom(connectorClass);
             rv.setConnectorPoolingSupported(pooling);
             rv.setConfigurationProperties(JavaClassProperties.createConfigurationProperties(config));

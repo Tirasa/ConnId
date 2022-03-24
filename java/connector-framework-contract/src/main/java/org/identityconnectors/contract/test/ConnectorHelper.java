@@ -101,7 +101,7 @@ public class ConnectorHelper {
         try {
             String customDataProvider = System.getProperty(JVM_ARG_DATA_PROVIDER);
             if (customDataProvider != null) {
-                Class<?> dpClass = null;
+                Class<?> dpClass;
                 dpClass = Class.forName(customDataProvider);
                 if (!DataProvider.class.isAssignableFrom(dpClass)) {
                     /*
@@ -111,10 +111,10 @@ public class ConnectorHelper {
                     throw new Exception("Class " + customDataProvider + " is not of type "
                             + DataProvider.class.getName());
                 }
-                dp = (DataProvider) dpClass.newInstance();
+                dp = (DataProvider) dpClass.getDeclaredConstructor().newInstance();
             } else {
                 LOG.info("DataProvider class not specified, using default ''" + DEFAULT_DATA_PROVIDER + "''.");
-                dp = (DataProvider) DEFAULT_DATA_PROVIDER.newInstance();
+                dp = (DataProvider) DEFAULT_DATA_PROVIDER.getDeclaredConstructor().newInstance();
             }
         } catch (Exception ex) {
             throw ContractException.wrap(ex);

@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2022 ConnId
  */
 package org.identityconnectors.common.logging;
 
@@ -144,7 +145,7 @@ public final class Log {
                 throw new IllegalArgumentException();
             }
             // attempt to get an instance..
-            final LogSpi logImpl = (LogSpi) getSpiClass().newInstance();
+            final LogSpi logImpl = (LogSpi) getSpiClass().getDeclaredConstructor().newInstance();
             return new Log(clazz, logImpl);
         } catch (RuntimeException e) {
             throw e;

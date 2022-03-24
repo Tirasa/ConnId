@@ -122,18 +122,16 @@ public class ConnectorPoolManager {
                 Class<? extends Connector> clazz = localConnectorInfo.getConnectorClass();
                 PoolableConnector connector = null;
                 if (PoolableConnector.class.isAssignableFrom(clazz)) {
-
-                    Configuration config = null;
+                    Configuration config;
                     if (null == context) {
-                        config =
-                                JavaClassProperties.createBean(apiConfiguration
-                                        .getConfigurationProperties(), localConnectorInfo
-                                                .getConnectorConfigurationClass());
+                        config = JavaClassProperties.createBean(
+                                apiConfiguration.getConfigurationProperties(),
+                                localConnectorInfo.getConnectorConfigurationClass());
                     } else {
                         config = context.getConfiguration();
                     }
 
-                    connector = (PoolableConnector) clazz.newInstance();
+                    connector = (PoolableConnector) clazz.getDeclaredConstructor().newInstance();
                     connector.init(config);
                     ConnectorLifecycleUtil.setConnectorInstanceName(connector, apiConfiguration.getInstanceName());
                 } else {

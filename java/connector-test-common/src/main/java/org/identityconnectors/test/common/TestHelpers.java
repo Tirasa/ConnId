@@ -191,7 +191,7 @@ public final class TestHelpers {
         if (instance == null) {
             try {
                 Class<?> clazz = Class.forName(IMPL_NAME);
-                Object object = clazz.newInstance();
+                Object object = clazz.getDeclaredConstructor().newInstance();
                 instance = TestHelpersSpi.class.cast(object);
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);
@@ -200,7 +200,7 @@ public final class TestHelpers {
         return instance;
     }
 
-    private static final Map<String, PropertyBag> BAGS = new HashMap<String, PropertyBag>();
+    private static final Map<String, PropertyBag> BAGS = new HashMap<>();
 
     /**
      * Loads Property bag for the specified class. The properties are loaded as
@@ -273,9 +273,9 @@ public final class TestHelpers {
         try {
             Class<?> slurper = Class.forName("groovy.util.ConfigSlurper");
             Class<?> configObject = Class.forName("groovy.util.ConfigObject");
-            Object slurpInstance = null;
+            Object slurpInstance;
             if (StringUtil.isBlank(environment)) {
-                slurpInstance = slurper.newInstance();
+                slurpInstance = slurper.getDeclaredConstructor().newInstance();
             } else {
                 slurpInstance = slurper.getConstructor(String.class).newInstance(environment);
             }

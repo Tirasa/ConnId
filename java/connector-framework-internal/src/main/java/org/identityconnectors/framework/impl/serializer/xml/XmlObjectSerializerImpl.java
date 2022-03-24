@@ -19,17 +19,18 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2022 ConnId
  */
 package org.identityconnectors.framework.impl.serializer.xml;
 
 import java.io.Writer;
-
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.serializer.XmlObjectSerializer;
 
 public class XmlObjectSerializerImpl implements XmlObjectSerializer {
 
     public static final String MULTI_OBJECT_ELEMENT = "MultiObject";
+
     public static final String CONNECTORS_DTD = "connectors.dtd";
 
     private final Writer output;
@@ -42,29 +43,18 @@ public class XmlObjectSerializerImpl implements XmlObjectSerializer {
 
     private boolean documentEnded;
 
-    public XmlObjectSerializerImpl(Writer output, boolean includeHeader, boolean multiObject) {
+    public XmlObjectSerializerImpl(final Writer output, final boolean includeHeader, final boolean multiObject) {
         this.output = output;
         this.includeHeader = includeHeader;
         this.multiObject = multiObject;
     }
 
-    /**
-     * Writes the next object to the stream.
-     *
-     * @param object
-     *            The object to write.
-     * @see org.identityconnectors.framework.common.serializer.ObjectSerializerFactory
-     *      for a list of supported types.
-     * @throws ConnectorException
-     *             if there is more than one object and this is not configured
-     *             for multi-object document.
-     */
     @Override
-    public void writeObject(Object object) {
+    public void writeObject(final Object object) {
         if (documentEnded) {
-            throw new IllegalStateException(
-                    "Attempt to writeObject after the document is already closed");
+            throw new IllegalStateException("Attempt to writeObject after the document is already closed");
         }
+
         StringBuilder buf = new StringBuilder();
         XmlObjectEncoder encoder = new XmlObjectEncoder(buf);
         String elementName = encoder.writeObject(object);
@@ -72,8 +62,7 @@ public class XmlObjectSerializerImpl implements XmlObjectSerializer {
             startDocument(elementName);
         } else {
             if (!multiObject) {
-                throw new IllegalStateException(
-                        "Attempt to write multiple objects on a single-object document");
+                throw new IllegalStateException("Attempt to write multiple objects on a single-object document");
             }
         }
         write(buf.toString());
@@ -90,16 +79,18 @@ public class XmlObjectSerializerImpl implements XmlObjectSerializer {
     }
 
     @Override
-    public void close(boolean closeStream) {
+    public void close(final boolean closeStream) {
         if (!documentEnded) {
             if (!firstObjectWritten) {
                 if (!multiObject) {
-                    throw new IllegalStateException(
-                            "Attempt to write zero objects on a single-object document");
+                    throw new IllegalStateException("Attempt to write zero objects on a single-object document");
                 }
                 startDocument(null);
             }
-            writeEndDocument();
+
+            if (multiObject) {
+                write("</" + MULTI_OBJECT_ELEMENT + ">\n");
+            }
             documentEnded = true;
         }
         if (closeStream) {
@@ -111,35 +102,23 @@ public class XmlObjectSerializerImpl implements XmlObjectSerializer {
         }
     }
 
-    private void startDocument(String firstElement) {
+    private void startDocument(final String firstElement) {
         if (includeHeader) {
+            write("<?xml version='1.0' encoding='UTF-8'?>\n");
+
             String docType = multiObject ? MULTI_OBJECT_ELEMENT : firstElement;
-            String line1 = "<?xml version='1.0' encoding='UTF-8'?>\n";
-            String line2 =
-                    "<!DOCTYPE " + docType + " PUBLIC '" + CONNECTORS_DTD + "' '" + CONNECTORS_DTD
-                            + "'>\n";
-            write(line1);
-            write(line2);
+            write("<!DOCTYPE " + docType + " PUBLIC '" + CONNECTORS_DTD + "' '" + CONNECTORS_DTD + "'>\n");
         }
         if (multiObject) {
-            String line3 = "<" + MULTI_OBJECT_ELEMENT + ">\n";
-            write(line3);
+            write("<" + MULTI_OBJECT_ELEMENT + ">\n");
         }
     }
 
-    private void writeEndDocument() {
-        if (multiObject) {
-            String line1 = "</" + MULTI_OBJECT_ELEMENT + ">\n";
-            write(line1);
-        }
-    }
-
-    private void write(String str) {
+    private void write(final String str) {
         try {
             output.write(str);
         } catch (Exception e) {
             throw ConnectorException.wrap(e);
         }
     }
-
 }

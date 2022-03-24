@@ -30,13 +30,14 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.PlatformLoggingMXBean;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CyclicBarrier;
 import java.util.logging.Handler;
-import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.identityconnectors.common.logging.Log.Level;
@@ -79,27 +80,27 @@ public class JDKLoggerTests {
         JDKLogger logger = new JDKLogger();
         Logger jdkLogger = logger.getJDKLogger(JDKLoggerTests.class.getName());
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.INFO.
-                getName());
+        ManagementFactory.getPlatformMXBean(PlatformLoggingMXBean.class).
+                setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.INFO.getName());
         assertEquals(jdkLogger.getLevel(), java.util.logging.Level.INFO);
         assertTrue(logger.isLoggable(JDKLoggerTests.class, Level.INFO));
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.WARNING.
-                getName());
+        ManagementFactory.getPlatformMXBean(PlatformLoggingMXBean.class).
+                setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.WARNING.getName());
         assertEquals(jdkLogger.getLevel(), java.util.logging.Level.WARNING);
         assertTrue(logger.isLoggable(JDKLoggerTests.class, Level.WARN));
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.INFO.
-                getName());
+        ManagementFactory.getPlatformMXBean(PlatformLoggingMXBean.class).
+                setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.INFO.getName());
         assertEquals(jdkLogger.getLevel(), java.util.logging.Level.INFO);
         assertFalse(logger.isLoggable(JDKLoggerTests.class, Level.OK));
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.OFF.
-                getName());
+        ManagementFactory.getPlatformMXBean(PlatformLoggingMXBean.class).
+                setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.OFF.getName());
         assertFalse(logger.isLoggable(JDKLoggerTests.class, Level.WARN));
 
-        LogManager.getLoggingMXBean().setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.ALL.
-                getName());
+        ManagementFactory.getPlatformMXBean(PlatformLoggingMXBean.class).
+                setLoggerLevel(JDKLoggerTests.class.getName(), java.util.logging.Level.ALL.getName());
         assertTrue(logger.isLoggable(JDKLoggerTests.class, Level.OK));
     }
 

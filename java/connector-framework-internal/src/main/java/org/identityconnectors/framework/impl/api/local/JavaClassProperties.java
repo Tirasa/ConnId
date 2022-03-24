@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2022 ConnId
  */
 package org.identityconnectors.framework.impl.api.local;
 
@@ -101,7 +102,7 @@ public class JavaClassProperties {
             Configuration defaultObject) throws Exception {
         Class<? extends Configuration> config = defaultObject.getClass();
         ConfigurationPropertiesImpl properties = new ConfigurationPropertiesImpl();
-        List<ConfigurationPropertyImpl> temp = new ArrayList<ConfigurationPropertyImpl>();
+        List<ConfigurationPropertyImpl> temp = new ArrayList<>();
         Map<String, PropertyDescriptor> descs = getFilteredProperties(config);
 
         for (PropertyDescriptor desc : descs.values()) {
@@ -170,7 +171,7 @@ public class JavaClassProperties {
 
     private static Set<Class<? extends APIOperation>> translateOperations(
             Class<? extends SPIOperation>[] ops) {
-        Set<Class<? extends APIOperation>> set = new HashSet<Class<? extends APIOperation>>();
+        Set<Class<? extends APIOperation>> set = new HashSet<>();
         for (Class<? extends SPIOperation> spi : ops) {
             set.addAll(FrameworkUtil.spi2apis(spi));
         }
@@ -179,7 +180,7 @@ public class JavaClassProperties {
 
     private static Configuration createBean2(ConfigurationPropertiesImpl properties,
             Class<? extends Configuration> configClass) throws Exception {
-        Configuration rv = configClass.newInstance();
+        Configuration rv = configClass.getDeclaredConstructor().newInstance();
         rv.setConnectorMessages(properties.getParent().getConnectorInfo().getMessages());
         mergeIntoBean2(properties, rv);
         return rv;
@@ -231,10 +232,10 @@ public class JavaClassProperties {
 
     private static Map<String, PropertyDescriptor> getFilteredProperties(
             Class<? extends Configuration> config) throws Exception {
-        Map<String, PropertyDescriptor> rv = new HashMap<String, PropertyDescriptor>();
+        Map<String, PropertyDescriptor> rv = new HashMap<>();
         BeanInfo info = Introspector.getBeanInfo(config);
         PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
-        Set<String> excludes = new TreeSet<String>();
+        Set<String> excludes = new TreeSet<>();
         // exclude connectorMessages since its part of the interface.
         excludes.add("connectorMessages");
 

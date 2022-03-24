@@ -89,7 +89,7 @@ public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
                 connector = poolEntry.getPooledObject();
             } else {
                 // get a new instance of the connector..
-                connector = connectorClazz.newInstance();
+                connector = connectorClazz.getDeclaredConstructor().newInstance();
                 // initialize the connector..
                 connector.init(context.getConfiguration());
                 ConnectorLifecycleUtil.setConnectorInstanceName(connector, context.getInstanceName());

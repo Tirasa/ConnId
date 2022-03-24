@@ -19,33 +19,32 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2022 ConnId
  */
 package org.identityconnectors.framework.common.serializer;
-
 
 /**
  * Interface for writing objects to a stream.
  */
 public interface XmlObjectSerializer {
+
     /**
      * Writes the next object to the stream.
      *
-     * @param object
-     *            The object to write.
+     * @param object The object to write.
      * @see ObjectSerializerFactory for a list of supported types.
      * @throws org.identityconnectors.framework.common.exceptions.ConnectorException
-     *             if there is more than one object and this is not configured
-     *             for multi-object document.
+     * if there is more than one object and this is not configured for multi-object document.
      */
-    public void writeObject(Object object);
+    void writeObject(Object object);
 
     /**
      * Flushes the underlying stream.
      */
-    public void flush();
+    void flush();
 
     /**
      * Adds document end tag and optinally closes the underlying stream
      */
-    public void close(boolean closeUnderlyingStream);
+    void close(boolean closeUnderlyingStream);
 }

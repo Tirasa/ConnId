@@ -83,10 +83,10 @@
   <properties>
     <parent.path>${basedir}</parent.path>
 
-    <groovy.version>3.0.9</groovy.version>
+    <groovy.version>3.0.10</groovy.version>
 
-    <logback.version>1.2.10</logback.version>
-    <slf4j.version>1.7.32</slf4j.version>
+    <logback.version>1.2.11</logback.version>
+    <slf4j.version>1.7.36</slf4j.version>
 
     <junit.version>5.8.2</junit.version>
 
@@ -199,7 +199,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
+          <version>3.10.1</version>
           <configuration>
             <source>${targetJdk}</source>
             <target>${targetJdk}</target>
@@ -213,13 +213,13 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.2.0</version>
+          <version>3.2.2</version>
         </plugin>
         
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.0</version>
         </plugin>
         
         <plugin>
@@ -239,7 +239,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>3.3.2</version>
         </plugin>
         
         <plugin>
@@ -251,13 +251,13 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.3.0</version>
         </plugin>
         
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.2</version>
         </plugin>
 
         <plugin>
@@ -298,7 +298,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.4.1</version>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -319,7 +319,7 @@
       <plugin>
         <groupId>org.gaul</groupId>
         <artifactId>modernizer-maven-plugin</artifactId>
-        <version>2.1.0</version>
+        <version>2.4.0</version>
         <configuration>
           <javaVersion>${targetJdk}</javaVersion>
           <exclusions>
@@ -347,7 +347,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <id>copy-javadoc-legal-files</id>
@@ -499,7 +499,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
+            <version>3.0.1</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>

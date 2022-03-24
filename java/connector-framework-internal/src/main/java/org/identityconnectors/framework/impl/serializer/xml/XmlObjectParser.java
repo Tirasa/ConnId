@@ -19,49 +19,57 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2022 ConnId
  */
 package org.identityconnectors.framework.impl.serializer.xml;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
+import java.util.Optional;
 import java.util.Stack;
-
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
-
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.serializer.XmlObjectResultsHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.helpers.DefaultHandler;
 
 public class XmlObjectParser {
 
-    public static void parse(InputSource inputSource, XmlObjectResultsHandler handler,
-            boolean validate) {
+    private static final SAXParserFactory SAX_PARSER_FACTORY;
+
+    private static final DocumentBuilderFactory DOCUMENT_BUILDER_FACTORY = DocumentBuilderFactory.newInstance();
+
+    static {
         try {
-            MySAXHandler saxHandler = new MySAXHandler(handler, validate);
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-            reader.setFeature("http://xml.org/sax/features/validation", validate);
-            reader.setEntityResolver(saxHandler);
-            reader.setContentHandler(saxHandler);
-            reader.setErrorHandler(saxHandler);
-            reader.parse(inputSource);
+            SAX_PARSER_FACTORY = SAXParserFactory.newInstance();
+            SAX_PARSER_FACTORY.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, Boolean.TRUE);
         } catch (Exception e) {
             throw ConnectorException.wrap(e);
         }
     }
 
-    private static class MySAXHandler implements ContentHandler, EntityResolver, ErrorHandler {
+    public static void parse(
+            final InputSource inputSource, final XmlObjectResultsHandler handler, final boolean validate) {
+
+        try {
+            SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
+            MySAXHandler saxHandler = new MySAXHandler(handler, validate);
+            parser.parse(inputSource, saxHandler);
+        } catch (Exception e) {
+            throw ConnectorException.wrap(e);
+        }
+    }
+
+    private static class MySAXHandler extends DefaultHandler {
+
         /**
          * The document for the current top-level element. with each top-level
          * element, we discard the previous to avoid accumulating memory
@@ -71,7 +79,7 @@ public class XmlObjectParser {
         /**
          * Stack of elements we are creating.
          */
-        private Stack<Element> elementStack = new Stack<Element>();
+        private final Stack<Element> elementStack = new Stack<>();
 
         /**
          * Do we want to validate.
@@ -88,36 +96,25 @@ public class XmlObjectParser {
          */
         private boolean _stillHandling = true;
 
-        public MySAXHandler(XmlObjectResultsHandler handler, boolean validate) {
+        public MySAXHandler(final XmlObjectResultsHandler handler, final boolean validate) {
             this.handler = handler;
             this.validate = validate;
         }
 
-        private Element getCurrentElement() {
-            if (elementStack.size() > 0) {
-                return elementStack.peek();
-            } else {
-                return null;
-            }
+        private Optional<Element> currentElement() {
+            return Optional.ofNullable(elementStack.isEmpty() ? null : elementStack.peek());
         }
 
         @Override
-        public void characters(char[] ch, int start, int length) {
-            Element currentElement = getCurrentElement();
-            if (currentElement != null) {
-                currentElement.appendChild(currentTopLevelElementDocument
-                        .createTextNode(new String(ch, start, length)));
-            }
+        public void characters(final char[] ch, final int start, final int length) {
+            currentElement().ifPresent(e -> e.appendChild(
+                    currentTopLevelElementDocument.createTextNode(new String(ch, start, length))));
         }
 
         @Override
-        public void endDocument() {
-        }
-
-        @Override
-        public void endElement(String namespaceURI, String localName, String qName) {
+        public void endElement(final String namespaceURI, final String localName, final String qName) {
             // we don't push the top-level MULTI_OBJECT_ELEMENT on the stack
-            if (elementStack.size() > 0) {
+            if (!elementStack.isEmpty()) {
                 Element element = elementStack.pop();
                 if (elementStack.isEmpty()) {
                     currentTopLevelElementDocument = null;
@@ -131,102 +128,57 @@ public class XmlObjectParser {
         }
 
         @Override
-        public void endPrefixMapping(String prefix) {
+        public void ignorableWhitespace(final char[] ch, final int start, final int length) {
+            currentElement().ifPresent(e -> e.appendChild(
+                    currentTopLevelElementDocument.createTextNode(new String(ch, start, length))));
         }
 
         @Override
-        public void ignorableWhitespace(char[] ch, int start, int length) {
-            Element currentElement = getCurrentElement();
-            if (currentElement != null) {
-                currentElement.appendChild(currentTopLevelElementDocument
-                        .createTextNode(new String(ch, start, length)));
-            }
-        }
+        public void startElement(
+                final String namespaceURI, final String localName, final String qName, final Attributes atts) {
 
-        @Override
-        public void processingInstruction(String target, String data) {
-        }
+            String name = StringUtil.isBlank(localName) ? qName : localName;
 
-        @Override
-        public void setDocumentLocator(Locator locator) {
-        }
-
-        @Override
-        public void skippedEntity(String name) {
-        }
-
-        @Override
-        public void startDocument() {
-        }
-
-        @Override
-        public void startElement(String namespaceURI, String localName, String qName,
-                Attributes atts) {
             Element element = null;
             if (elementStack.isEmpty()) {
-                if (!XmlObjectSerializerImpl.MULTI_OBJECT_ELEMENT.equals(localName)) {
+                if (!XmlObjectSerializerImpl.MULTI_OBJECT_ELEMENT.equals(name)) {
                     try {
-                        currentTopLevelElementDocument =
-                                DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                                        .newDocument();
+                        currentTopLevelElementDocument = DOCUMENT_BUILDER_FACTORY.newDocumentBuilder().newDocument();
                     } catch (Exception e) {
                         throw ConnectorException.wrap(e);
                     }
-                    element = currentTopLevelElementDocument.createElement(localName);
+                    element = currentTopLevelElementDocument.createElement(name);
                 }
             } else {
-                element = currentTopLevelElementDocument.createElement(localName);
-                getCurrentElement().appendChild(element);
+                element = currentElement().
+                        map(e -> (Element) e.appendChild(currentTopLevelElementDocument.createElement(name))).
+                        orElse(null);
             }
 
             if (element != null) {
                 elementStack.push(element);
                 for (int i = 0; i < atts.getLength(); i++) {
-                    String attrName = atts.getLocalName(i);
-                    String value = atts.getValue(i);
-                    element.setAttribute(attrName, value);
+                    element.setAttribute(atts.getLocalName(i), atts.getValue(i));
                 }
             }
         }
 
         @Override
-        public void startPrefixMapping(String prefix, String uri) {
-        }
-
-        @Override
-        public InputSource resolveEntity(String pubid, String sysid) throws SAXException {
+        public InputSource resolveEntity(final String pubid, final String sysid) throws SAXException {
             if (XmlObjectSerializerImpl.CONNECTORS_DTD.equals(pubid)) {
-                // stupid freakin sax parser. even if validation
-                // is turned off it still takes the same amount of
+                // stupid freakin sax parser. even if validation is turned off it still takes the same amount of
                 // time. need to return an empty dtd to fake it out
                 if (!validate) {
-                    return new InputSource(new StringReader(
-                            "<?xml version='1.0' encoding='UTF-8'?>"));
+                    return new InputSource(new StringReader("<?xml version='1.0' encoding='UTF-8'?>"));
                 }
                 try {
-                    URL resoUrl = XmlObjectParser.class.getResource(pubid);
-                    return new InputSource(resoUrl.openStream());
+                    return new InputSource(XmlObjectParser.class.getResource(pubid).openStream());
                 } catch (IOException e) {
-                    e.printStackTrace();
                     throw new SAXException(e);
                 }
             } else {
                 return null;
             }
-        }
-
-        @Override
-        public void error(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        @Override
-        public void fatalError(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        @Override
-        public void warning(SAXParseException exception) {
         }
     }
 }
