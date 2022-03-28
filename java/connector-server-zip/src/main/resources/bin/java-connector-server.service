@@ -1,0 +1,9 @@
+[Unit]
+Description=Java Connector Server Service
+[Service]
+User=connid-server
+WorkingDirectory=/opt/connid-connector-server/
+ExecStart=/opt/connid-connector-server/./bin/ConnectorServer.sh -run -properties /opt/connid-connector-server/conf/connectorserver.properties
+SuccessExitStatus=143
+[Install]
+WantedBy=multi-user.target
