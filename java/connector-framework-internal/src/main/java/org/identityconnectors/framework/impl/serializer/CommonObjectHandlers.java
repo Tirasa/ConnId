@@ -821,7 +821,7 @@ class CommonObjectHandlers {
 
                 List values = (List) decoder.readObjectField("Values", List.class, null);
                 if (values != null) {
-                    builder.addValue(values);
+                    builder.addValues(values);
                 }
 
                 builder.setOpenness((ValueListOpenness) decoder.readObjectField("ValueListOpenness",

@@ -59,6 +59,22 @@ public final class SuggestedValuesBuilder {
     }
 
     /**
+     * Creates open suggested values with the specified values.
+     *
+     * @param values
+     *            variable number of arguments that are used as values for the
+     *            attribute.
+     * @return instance of {@code SuggestedValues} with the specified values
+     *         that includes the arguments provided.
+     */
+    public static SuggestedValues buildOpen(final Object... values) {
+        SuggestedValuesBuilder bld = new SuggestedValuesBuilder();
+        bld.setOpenness(ValueListOpenness.OPEN);
+        bld.addValues(values);
+        return bld.build();
+    }
+
+    /**
      * Creates closed suggested values with the specified values from a collection.
      *
      * @param collection
@@ -104,7 +120,7 @@ public final class SuggestedValuesBuilder {
      * @throws NullPointerException
      *             if any of the values is null.
      */
-    public SuggestedValuesBuilder addValue(final Collection<?> obj) {
+    public SuggestedValuesBuilder addValues(final Collection<?> obj) {
         addValuesInternal(obj);
         return this;
     }
