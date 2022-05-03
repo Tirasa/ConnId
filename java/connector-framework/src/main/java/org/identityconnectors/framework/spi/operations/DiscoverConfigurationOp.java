@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2017 Evolveum. All rights reserved.
+ * Copyright 2022 Evolveum. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -23,12 +23,9 @@
 package org.identityconnectors.framework.spi.operations;
 
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.AttributeDelta;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 
-import java.util.Set;
+import java.util.Map;
 
 /**
  * <p>
@@ -51,6 +48,7 @@ import java.util.Set;
  *      create new connector facade with full configuration
  *      enjoy
  * </p>
+ * TODO: in theory, several iterations can be used.
  *
  * @author Radovan Semancik
  * @since 1.5.2.0
@@ -102,10 +100,20 @@ public interface DiscoverConfigurationOp extends SPIOperation {
      * then use the connection to discover additional configuration properties.
      * Discovered configuration properties are returned from this method (if any).
      * </p>
-     * TODO: what would be the proper return type? Will Set<ConfigurationProperty> work?
-     * Will it be convenient for the connector to produce?
-     * What about multi-valued suggestions for single-valued properties?
+     * <p>
+     * Only discovered values are present in the map.
+     * There is no need to add all configuration properties, or even repeat the configured values.
+     * Empty map means no suggestions, i.e. the current configuration is complete.
+     * Empty list of values in a specific means that there are no valid values.
+     * The connector suggests that the property should be configured with no value at all (null).
+     * In that case the connector knows that there should be no values.
+     * On the other hand, if a suggestion for a particular property is not present, the connector does not make any suggestion.
+     * The connector does not know anything about the property.
+     * </p>
+     * TODO:
+     * Note about multi-valued suggestions for single-valued properties?
+     * How should multi-valued suggestions for multi-valued attributes be interpreted?
      */
-    Set<TODO> discoverConfiguration();
+    Map<String, SuggestedValues> discoverConfiguration();
 
 }

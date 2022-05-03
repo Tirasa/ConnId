@@ -19,26 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2017-2022 Evolveum
  */
 package org.identityconnectors.framework.impl.serializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
-import org.identityconnectors.framework.api.operations.CreateApiOp;
-import org.identityconnectors.framework.api.operations.DeleteApiOp;
-import org.identityconnectors.framework.api.operations.GetApiOp;
-import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
-import org.identityconnectors.framework.api.operations.SchemaApiOp;
-import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
-import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
-import org.identityconnectors.framework.api.operations.SearchApiOp;
-import org.identityconnectors.framework.api.operations.SyncApiOp;
-import org.identityconnectors.framework.api.operations.TestApiOp;
-import org.identityconnectors.framework.api.operations.UpdateApiOp;
-import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
-import org.identityconnectors.framework.api.operations.ValidateApiOp;
+import org.identityconnectors.framework.api.operations.*;
 
 
 class OperationMappings {
@@ -75,5 +63,7 @@ class OperationMappings {
         "ScriptOnConnectorApiOp"));
         MAPPINGS.add(new ObjectTypeMapperImpl(SyncApiOp.class,
         "SyncApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(DiscoverConfigurationApiOp.class,
+                "DiscoverConfigurationApiOp"));
     }
 }
