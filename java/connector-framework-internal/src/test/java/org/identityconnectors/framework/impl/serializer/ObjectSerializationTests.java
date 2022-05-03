@@ -70,31 +70,7 @@ import org.identityconnectors.framework.common.exceptions.OperationTimeoutExcept
 import org.identityconnectors.framework.common.exceptions.PasswordExpiredException;
 import org.identityconnectors.framework.common.exceptions.PermissionDeniedException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.AttributeBuilder;
-import org.identityconnectors.framework.common.objects.AttributeDelta;
-import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
-import org.identityconnectors.framework.common.objects.AttributeInfo;
-import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
-import org.identityconnectors.framework.common.objects.AttributeUtil;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.ObjectClassInfo;
-import org.identityconnectors.framework.common.objects.ObjectClassInfoBuilder;
-import org.identityconnectors.framework.common.objects.OperationOptionInfo;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
-import org.identityconnectors.framework.common.objects.QualifiedUid;
-import org.identityconnectors.framework.common.objects.Schema;
-import org.identityconnectors.framework.common.objects.ScriptContext;
-import org.identityconnectors.framework.common.objects.ScriptContextBuilder;
-import org.identityconnectors.framework.common.objects.SyncDelta;
-import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
-import org.identityconnectors.framework.common.objects.SyncDeltaType;
-import org.identityconnectors.framework.common.objects.SyncToken;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 import org.identityconnectors.framework.common.objects.filter.AndFilter;
 import org.identityconnectors.framework.common.objects.filter.ContainsAllValuesFilter;
@@ -1141,6 +1117,32 @@ public class ObjectSerializationTests {
     public void testAttributeDeltaReplace() {
         AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A"));
         AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
+        assertEquals(v1, v2);
+    }
+
+    @Test
+    public void testSuggestedValues() {
+        SuggestedValues v1 = SuggestedValuesBuilder.build(CollectionUtil.newList("Alice", "Bob"));
+        SuggestedValues v2 = (SuggestedValues) cloneObject(v1);
+        assertEquals(v1, v2);
+    }
+
+    @Test
+    public void testSuggestedValuesOpen() {
+        SuggestedValuesBuilder builder = new SuggestedValuesBuilder();
+        builder.addValues("Oscar", "Mallory");
+        builder.setOpenness(ValueListOpenness.OPEN);
+        SuggestedValues v1 = builder.build();
+        SuggestedValues v2 = (SuggestedValues) cloneObject(v1);
+        assertEquals(v1, v2);
+    }
+
+    @Test
+    public void testSuggestedValuesMap() {
+        Map<String,SuggestedValues> v1 = new HashMap<>();
+        v1.put("foo", SuggestedValuesBuilder.build(CollectionUtil.newList("Alice", "Bob")));
+        v1.put("bar", SuggestedValuesBuilder.build(CollectionUtil.newList("Gone fishing")));
+        Map<String,SuggestedValues> v2 = (Map<String,SuggestedValues>) cloneObject(v1);
         assertEquals(v1, v2);
     }
 
