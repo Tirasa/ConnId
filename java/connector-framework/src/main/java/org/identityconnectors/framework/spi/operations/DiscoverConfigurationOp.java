@@ -41,19 +41,62 @@ import java.util.Map;
  * Overall, this operation can support an interactive way for connector configuration.
  * </p>
  * <p>
- * TODO: describe the process:
- *      create new connector facade with minimal configuration (mind pool size)
- *      invoke testPartialConfiguration(), discoverConfiguration()
- *      interact with user
- *      create new connector facade with full configuration
- *      enjoy
+ * The discovery process is supposed to work as follows:
+ * <ol>
+ *     <li>Create new connector facade with minimal configuration.
+ *     This usually means just hostname, username and password.
+ *     Note: Mind the connector pool size when creating this configuration.
+ *     We really want minimal pool size set to zero. This connector instance is supposed to be
+ *     very short-lived. We do not want it to stay in the pool for a long time.</li>
+ *
+ *     <li>Invoke testPartialConfiguration() method on the facade.
+ *     If the method returns without an exception the provided configuration is correct,
+ *     e.g. connection to the server was established, the username/password is correct.</li>
+ *
+ *     <li>Invoke discoverConfiguration() method on the facade.
+ *     The connector will try to use the connection to discover additional configuration options,
+ *     suggesting values for configuration properties.
+ *     </li>
+ *
+ *     <li>Interact with user.
+ *     Present the suggested values to the user, let user choose the right values, add additional configuration, etc.</li>
+ *
+ *     <li>Apply the values chosen by the user to a new APIConfiguration, creating a new connector facade.
+ *     This is supposed to be a fully-configured, production-ready facade.</li>
+ *
+ *     <li>Use the new facade as usual.</li>
+ * </ol>
+ * The discovery process is usually used only once. Once the correct connector configuration is determined,
+ * the discovery is no longer needed.
  * </p>
- * TODO: in theory, several iterations can be used.
+ * <p>
+ * In theory, the discovery process can be iterative. The configuration suggested by discoverConfiguration()
+ * can be used to create another temporary facade, on which the discoverConfiguration() is called again.
+ * This process can be repeated as long as the discoverConfiguration() returns empty collection.
+ * However, we expect that a single-iteration processes will be the usual case.
+ * </p>
+ * <p>
+ * Tips for creating connectors with discoverable configuration:
+ * <ul>
+ *     <li>Allow minimal configuration for the connector.
+ *     Define only a very small set of mandatory configuration properties.
+ *     Validate only those properties for presence in validate() method of connector configuration object.
+ *     (Of course, it is perfectly OK validating proper formats of any property that has a value.)
+ *     Keep the validations simple.</li>
+ *
+ *     <li>Make a more in-depth validations in test() and testPartialConfiguration() methods.
+ *     These methods are supposed to make a connection to the resource.
+ *     Therefore, they can validate much more that just data formats.
+ *     They can validate that a particular value is valid for that particular system.</li>
+ * </ul>
+ * </p>
  *
  * @author Radovan Semancik
  * @since 1.5.2.0
  */
 public interface DiscoverConfigurationOp extends SPIOperation {
+
+    // Maintenance note: Do not forget to update documentation in DiscoverConfigurationApiOp, when updating this interface.
 
     /**
      * <p>
@@ -107,12 +150,29 @@ public interface DiscoverConfigurationOp extends SPIOperation {
      * Empty list of values in a specific means that there are no valid values.
      * The connector suggests that the property should be configured with no value at all (null).
      * In that case the connector knows that there should be no values.
-     * On the other hand, if a suggestion for a particular property is not present, the connector does not make any suggestion.
+     * On the other hand, if a suggestion for a particular property is not present,
+     * the connector does not make any suggestion.
      * The connector does not know anything about the property.
+     * Note: It may be difficult to distinguish explicitly configured properties and default values.
+     * Please see note in testPartialConfiguration() description.
      * </p>
-     * TODO:
-     * Note about multi-valued suggestions for single-valued properties?
-     * How should multi-valued suggestions for multi-valued attributes be interpreted?
+     * <p>
+     * Single-valued configuration properties can have multiple suggestions,
+     * e.i a list of suggested values can be returned.
+     * Individual suggested values should be considered to be options.
+     * One of them (or none at all) should be selected by the user.
+     * Similar approach applies to multi-valued configuration properties.
+     * However, in that case more than one of the values can be selected.
+     * I.e. the user can choose any combination of the suggested values (or no value at all).
+     * </p>
+     * <p>
+     * Note: So far there is no support for suggesting several combinations of multi-valued configuration properties.
+     * This can be added later, by allowing suggested values to be collections (lists).
+     * However, this is not supported yet.
+     * For now the suggested values must be primitive (i.e. non-complex, non-collection) data types.
+     * We do not want to support it now, as it can be confusing in case that the value itself is complex (e.g a map).
+     * Therefore we leave this decision for the future when the design for complex values is more mature.
+     * </p>
      */
     Map<String, SuggestedValues> discoverConfiguration();
 
