@@ -79,6 +79,7 @@ set CP=%CP%;lib\framework\slf4j-api.jar
 set CP=%CP%;lib\framework\slf4j-logging.jar
 set CP=%CP%;lib\framework\logback-core.jar
 set CP=%CP%;lib\framework\logback-classic.jar
+set CP=%CP%;lib\framework\jul-to-slf4j.jar
 
 echo %CP%
 
