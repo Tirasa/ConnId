@@ -27,6 +27,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.identityconnectors.framework.common.objects.ValueListOpenness;
 import org.identityconnectors.framework.spi.operations.SPIOperation;
 
 /**
@@ -83,4 +84,24 @@ public @interface ConfigurationProperty {
      * applicable to all operations.
      */
     public Class<? extends SPIOperation>[] operations() default {};
+
+    /**
+     * List of allowed values for the property.
+     * The values are specified as a list of strings.
+     * They are converted to appropriate data format before use.
+     *
+     * @since 1.5.2.0
+     */
+    public String[] allowedValues() default {};
+
+    /**
+     * Specification of openness of list of allowed values.
+     * In closed list, values specified in the list are the only valid values for the property.
+     * Any unlisted value is considered to be invalid.
+     * In open list, the values specified in the list should be considered suggestions only.
+     * Even an unlisted value can be specified as a valid value of the property.
+     *
+     * @since 1.5.2.0
+     */
+    public ValueListOpenness allowedValuesOpenness() default ValueListOpenness.CLOSED;
 }

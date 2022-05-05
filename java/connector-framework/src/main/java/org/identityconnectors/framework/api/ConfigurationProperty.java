@@ -25,6 +25,7 @@ package org.identityconnectors.framework.api;
 import java.util.Set;
 
 import org.identityconnectors.framework.api.operations.APIOperation;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
 
 /**
  * Represents at the API level a property of a Connector's
@@ -90,4 +91,16 @@ public interface ConfigurationProperty {
      * applicable to all operations.
      */
     public Set<Class<? extends APIOperation>> getOperations();
+
+    /**
+     * Returns list of allowed values for the property.
+     * If a closed list is returned, values specified in the list are the only valid values for the property.
+     * Any other value is invalid.
+     * If an open list is returned, the values specified in the list should be considered suggestions only.
+     * Even an unlisted value can be specified as a valid value of the property.
+     * If null is returned, there are no restrictions or suggestions for this property.
+     *
+     * @since 1.5.2.0
+     */
+    public SuggestedValues getAllowedValues();
 }
