@@ -173,6 +173,10 @@ public interface DiscoverConfigurationOp extends SPIOperation {
      * We do not want to support it now, as it can be confusing in case that the value itself is complex (e.g a map).
      * Therefore we leave this decision for the future when the design for complex values is more mature.
      * </p>
+     *
+     * @return Collection (map) of discovered configuration values.
+     *         If no values can be discovered, empty collection should be returned.
+     *         Null is not a legal return value.
      */
     Map<String, SuggestedValues> discoverConfiguration();
 
