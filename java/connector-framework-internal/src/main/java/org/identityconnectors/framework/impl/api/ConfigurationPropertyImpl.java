@@ -22,12 +22,14 @@
  */
 package org.identityconnectors.framework.impl.api;
 
+import java.util.Objects;
 import java.util.Set;
 
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.api.ConfigurationProperty;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.objects.ConnectorMessages;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
 
 public class ConfigurationPropertyImpl implements ConfigurationProperty {
 
@@ -90,6 +92,11 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
      * added to parent
      */
     private transient ConfigurationPropertiesImpl parent;
+
+    /**
+     * Allowed values for the property (optional).
+     */
+    private SuggestedValues allowedValues;
 
     // =======================================================================
     // Internal Methods
@@ -162,6 +169,10 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
 
     public void setOperations(Set<Class<? extends APIOperation>> set) {
         operations = CollectionUtil.newReadOnlySet(set);
+    }
+
+    public void setAllowedValues(SuggestedValues allowedValues) {
+        this.allowedValues = allowedValues;
     }
 
     private String formatMessage(String key, String dflt, Object... args) {
@@ -238,6 +249,14 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
         return formatMessage(groupMessageKey, def);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SuggestedValues getAllowedValues() {
+        return allowedValues;
+    }
+
     @Override
     public int hashCode() {
         return getName().hashCode();
@@ -275,6 +294,9 @@ public class ConfigurationPropertyImpl implements ConfigurationProperty {
                 return false;
             }
             if (!CollectionUtil.equals(operations, other.operations)) {
+                return false;
+            }
+            if (!Objects.equals(allowedValues, other.allowedValues)) {
                 return false;
             }
 

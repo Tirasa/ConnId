@@ -27,45 +27,12 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.identityconnectors.framework.api.operations.APIOperation;
-import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
-import org.identityconnectors.framework.api.operations.CreateApiOp;
-import org.identityconnectors.framework.api.operations.DeleteApiOp;
-import org.identityconnectors.framework.api.operations.GetApiOp;
-import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
-import org.identityconnectors.framework.api.operations.SchemaApiOp;
-import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
-import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
-import org.identityconnectors.framework.api.operations.SearchApiOp;
-import org.identityconnectors.framework.api.operations.SyncApiOp;
-import org.identityconnectors.framework.api.operations.TestApiOp;
-import org.identityconnectors.framework.api.operations.UpdateApiOp;
-import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
-import org.identityconnectors.framework.api.operations.ValidateApiOp;
+import org.identityconnectors.framework.api.operations.*;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.AbstractConnectorFacade;
 import org.identityconnectors.framework.impl.api.LoggingProxy;
-import org.identityconnectors.framework.impl.api.local.operations.APIOperationRunner;
-import org.identityconnectors.framework.impl.api.local.operations.AuthenticationImpl;
-import org.identityconnectors.framework.impl.api.local.operations.ConnectorAPIOperationRunner;
-import org.identityconnectors.framework.impl.api.local.operations.ConnectorAPIOperationRunnerProxy;
-import org.identityconnectors.framework.impl.api.local.operations.ConnectorOperationalContext;
-import org.identityconnectors.framework.impl.api.local.operations.CreateImpl;
-import org.identityconnectors.framework.impl.api.local.operations.DeleteImpl;
-import org.identityconnectors.framework.impl.api.local.operations.GetImpl;
-import org.identityconnectors.framework.impl.api.local.operations.OperationalContext;
-import org.identityconnectors.framework.impl.api.local.operations.ResolveUsernameImpl;
-import org.identityconnectors.framework.impl.api.local.operations.SchemaImpl;
-import org.identityconnectors.framework.impl.api.local.operations.ScriptOnConnectorImpl;
-import org.identityconnectors.framework.impl.api.local.operations.ScriptOnResourceImpl;
-import org.identityconnectors.framework.impl.api.local.operations.SearchImpl;
-import org.identityconnectors.framework.impl.api.local.operations.SyncImpl;
-import org.identityconnectors.framework.impl.api.local.operations.TestImpl;
-import org.identityconnectors.framework.impl.api.local.operations.ThreadClassLoaderManagerProxy;
-import org.identityconnectors.framework.impl.api.local.operations.UpdateDeltaImpl;
-import org.identityconnectors.framework.impl.api.local.operations.UpdateImpl;
-import org.identityconnectors.framework.impl.api.local.operations.ValidateImpl;
+import org.identityconnectors.framework.impl.api.local.operations.*;
 import org.identityconnectors.framework.spi.Connector;
 
 /**
@@ -108,6 +75,7 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
         addImplementation(ScriptOnConnectorApiOp.class, ScriptOnConnectorImpl.class);
         addImplementation(ScriptOnResourceApiOp.class, ScriptOnResourceImpl.class);
         addImplementation(SyncApiOp.class, SyncImpl.class);
+        addImplementation(DiscoverConfigurationApiOp.class, DiscoverConfigurationImpl.class);
     }
 
     // =======================================================================

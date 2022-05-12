@@ -44,6 +44,8 @@ import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.FrameworkUtil;
 import org.identityconnectors.framework.common.exceptions.ConfigurationException;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
+import org.identityconnectors.framework.common.objects.SuggestedValuesBuilder;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.impl.api.ConfigurationPropertiesImpl;
 import org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl;
@@ -161,6 +163,7 @@ public class JavaClassProperties {
             prop.setType(type);
             prop.setRequired(required);
             prop.setOperations(options == null ? null : translateOperations(options.operations()));
+            prop.setAllowedValues(translateAllowedValues(options, type));
 
             temp.add(prop);
 
@@ -176,6 +179,32 @@ public class JavaClassProperties {
             set.addAll(FrameworkUtil.spi2apis(spi));
         }
         return set;
+    }
+
+    private static SuggestedValues translateAllowedValues(ConfigurationProperty options, Class<?> type) {
+        if (options == null || options.allowedValues() == null || options.allowedValues().length == 0) {
+            return null;
+        }
+        SuggestedValuesBuilder builder = new SuggestedValuesBuilder();
+        for (String allowedValueStr : options.allowedValues()) {
+            builder.addValues(convertValue(allowedValueStr, type));
+        }
+        builder.setOpenness(options.allowedValuesOpenness());
+        return builder.build();
+    }
+
+    private static Object convertValue(String stringValue, Class<?> type) {
+        if (type == String.class) {
+            return stringValue;
+        }
+        if (type == int.class || type == Integer.class) {
+            return Integer.parseInt(stringValue);
+        }
+        if (type == long.class || type == Long.class) {
+            return Long.parseLong(stringValue);
+        }
+        // other types?
+        return stringValue;
     }
 
     private static Configuration createBean2(ConfigurationPropertiesImpl properties,

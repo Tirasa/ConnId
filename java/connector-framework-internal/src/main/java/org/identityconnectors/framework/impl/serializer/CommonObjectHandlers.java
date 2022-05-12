@@ -52,29 +52,8 @@ import org.identityconnectors.framework.common.exceptions.PreconditionFailedExce
 import org.identityconnectors.framework.common.exceptions.PreconditionRequiredException;
 import org.identityconnectors.framework.common.exceptions.RetryableException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.AttributeBuilder;
-import org.identityconnectors.framework.common.objects.AttributeDelta;
-import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
-import org.identityconnectors.framework.common.objects.AttributeInfo;
+import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
-import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.ObjectClassInfo;
-import org.identityconnectors.framework.common.objects.OperationOptionInfo;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.QualifiedUid;
-import org.identityconnectors.framework.common.objects.Schema;
-import org.identityconnectors.framework.common.objects.ScriptContext;
-import org.identityconnectors.framework.common.objects.SearchResult;
-import org.identityconnectors.framework.common.objects.SortKey;
-import org.identityconnectors.framework.common.objects.SyncDelta;
-import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
-import org.identityconnectors.framework.common.objects.SyncDeltaType;
-import org.identityconnectors.framework.common.objects.SyncToken;
-import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 import org.identityconnectors.framework.impl.api.remote.RemoteWrappedException;
 
@@ -833,5 +812,32 @@ class CommonObjectHandlers {
                 encoder.writeObjectField("Uid", val.getUid(), true);
             }
         });
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(SuggestedValues.class, "SuggestedValues") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final SuggestedValuesBuilder builder = new SuggestedValuesBuilder();
+
+                List values = (List) decoder.readObjectField("Values", List.class, null);
+                if (values != null) {
+                    builder.addValues(values);
+                }
+
+                builder.setOpenness((ValueListOpenness) decoder.readObjectField("ValueListOpenness",
+                        ValueListOpenness.class, ValueListOpenness.CLOSED));
+
+                return builder.build();
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final SuggestedValues val = (SuggestedValues) object;
+                encoder.writeObjectField("Values", val.getValues(), true);
+                encoder.writeObjectField("ValueListOpenness", val.getOpenness(), true);
+            }
+        });
+
+        HANDLERS.add(new EnumSerializationHandler(ValueListOpenness.class, "ValueListOpenness"));
     }
 }

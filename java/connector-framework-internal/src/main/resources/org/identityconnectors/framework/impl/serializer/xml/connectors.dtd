@@ -403,6 +403,13 @@ OperationOptionInfo | SyncDeltaType | SyncToken | SyncDelta | QualifiedUid | Att
 <!ELEMENT ValuesToRemove ((%xmlObject;)*)>
 <!ELEMENT ValuesToReplace ((%xmlObject;)*)>
 
+<!ELEMENT AttributeDeltaSuggestedValues (Values*,ValueListOpenness)>
+<!ELEMENT ValueListOpenness EMPTY>
+<!ATTLIST ValueListOpenness
+        value ( CLOSED | OPEN ) #REQUIRED
+>
+
+
 <!--=======================================================-->
 <!--=                                                     =-->
 <!--= Filters                                             =-->
