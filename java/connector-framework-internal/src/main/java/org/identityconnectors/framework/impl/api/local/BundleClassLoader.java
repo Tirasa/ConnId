@@ -68,45 +68,46 @@ class BundleClassLoader extends URLClassLoader {
      */
     @Override
     public Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
-        Class<?> c = findLoadedClass(name);
-        if (c == null) {
-            try {
-                //try to find it in the bundle's class loader
-                //anything there is considered accessible
-                c = findClass(name);
-            }
-            catch (ClassNotFoundException ex) {
-                // Hack for OIM: the framework is loaded by OIM's tcADPClassLoader, whose
-                // delegation strategy (parent first) is to first try to load
-                // the class through Thread.currentThread().getContextClassLoader(). When the
-                // framework is running a connector operation, the thread context class loader is
-                // BundleClassLoader. Without the hack, BundleClassLoader would delegate to its parent
-                // (i.e., tcADPClassLoader), which would again delegate to the thread context class loader
-                // (i.e., BundleClassLoader), resulting in an infinite loop reported by the JVM through a ClassCircularityError.
-                // The hack sets the thread context class loader to its initial value when
-                // BundleClassLoader delegates to its parent.
-                if (runningInOIM()) {
-                    final List<ClassLoader> loaders = ThreadClassLoaderManager.getInstance().popAll();
-                    try {
+        synchronized (getClassLoadingLock(name)) {
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                try {
+                    //try to find it in the bundle's class loader
+                    //anything there is considered accessible
+                    c = findClass(name);
+                } catch (ClassNotFoundException ex) {
+                    // Hack for OIM: the framework is loaded by OIM's tcADPClassLoader, whose
+                    // delegation strategy (parent first) is to first try to load
+                    // the class through Thread.currentThread().getContextClassLoader(). When the
+                    // framework is running a connector operation, the thread context class loader is
+                    // BundleClassLoader. Without the hack, BundleClassLoader would delegate to its parent
+                    // (i.e., tcADPClassLoader), which would again delegate to the thread context class loader
+                    // (i.e., BundleClassLoader), resulting in an infinite loop reported by the JVM through a ClassCircularityError.
+                    // The hack sets the thread context class loader to its initial value when
+                    // BundleClassLoader delegates to its parent.
+                    if (runningInOIM()) {
+                        final List<ClassLoader> loaders = ThreadClassLoaderManager.getInstance().popAll();
+                        try {
+                            // check parents class loader
+                            c = getParent().loadClass(name);
+                            // We cannot check the allowed packages; because of the OIM bug,
+                            // BundleClassLoader may be asked to load framework-internal classes too.
+                        } finally {
+                            ThreadClassLoaderManager.getInstance().pushAll(loaders);
+                        }
+                    } else {
                         // check parents class loader
                         c = getParent().loadClass(name);
-                        // We cannot check the allowed packages; because of the OIM bug,
-                        // BundleClassLoader may be asked to load framework-internal classes too.
-                    } finally {
-                        ThreadClassLoaderManager.getInstance().pushAll(loaders);
+                        //make sure it's only in set of allowed packages
+                        checkAccessAllowed(c);
                     }
-                } else {
-                    // check parents class loader
-                    c = getParent().loadClass(name);
-                    //make sure it's only in set of allowed packages
-                    checkAccessAllowed(c);
                 }
             }
+            if (resolve) {
+                resolveClass(c);
+            }
+            return c;
         }
-        if (resolve) {
-            resolveClass(c);
-        }
-        return c;
     }
 
     private boolean runningInOIM() {
