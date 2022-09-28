@@ -54,7 +54,6 @@ import org.identityconnectors.framework.common.exceptions.RetryableException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
 import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
-import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 import org.identityconnectors.framework.impl.api.remote.RemoteWrappedException;
 
 /**
@@ -579,12 +578,11 @@ class CommonObjectHandlers {
                 final String val = decoder.readStringField("uid", null);
                 final String revision = decoder.readStringField("revision", null);
                 final Name nameHint = (Name) decoder.readObjectField("nameHint", Name.class, null);
-                if (null == revision && null == nameHint) {
-                    return new Uid(val);
-                } else if (null == revision && null != nameHint) {
+                // revision parameter is not-null checked, nameHint is nullable
+                if (revision == null) {
                     return new Uid(val, nameHint);
                 } else {
-                    return new Uid(val, revision);
+                    return new Uid(val, revision, nameHint);
                 }
             }
 
@@ -593,6 +591,7 @@ class CommonObjectHandlers {
                 final Uid val = (Uid) object;
                 encoder.writeStringField("uid", val.getUidValue());
                 encoder.writeStringField("revision", val.getRevision());
+                encoder.writeObjectField("nameHint", val.getNameHint(), true);
             }
         });
 
