@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2022 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -145,7 +146,7 @@ public class AttributeDelta {
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return nameHashCode(name);
     }
 
@@ -165,11 +166,11 @@ public class AttributeDelta {
     }
 
     protected void extendToStringMap(final Map<String, Object> map) {
-        // Nothing to do here. Just for use in sublcasses.
+        // Nothing to do here. Just for use in subclasses.
     }
 
     @Override
-    public final boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         // test identity
         if (this == obj) {
             return true;
