@@ -174,7 +174,7 @@ public class Attribute {
     // Object Overrides
     // ===================================================================
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         return nameHashCode(name);
     }
 
@@ -192,11 +192,11 @@ public class Attribute {
     }
 
     protected void extendToStringMap(final Map<String, Object> map) {
-        // Nothing to do here. Just for use in sublcasses.
+        // Nothing to do here. Just for use in subclasses.
     }
 
     @Override
-    public final boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         // test identity
         if (this == obj) {
             return true;

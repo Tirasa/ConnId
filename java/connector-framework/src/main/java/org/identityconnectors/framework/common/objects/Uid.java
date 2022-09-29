@@ -20,11 +20,12 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
- * Portions Copyrighted 2016 Evolveum
+ * Portions Copyrighted 2016-2022 Evolveum
  */
 package org.identityconnectors.framework.common.objects;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.StringUtil;
@@ -181,4 +182,24 @@ public final class Uid extends Attribute {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        Uid uid = (Uid) o;
+        return Objects.equals(revision, uid.revision)
+                && Objects.equals(nameHint, uid.nameHint);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), revision, nameHint);
+    }
 }
