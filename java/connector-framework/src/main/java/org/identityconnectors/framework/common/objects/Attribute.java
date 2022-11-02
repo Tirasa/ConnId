@@ -197,6 +197,15 @@ public class Attribute {
 
     @Override
     public boolean equals(Object obj) {
+        return attributeEquals(obj);
+    }
+
+    /**
+     * Business-level equals that checks name, value and completeness.
+     * For {@link Attribute} it is the same as {@link #equals(Object)},
+     * but may ignore fields in subclasses.
+     */
+    public final boolean attributeEquals(Object obj) {
         // test identity
         if (this == obj) {
             return true;
