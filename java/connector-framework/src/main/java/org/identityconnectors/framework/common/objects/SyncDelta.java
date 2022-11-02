@@ -75,7 +75,7 @@ public final class SyncDelta {
         }
 
         // if object not null, make sure its Uid matches
-        if (object != null && !uid.equals(object.getUid())) {
+        if (object != null && !uid.attributeEquals(object.getUid())) {
             throw new IllegalArgumentException("Uid does not match that of the object.");
         }
         if (object != null && !objectClass.equals(object.getObjectClass())) {

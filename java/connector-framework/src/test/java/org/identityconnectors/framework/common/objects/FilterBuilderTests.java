@@ -69,6 +69,32 @@ public class FilterBuilderTests {
         assertFalse(filter.accept(bld.build()));
     }
 
+    @Test
+    public void equalsFilterUid() {
+        Uid uid = new Uid("uid-val");
+        Filter filter = FilterBuilder.equalTo(uid);
+
+        assertTrue(filter.accept(
+                new ConnectorObjectBuilder()
+                        .setUid(new Uid("uid-val"))
+                        .setName("ignored")
+                        .build()));
+
+        // equals filter considers only attribute name+value, not nameHint for Uid
+        assertTrue(filter.accept(
+                new ConnectorObjectBuilder()
+                        .setUid(new Uid("uid-val", "name-hint"))
+                        .setName("ignored")
+                        .build()));
+
+        // equals filter considers only attribute name+value, not revision for Uid
+        assertTrue(filter.accept(
+                new ConnectorObjectBuilder()
+                        .setUid(new Uid("uid-val", "revision", null))
+                        .setName("ignored")
+                        .build()));
+    }
+
     // =======================================================================
     // Comparable..
     // =======================================================================

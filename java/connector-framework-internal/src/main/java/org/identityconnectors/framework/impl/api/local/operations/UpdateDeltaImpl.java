@@ -311,7 +311,7 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
             }
 
             Set<AttributeDelta> sideEffectAttributesDelta = new HashSet<>();
-            if (!uid.equals(ret)) {
+            if (!uid.attributeEquals(ret)) {
                 sideEffectAttributesDelta.add(AttributeDeltaBuilder.build(Uid.NAME, ret.getValue()));
             }
 
