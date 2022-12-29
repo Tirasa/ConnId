@@ -264,7 +264,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testByteArray() throws Exception {
-        byte[] v1 = {1, 2, 3};
+        byte[] v1 = { 1, 2, 3 };
         byte[] v2 = (byte[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals(1, v2[0]);
@@ -310,7 +310,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testArrays() throws Exception {
-        int[] v1 = {1, 2, 3};
+        int[] v1 = { 1, 2, 3 };
         int[] v2 = (int[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals(1, v2[0]);
@@ -320,7 +320,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testObjectArrays() throws Exception {
-        Object[] v1 = {"1", "2", "3"};
+        Object[] v1 = { "1", "2", "3" };
         Object[] v2 = (Object[]) cloneObject(v1);
         assertEquals(3, v2.length);
         assertEquals("1", v2[0]);
@@ -645,7 +645,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testUidWithNameHint() {
-        Uid v1 = new Uid("test",new Name("TestNameHint"));
+        Uid v1 = new Uid("test", new Name("TestNameHint"));
         Uid v2 = (Uid) cloneObject(v1);
         assertEquals(v1, v2);
     }
@@ -1092,9 +1092,9 @@ public class ObjectSerializationTests {
 
     @Test
     public void testGuardedByteArray() {
-        GuardedByteArray v1 = new GuardedByteArray(new byte[]{0x00, 0x01, 0x02, 0x03});
+        GuardedByteArray v1 = new GuardedByteArray(new byte[] { 0x00, 0x01, 0x02, 0x03 });
         GuardedByteArray v2 = (GuardedByteArray) cloneObject(v1);
-        assertTrue(Arrays.equals(new byte[]{0x00, 0x01, 0x02, 0x03}, decryptToBytes(v2)));
+        assertTrue(Arrays.equals(new byte[] { 0x00, 0x01, 0x02, 0x03 }, decryptToBytes(v2)));
     }
 
     @Test
@@ -1108,7 +1108,8 @@ public class ObjectSerializationTests {
 
     @Test
     public void testAttributeDeltaAddRemove() {
-        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A") , Collections.emptyList());
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A"), Collections.
+                emptyList());
         AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
         assertEquals(v1, v2);
     }
@@ -1139,10 +1140,11 @@ public class ObjectSerializationTests {
 
     @Test
     public void testSuggestedValuesMap() {
-        Map<String,SuggestedValues> v1 = new HashMap<>();
+        Map<String, SuggestedValues> v1 = new HashMap<>();
         v1.put("foo", SuggestedValuesBuilder.build(CollectionUtil.newList("Alice", "Bob")));
         v1.put("bar", SuggestedValuesBuilder.build(CollectionUtil.newList("Gone fishing")));
-        Map<String,SuggestedValues> v2 = (Map<String,SuggestedValues>) cloneObject(v1);
+        @SuppressWarnings("unchecked")
+        Map<String, SuggestedValues> v2 = (Map<String, SuggestedValues>) cloneObject(v1);
         assertEquals(v1, v2);
     }
 
@@ -1151,10 +1153,8 @@ public class ObjectSerializationTests {
      * code. This is only for test purposes
      */
     private String decryptToString(GuardedString string) {
-        final StringBuilder buf = new StringBuilder();
-        string.access((char[] chars) -> {
-            buf.append(chars);
-        });
+        StringBuilder buf = new StringBuilder();
+        string.access(chars -> buf.append(chars));
         return buf.toString();
     }
 

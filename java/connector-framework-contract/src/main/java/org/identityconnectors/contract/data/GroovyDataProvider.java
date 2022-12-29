@@ -35,6 +35,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -883,12 +884,9 @@ public class GroovyDataProvider implements DataProvider {
         // parse configuration information to flatten
         String result = flatten(configObject);
 
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(_propertyOutFile, true);
+        try (FileWriter fw = new FileWriter(_propertyOutFile, StandardCharsets.UTF_8, true)) {
             fw.append("\n\n\n ============================ NEW TEST ==================== \n\n\n");
             fw.append(result);
-            fw.close();
         } catch (IOException e) {
             LOG.warn("Writing to contract test property out file failed ''{0}''", _propertyOutFile.getAbsolutePath());
         }
@@ -905,9 +903,7 @@ public class GroovyDataProvider implements DataProvider {
             return null;
         }
 
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(_queriedPropsOutFile, true);
+        try (FileWriter fw = new FileWriter(_queriedPropsOutFile, StandardCharsets.UTF_8, true)) {
             fw.append("<dumpSummary>\n");
             // MISSING PROPS
             fw.append("  <missingProperties>\n");
@@ -932,7 +928,6 @@ public class GroovyDataProvider implements DataProvider {
 
             fw.append("\n\n\n ============================ NEW TEST ==================== \n\n\n");
             fw.append(this.dumpBuffer.toString() + "\n");
-            fw.close();
         } catch (IOException e) {
             LOG.warn("Writing to contract test property out file failed ''{0}''",
                     _queriedPropsOutFile.getAbsolutePath());

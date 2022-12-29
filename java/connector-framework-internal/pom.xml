@@ -30,7 +30,7 @@
   <parent>
     <groupId>net.tirasa.connid</groupId>
     <artifactId>connid</artifactId>
-    <version>1.5.2.0-SNAPSHOT</version>
+    <version>1.6.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>connector-framework-internal</artifactId>
@@ -50,44 +50,56 @@
 
     <!-- Provided Dependencies -->
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-templates</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-bsf</artifactId>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-xml</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-jsr223</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-datetime</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-dateutil</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-sql</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-json</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>      
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-groovysh</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
