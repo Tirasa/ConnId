@@ -154,7 +154,7 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td>https://github.com/Tirasa/ConnIdSOAPBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/SOAP">wiki</a></td>
   <td><a href="https://connid.atlassian.net/browse/SOAP">issues</a></td>
-  <td><a href="https://travis-ci.org/Tirasa/ConnIdSOAPBundle"><img src="https://api.travis-ci.org/Tirasa/ConnIdSOAPBundle.png"/></a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdSOAPBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdSOAPBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>UNIX</td>
