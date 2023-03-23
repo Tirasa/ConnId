@@ -136,11 +136,11 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://github.com/Tirasa/ConnIdRESTBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdRESTBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
-  <td>SCIM 1.1</td>
-  <td>https://github.com/Tirasa/ConnIdSCIMv11Bundle</td>
-  <td><a href="https://connid.atlassian.net/wiki/display/BASE/SCIM+1.1">wiki</a></td>
-  <td><a href="https://connid.atlassian.net/browse/SCIMV11">issues</a></td>
-  <td><a href="https://github.com/Tirasa/ConnIdSCIMv11Bundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdSCIMv11Bundle/actions/workflows/ci.yml/badge.svg"/></a></td>
+  <td>SCIM</td>
+  <td>https://github.com/Tirasa/ConnIdSCIMBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/SCIM">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/SCIM">issues</a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdSCIMBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdSCIMBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
   <td>ServiceNow</td>
