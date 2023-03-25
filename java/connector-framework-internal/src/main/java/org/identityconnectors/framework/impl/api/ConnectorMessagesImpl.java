@@ -74,10 +74,10 @@ public class ConnectorMessagesImpl implements ConnectorMessages {
         }
         if (message == null) {
             return dflt;
-        } else {
-            MessageFormat formater = new MessageFormat(message, locale);
-            return formater.format(args, new StringBuffer(), null).toString();
         }
+
+        MessageFormat formater = new MessageFormat(message, locale);
+        return formater.format(args);
     }
 
     private String getCatalogMessage(Locale locale, String key) {

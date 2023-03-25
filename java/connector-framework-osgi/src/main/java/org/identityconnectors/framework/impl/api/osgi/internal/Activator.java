@@ -23,7 +23,8 @@
  */
 package org.identityconnectors.framework.impl.api.osgi.internal;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import org.identityconnectors.common.event.ConnectorEventPublisher;
 import org.identityconnectors.framework.api.ConnectorInfoManager;
 import org.identityconnectors.framework.common.FrameworkUtil;
@@ -62,11 +63,12 @@ public class Activator implements BundleActivator {
                 FrameworkUtil.getFrameworkVersion()), manager);
         connectorWatcher.start();
 
-        Hashtable<String, String> prop = new Hashtable<>();
+        Map<String, String> prop = new HashMap<>();
         prop.put("ConnectorBundle-FrameworkVersion", FrameworkUtil.getFrameworkVersion().getVersion());
 
         connectorInfoManager = context.registerService(new String[] {
-            ConnectorInfoManager.class.getName(), ConnectorEventPublisher.class.getName() }, manager, prop);
+            ConnectorInfoManager.class.getName(), ConnectorEventPublisher.class.getName() },
+                manager, org.osgi.framework.FrameworkUtil.asDictionary(prop));
 
         LOG.debug("ConnId OSGi Extender - Started");
     }
