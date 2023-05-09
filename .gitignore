@@ -11,7 +11,6 @@ java/testcommonv1/target/
 java/testcommonv2/target/
 java/target/
 java/archetype/target/
-java/archetype/src/main/resources/archetype-resources/pom.xml
 
 #IntelliJ IDEA stuff
 java/.idea/

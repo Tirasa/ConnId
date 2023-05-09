@@ -38,6 +38,8 @@
   <packaging>maven-archetype</packaging>
 
   <properties>
+    <maven.archetype.version>3.2.1</maven.archetype.version>
+
     <parent.path>${basedir}/..</parent.path>
   </properties>
 
@@ -46,7 +48,7 @@
       <extension>
         <groupId>org.apache.maven.archetype</groupId>
         <artifactId>archetype-packaging</artifactId>
-        <version>2.4</version>
+        <version>${maven.archetype.version}</version>
       </extension>
     </extensions>
 
@@ -55,56 +57,32 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-archetype-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>${maven.archetype.version}</version>
           <extensions>true</extensions>
         </plugin>
       </plugins>
     </pluginManagement>
     
     <plugins>
-      <!-- Generate project's parent POM and dynamically sets ConnId version -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>xml-maven-plugin</artifactId>
-        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <phase>generate-resources</phase>
+            <id>adjust-MasterContent</id>
             <goals>
-              <goal>transform</goal>
+              <goal>run</goal>
             </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <target>
+                <replace file="${project.build.outputDirectory}/archetype-resources/pom.xml"
+                         token="connidVersion"
+                         value="${project.version}"/>
+              </target>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <transformationSets>
-            <transformationSet>
-              <dir>${basedir}/src/main/resources</dir>
-              <includes>
-                <include>meta-pom.xml</include>
-              </includes>
-              <outputDir>${basedir}/src/main/resources/archetype-resources</outputDir>
-              <stylesheet>${basedir}/src/main/resources/properties2pom.xsl</stylesheet>
-              <parameters>
-                <parameter>
-                  <name>connidVersion</name>
-                  <value>${project.version}</value>
-                </parameter>
-              </parameters>
-              <outputProperties>
-                <outputProperty>
-                  <name>indent</name>
-                  <value>yes</value>
-                </outputProperty>
-              </outputProperties>
-              <fileMappers>
-                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.RegExpFileMapper">
-                  <pattern>^meta-(.*)\.xml$</pattern>
-                  <replacement>$1.xml</replacement>
-                </fileMapper>
-              </fileMappers>
-            </transformationSet>
-          </transformationSets>
-        </configuration>
       </plugin>
     </plugins>
     
