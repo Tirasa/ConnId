@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2023 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -33,6 +34,7 @@ import org.identityconnectors.framework.common.objects.filter.ContainsAllValuesF
 import org.identityconnectors.framework.common.objects.filter.ContainsFilter;
 import org.identityconnectors.framework.common.objects.filter.EndsWithFilter;
 import org.identityconnectors.framework.common.objects.filter.EqualsFilter;
+import org.identityconnectors.framework.common.objects.filter.EqualsIgnoreCaseFilter;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.GreaterThanFilter;
 import org.identityconnectors.framework.common.objects.filter.GreaterThanOrEqualFilter;
@@ -47,21 +49,23 @@ import org.identityconnectors.framework.common.objects.filter.StartsWithFilter;
  */
 class FilterHandlers {
 
-    public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<ObjectTypeMapper>();
+    public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<>();
 
-    private static abstract class CompositeFilterHandler<T extends CompositeFilter> extends
-            AbstractObjectSerializationHandler {
+    private static abstract class CompositeFilterHandler<T extends CompositeFilter>
+            extends AbstractObjectSerializationHandler {
 
         protected CompositeFilterHandler(final Class<T> clazz, final String typeName) {
             super(clazz, typeName);
         }
 
+        @Override
         public final Object deserialize(final ObjectDecoder decoder) {
             final Filter left = (Filter) decoder.readObjectContents(0);
             final Filter right = (Filter) decoder.readObjectContents(1);
             return createFilter(left, right);
         }
 
+        @Override
         public final void serialize(final Object object, final ObjectEncoder encoder) {
             final CompositeFilter val = (CompositeFilter) object;
             encoder.writeObjectContents(val.getLeft());
@@ -71,19 +75,20 @@ class FilterHandlers {
         protected abstract T createFilter(Filter left, Filter right);
     }
 
-    private static abstract class AttributeFilterHandler<T extends AttributeFilter> extends
-            AbstractObjectSerializationHandler {
+    private static abstract class AttributeFilterHandler<T extends AttributeFilter>
+            extends AbstractObjectSerializationHandler {
 
         protected AttributeFilterHandler(final Class<T> clazz, final String typeName) {
             super(clazz, typeName);
         }
 
+        @Override
         public final Object deserialize(final ObjectDecoder decoder) {
-            final Attribute attribute =
-                    (Attribute) decoder.readObjectField("attribute", null, null);
+            final Attribute attribute = (Attribute) decoder.readObjectField("attribute", null, null);
             return createFilter(attribute);
         }
 
+        @Override
         public final void serialize(final Object object, final ObjectEncoder encoder) {
             final AttributeFilter val = (AttributeFilter) object;
             encoder.writeObjectField("attribute", val.getAttribute(), false);
@@ -127,6 +132,15 @@ class FilterHandlers {
             }
         });
 
+        HANDLERS.add(new AttributeFilterHandler<EqualsIgnoreCaseFilter>(
+                EqualsIgnoreCaseFilter.class, "EqualsIgnoreCaseFilter") {
+
+            @Override
+            protected EqualsIgnoreCaseFilter createFilter(final Attribute attribute) {
+                return new EqualsIgnoreCaseFilter(attribute);
+            }
+        });
+
         HANDLERS.add(new AttributeFilterHandler<GreaterThanFilter>(GreaterThanFilter.class,
                 "GreaterThanFilter") {
 
@@ -165,11 +179,13 @@ class FilterHandlers {
 
         HANDLERS.add(new AbstractObjectSerializationHandler(NotFilter.class, "NotFilter") {
 
+            @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final Filter filter = (Filter) decoder.readObjectContents(0);
                 return new NotFilter(filter);
             }
 
+            @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final NotFilter val = (NotFilter) object;
                 encoder.writeObjectContents(val.getFilter());
