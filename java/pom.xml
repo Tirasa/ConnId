@@ -83,7 +83,7 @@
   <properties>
     <parent.path>${basedir}</parent.path>
 
-    <groovy.version>4.0.12</groovy.version>
+    <groovy.version>4.0.13</groovy.version>
 
     <logback.version>1.4.8</logback.version>
     <slf4j.version>2.0.7</slf4j.version>
