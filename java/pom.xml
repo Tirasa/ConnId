@@ -85,7 +85,7 @@
 
     <groovy.version>4.0.13</groovy.version>
 
-    <logback.version>1.4.9</logback.version>
+    <logback.version>1.4.10</logback.version>
     <slf4j.version>2.0.7</slf4j.version>
 
     <junit.version>5.9.2</junit.version>
