@@ -83,12 +83,12 @@
   <properties>
     <parent.path>${basedir}</parent.path>
 
-    <groovy.version>3.0.17</groovy.version>
+    <groovy.version>3.0.19</groovy.version>
 
     <logback.version>1.2.11</logback.version>
     <slf4j.version>1.7.36</slf4j.version>
 
-    <junit.version>5.9.2</junit.version>
+    <junit.version>5.10.0</junit.version>
 
     <targetJdk>1.8</targetJdk>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -285,7 +285,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.4.1</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -334,7 +334,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <id>copy-javadoc-legal-files</id>
