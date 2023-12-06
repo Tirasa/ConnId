@@ -25,9 +25,7 @@ package org.identityconnectors.framework.impl.serializer.xml;
 
 import java.lang.reflect.Array;
 import java.util.Base64;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Stack;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.XmlUtil;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -51,7 +49,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
         }
     }
 
-    private final Deque<OutputElement> outputStack = new LinkedList<>();
+    private final Stack<OutputElement> outputStack = new Stack<>();
 
     private final StringBuilder rootBuilder;
 
@@ -275,25 +273,27 @@ public class XmlObjectEncoder implements ObjectEncoder {
     private OutputElement getCurrentElement() {
         if (outputStack.isEmpty()) {
             return null;
+        } else {
+            return outputStack.peek();
         }
-        return outputStack.peek();
     }
 
     private StringBuilder getCurrentBuilder() {
         if (outputStack.isEmpty()) {
             return rootBuilder;
+        } else {
+            return getCurrentElement().contents;
         }
-        return getCurrentElement().contents;
     }
 
     private StringBuilder getPreviousBuilder() {
         if (outputStack.isEmpty()) {
             return null;
-        }
-        if (outputStack.size() == 1) {
+        } else if (outputStack.size() == 1) {
             return rootBuilder;
+        } else {
+            return outputStack.get(outputStack.size() - 2).contents;
         }
-        return ((List<OutputElement>) outputStack).get(outputStack.size() - 2).contents;
     }
 
     private void beginElement(String name) {

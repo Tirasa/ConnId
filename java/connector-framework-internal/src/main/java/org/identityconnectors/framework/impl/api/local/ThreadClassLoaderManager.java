@@ -24,9 +24,8 @@
 package org.identityconnectors.framework.impl.api.local;
 
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 import org.identityconnectors.common.logging.Log;
 
@@ -41,13 +40,13 @@ public final class ThreadClassLoaderManager {
     private static final ThreadLocal<ThreadClassLoaderManager> INSTANCE =
             new ThreadLocal<ThreadClassLoaderManager>() {
 
-        @Override
-        public ThreadClassLoaderManager initialValue() {
-            return new ThreadClassLoaderManager();
-        }
-    };
+                @Override
+                public ThreadClassLoaderManager initialValue() {
+                    return new ThreadClassLoaderManager();
+                }
+            };
 
-    private final Deque<ClassLoader> loaderStack = new LinkedList<>();
+    private final Stack<ClassLoader> loaderStack = new Stack<ClassLoader>();
 
     private ThreadClassLoaderManager() {
         // empty constructor for singleton class
@@ -73,7 +72,7 @@ public final class ThreadClassLoaderManager {
      * Sets the given loader as the thread-local classloader.
      *
      * @param loader
-     * The class loader. May be null.
+     *            The class loader. May be null.
      */
     public void pushClassLoader(final ClassLoader loader) {
         loaderStack.push(getCurrentClassLoader());
@@ -92,13 +91,12 @@ public final class ThreadClassLoaderManager {
     }
 
     /**
-     * Hack for OIM. See BundleClassLoader.
-     *
-     * @return all class loaders previously pushed, therefore effectively setting the thread's current
+     * Hack for OIM. See BundleClassLoader. Pops and returns all class loaders
+     * previously pushed, therefore effectively setting the thread's current
      * context class loader to the initial class loader.
      */
     public List<ClassLoader> popAll() {
-        final List<ClassLoader> rv = new ArrayList<>(loaderStack);
+        final List<ClassLoader> rv = new ArrayList<ClassLoader>(loaderStack);
         while (!loaderStack.isEmpty()) {
             popClassLoader();
         }
@@ -109,7 +107,8 @@ public final class ThreadClassLoaderManager {
      * Hack for OIM. See BundleClassLoader. Pushes all class loaders in the list
      * as the context class loader.
      *
-     * @param loaders the loaders to push; never null.
+     * @param loaders
+     *            the loaders to push; never null.
      */
     public void pushAll(final List<ClassLoader> loaders) {
         for (ClassLoader loader : loaders) {

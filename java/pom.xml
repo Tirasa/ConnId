@@ -318,9 +318,6 @@
         <version>2.7.0</version>
         <configuration>
           <javaVersion>${targetJdk}</javaVersion>
-          <exclusions>
-            <exclusion>java/util/Enumeration</exclusion>
-          </exclusions>
         </configuration>
         <executions>
           <execution>
