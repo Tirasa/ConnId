@@ -31,10 +31,11 @@ import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import org.identityconnectors.common.Pair;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.serializer.BinaryObjectSerializer;
@@ -81,7 +82,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
 
         private final List<String> constantBuffer = new ArrayList<>();
 
-        private final Stack<OutputBuffer> outputBufferStack = new Stack<>();
+        private final Deque<OutputBuffer> outputBufferStack = new LinkedList<>();
 
         private final DataOutputStream rootOutput;
 

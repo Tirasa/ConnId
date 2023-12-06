@@ -31,10 +31,11 @@ import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.serializer.BinaryObjectDeserializer;
 import org.identityconnectors.framework.impl.serializer.ObjectDecoder;
@@ -81,7 +82,7 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
 
         private final Map<Integer, String> constantPool = new HashMap<>();
 
-        private final Stack<ReadState> readStateStack = new Stack<>();
+        private final Deque<ReadState> readStateStack = new LinkedList<>();
 
         private final DataInputStream rootInput;
 
@@ -166,35 +167,39 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
 
         public Class<?> readClass() {
             int type = readByte();
-            if (type == BinaryObjectEncoder.OBJECT_TYPE_NULL) {
-                return null;
-            } else if (type == BinaryObjectEncoder.OBJECT_TYPE_ARRAY) {
-                Class<?> componentClass = readClass();
-                return Array.newInstance(componentClass, 0).getClass();
-            } else if (type == BinaryObjectEncoder.OBJECT_TYPE_CLASS) {
-                String typeName = readString(true);
-                ObjectTypeMapper mapper = ObjectSerializerRegistry.getMapperBySerialType(typeName);
-                if (mapper == null) {
-                    throw new ConnectorException("No deserializer for type: " + typeName);
-                }
-                return mapper.getHandledObjectType();
-            } else {
-                throw new ConnectorException("Bad type value: " + type);
+            switch (type) {
+                case BinaryObjectEncoder.OBJECT_TYPE_NULL:
+                    return null;
+
+                case BinaryObjectEncoder.OBJECT_TYPE_ARRAY:
+                    Class<?> componentClass = readClass();
+                    return Array.newInstance(componentClass, 0).getClass();
+
+                case BinaryObjectEncoder.OBJECT_TYPE_CLASS:
+                    String typeName = readString(true);
+                    ObjectTypeMapper mapper = ObjectSerializerRegistry.getMapperBySerialType(typeName);
+                    if (mapper == null) {
+                        throw new ConnectorException("No deserializer for type: " + typeName);
+                    }
+                    return mapper.getHandledObjectType();
+
+                default:
+                    throw new ConnectorException("Bad type value: " + type);
             }
         }
 
         public int getNumAnonymousFields() {
-            ReadState readState = readStateStack.get(readStateStack.size() - 1);
+            ReadState readState = readStateStack.peek();
             return readState.anonymousFields.size();
         }
 
         public void startAnonymousField(int index) {
-            ReadState readState = readStateStack.get(readStateStack.size() - 1);
+            ReadState readState = readStateStack.peek();
             readState.startAnonymousField(index);
         }
 
         public boolean startField(String name) {
-            ReadState readState = readStateStack.get(readStateStack.size() - 1);
+            ReadState readState = readStateStack.peek();
             return readState.startField(name);
         }
 
@@ -264,7 +269,7 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
 
         private DataInputStream getCurrentInput() {
             if (readStateStack.size() > 0) {
-                ReadState state = readStateStack.get(readStateStack.size() - 1);
+                ReadState state = readStateStack.peek();
                 return state.currentInput;
             } else {
                 return rootInput;

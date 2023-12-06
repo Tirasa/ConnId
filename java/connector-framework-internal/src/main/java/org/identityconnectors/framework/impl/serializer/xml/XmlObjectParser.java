@@ -25,8 +25,9 @@ package org.identityconnectors.framework.impl.serializer.xml;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Optional;
-import java.util.Stack;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.SAXParser;
@@ -79,7 +80,7 @@ public class XmlObjectParser {
         /**
          * Stack of elements we are creating.
          */
-        private final Stack<Element> elementStack = new Stack<>();
+        private final Deque<Element> elementStack = new LinkedList<>();
 
         /**
          * Do we want to validate.
