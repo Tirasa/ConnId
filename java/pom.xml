@@ -318,6 +318,10 @@
         <version>2.7.0</version>
         <configuration>
           <javaVersion>${targetJdk}</javaVersion>
+          <exclusions>
+            <exclusion>java/util/Enumeration</exclusion>
+            <exclusion>java/util/Stack."&lt;init&gt;":()V</exclusion>
+          </exclusions>
         </configuration>
         <executions>
           <execution>
