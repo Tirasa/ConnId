@@ -74,9 +74,11 @@ public class ObjectClassTests {
         set.add(ObjectClass.ACCOUNT);
         set.add(ObjectClass.GROUP);
         set.add(ObjectClass.ACCOUNT);
-        assertEquals(2, set.size());
+        set.add(ObjectClass.ANY_OBJECT);
+        assertEquals(3, set.size());
         assertTrue(set.contains(ObjectClass.ACCOUNT));
         assertTrue(set.contains(ObjectClass.GROUP));
+        assertTrue(set.contains(ObjectClass.ANY_OBJECT));
 
         // Test case-insensitivity
         set = new HashSet<ObjectClass>();

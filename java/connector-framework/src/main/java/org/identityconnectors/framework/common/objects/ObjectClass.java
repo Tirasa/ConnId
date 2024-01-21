@@ -61,6 +61,12 @@ public final class ObjectClass {
      */
     public static final String ALL_NAME = createSpecialName("ALL");
 
+    /**
+     * This constant defines a specific {@linkplain #getObjectClassValue value
+     * of ObjectClass} that is reserved for {@link ObjectClass#ANY}.
+     */
+    public static final String ANY_OBJECT_NAME = createSpecialName("ANY_OBJECT");
+
     // =======================================================================
     // Create only after all other static initializers
     // =======================================================================
@@ -99,6 +105,11 @@ public final class ObjectClass {
      * any other operation throws {@link UnsupportedOperationException}
      */
     public static final ObjectClass ALL = new ObjectClass(ALL_NAME);
+
+    /**
+     * Represents an object that is <i>neither</i> an account <i>nor</i> a group
+     */
+    public static final ObjectClass ANY_OBJECT = new ObjectClass(ANY_OBJECT_NAME);
 
     private final String type;
 

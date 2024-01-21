@@ -695,14 +695,16 @@ public class MultiOpTests extends ObjectClassRunner {
     public void testGroupsPredAttribute() {
         final ObjectClassInfo accountInfo = findOInfo(ObjectClass.ACCOUNT);
         final ObjectClassInfo groupInfo = findOInfo(ObjectClass.GROUP);
+        final ObjectClassInfo anyObjectInfo = findOInfo(ObjectClass.ANY_OBJECT);
 
         // run test only in case ACCOUNT and GROUP are supported and GROUPS is supported for ACCOUNT
-        if (accountInfo != null && groupInfo != null
+        if (accountInfo != null && groupInfo != null && anyObjectInfo != null
                 && ConnectorHelper.isCRU(accountInfo, PredefinedAttributes.GROUPS_NAME)) {
 
             Uid groupUid1 = null;
             Uid groupUid2 = null;
             Uid accountUid1 = null;
+            Uid anyObjectUid1 = null;
             try {
                 // create 1st group
                 Set<Attribute> groupAttrs1 = ConnectorHelper.getCreateableAttributes(
@@ -723,6 +725,10 @@ public class MultiOpTests extends ObjectClassRunner {
 
                 accountUid1 = getConnectorFacade().create(ObjectClass.ACCOUNT, accountAttrs1, null);
 
+                Set<Attribute> anyObjectAttrs1 = ConnectorHelper.getCreateableAttributes(
+                        getDataProvider(), anyObjectInfo, getTestName(), 0, true, false);
+                anyObjectUid1 = getConnectorFacade().create(ObjectClass.ANY_OBJECT, anyObjectAttrs1, null);
+
                 // build attributes to get
                 OperationOptionsBuilder oob = new OperationOptionsBuilder();
                 oob.setAttributesToGet(ConnectorHelper.getReadableAttributesNames(accountInfo));
@@ -731,6 +737,13 @@ public class MultiOpTests extends ObjectClassRunner {
                 // get the account to make sure it exists now
                 ConnectorObject obj = getConnectorFacade().getObject(ObjectClass.ACCOUNT,
                         accountUid1, attrsToGet);
+
+                // get the any-object to make sure it exists now
+                oob = new OperationOptionsBuilder();
+                oob.setAttributesToGet(ConnectorHelper.getReadableAttributesNames(anyObjectInfo));
+                OperationOptions anyObjectAttrsToGet = oob.build();
+                ConnectorObject anyObj = getConnectorFacade().getObject(ObjectClass.ANY_OBJECT, 
+                        anyObjectUid1, anyObjectAttrsToGet);
 
                 // check that object was created properly
                 ConnectorHelper.checkObject(accountInfo, obj, accountAttrs1);
@@ -767,6 +780,8 @@ public class MultiOpTests extends ObjectClassRunner {
                         false, null);
                 ConnectorHelper.deleteObject(getConnectorFacade(), ObjectClass.ACCOUNT,
                         accountUid1, false, null);
+                ConnectorHelper.deleteObject(getConnectorFacade(), ObjectClass.ANY_OBJECT, anyObjectUid1,
+                        false, null);
             }
 
         } else {

@@ -2361,6 +2361,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         /// </summary>
         public static readonly String ALL_NAME = ObjectClassUtil.CreateSpecialName("ALL");
         /// <summary>
+        /// This constant defines a specific {@link #getObjectClassValue value
+        /// of ObjectClass} that is reserved for <seealso cref="ObjectClass#ANY"/>
+        /// </summary
+        public static readonly String ANY_OBJECT_NAME = ObjectClassUtil.CreateSpecialName("ANY");
+        /// <summary>
         /// Denotes an account based object.
         /// </summary>
         public static readonly ObjectClass ACCOUNT = new ObjectClass(ACCOUNT_NAME);
@@ -2379,6 +2384,11 @@ namespace Org.IdentityConnectors.Framework.Common.Objects
         /// </para>
         /// </summary>
         public static readonly ObjectClass ALL = new ObjectClass(ALL_NAME);
+        /// <summary>
+        /// Denotes any other type based object.
+        /// I.e. a device
+        /// </summary>
+        public static readonly ObjectClass ANY_OBJECT = new ObjectClass(ANY_OBJECT_NAME);
 
         private readonly String _type;
 
