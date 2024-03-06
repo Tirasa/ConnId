@@ -57,7 +57,7 @@ public final class AttributeBuilder {
 
     List<Object> value;
     
-   AttributeValueCompleteness attributeValueCompleteness = AttributeValueCompleteness.COMPLETE;
+    AttributeValueCompleteness attributeValueCompleteness = AttributeValueCompleteness.COMPLETE;
 
     /**
      * Creates a attribute with the specified name and a {@code null} value.

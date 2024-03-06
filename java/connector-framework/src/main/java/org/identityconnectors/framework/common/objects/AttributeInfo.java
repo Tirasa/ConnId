@@ -28,6 +28,7 @@ import static org.identityconnectors.framework.common.objects.NameUtil.namesEqua
 
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.identityconnectors.common.Assertions;
@@ -56,6 +57,8 @@ public final class AttributeInfo {
     private final String subtype;
     private final String nativeName;
     private final Set<Flags> flags;
+    private final String referencedObjectClassName;
+    private final String roleInReference;
 
     /**
      * Enum of modifier flags to use for attributes. Note that this enum is
@@ -73,7 +76,7 @@ public final class AttributeInfo {
     public static enum Flags {
         REQUIRED, MULTIVALUED, NOT_CREATABLE, NOT_UPDATEABLE, NOT_READABLE, NOT_RETURNED_BY_DEFAULT
     }
-    
+
     /**
      * Enumeration of pre-defined attribute subtypes.
      */
@@ -119,12 +122,54 @@ public final class AttributeInfo {
     		return value;
     	}
     }
+
+    /**
+     * The role of an object in the relationship (provided by specific reference attribute).
+     * We call this object a "holder" below.
+     *
+     * @see #getRoleInReference()
+     */
+    public enum RoleInReference {
+
+        /**
+         * The holder can be considered a subject of the relationship. It is the usual source (starting point)
+         * of relationship navigation, i.e. we usually ask "what objects does the subject hold", not the
+         * way around.
+         *
+         * Typical example: account or other type of group member (when regarding group membership relation).
+         */
+        SUBJECT(AttributeUtil.createSpecialName("SUBJECT")),
+
+        /**
+         * The holder can be considered an object of the relationship. It is the usual target (ending point)
+         * of relationship navigation.
+         *
+         * Typical example: the group that has some members (when regarding group membership relation).
+         */
+        OBJECT(AttributeUtil.createSpecialName("OBJECT"));
+
+        private final String value;
+
+        private RoleInReference(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
     
     AttributeInfo(final String name, final Class<?> type, final Set<Flags> flags) {
     	this(name, type, null, null, flags);
     }
 
     AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName, final Set<Flags> flags) {
+        this(name, type, subtype, nativeName, flags, null, null);
+    }
+
+    AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName, final Set<Flags> flags,
+                  String referencedObjectClassName, String roleInReference) {
         if (StringUtil.isBlank(name)) {
             throw new IllegalStateException("Name must not be blank!");
         }
@@ -148,6 +193,12 @@ public final class AttributeInfo {
                             + name
                             + " is flagged as not-readable, so it should also be as not-returned-by-default.");
         }
+        if ((referencedObjectClassName != null || roleInReference != null) && !ConnectorObjectReference.class.equals(type)) {
+            throw new IllegalArgumentException(
+                    "Referenced object class name and/or role in reference can be set only for reference attributes.");
+        }
+        this.referencedObjectClassName = referencedObjectClassName;
+        this.roleInReference = roleInReference;
     }
 
     /**
@@ -181,7 +232,15 @@ public final class AttributeInfo {
      * (a value form the Subtype enumeration). The subtype may also contain an URI
      * that specifies a custom subtype that the connector recognizes and it is not
      * defined in the pre-defined subtype enumeration.
-     * 
+     *
+     * For {@link ConnectorObjectReference} attributes, the subtype - if present - contains
+     * the connector-wide identification of the reference. This is important especially for
+     * bi-directional relations (like the group membership), where the client might be interested
+     * that the reference attribute (e.g.) {@code group} on the {@code user} object is bound
+     * to the reference attribute (e.g.) {@code member} on the {@code group} object.
+     *
+     * This feature is optional: the subtype may be missing for a reference attribute.
+     *
      * @return attribute subtype.
      */
     public String getSubtype() {
@@ -274,6 +333,31 @@ public final class AttributeInfo {
     }
 
     /**
+     * For reference attributes, this method returns the object class of referenced objects.
+     *
+     * It is optional: the connector may not have this information, or sometimes, there may be more than a single object class
+     * that can be referenced by the attribute. (For example, {@code member} attribute on the {@code group} object can reference
+     * accounts, groups, and other kinds of objects.)
+     */
+    public String getReferencedObjectClassName() {
+        return referencedObjectClassName;
+    }
+
+    /**
+     * For reference attributes, this method provides an indication of the role the holding object plays in the reference.
+     * The standard roles are described in {@link RoleInReference} enumeration.
+     *
+     * May be null if not known or not supported.
+     */
+    public String getRoleInReference() {
+        return roleInReference;
+    }
+
+    public boolean isReference() {
+        return ConnectorObjectReference.class.equals(type);
+    }
+
+    /**
      * Determines if the name parameter matches this {@link AttributeInfo}.
      */
     public boolean is(String name) {
@@ -296,6 +380,12 @@ public final class AttributeInfo {
                 return false;
             }
             if (!CollectionUtil.equals(flags, other.flags)) {
+                return false;
+            }
+            if (!Objects.equals(referencedObjectClassName, other.referencedObjectClassName)) {
+                return false;
+            }
+            if (!Objects.equals(roleInReference, other.roleInReference)) {
                 return false;
             }
             return true;

@@ -162,4 +162,9 @@ public final class ConnectorObjectBuilder {
         Set<Attribute> attrs = CollectionUtil.newReadOnlySet(attributeMap.values());
         return new ConnectorObject(objectClass, attrs);
     }
+
+    public ConnectorObjectIdentification buildIdentification() {
+        return new ConnectorObjectIdentification(
+                objectClass, CollectionUtil.newReadOnlySet(attributeMap.values()));
+    }
 }
