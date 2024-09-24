@@ -348,7 +348,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/apidocs/META-INF</outputDirectory>
+              <outputDirectory>${project.build.directory}/reports/apidocs/META-INF</outputDirectory>
               <resources>
                 <resource>
                   <directory>..</directory>
@@ -463,6 +463,11 @@
         <version>3.10.0</version>
         <configuration>
           <doclint>none</doclint>
+          <release>${targetJdk}</release>
+          <additionalOptions>
+            <additionalOption>--legal-notices</additionalOption>
+            <additionalOption>none</additionalOption>
+          </additionalOptions>
         </configuration>
       </plugin>
       <plugin>
