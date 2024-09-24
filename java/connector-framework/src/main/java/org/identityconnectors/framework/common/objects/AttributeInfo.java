@@ -53,11 +53,17 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 public final class AttributeInfo {
 
     private final String name;
+
     private final Class<?> type;
+
     private final String subtype;
+
     private final String nativeName;
+
     private final Set<Flags> flags;
+
     private final String referencedObjectClassName;
+
     private final String roleInReference;
 
     /**
@@ -74,53 +80,59 @@ public final class AttributeInfo {
      * </ul>
      */
     public static enum Flags {
-        REQUIRED, MULTIVALUED, NOT_CREATABLE, NOT_UPDATEABLE, NOT_READABLE, NOT_RETURNED_BY_DEFAULT
+        REQUIRED,
+        MULTIVALUED,
+        NOT_CREATABLE,
+        NOT_UPDATEABLE,
+        NOT_READABLE,
+        NOT_RETURNED_BY_DEFAULT
+
     }
 
     /**
      * Enumeration of pre-defined attribute subtypes.
      */
     public static enum Subtypes {
-    	/**
-    	 * Case-ignore (case-insensitive) string.
-    	 */
-    	STRING_CASE_IGNORE(AttributeUtil.createSpecialName("STRING_CASE_IGNORE")),
-    	
-    	/**
-    	 * Unique Resource Identifier (RFC 3986)
-    	 */
-    	STRING_URI(AttributeUtil.createSpecialName("STRING_URI")),
-    	
-    	/**
-    	 * LDAP Distinguished Name (RFC 4511)
-    	 */
-    	STRING_LDAP_DN(AttributeUtil.createSpecialName("STRING_LDAP_DN")),
-    	
-    	/**
-    	 * Universally unique identifier (UUID)
-    	 */
-    	STRING_UUID(AttributeUtil.createSpecialName("STRING_UUID")),
-    	
-    	/**
-    	 * XML-formatted string (https://www.w3.org/TR/REC-xml/)
-    	 */
-    	STRING_XML(AttributeUtil.createSpecialName("STRING_XML")),
-    	
-    	/**
-    	 * JSON-formatted string
-    	 */
-    	STRING_JSON(AttributeUtil.createSpecialName("STRING_JSON"));
-    	
-    	private final String value;
+        /**
+         * Case-ignore (case-insensitive) string.
+         */
+        STRING_CASE_IGNORE(AttributeUtil.createSpecialName("STRING_CASE_IGNORE")),
 
-		private Subtypes(String value) {
-			this.value = value;
-		}
-    	
-    	@Override
-    	public String toString() {
-    		return value;
-    	}
+        /**
+         * Unique Resource Identifier (RFC 3986)
+         */
+        STRING_URI(AttributeUtil.createSpecialName("STRING_URI")),
+
+        /**
+         * LDAP Distinguished Name (RFC 4511)
+         */
+        STRING_LDAP_DN(AttributeUtil.createSpecialName("STRING_LDAP_DN")),
+
+        /**
+         * Universally unique identifier (UUID)
+         */
+        STRING_UUID(AttributeUtil.createSpecialName("STRING_UUID")),
+
+        /**
+         * XML-formatted string (https://www.w3.org/TR/REC-xml/)
+         */
+        STRING_XML(AttributeUtil.createSpecialName("STRING_XML")),
+
+        /**
+         * JSON-formatted string
+         */
+        STRING_JSON(AttributeUtil.createSpecialName("STRING_JSON"));
+
+        private final String value;
+
+        private Subtypes(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
     /**
@@ -159,17 +171,15 @@ public final class AttributeInfo {
             return value;
         }
     }
-    
-    AttributeInfo(final String name, final Class<?> type, final Set<Flags> flags) {
-    	this(name, type, null, null, flags);
-    }
 
-    AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName, final Set<Flags> flags) {
+    AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName,
+            final Set<Flags> flags) {
         this(name, type, subtype, nativeName, flags, null, null);
     }
 
-    AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName, final Set<Flags> flags,
-                  String referencedObjectClassName, String roleInReference) {
+    AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName,
+            final Set<Flags> flags,
+            String referencedObjectClassName, String roleInReference) {
         if (StringUtil.isBlank(name)) {
             throw new IllegalStateException("Name must not be blank!");
         }
@@ -190,10 +200,12 @@ public final class AttributeInfo {
         if (!isReadable() && isReturnedByDefault()) {
             throw new IllegalArgumentException(
                     "Attribute "
-                            + name
-                            + " is flagged as not-readable, so it should also be as not-returned-by-default.");
+                    + name
+                    + " is flagged as not-readable, so it should also be as not-returned-by-default.");
         }
-        if ((referencedObjectClassName != null || roleInReference != null) && !ConnectorObjectReference.class.equals(type)) {
+        if ((referencedObjectClassName != null || roleInReference != null)
+                && !ConnectorObjectReference.class.equals(type)) {
+
             throw new IllegalArgumentException(
                     "Referenced object class name and/or role in reference can be set only for reference attributes.");
         }
@@ -221,14 +233,14 @@ public final class AttributeInfo {
     public Class<?> getType() {
         return type;
     }
-    
+
     /**
      * Optional subtype of the attribute. This defines a subformat or provides
      * more specific definition what the attribute contains. E.g. it may define
      * that the attribute contains case-insensitive string, URL, LDAP distinguished
      * name and so on.
-     * 
-     * The subtype may contain one of the pre-defined subtypes 
+     *
+     * The subtype may contain one of the pre-defined subtypes
      * (a value form the Subtype enumeration). The subtype may also contain an URI
      * that specifies a custom subtype that the connector recognizes and it is not
      * defined in the pre-defined subtype enumeration.
@@ -244,10 +256,10 @@ public final class AttributeInfo {
      * @return attribute subtype.
      */
     public String getSubtype() {
-		return subtype;
-	}
+        return subtype;
+    }
 
-	/**
+    /**
      * The native name of the attribute. This is the attribute name as it is
      * known by the resource. It is especially useful for attributes with
      * special names such as __NAME__ or __PASSWORD__. In this case the
@@ -258,10 +270,10 @@ public final class AttributeInfo {
      * @return the native name of the attribute its describing.
      */
     public String getNativeName() {
-		return nativeName;
-	}
+        return nativeName;
+    }
 
-	/**
+    /**
      * Returns the set of flags associated with the attribute.
      *
      * @return the set of flags associated with the attribute
@@ -335,16 +347,17 @@ public final class AttributeInfo {
     /**
      * For reference attributes, this method returns the object class of referenced objects.
      *
-     * It is optional: the connector may not have this information, or sometimes, there may be more than a single object class
-     * that can be referenced by the attribute. (For example, {@code member} attribute on the {@code group} object can reference
-     * accounts, groups, and other kinds of objects.)
+     * It is optional: the connector may not have this information, or sometimes, there may be more than a single object
+     * class that can be referenced by the attribute. (For example, {@code member} attribute on the
+     * {@code group} object can reference accounts, groups, and other kinds of objects.)
      */
     public String getReferencedObjectClassName() {
         return referencedObjectClassName;
     }
 
     /**
-     * For reference attributes, this method provides an indication of the role the holding object plays in the reference.
+     * For reference attributes, this method provides an indication of the role the holding object plays in the
+     * reference.
      * The standard roles are described in {@link RoleInReference} enumeration.
      *
      * May be null if not known or not supported.
@@ -367,7 +380,6 @@ public final class AttributeInfo {
     // =======================================================================
     // Object Overrides
     // =======================================================================
-
     @Override
     public boolean equals(Object obj) {
         boolean ret = false;
@@ -385,10 +397,7 @@ public final class AttributeInfo {
             if (!Objects.equals(referencedObjectClassName, other.referencedObjectClassName)) {
                 return false;
             }
-            if (!Objects.equals(roleInReference, other.roleInReference)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(roleInReference, other.roleInReference);
         }
         return ret;
     }
@@ -402,5 +411,4 @@ public final class AttributeInfo {
     public String toString() {
         return SerializerUtil.serializeXmlObject(this, false);
     }
-
 }

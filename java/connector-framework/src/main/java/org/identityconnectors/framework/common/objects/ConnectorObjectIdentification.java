@@ -28,7 +28,7 @@ import java.util.Set;
  * Represents an identification of a object (e.g., an Account or a Group) on the target resource.
  * Contains one or more attributes that should identify the object. (E.g. {@link Name} but not necessarily that one.)
  *
- * The developer of a Connector will use a {@link ConnectorObjectBuilder} to
+ * The developer of a Connector will use a {@link ConnectorObjectBuilder} to 
  * construct instances of ConnectorObjectIdentification.
  *
  * Similar to {@link ConnectorObject} but with no requirements about object class information
@@ -39,7 +39,7 @@ public final class ConnectorObjectIdentification extends BaseConnectorObject {
     /**
      * Public only for serialization; please use {@link ConnectorObjectBuilder}.
      */
-    public ConnectorObjectIdentification(ObjectClass objectClass, Set<? extends Attribute> attributes) {
+    public ConnectorObjectIdentification(final ObjectClass objectClass, final Set<? extends Attribute> attributes) {
         super(objectClass, attributes);
     }
 

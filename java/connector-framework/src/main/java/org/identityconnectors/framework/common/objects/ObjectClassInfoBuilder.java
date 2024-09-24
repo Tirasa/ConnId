@@ -35,14 +35,18 @@ import org.identityconnectors.common.CollectionUtil;
 public final class ObjectClassInfoBuilder {
 
     private boolean isContainer;
+
     private boolean isAuxiliary;
+
     private boolean isEmbedded;
+
     private String type;
-    private Map<String, AttributeInfo> attributeInfoMap;
+
+    private final Map<String, AttributeInfo> attributeInfoMap;
 
     public ObjectClassInfoBuilder() {
         type = ObjectClass.ACCOUNT_NAME;
-        attributeInfoMap = new HashMap<String, AttributeInfo>();
+        attributeInfoMap = new HashMap<>();
     }
 
     /**
@@ -57,7 +61,7 @@ public final class ObjectClassInfoBuilder {
      * @see ObjectClassInfo#getType()
      * @see ObjectClass#ACCOUNT_NAME
      */
-    public ObjectClassInfoBuilder setType(String type) {
+    public ObjectClassInfoBuilder setType(final String type) {
         this.type = type;
         return this;
     }
@@ -68,10 +72,9 @@ public final class ObjectClassInfoBuilder {
      * Add the specified {@link AttributeInfo} object to the
      * {@link ObjectClassInfo} that is being built.
      */
-    public ObjectClassInfoBuilder addAttributeInfo(AttributeInfo info) {
+    public ObjectClassInfoBuilder addAttributeInfo(final AttributeInfo info) {
         if (attributeInfoMap.containsKey(info.getName())) {
-            throw new IllegalArgumentException(String.format(
-                    FORMAT, info.getName()));
+            throw new IllegalArgumentException(String.format(FORMAT, info.getName()));
         }
         attributeInfoMap.put(info.getName(), info);
         return this;
@@ -81,7 +84,7 @@ public final class ObjectClassInfoBuilder {
      * Add to the {@link ObjectClassInfo} that is being built each
      * {@link AttributeInfo} in the specified collection.
      */
-    public ObjectClassInfoBuilder addAllAttributeInfo(Collection<AttributeInfo> c) {
+    public ObjectClassInfoBuilder addAllAttributeInfo(final Collection<AttributeInfo> c) {
         for (AttributeInfo info : c) {
             addAttributeInfo(info);
         }
@@ -91,18 +94,17 @@ public final class ObjectClassInfoBuilder {
     /**
      * Set to true to indicate this is a container type.
      *
-     * @param container
-     *            True if this is a container type.
+     * @param container True if this is a container type.
      */
-    public void setContainer(boolean container) {
+    public void setContainer(final boolean container) {
         isContainer = container;
     }
-    
-    public void setAuxiliary(boolean isAuxiliary) {
-		this.isAuxiliary = isAuxiliary;
-	}
 
-    public ObjectClassInfoBuilder setEmbedded(boolean embedded) {
+    public void setAuxiliary(final boolean isAuxiliary) {
+        this.isAuxiliary = isAuxiliary;
+    }
+
+    public ObjectClassInfoBuilder setEmbedded(final boolean embedded) {
         isEmbedded = embedded;
         return this;
     }
@@ -112,7 +114,7 @@ public final class ObjectClassInfoBuilder {
      * characteristics that were previously specified using this builder.
      *
      * @return an instance of {@link ObjectClassInfo} with the characteristics
-     *         previously specified.
+     * previously specified.
      */
     public ObjectClassInfo build() {
         // determine if name is missing and add it by default
@@ -120,7 +122,10 @@ public final class ObjectClassInfoBuilder {
             attributeInfoMap.put(Name.NAME, Name.INFO);
         }
         return new ObjectClassInfo(
-                type, CollectionUtil.newSet(attributeInfoMap.values()),
-                isContainer, isAuxiliary, isEmbedded);
+                type,
+                CollectionUtil.newSet(attributeInfoMap.values()),
+                isContainer,
+                isAuxiliary,
+                isEmbedded);
     }
 }

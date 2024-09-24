@@ -23,6 +23,13 @@
  */
 package org.identityconnectors.framework.impl.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -33,7 +40,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 import org.identityconnectors.common.CollectionUtil;
-import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.Version;
 import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.common.security.GuardedString;
@@ -74,8 +80,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ConnectorInfoManagerTestBase {
 
@@ -670,7 +674,8 @@ public abstract class ConnectorInfoManagerTestBase {
         return testBundlesDir;
     }
 
-    // Originally, this method used getTestBundlesDir. We stopped doing that in order to allow tests to be run directly from IDE.
+    // Originally, this method used getTestBundlesDir.
+    // We stopped doing that in order to allow tests to be run directly from IDE.
     List<URL> getTestBundles() {
         List<URL> rv = new ArrayList<>();
         rv.add(getTestBundleUrl("testbundlev1.jar"));

@@ -47,12 +47,17 @@ import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 public final class AttributeInfoBuilder {
 
     private String name;
+
     private Class<?> type;
+
     private String subtype;
+
     private String nativeName;
+
     private final EnumSet<Flags> flags;
 
     private String referencedObjectClassName;
+
     private String roleInReference;
 
     /**
@@ -128,8 +133,7 @@ public final class AttributeInfoBuilder {
     /**
      * Sets the unique name of the {@link AttributeInfo} object.
      *
-     * @param name
-     *            unique name of the {@link AttributeInfo} object.
+     * @param name unique name of the {@link AttributeInfo} object.
      */
     public AttributeInfoBuilder setName(final String name) {
         if (StringUtil.isBlank(name)) {
@@ -143,48 +147,44 @@ public final class AttributeInfoBuilder {
      * Please see {@link FrameworkUtil#checkAttributeType(Class)} for the
      * definitive list of supported types.
      *
-     * @param value
-     *            type for an {@link Attribute}'s value.
-     * @throws IllegalArgumentException
-     *             if the Class is not a supported type.
+     * @param value type for an {@link Attribute}'s value.
+     * @throws IllegalArgumentException if the Class is not a supported type.
      */
     public AttributeInfoBuilder setType(final Class<?> value) {
         FrameworkUtil.checkAttributeType(value);
         type = value;
         return this;
     }
-    
+
     /**
      * Optional subtype of the attribute. This defines a subformat or provides
      * more specific definition what the attribute contains. E.g. it may define
      * that the attribute contains case-insensitive string, URL, LDAP distinguished
      * name and so on.
-     * 
-     * The subtype may contain one of the pre-defined subtypes 
+     *
+     * The subtype may contain one of the pre-defined subtypes
      * (a value form the Subtype enumeration). The subtype may also contain an URI
      * that specifies a custom subtype that the connector recognizes and it is not
      * defined in the pre-defined subtype enumeration.
-     * 
+     *
      * See {@link AttributeInfo#Subtypes} for the list of pre-defined subtypes.
-     * 
-     * @param subtype
-     * 			subtype for an {@link Attribute}'s value.
+     *
+     * @param subtype subtype for an {@link Attribute}'s value.
      */
     public AttributeInfoBuilder setSubtype(String subtype) {
-		this.subtype = subtype;
-		return this;
-	}
-    
-    public AttributeInfoBuilder setSubtype(AttributeInfo.Subtypes subtype) {
-		this.subtype = subtype.toString();
-		return this;
-	}
+        this.subtype = subtype;
+        return this;
+    }
 
-	/**
+    public AttributeInfoBuilder setSubtype(AttributeInfo.Subtypes subtype) {
+        this.subtype = subtype.toString();
+        return this;
+    }
+
+    /**
      * Sets the native name of the {@link AttributeInfo} object.
      *
-     * @param nativeName
-     *            native name of the {@link AttributeInfo} object.
+     * @param nativeName native name of the {@link AttributeInfo} object.
      */
     public AttributeInfoBuilder setNativeName(final String nativeName) {
         this.nativeName = nativeName;
@@ -240,18 +240,18 @@ public final class AttributeInfoBuilder {
      * Sets all of the flags for this builder.
      *
      * @param flags
-     *            The set of attribute info flags. Null means clear all flags.
-     *            <p>
-     *            NOTE: EnumSet.noneOf(AttributeInfo.Flags.class) results in an
-     *            attribute with the default behavior:
-     *            <ul>
-     *            <li>updateable</li>
-     *            <li>creatable</li>
-     *            <li>returned by default</li>
-     *            <li>readable</li>
-     *            <li>single-valued</li>
-     *            <li>optional</li>
-     *            </ul>
+     * The set of attribute info flags. Null means clear all flags.
+     * <p>
+     * NOTE: EnumSet.noneOf(AttributeInfo.Flags.class) results in an
+     * attribute with the default behavior:
+     * <ul>
+     * <li>updateable</li>
+     * <li>creatable</li>
+     * <li>returned by default</li>
+     * <li>readable</li>
+     * <li>single-valued</li>
+     * <li>optional</li>
+     * </ul>
      */
     public AttributeInfoBuilder setFlags(Set<Flags> flags) {
         this.flags.clear();
@@ -284,12 +284,9 @@ public final class AttributeInfoBuilder {
      * new AttributeInfoBuilder(name,type).setFlags(flags).build()
      * </code>
      *
-     * @param name
-     *            The name of the attribute
-     * @param type
-     *            The type of the attribute
-     * @param flags
-     *            The flags for the attribute. Null means clear all flags
+     * @param name The name of the attribute
+     * @param type The type of the attribute
+     * @param flags The flags for the attribute. Null means clear all flags
      * @return The attribute info
      */
     public static AttributeInfo build(String name, Class<?> type, Set<Flags> flags) {
@@ -301,10 +298,8 @@ public final class AttributeInfoBuilder {
      * AttributeInfoBuilder.build(name,type,null)
      * </code>
      *
-     * @param name
-     *            The name of the attribute
-     * @param type
-     *            The type of the attribute
+     * @param name The name of the attribute
+     * @param type The type of the attribute
      * @return The attribute info
      */
     public static AttributeInfo build(String name, Class<?> type) {
@@ -316,8 +311,7 @@ public final class AttributeInfoBuilder {
      * AttributeInfoBuilder.build(name, String.class)
      * </code>
      *
-     * @param name
-     *            The name of the attribute
+     * @param name The name of the attribute
      * @return The attribute info
      */
     public static AttributeInfo build(String name) {
@@ -329,8 +323,7 @@ public final class AttributeInfoBuilder {
      *
      * Equivalent to: <code>new AttributeInfoBuilder(name, String.class)</code>
      *
-     * @param name
-     *            The name of the attribute
+     * @param name The name of the attribute
      * @return The attribute info builder with predefined name and type value.
      * @since 1.4
      */
@@ -343,10 +336,8 @@ public final class AttributeInfoBuilder {
      *
      * Equivalent to: <code>new AttributeInfoBuilder(name, type)</code>
      *
-     * @param name
-     *            The name of the attribute
-     * @param type
-     *            The type of the attribute
+     * @param name The name of the attribute
+     * @param type The type of the attribute
      * @return The attribute info builder with predefined name and type value.
      * @since 1.4
      */

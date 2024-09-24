@@ -37,17 +37,19 @@ import org.identityconnectors.framework.spi.operations.AuthenticateOp;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 import org.identityconnectors.testcommon.TstCommon;
 
-@ConnectorClass(configurationClass=TstConnectorConfig.class,
-        displayNameKey="TestConnector")
+@ConnectorClass(configurationClass = TstConnectorConfig.class,
+        displayNameKey = "TestConnector")
 public class TstConnector implements CreateOp, AuthenticateOp, Connector {
 
     private Configuration _config;
-    
+
+    @Override
     public Uid create(ObjectClass objectClass, Set<Attribute> createAttributes, OperationOptions options) {
         String version = TstCommon.getVersion();
         return new Uid(version);
     }
 
+    @Override
     public Uid authenticate(ObjectClass oclass, String username, GuardedString password, OperationOptions options) {
         // The native library is an empty file, so this should fail (and tests expect it).
         System.loadLibrary("native");
@@ -55,16 +57,18 @@ public class TstConnector implements CreateOp, AuthenticateOp, Connector {
         throw new AssertionError("The loadLibrary call did not fail");
     }
 
+    @Override
     public void init(Configuration cfg) {
         _config = cfg;
     }
 
+    @Override
     public Configuration getConfiguration() {
         return _config;
     }
 
+    @Override
     public void dispose() {
-
     }
 
     public Schema getSchema() {

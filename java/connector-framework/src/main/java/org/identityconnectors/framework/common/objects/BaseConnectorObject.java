@@ -34,14 +34,15 @@ import java.util.Set;
 public abstract class BaseConnectorObject {
 
     private final ObjectClass objectClass;
-    final Map<String, Attribute> attributeMap;
+
+    protected final Map<String, Attribute> attributeMap;
 
     BaseConnectorObject(ObjectClass objectClass, Set<? extends Attribute> attributes) {
         // For connector object identification, it is legal to have no object class information.
         if (ObjectClass.ALL.equals(objectClass)) {
             throw new IllegalArgumentException("Connector object class can not be type of __ALL__");
         }
-        if (attributes == null || attributes.isEmpty()) {
+        if (CollectionUtil.isEmpty(attributes)) {
             throw new IllegalArgumentException("The set can not be null or empty.");
         }
         this.objectClass = objectClass;
@@ -77,7 +78,8 @@ public abstract class BaseConnectorObject {
     }
 
     /**
-     * Returns the identification of this object. For full objects it means providing {@link Name} and {@link Uid} attributes.
+     * Returns the identification of this object. For full objects it means providing {@link Name} and {@link Uid}
+     * attributes.
      * (We have no other way of telling what attributes are the identifiers.)
      */
     public abstract ConnectorObjectIdentification getIdentification();

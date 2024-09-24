@@ -60,37 +60,52 @@ import org.identityconnectors.framework.spi.operations.SyncOp;
 import org.identityconnectors.testcommon.TstCommon;
 
 @ConnectorClass(
-    displayNameKey="TestConnector",
-    categoryKey="TestConnector.category",
-    configurationClass=TstConnectorConfig.class)
+        displayNameKey = "TestConnector",
+        categoryKey = "TestConnector.category",
+        configurationClass = TstConnectorConfig.class)
 public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, SearchOp<String>, SyncOp {
 
     public static final String USER_CLASS_NAME = "user";
+
     public static final String GROUP_CLASS_NAME = "group";
+
     public static final String ACCESS_CLASS_NAME = "access";
+
     public static final String MEMBER_OF_ATTR_NAME = "memberOf";
+
     public static final String MEMBERS_ATTR_NAME = "members";
+
     public static final String ACCESS_ATTR_NAME = "access";
+
     public static final String GROUP_ATTR_NAME = "group";
+
     public static final String GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME = "groupMembership";
 
     // test objects
     public static final String USER_100_UID = "b2ca2464-8aff-4bc4-9b7f-e68ad27d9f3d";
+
     public static final String USER_101_UID = "96010a29-aad5-43eb-b583-d5b897e3243c";
+
     public static final String USER_100_NAME = "user100";
+
     public static final String USER_101_NAME = "user101";
+
     public static final String GROUP_1_UID = "0a4be7af-157d-49fc-985f-f782ab4eef5e";
+
     public static final String GROUP_2_UID = "84fe911a-2e5c-4b67-9423-048e82445961";
+
     public static final String GROUP_1_NAME = "group1";
+
     public static final String GROUP_2_NAME = "group2";
 
     private static int _connectionCount = 0;
+
     private MyTstConnection _myConnection;
+
     private TstConnectorConfig _config;
 
     public static void checkClassLoader() {
-        if (Thread.currentThread().getContextClassLoader() !=
-            TstConnector.class.getClassLoader()) {
+        if (Thread.currentThread().getContextClassLoader() != TstConnector.class.getClassLoader()) {
             throw new IllegalStateException("Unexpected classloader");
         }
     }
@@ -102,27 +117,31 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
     @Override
     public Uid create(ObjectClass objectClass, Set<Attribute> createAttributes, OperationOptions options) {
         checkClassLoader();
-        Integer delay = (Integer)options.getOptions().get("delay");
-        if ( delay != null ) {
-            try { Thread.sleep(delay.intValue()); } catch (Exception e) {}
+        Integer delay = (Integer) options.getOptions().get("delay");
+        if (delay != null) {
+            try {
+                Thread.sleep(delay);
+            } catch (Exception e) {
+            }
         }
-        if ( options.getOptions().get("testPooling") != null) {
+        if (options.getOptions().get("testPooling") != null) {
             return new Uid(String.valueOf(_myConnection.getConnectionNumber()));
-        }
-        else {
+        } else {
             String version = TstCommon.getVersion();
             return new Uid(version);
         }
     }
+
     @Override
     public void init(Configuration cfg) {
         checkClassLoader();
-        _config = (TstConnectorConfig)cfg;
+        _config = (TstConnectorConfig) cfg;
         if (_config.getResetConnectionCount()) {
             _connectionCount = 0;
         }
         _myConnection = new MyTstConnection(_connectionCount++);
     }
+
     @Override
     public Configuration getConfiguration() {
         return _config;
@@ -148,15 +167,17 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
      */
     public String concat(String s1, String s2) {
         checkClassLoader();
-        return s1+s2;
+        return s1 + s2;
     }
 
     @Override
     public FilterTranslator<String> createFilterTranslator(ObjectClass objectClass, OperationOptions options) {
-         checkClassLoader();
-         //no translation - ok since this is just for tests
-         return new AbstractFilterTranslator<String>(){};
+        checkClassLoader();
+        //no translation - ok since this is just for tests
+        return new AbstractFilterTranslator<String>() {
+        };
     }
+
     @Override
     public void executeQuery(ObjectClass objectClass, String query, ResultsHandler handler, OperationOptions options) {
         checkClassLoader();
@@ -167,18 +188,21 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         }
 
         int remaining = _config.getNumResults();
-        for (int i = 0; i < _config.getNumResults(); i++ ) {
-            Integer delay = (Integer)options.getOptions().get("delay");
-            if ( delay != null ) {
-                try { Thread.sleep(delay.intValue()); } catch (Exception e) {}
+        for (int i = 0; i < _config.getNumResults(); i++) {
+            Integer delay = (Integer) options.getOptions().get("delay");
+            if (delay != null) {
+                try {
+                    Thread.sleep(delay);
+                } catch (Exception e) {
+                }
             }
             ConnectorObjectBuilder builder =
-                new ConnectorObjectBuilder();
+                    new ConnectorObjectBuilder();
             builder.setUid(Integer.toString(i));
             builder.setName(Integer.toString(i));
             builder.setObjectClass(objectClass);
-            for ( int j = 0; j < 50; j++ ) {
-                builder.addAttribute("myattribute"+j,"myvaluevaluevalue"+j);
+            for (int j = 0; j < 50; j++) {
+                builder.addAttribute("myattribute" + j, "myvaluevaluevalue" + j);
             }
 
             ConnectorObject rv = builder.build();
@@ -190,7 +214,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         }
 
         if (handler instanceof SearchResultsHandler) {
-            ((SearchResultsHandler) handler).handleResult(new SearchResult("",remaining));
+            ((SearchResultsHandler) handler).handleResult(new SearchResult("", remaining));
         }
     }
 
@@ -198,7 +222,8 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         ConnectorObjectReference user100Ref = createUserIdOnlyReference(USER_100_NAME);
         ConnectorObjectReference user101Ref = createUserIdOnlyReference(USER_101_NAME);
 
-        ConnectorObjectReference group1Ref = createGroupFullReference(GROUP_1_UID, GROUP_1_NAME, user100Ref, user101Ref);
+        ConnectorObjectReference group1Ref =
+                createGroupFullReference(GROUP_1_UID, GROUP_1_NAME, user100Ref, user101Ref);
         ConnectorObjectReference group2Ref = createGroupFullReference(GROUP_2_UID, GROUP_2_NAME, user100Ref);
 
         ConnectorObject user100 = createUser(USER_100_UID, USER_100_NAME, group1Ref, group2Ref);
@@ -226,7 +251,9 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
                 .build();
     }
 
-    private ConnectorObjectReference createGroupFullReference(String uid, String name, ConnectorObjectReference... members) {
+    private ConnectorObjectReference createGroupFullReference(
+            String uid, String name, ConnectorObjectReference... members) {
+
         return new ConnectorObjectReference(
                 new ConnectorObjectBuilder()
                         .setUid(uid)
@@ -237,20 +264,23 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
     }
 
     @Override
-    public void sync(ObjectClass objectClass, SyncToken token,
-                     SyncResultsHandler handler,
-                     OperationOptions options) {
+    public void sync(
+            ObjectClass objectClass,
+            SyncToken token,
+            SyncResultsHandler handler,
+            OperationOptions options) {
+
         checkClassLoader();
         int remaining = _config.getNumResults();
-        for (int i = 0; i < _config.getNumResults(); i++ ) {
+        for (int i = 0; i < _config.getNumResults(); i++) {
             ConnectorObjectBuilder obuilder =
-                new ConnectorObjectBuilder();
+                    new ConnectorObjectBuilder();
             obuilder.setUid(Integer.toString(i));
             obuilder.setName(Integer.toString(i));
             obuilder.setObjectClass(objectClass);
 
             SyncDeltaBuilder builder =
-                new SyncDeltaBuilder();
+                    new SyncDeltaBuilder();
             builder.setObject(obuilder.build());
             builder.setDeltaType(SyncDeltaType.CREATE_OR_UPDATE);
             builder.setToken(new SyncToken("mytoken"));
@@ -265,6 +295,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             ((SyncTokenResultsHandler) handler).handleResult(new SyncToken(remaining));
         }
     }
+
     @Override
     public SyncToken getLatestSyncToken(ObjectClass objectClass) {
         checkClassLoader();
@@ -275,11 +306,11 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
     public Schema schema() {
         checkClassLoader();
         SchemaBuilder schemaBuilder = new SchemaBuilder(TstConnector.class);
-        for ( int i = 0 ; i < 2; i++ ) {
+        for (int i = 0; i < 2; i++) {
             ObjectClassInfoBuilder classBuilder = new ObjectClassInfoBuilder();
-            classBuilder.setType("class"+i);
-            for ( int j = 0; j < 200; j++) {
-                classBuilder.addAttributeInfo(AttributeInfoBuilder.build("attributename"+j, String.class));
+            classBuilder.setType("class" + i);
+            for (int j = 0; j < 200; j++) {
+                classBuilder.addAttributeInfo(AttributeInfoBuilder.build("attributename" + j, String.class));
             }
             schemaBuilder.defineObjectClass(classBuilder.build());
         }

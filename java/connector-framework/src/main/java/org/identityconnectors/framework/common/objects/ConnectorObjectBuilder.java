@@ -42,13 +42,14 @@ import org.identityconnectors.common.CollectionUtil;
 public final class ConnectorObjectBuilder {
 
     private ObjectClass objectClass;
+
     private Map<String, Attribute> attributeMap;
 
     // =======================================================================
     // Constructors
     // =======================================================================
     public ConnectorObjectBuilder() {
-        attributeMap = new HashMap<String, Attribute>();
+        attributeMap = new HashMap<>();
         // default always add the account object class..
         setObjectClass(ObjectClass.ACCOUNT);
     }
@@ -146,17 +147,16 @@ public final class ConnectorObjectBuilder {
         addAttribute(AttributeBuilder.build(name, obj));
         return this;
     }
-    
+
     // =======================================================================
     // Build Out..
     // =======================================================================
-
     /**
      * Builds a 'ConnectorObject' based on the attributes and Uid provided.
      */
     public ConnectorObject build() {
         // check that there are attributes to return..
-        if (attributeMap.size() == 0) {
+        if (attributeMap.isEmpty()) {
             throw new IllegalStateException("No attributes set!");
         }
         Set<Attribute> attrs = CollectionUtil.newReadOnlySet(attributeMap.values());
@@ -164,7 +164,6 @@ public final class ConnectorObjectBuilder {
     }
 
     public ConnectorObjectIdentification buildIdentification() {
-        return new ConnectorObjectIdentification(
-                objectClass, CollectionUtil.newReadOnlySet(attributeMap.values()));
+        return new ConnectorObjectIdentification(objectClass, CollectionUtil.newReadOnlySet(attributeMap.values()));
     }
 }

@@ -42,26 +42,32 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 public final class ObjectClassInfo {
 
     private final String type;
+
     private final Set<AttributeInfo> attributeInfos;
+
     private final boolean isContainer;
+
     private final boolean isAuxiliary;
+
     private final boolean isEmbedded;
 
     /**
      * Public only for serialization; Use ObjectClassInfoBuilder instead.
      *
-     * @param type
-     *            The name of the object class
-     * @param attrInfo
-     *            The attributes of the object class.
-     * @param isContainer
-     *            True if this can contain other object classes.
+     * @param type The name of the object class
+     * @param attrInfo The attributes of the object class.
+     * @param isContainer True if this can contain other object classes.
      */
     public ObjectClassInfo(
-            String type, Set<AttributeInfo> attrInfo, boolean isContainer, boolean isAuxiliary, boolean isEmbedded) {
+            final String type,
+            final Set<AttributeInfo> attrInfo,
+            final boolean isContainer,
+            final boolean isAuxiliary,
+            final boolean isEmbedded) {
+
         Assertions.nullCheck(type, "type");
         this.type = type;
-        attributeInfos = CollectionUtil.newReadOnlySet(attrInfo);
+        this.attributeInfos = CollectionUtil.newReadOnlySet(attrInfo);
         this.isContainer = isContainer;
         this.isAuxiliary = isAuxiliary;
         this.isEmbedded = isEmbedded;
@@ -81,8 +87,8 @@ public final class ObjectClassInfo {
      * Auxiliary object classes define additional characteristics of the object.
      */
     public boolean isAuxiliary() {
-		return isAuxiliary;
-	}
+        return isAuxiliary;
+    }
 
     /**
      * If {@code true}, objects of this class are meant to be embedded in other objects.
@@ -96,7 +102,7 @@ public final class ObjectClassInfo {
         return isEmbedded;
     }
 
-	public Set<AttributeInfo> getAttributeInfo() {
+    public Set<AttributeInfo> getAttributeInfo() {
         return CollectionUtil.newReadOnlySet(attributeInfos);
     }
 
@@ -107,18 +113,16 @@ public final class ObjectClassInfo {
     /**
      * Determines if the 'name' matches this {@link ObjectClassInfo}.
      *
-     * @param name
-     *            case-insensitive string representation of the
-     *            ObjectClassInfo's type.
-     * @return <code>true</code> if the case insensitive type is equal to that
-     *         of the one in this {@link ObjectClassInfo}.
+     * @param name case-insensitive string representation of the ObjectClassInfo's type.
+     * @return <code>true</code> if the case insensitive type is equal to that of the one in this
+     * {@link ObjectClassInfo}.
      */
-    public boolean is(String name) {
+    public boolean is(final String name) {
         return namesEqual(type, name);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         // test identity
         if (this == obj) {
             return true;
@@ -146,10 +150,7 @@ public final class ObjectClassInfo {
         if (!isAuxiliary == other.isAuxiliary) {
             return false;
         }
-        if (!isEmbedded == other.isEmbedded) {
-            return false;
-        }
-        return true;
+        return !isEmbedded != other.isEmbedded;
     }
 
     @Override

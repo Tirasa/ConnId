@@ -41,8 +41,7 @@ public final class ConnectorObject extends BaseConnectorObject {
     /**
      * Public only for serialization; please use {@link ConnectorObjectBuilder}.
      *
-     * @throws IllegalArgumentException
-     *             if {@link Name} or {@link Uid} is missing from the set.
+     * @throws IllegalArgumentException if {@link Name} or {@link Uid} is missing from the set.
      */
     public ConnectorObject(ObjectClass objectClass, Set<? extends Attribute> attributes) {
         super(objectClass, attributes);

@@ -27,10 +27,12 @@ package org.identityconnectors.framework.impl.serializer;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.identityconnectors.common.script.Script;
 import org.identityconnectors.common.script.ScriptBuilder;
@@ -61,10 +63,9 @@ import org.identityconnectors.framework.impl.api.remote.RemoteWrappedException;
  */
 class CommonObjectHandlers {
 
-    public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<ObjectTypeMapper>();
+    public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<>();
 
-    private static abstract class AttributeHandler<T extends Attribute> extends
-            AbstractObjectSerializationHandler {
+    private static abstract class AttributeHandler<T extends Attribute> extends AbstractObjectSerializationHandler {
 
         protected AttributeHandler(final Class<T> clazz, final String typeName) {
             super(clazz, typeName);
@@ -74,7 +75,7 @@ class CommonObjectHandlers {
         public final Object deserialize(final ObjectDecoder decoder) {
             final String name = decoder.readStringField("name", null);
             @SuppressWarnings("unchecked")
-            final List<Object> value = (List) decoder.readObjectField("Values", List.class, null);
+            final List<Object> value = (List<Object>) decoder.readObjectField("Values", List.class, null);
             return createAttribute(name, value);
         }
 
@@ -117,8 +118,8 @@ class CommonObjectHandlers {
 
     static {
 
-        HANDLERS.add(new ThrowableHandler<AlreadyExistsException>(AlreadyExistsException.class,
-                "AlreadyExistsException") {
+        HANDLERS.add(new ThrowableHandler<AlreadyExistsException>(
+                AlreadyExistsException.class, "AlreadyExistsException") {
 
             @Override
             protected AlreadyExistsException createException(final String message) {
@@ -126,8 +127,8 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<ConfigurationException>(ConfigurationException.class,
-                "ConfigurationException") {
+        HANDLERS.add(new ThrowableHandler<ConfigurationException>(
+                ConfigurationException.class, "ConfigurationException") {
 
             @Override
             protected ConfigurationException createException(final String message) {
@@ -153,8 +154,8 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<ConnectorIOException>(ConnectorIOException.class,
-                "ConnectorIOException") {
+        HANDLERS.add(new ThrowableHandler<ConnectorIOException>(
+                ConnectorIOException.class, "ConnectorIOException") {
 
             @Override
             protected ConnectorIOException createException(final String message) {
@@ -162,8 +163,8 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<PasswordExpiredException>(PasswordExpiredException.class,
-                "PasswordExpiredException") {
+        HANDLERS.add(new ThrowableHandler<PasswordExpiredException>(
+                PasswordExpiredException.class, "PasswordExpiredException") {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
@@ -186,8 +187,8 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<InvalidPasswordException>(InvalidPasswordException.class,
-                "InvalidPasswordException") {
+        HANDLERS.add(new ThrowableHandler<InvalidPasswordException>(
+                InvalidPasswordException.class, "InvalidPasswordException") {
 
             @Override
             protected InvalidPasswordException createException(final String message) {
@@ -195,8 +196,7 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<UnknownUidException>(UnknownUidException.class,
-                "UnknownUidException") {
+        HANDLERS.add(new ThrowableHandler<UnknownUidException>(UnknownUidException.class, "UnknownUidException") {
 
             @Override
             protected UnknownUidException createException(final String message) {
@@ -267,8 +267,7 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<RetryableException>(RetryableException.class,
-                "RetryableException") {
+        HANDLERS.add(new ThrowableHandler<RetryableException>(RetryableException.class, "RetryableException") {
 
             @Override
             protected RetryableException createException(final String message) {
@@ -276,21 +275,16 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new AbstractObjectSerializationHandler(RemoteWrappedException.class,
-                "RemoteWrappedException") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(RemoteWrappedException.class, "RemoteWrappedException") {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
-                String throwableClass =
-                        decoder.readStringField(RemoteWrappedException.FIELD_CLASS,
-                                ConnectorException.class.getName());
-                String message =
-                        decoder.readStringField(RemoteWrappedException.FIELD_MESSAGE, null);
-                RemoteWrappedException cause =
-                        (RemoteWrappedException) decoder.readObjectField("RemoteWrappedException",
-                                RemoteWrappedException.class, null);
-                String stackTrace =
-                        decoder.readStringField(RemoteWrappedException.FIELD_STACK_TRACE, null);
+                String throwableClass = decoder.readStringField(
+                        RemoteWrappedException.FIELD_CLASS, ConnectorException.class.getName());
+                String message = decoder.readStringField(RemoteWrappedException.FIELD_MESSAGE, null);
+                RemoteWrappedException cause = (RemoteWrappedException) decoder.
+                        readObjectField("RemoteWrappedException", RemoteWrappedException.class, null);
+                String stackTrace = decoder.readStringField(RemoteWrappedException.FIELD_STACK_TRACE, null);
 
                 return new RemoteWrappedException(throwableClass, message, cause, stackTrace);
             }
@@ -298,17 +292,14 @@ class CommonObjectHandlers {
             @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final RemoteWrappedException val = (RemoteWrappedException) object;
-                encoder.writeStringField(RemoteWrappedException.FIELD_CLASS, val
-                        .getExceptionClass());
+                encoder.writeStringField(RemoteWrappedException.FIELD_CLASS, val.getExceptionClass());
                 encoder.writeStringField(RemoteWrappedException.FIELD_MESSAGE, val.getMessage());
                 encoder.writeObjectField("RemoteWrappedException", val.getCause(), true);
-                encoder.writeStringField(RemoteWrappedException.FIELD_STACK_TRACE, val
-                        .readStackTrace());
+                encoder.writeStringField(RemoteWrappedException.FIELD_STACK_TRACE, val.readStackTrace());
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<ConnectorException>(ConnectorException.class,
-                "ConnectorException") {
+        HANDLERS.add(new ThrowableHandler<ConnectorException>(ConnectorException.class, "ConnectorException") {
 
             @Override
             protected ConnectorException createException(final String message) {
@@ -316,8 +307,8 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<IllegalArgumentException>(IllegalArgumentException.class,
-                "IllegalArgumentException") {
+        HANDLERS.add(new ThrowableHandler<IllegalArgumentException>(
+                IllegalArgumentException.class, "IllegalArgumentException") {
 
             @Override
             protected IllegalArgumentException createException(final String message) {
@@ -325,8 +316,7 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new ThrowableHandler<RuntimeException>(RuntimeException.class,
-                "RuntimeException") {
+        HANDLERS.add(new ThrowableHandler<RuntimeException>(RuntimeException.class, "RuntimeException") {
 
             @Override
             protected RuntimeException createException(final String message) {
@@ -364,9 +354,8 @@ class CommonObjectHandlers {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
-                final AttributeInfoBuilder builder =
-                        new AttributeInfoBuilder(decoder.readStringField("name", null), decoder
-                                .readClassField("type", null));
+                final AttributeInfoBuilder builder = new AttributeInfoBuilder(
+                        decoder.readStringField("name", null), decoder.readClassField("type", null));
                 final Set<Flags> flags = EnumSet.noneOf(Flags.class);
                 final int count = decoder.getNumSubObjects();
                 for (int i = 0; i < count; i++) {
@@ -388,8 +377,7 @@ class CommonObjectHandlers {
                 final AttributeInfo val = (AttributeInfo) object;
                 encoder.writeStringField("name", val.getName());
                 encoder.writeClassField("type", val.getType());
-                final Set<Flags> flags = val.getFlags();
-                for (Flags flag : flags) {
+                for (Flags flag : val.getFlags()) {
                     encoder.writeObjectContents(flag);
                 }
                 encoder.writeStringField("nativeName", val.getNativeName());
@@ -399,17 +387,15 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new AbstractObjectSerializationHandler(ConnectorObject.class,
-                "ConnectorObject") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(ConnectorObject.class, "ConnectorObject") {
 
             @Override
             public Object deserialize(ObjectDecoder decoder) {
-                final ObjectClass objectClass =
-                        (ObjectClass) decoder.readObjectField("ObjectClass", ObjectClass.class,
-                                null);
+                final ObjectClass objectClass = (ObjectClass) decoder.
+                        readObjectField("ObjectClass", ObjectClass.class, null);
                 @SuppressWarnings("unchecked")
-                Set<? extends Attribute> atts =
-                        (Set<? extends Attribute>) decoder.readObjectField("Attributes", Set.class, null);
+                Set<? extends Attribute> atts = (Set<? extends Attribute>) decoder.
+                        readObjectField("Attributes", Set.class, null);
                 return new ConnectorObject(objectClass, atts);
             }
 
@@ -421,8 +407,8 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new AbstractObjectSerializationHandler(ConnectorObjectIdentification.class,
-                "ConnectorObjectIdentification") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(
+                ConnectorObjectIdentification.class, "ConnectorObjectIdentification") {
 
             @SuppressWarnings("unchecked")
             @Override
@@ -486,8 +472,7 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new AbstractObjectSerializationHandler(ObjectClassInfo.class,
-                "ObjectClassInfo") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(ObjectClassInfo.class, "ObjectClassInfo") {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
@@ -497,8 +482,7 @@ class CommonObjectHandlers {
                 final boolean embedded = decoder.readBooleanField("embedded", false);
 
                 @SuppressWarnings("unchecked")
-                final Set<AttributeInfo> attrInfo =
-                        (Set) decoder.readObjectField("AttributeInfos", Set.class, null);
+                final Set<AttributeInfo> attrInfo = (Set) decoder.readObjectField("AttributeInfos", Set.class, null);
 
                 return new ObjectClassInfo(type, attrInfo, container, auxiliary, embedded);
             }
@@ -521,57 +505,42 @@ class CommonObjectHandlers {
             public Object deserialize(final ObjectDecoder decoder) {
                 @SuppressWarnings("unchecked")
                 final Set<ObjectClassInfo> objectClasses =
-                        (Set) decoder.readObjectField("ObjectClassInfos", Set.class, null);
-                final Map<String, ObjectClassInfo> objectClassesByName =
-                        new HashMap<String, ObjectClassInfo>();
-                for (ObjectClassInfo info : objectClasses) {
-                    objectClassesByName.put(info.getType(), info);
-                }
+                        (Set<ObjectClassInfo>) decoder.readObjectField("ObjectClassInfos", Set.class, null);
+                final Map<String, ObjectClassInfo> objectClassesByName = objectClasses.stream().
+                        collect(Collectors.toMap(ObjectClassInfo::getType, Function.identity()));
+
                 @SuppressWarnings("unchecked")
                 final Set<OperationOptionInfo> operationOptions =
-                        (Set) decoder.readObjectField("OperationOptionInfos", Set.class, null);
-                final Map<String, OperationOptionInfo> optionsByName =
-                        new HashMap<String, OperationOptionInfo>();
-                for (OperationOptionInfo info : operationOptions) {
-                    optionsByName.put(info.getName(), info);
-                }
+                        (Set<OperationOptionInfo>) decoder.readObjectField("OperationOptionInfos", Set.class, null);
+                final Map<String, OperationOptionInfo> optionsByName = operationOptions.stream().
+                        collect(Collectors.toMap(OperationOptionInfo::getName, Function.identity()));
+
                 @SuppressWarnings("unchecked")
                 final Map<Class<? extends APIOperation>, Set<String>> objectClassNamesByOperation =
-                        (Map) decoder.readObjectField("objectClassesByOperation", null, null);
+                        (Map<Class<? extends APIOperation>, Set<String>>) decoder.
+                                readObjectField("objectClassesByOperation", null, null);
                 @SuppressWarnings("unchecked")
                 final Map<Class<? extends APIOperation>, Set<String>> optionsNamesByOperation =
-                        (Map) decoder.readObjectField("optionsByOperation", null, null);
+                        (Map<Class<? extends APIOperation>, Set<String>>) decoder.
+                                readObjectField("optionsByOperation", null, null);
                 final Map<Class<? extends APIOperation>, Set<ObjectClassInfo>> objectClassesByOperation =
-                        new HashMap<Class<? extends APIOperation>, Set<ObjectClassInfo>>();
-                for (Map.Entry<Class<? extends APIOperation>, Set<String>> entry : objectClassNamesByOperation
-                        .entrySet()) {
-                    final Set<String> names = entry.getValue();
-                    final Set<ObjectClassInfo> infos = new HashSet<ObjectClassInfo>();
-                    for (String name : names) {
-                        final ObjectClassInfo objectClass = objectClassesByName.get(name);
-                        if (objectClass != null) {
-                            infos.add(objectClass);
-                        }
-                    }
+                        new HashMap<>();
+                for (var entry : objectClassNamesByOperation.entrySet()) {
+                    Set<ObjectClassInfo> infos = entry.getValue().stream().
+                            map(objectClassesByName::get).filter(Objects::nonNull).
+                            collect(Collectors.toSet());
                     objectClassesByOperation.put(entry.getKey(), infos);
                 }
 
                 final Map<Class<? extends APIOperation>, Set<OperationOptionInfo>> optionsByOperation =
-                        new HashMap<Class<? extends APIOperation>, Set<OperationOptionInfo>>();
-                for (Map.Entry<Class<? extends APIOperation>, Set<String>> entry : optionsNamesByOperation
-                        .entrySet()) {
-                    final Set<String> names = entry.getValue();
-                    final Set<OperationOptionInfo> infos = new HashSet<OperationOptionInfo>();
-                    for (String name : names) {
-                        final OperationOptionInfo info = optionsByName.get(name);
-                        if (info != null) {
-                            infos.add(info);
-                        }
-                    }
+                        new HashMap<>();
+                for (var entry : optionsNamesByOperation.entrySet()) {
+                    Set<OperationOptionInfo> infos = entry.getValue().stream().
+                            map(optionsByName::get).filter(Objects::nonNull).
+                            collect(Collectors.toSet());
                     optionsByOperation.put(entry.getKey(), infos);
                 }
-                return new Schema(objectClasses, operationOptions, objectClassesByOperation,
-                        optionsByOperation);
+                return new Schema(objectClasses, operationOptions, objectClassesByOperation, optionsByOperation);
             }
 
             @Override
@@ -580,34 +549,22 @@ class CommonObjectHandlers {
                 encoder.writeObjectField("ObjectClassInfos", val.getObjectClassInfo(), true);
                 encoder.writeObjectField("OperationOptionInfos", val.getOperationOptionInfo(), true);
 
-                final Map<Class<? extends APIOperation>, Set<String>> objectClassNamesByOperation =
-                        new HashMap<Class<? extends APIOperation>, Set<String>>();
+                final Map<Class<? extends APIOperation>, Set<String>> objectClassNamesByOperation = new HashMap<>();
 
-                final Map<Class<? extends APIOperation>, Set<String>> optionNamesByOperation =
-                        new HashMap<Class<? extends APIOperation>, Set<String>>();
+                final Map<Class<? extends APIOperation>, Set<String>> optionNamesByOperation = new HashMap<>();
 
-                for (Map.Entry<Class<? extends APIOperation>, Set<ObjectClassInfo>> entry : val
-                        .getSupportedObjectClassesByOperation().entrySet()) {
-                    final Set<ObjectClassInfo> value = entry.getValue();
-                    final Set<String> names = new HashSet<String>();
-                    for (ObjectClassInfo info : value) {
-                        names.add(info.getType());
-                    }
+                for (var entry : val.getSupportedObjectClassesByOperation().entrySet()) {
+                    Set<String> names = entry.getValue().stream().
+                            map(ObjectClassInfo::getType).collect(Collectors.toSet());
                     objectClassNamesByOperation.put(entry.getKey(), names);
                 }
-                for (Map.Entry<Class<? extends APIOperation>, Set<OperationOptionInfo>> entry : val
-                        .getSupportedOptionsByOperation().entrySet()) {
-
-                    final Set<OperationOptionInfo> value = entry.getValue();
-                    final Set<String> names = new HashSet<String>();
-                    for (OperationOptionInfo info : value) {
-                        names.add(info.getName());
-                    }
+                for (var entry : val.getSupportedOptionsByOperation().entrySet()) {
+                    Set<String> names = entry.getValue().stream().
+                            map(OperationOptionInfo::getName).collect(Collectors.toSet());
                     optionNamesByOperation.put(entry.getKey(), names);
                 }
 
-                encoder.writeObjectField("objectClassesByOperation", objectClassNamesByOperation,
-                        false);
+                encoder.writeObjectField("objectClassesByOperation", objectClassNamesByOperation, false);
                 encoder.writeObjectField("optionsByOperation", optionNamesByOperation, false);
             }
         });
@@ -620,11 +577,9 @@ class CommonObjectHandlers {
                 final String revision = decoder.readStringField("revision", null);
                 final Name nameHint = (Name) decoder.readObjectField("nameHint", Name.class, null);
                 // revision parameter is not-null checked, nameHint is nullable
-                if (revision == null) {
-                    return new Uid(val, nameHint);
-                } else {
-                    return new Uid(val, revision, nameHint);
-                }
+                return revision == null
+                        ? new Uid(val, nameHint)
+                        : new Uid(val, revision, nameHint);
             }
 
             @Override
@@ -662,12 +617,10 @@ class CommonObjectHandlers {
             public Object deserialize(final ObjectDecoder decoder) {
                 final String scriptLanguage = decoder.readStringField("scriptLanguage", null);
                 @SuppressWarnings("unchecked")
-                final Map<String, Object> arguments =
-                        (Map<String, Object>) decoder
-                                .readObjectField("scriptArguments", null, null);
+                final Map<String, Object> arguments = (Map<String, Object>) decoder.
+                        readObjectField("scriptArguments", null, null);
                 // don't used string field - don't want it to be an attribute
-                final String scriptText =
-                        (String) decoder.readObjectField("scriptText", String.class, null);
+                final String scriptText = (String) decoder.readObjectField("scriptText", String.class, null);
                 return new ScriptContext(scriptLanguage, scriptText, arguments);
             }
 
@@ -680,15 +633,13 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(
-
-        new AbstractObjectSerializationHandler(OperationOptions.class, "OperationOptions") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(OperationOptions.class, "OperationOptions") {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 @SuppressWarnings("unchecked")
-                final Map<String, Object> options =
-                        (Map<String, Object>) decoder.readObjectField("options", null, null);
+                final Map<String, Object> options = (Map<String, Object>) decoder.
+                        readObjectField("options", null, null);
                 return new OperationOptions(options);
             }
 
@@ -699,9 +650,7 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(
-
-        new AbstractObjectSerializationHandler(SearchResult.class, "SearchResult") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(SearchResult.class, "SearchResult") {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
@@ -717,14 +666,12 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(
-
-        new AbstractObjectSerializationHandler(SortKey.class, "SortKey") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(SortKey.class, "SortKey") {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
-                return new SortKey(decoder.readStringField("field", null), decoder
-                        .readBooleanField("isAscending", true));
+                return new SortKey(
+                        decoder.readStringField("field", null), decoder.readBooleanField("isAscending", true));
             }
 
             @Override
@@ -735,9 +682,7 @@ class CommonObjectHandlers {
             }
         });
 
-
-        HANDLERS.add(new AbstractObjectSerializationHandler(OperationOptionInfo.class,
-                "OperationOptionInfo") {
+        HANDLERS.add(new AbstractObjectSerializationHandler(OperationOptionInfo.class, "OperationOptionInfo") {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
@@ -775,18 +720,17 @@ class CommonObjectHandlers {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
-                final SyncDeltaBuilder builder = new SyncDeltaBuilder();
-                builder.setDeltaType((SyncDeltaType) decoder.readObjectField("SyncDeltaType",
-                        SyncDeltaType.class, null));
-                builder.setToken((SyncToken) decoder.readObjectField("SyncToken", SyncToken.class,
-                        null));
-                builder.setPreviousUid((Uid) decoder
-                        .readObjectField("PreviousUid", Uid.class, null));
-                builder.setObjectClass((ObjectClass) decoder.readObjectField("ObjectClass", ObjectClass.class, null));
-                builder.setUid((Uid) decoder.readObjectField("Uid", Uid.class, null));
-                builder.setObject((ConnectorObject) decoder.readObjectField("ConnectorObject",
-                        ConnectorObject.class, null));
-                return builder.build();
+                return new SyncDeltaBuilder().
+                        setDeltaType((SyncDeltaType) decoder.
+                                readObjectField("SyncDeltaType", SyncDeltaType.class, null)).
+                        setToken((SyncToken) decoder.readObjectField("SyncToken", SyncToken.class, null)).
+                        setPreviousUid((Uid) decoder.
+                                readObjectField("PreviousUid", Uid.class, null)).
+                        setObjectClass((ObjectClass) decoder.readObjectField("ObjectClass", ObjectClass.class, null)).
+                        setUid((Uid) decoder.readObjectField("Uid", Uid.class, null)).
+                        setObject((ConnectorObject) decoder.
+                                readObjectField("ConnectorObject", ConnectorObject.class, null)).
+                        build();
             }
 
             @Override
@@ -806,15 +750,16 @@ class CommonObjectHandlers {
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final AttributeDeltaBuilder builder = new AttributeDeltaBuilder();
-                builder.setName((String) decoder.readObjectField("Name",
-                        String.class, null));
+                builder.setName((String) decoder.readObjectField("Name", String.class, null));
 
-                List addList = (List) decoder.readObjectField("ValuesToAdd", List.class, null);
-                List removeList = (List) decoder.readObjectField("ValuesToRemove", List.class, null);
-                List replaceList =(List) decoder.readObjectField("ValuesToReplace", List.class, null);
+                @SuppressWarnings("unchecked")
+                List<Object> addList = (List<Object>) decoder.readObjectField("ValuesToAdd", List.class, null);
+                @SuppressWarnings("unchecked")
+                List<Object> removeList = (List<Object>) decoder.readObjectField("ValuesToRemove", List.class, null);
+                @SuppressWarnings("unchecked")
+                List<Object> replaceList = (List<Object>) decoder.readObjectField("ValuesToReplace", List.class, null);
 
                 if ((addList != null || removeList != null)) {
-
                     builder.addValueToAdd(addList);
                     builder.addValueToRemove(removeList);
                 } else {
@@ -838,9 +783,8 @@ class CommonObjectHandlers {
 
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
-                final ObjectClass objectClass =
-                        (ObjectClass) decoder.readObjectField("ObjectClass", ObjectClass.class,
-                                null);
+                final ObjectClass objectClass = (ObjectClass) decoder.
+                        readObjectField("ObjectClass", ObjectClass.class, null);
                 final Uid uid = (Uid) decoder.readObjectField("Uid", Uid.class, null);
                 return new QualifiedUid(objectClass, uid);
             }
@@ -859,13 +803,14 @@ class CommonObjectHandlers {
             public Object deserialize(final ObjectDecoder decoder) {
                 final SuggestedValuesBuilder builder = new SuggestedValuesBuilder();
 
-                List values = (List) decoder.readObjectField("Values", List.class, null);
+                @SuppressWarnings("unchecked")
+                List<Object> values = (List<Object>) decoder.readObjectField("Values", List.class, null);
                 if (values != null) {
                     builder.addValues(values);
                 }
 
-                builder.setOpenness((ValueListOpenness) decoder.readObjectField("ValueListOpenness",
-                        ValueListOpenness.class, ValueListOpenness.CLOSED));
+                builder.setOpenness((ValueListOpenness) decoder.
+                        readObjectField("ValueListOpenness", ValueListOpenness.class, ValueListOpenness.CLOSED));
 
                 return builder.build();
             }
