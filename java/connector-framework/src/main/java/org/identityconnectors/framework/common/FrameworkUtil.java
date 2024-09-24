@@ -50,10 +50,7 @@ import org.identityconnectors.common.security.GuardedByteArray;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.operations.*;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.QualifiedUid;
-import org.identityconnectors.framework.common.objects.SortKey;
-import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.*;
 
@@ -240,6 +237,7 @@ public final class FrameworkUtil {
         ATTR_SUPPORTED_TYPES.add(GuardedString.class);
         ATTR_SUPPORTED_TYPES.add(Map.class);
         ATTR_SUPPORTED_TYPES.add(ZonedDateTime.class);
+        ATTR_SUPPORTED_TYPES.add(ConnectorObjectReference.class);
     }
 
     public static Set<Class<? extends Object>> getAllSupportedAttributeTypes() {

@@ -34,7 +34,7 @@ import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 
 /**
- * Extension of Attribute to distinguish it from a regular attribute.
+ * Definition of an object class.
  *
  * @author Will Droste
  * @since 1.0
@@ -45,6 +45,7 @@ public final class ObjectClassInfo {
     private final Set<AttributeInfo> attributeInfos;
     private final boolean isContainer;
     private final boolean isAuxiliary;
+    private final boolean isEmbedded;
 
     /**
      * Public only for serialization; Use ObjectClassInfoBuilder instead.
@@ -56,12 +57,14 @@ public final class ObjectClassInfo {
      * @param isContainer
      *            True if this can contain other object classes.
      */
-    public ObjectClassInfo(String type, Set<AttributeInfo> attrInfo, boolean isContainer, boolean isAuxiliary) {
+    public ObjectClassInfo(
+            String type, Set<AttributeInfo> attrInfo, boolean isContainer, boolean isAuxiliary, boolean isEmbedded) {
         Assertions.nullCheck(type, "type");
         this.type = type;
         attributeInfos = CollectionUtil.newReadOnlySet(attrInfo);
         this.isContainer = isContainer;
         this.isAuxiliary = isAuxiliary;
+        this.isEmbedded = isEmbedded;
         // check to make sure name exists and if not throw
         Map<String, AttributeInfo> map = AttributeInfoUtil.toMap(attrInfo);
         if (!map.containsKey(Name.NAME)) {
@@ -80,6 +83,18 @@ public final class ObjectClassInfo {
     public boolean isAuxiliary() {
 		return isAuxiliary;
 	}
+
+    /**
+     * If {@code true}, objects of this class are meant to be embedded in other objects.
+     * (They may or may not be queryable or updatable directly.)
+     *
+     * Currently, this information serves just as a hint for the client code. In the future,
+     * we may relax some of requirements on embedded objects, for example, they may not need to have
+     * the {@link Name} and/or {@link Uid} attributes.
+     */
+    public boolean isEmbedded() {
+        return isEmbedded;
+    }
 
 	public Set<AttributeInfo> getAttributeInfo() {
         return CollectionUtil.newReadOnlySet(attributeInfos);
@@ -129,6 +144,9 @@ public final class ObjectClassInfo {
             return false;
         }
         if (!isAuxiliary == other.isAuxiliary) {
+            return false;
+        }
+        if (!isEmbedded == other.isEmbedded) {
             return false;
         }
         return true;

@@ -28,19 +28,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.identityconnectors.common.CollectionUtil;
-
 /**
  * A ConnectorObject represents an object (e.g., an Account or a Group) on the
  * target resource. Each ConnectorObject represents a resource object as a UID
  * and a bag of attributes.
- *
+ * <p>
  * The developer of a Connector will use a {@link ConnectorObjectBuilder} to
  * construct instances of ConnectorObject.
  */
-public final class ConnectorObject {
-    final ObjectClass objectClass;
-    final Map<String, Attribute> attributeMap;
+public final class ConnectorObject extends BaseConnectorObject {
 
     /**
      * Public only for serialization; please use {@link ConnectorObjectBuilder}.
@@ -49,18 +45,10 @@ public final class ConnectorObject {
      *             if {@link Name} or {@link Uid} is missing from the set.
      */
     public ConnectorObject(ObjectClass objectClass, Set<? extends Attribute> attributes) {
+        super(objectClass, attributes);
         if (objectClass == null) {
             throw new IllegalArgumentException("ObjectClass may not be null");
         }
-        if (ObjectClass.ALL.equals(objectClass)) {
-            throw new IllegalArgumentException("Connector object class can not be type of __ALL__");
-        }
-        if (attributes == null || attributes.size() == 0) {
-            throw new IllegalArgumentException("The set can not be null or empty.");
-        }
-        this.objectClass = objectClass;
-        // create an easy look map..
-        this.attributeMap = AttributeUtil.toMap(attributes);
         // make sure the Uid was added..
         if (!this.attributeMap.containsKey(Uid.NAME)) {
             throw new IllegalArgumentException("The Attribute set must contain a 'Uid'.");
@@ -69,24 +57,6 @@ public final class ConnectorObject {
         if (!this.attributeMap.containsKey(Name.NAME)) {
             throw new IllegalArgumentException("The Attribute set must contain a 'Name'.");
         }
-    }
-
-    /**
-     * Get the set of attributes that represent this object.
-     *
-     * This includes the {@link Uid} and all {@link OperationalAttributes}.
-     */
-    public Set<Attribute> getAttributes() {
-        // create a copy/unmodifiable set..
-        return CollectionUtil.newReadOnlySet(this.attributeMap.values());
-    }
-
-    /**
-     * Get an attribute by if it exists else null.
-     */
-    public Attribute getAttributeByName(String name) {
-        // no need to clone since it has no setters
-        return this.attributeMap.get(name);
     }
 
     /**
@@ -111,41 +81,21 @@ public final class ConnectorObject {
         throw new IllegalArgumentException("__NAME__ attribute must be instance of Name");
     }
 
-    /**
-     * Gets the {@link ObjectClass} for this object.
-     * This is the "structural" object class. The primary object class that defines
-     * basic object structure. It cannot be null.
-     */
-    public ObjectClass getObjectClass() {
-        return objectClass;
-    }
-
-	@Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ConnectorObject) {
-            ConnectorObject other = (ConnectorObject) obj;
-            if (!objectClass.equals(other.getObjectClass())) {
-                return false;
-            }
-            return CollectionUtil.equals(getAttributes(), other.getAttributes());
-        }
-        return false;
-    }
-
     @Override
-    public int hashCode() {
-        return getAttributes().hashCode();
+    public ConnectorObjectIdentification getIdentification() {
+        return new ConnectorObjectIdentification(
+                getObjectClass(),
+                Set.of(getUid(), getName()));
     }
 
     @Override
     public String toString() {
         // poor man's consistent toString()..
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("Uid", this.getUid());
         map.put("ObjectClass", this.getObjectClass());
         map.put("Name", this.getName());
         map.put("Attributes", this.getAttributes());
         return map.toString();
     }
-
 }

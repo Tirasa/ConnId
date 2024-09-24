@@ -52,6 +52,9 @@ public final class AttributeInfoBuilder {
     private String nativeName;
     private final EnumSet<Flags> flags;
 
+    private String referencedObjectClassName;
+    private String roleInReference;
+
     /**
      * Creates an builder with all the defaults set.
      *
@@ -119,7 +122,7 @@ public final class AttributeInfoBuilder {
      * @return {@link AttributeInfo} based on the properties set.
      */
     public AttributeInfo build() {
-        return new AttributeInfo(name, type, subtype, nativeName, flags);
+        return new AttributeInfo(name, type, subtype, nativeName, flags, referencedObjectClassName, roleInReference);
     }
 
     /**
@@ -264,6 +267,16 @@ public final class AttributeInfoBuilder {
         } else {
             flags.remove(flag);
         }
+    }
+
+    public AttributeInfoBuilder setReferencedObjectClassName(String value) {
+        this.referencedObjectClassName = value;
+        return this;
+    }
+
+    public AttributeInfoBuilder setRoleInReference(String value) {
+        this.roleInReference = value;
+        return this;
     }
 
     /**
