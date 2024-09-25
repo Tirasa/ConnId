@@ -75,4 +75,9 @@ public class ConnectorObjectReference {
     public BaseConnectorObject getValue() {
         return Objects.requireNonNull(value);
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + ": " + value;
+    }
 }
