@@ -28,9 +28,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
 import java.util.regex.Matcher;
+import java.util.stream.Stream;
 
 /**
  * String Utilities.
@@ -611,5 +613,23 @@ public final class StringUtil {
             }
         }
         return buf.toString();
+    }
+
+    public static boolean allNotNull(final Object... values) {
+        return values != null && Stream.of(values).noneMatch(Objects::isNull);
+    }
+
+    public static String substringBetween(final String str, final String open, final String close) {
+        if (!allNotNull(str, open, close)) {
+            return null;
+        }
+        final int start = str.indexOf(open);
+        if (start != -1) {
+            final int end = str.indexOf(close, start + open.length());
+            if (end != -1) {
+                return str.substring(start + open.length(), end);
+            }
+        }
+        return null;
     }
 }
