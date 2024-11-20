@@ -19,12 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.spi;
 
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.spi.operations.CreateOp;
+import org.identityconnectors.framework.spi.operations.LiveSyncOp;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 import org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp;
@@ -41,6 +43,7 @@ import org.identityconnectors.framework.spi.operations.UpdateOp;
  * <li>The filter passed to {@link SearchOp}.</li>
  * <li>The results returned from {@link SearchOp}.</li>
  * <li>The results returned from {@link SyncOp}.</li>
+ * <li>The results returned from {@link LiveSyncOp}.</li>
  * <li>The attributes passed to {@link UpdateAttributeValuesOp}.</li>
  * <li>The <code>Uid</code> returned from {@link UpdateAttributeValuesOp}.</li>
  * <li>The attributes passed to {@link UpdateOp}.</li>

@@ -21,17 +21,32 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2018-2022 Evolveum
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.api;
 
 import java.util.Set;
-
-import org.identityconnectors.framework.api.operations.*;
+import org.identityconnectors.framework.api.operations.APIOperation;
+import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
+import org.identityconnectors.framework.api.operations.CreateApiOp;
+import org.identityconnectors.framework.api.operations.DeleteApiOp;
+import org.identityconnectors.framework.api.operations.DiscoverConfigurationApiOp;
+import org.identityconnectors.framework.api.operations.GetApiOp;
+import org.identityconnectors.framework.api.operations.LiveSyncApiOp;
+import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
+import org.identityconnectors.framework.api.operations.SchemaApiOp;
+import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
+import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
+import org.identityconnectors.framework.api.operations.SearchApiOp;
+import org.identityconnectors.framework.api.operations.SyncApiOp;
+import org.identityconnectors.framework.api.operations.TestApiOp;
+import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
+import org.identityconnectors.framework.api.operations.ValidateApiOp;
 
 /**
  * Main interface through which an application invokes Connector operations.
- * Represents at the API level a specific instance of a Connector that has been
- * configured in a specific way.
+ * Represents at the API level a specific instance of a Connector that has been configured in a specific way.
  *
  * @see ConnectorFacadeFactory
  *
@@ -40,7 +55,7 @@ import org.identityconnectors.framework.api.operations.*;
  */
 public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, UpdateApiOp, UpdateDeltaApiOp,
         SchemaApiOp, AuthenticationApiOp, ResolveUsernameApiOp, GetApiOp, ValidateApiOp, TestApiOp,
-        ScriptOnConnectorApiOp, ScriptOnResourceApiOp, SyncApiOp, DiscoverConfigurationApiOp {
+        ScriptOnConnectorApiOp, ScriptOnResourceApiOp, SyncApiOp, LiveSyncApiOp, DiscoverConfigurationApiOp {
 
     /**
      * Gets the unique generated identifier of this ConnectorFacade.
@@ -63,7 +78,7 @@ public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, 
      * Get an instance of an operation that this facade supports.
      */
     APIOperation getOperation(Class<? extends APIOperation> clazz);
-    
+
     /**
      * Dispose of any resources associated with this facade (except for facade classes).
      * This will dispose of any connector instances in the connector pool. The purpose
@@ -71,9 +86,8 @@ public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, 
      * But it can also be used to implement "logout and login" functionality for connectors,
      * e.g. in cases when server-side configuration has changed and the operator needs to
      * force closing and re-opening of all connector connections.
-     * 
+     *
      * @since 1.5.0.0
      */
     void dispose();
-
 }

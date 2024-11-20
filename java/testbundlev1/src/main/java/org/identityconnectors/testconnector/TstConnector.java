@@ -20,12 +20,13 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.testconnector;
 
 import java.util.List;
 import java.util.Set;
-
+import java.util.UUID;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
@@ -46,6 +47,8 @@ import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.AttributeInfo.RoleInReference;
+import org.identityconnectors.framework.common.objects.LiveSyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.LiveSyncResultsHandler;
 import org.identityconnectors.framework.common.objects.filter.AbstractFilterTranslator;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.spi.Configuration;
@@ -54,6 +57,7 @@ import org.identityconnectors.framework.spi.PoolableConnector;
 import org.identityconnectors.framework.spi.SearchResultsHandler;
 import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 import org.identityconnectors.framework.spi.operations.CreateOp;
+import org.identityconnectors.framework.spi.operations.LiveSyncOp;
 import org.identityconnectors.framework.spi.operations.SchemaOp;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
@@ -63,7 +67,7 @@ import org.identityconnectors.testcommon.TstCommon;
         displayNameKey = "TestConnector",
         categoryKey = "TestConnector.category",
         configurationClass = TstConnectorConfig.class)
-public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, SearchOp<String>, SyncOp {
+public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, SearchOp<String>, SyncOp, LiveSyncOp {
 
     public static final String USER_CLASS_NAME = "user";
 
@@ -273,14 +277,12 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         checkClassLoader();
         int remaining = _config.getNumResults();
         for (int i = 0; i < _config.getNumResults(); i++) {
-            ConnectorObjectBuilder obuilder =
-                    new ConnectorObjectBuilder();
+            ConnectorObjectBuilder obuilder = new ConnectorObjectBuilder();
             obuilder.setUid(Integer.toString(i));
             obuilder.setName(Integer.toString(i));
             obuilder.setObjectClass(objectClass);
 
-            SyncDeltaBuilder builder =
-                    new SyncDeltaBuilder();
+            SyncDeltaBuilder builder = new SyncDeltaBuilder();
             builder.setObject(obuilder.build());
             builder.setDeltaType(SyncDeltaType.CREATE_OR_UPDATE);
             builder.setToken(new SyncToken("mytoken"));
@@ -300,6 +302,23 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
     public SyncToken getLatestSyncToken(ObjectClass objectClass) {
         checkClassLoader();
         return new SyncToken("mylatest");
+    }
+
+    @Override
+    public void livesync(
+            ObjectClass objectClass,
+            LiveSyncResultsHandler handler,
+            OperationOptions options) {
+
+        checkClassLoader();
+
+        handler.handle(new LiveSyncDeltaBuilder().
+                setObject(new ConnectorObjectBuilder().
+                        setUid(UUID.randomUUID().toString()).
+                        setName(UUID.randomUUID().toString()).
+                        setObjectClass(objectClass).
+                        build()).
+                build());
     }
 
     @Override

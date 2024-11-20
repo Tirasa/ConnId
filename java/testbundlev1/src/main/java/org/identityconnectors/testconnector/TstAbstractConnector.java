@@ -19,8 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2024 ConnId
  */
-
 package org.identityconnectors.testconnector;
 
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import org.identityconnectors.framework.common.exceptions.AlreadyExistsException;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
@@ -46,6 +45,7 @@ import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.AttributesAccessor;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
+import org.identityconnectors.framework.common.objects.LiveSyncResultsHandler;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
@@ -62,12 +62,14 @@ import org.identityconnectors.framework.spi.SearchResultsHandler;
 import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 import org.identityconnectors.framework.spi.operations.DeleteOp;
+import org.identityconnectors.framework.spi.operations.LiveSyncOp;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 
-public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>, SyncOp, DeleteOp {
+public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>, SyncOp, LiveSyncOp, DeleteOp {
 
     private static final class ResourceComparator implements Comparator<ConnectorObject> {
+
         private final List<SortKey> sortKeys;
 
         private ResourceComparator(final SortKey... sortKeys) {
@@ -119,6 +121,7 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
     }
 
     private static final Comparator<Object> VALUE_COMPARATOR = new Comparator<Object>() {
+
         @Override
         public int compare(final Object o1, final Object o2) {
             return compareValues(o1, o2);
@@ -182,9 +185,9 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
     }
 
     @Override
-    public FilterTranslator<Filter> createFilterTranslator(ObjectClass objectClass,
-            OperationOptions options) {
+    public FilterTranslator<Filter> createFilterTranslator(ObjectClass objectClass, OperationOptions options) {
         return new FilterTranslator<Filter>() {
+
             @Override
             public List<Filter> translate(Filter filter) {
                 return Collections.singletonList(filter);
@@ -193,17 +196,14 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
     }
 
     @Override
-    public void executeQuery(ObjectClass objectClass, Filter query, ResultsHandler handler,
-            OperationOptions options) {
-
+    public void executeQuery(ObjectClass objectClass, Filter query, ResultsHandler handler, OperationOptions options) {
         SortKey[] sortKeys = options.getSortKeys();
         if (null == sortKeys) {
             sortKeys = new SortKey[] { new SortKey(Name.NAME, true) };
         }
 
         // Rebuild the full result set.
-        TreeSet<ConnectorObject> resultSet =
-                new TreeSet<ConnectorObject>(new ResourceComparator(sortKeys));
+        TreeSet<ConnectorObject> resultSet = new TreeSet<>(new ResourceComparator(sortKeys));
 
         if (null != query) {
             for (ConnectorObject co : collection.values()) {
@@ -220,9 +220,8 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
             // Paged Search
             final String pagedResultsCookie = options.getPagedResultsCookie();
             String currentPagedResultsCookie = options.getPagedResultsCookie();
-            final Integer pagedResultsOffset =
-                    null != options.getPagedResultsOffset() ? Math.max(0, options
-                            .getPagedResultsOffset()) : 0;
+            final Integer pagedResultsOffset = null != options.getPagedResultsOffset()
+                    ? Math.max(0, options.getPagedResultsOffset()) : 0;
             final Integer pageSize = options.getPageSize();
 
             int index = 0;
@@ -273,12 +272,10 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
                 ((SearchResultsHandler) handler).handleResult(new SearchResult());
             }
         }
-
     }
 
     @Override
-    public void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler,
-            OperationOptions options) {
+    public void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler, OperationOptions options) {
         if (handler instanceof SyncTokenResultsHandler) {
             ((SyncTokenResultsHandler) handler).handleResult(getLatestSyncToken(objectClass));
         }
@@ -289,8 +286,13 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
         return new SyncToken(config.getGuid().toString());
     }
 
-    private final static SortedMap<String, ConnectorObject> collection =
-            new TreeMap<String, ConnectorObject>(String.CASE_INSENSITIVE_ORDER);
+    @Override
+    public void livesync(ObjectClass objectClass, LiveSyncResultsHandler handler, OperationOptions options) {
+        // nothing to do
+    }
+
+    private final static SortedMap<String, ConnectorObject> collection = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+
     static {
         boolean enabled = true;
         for (int i = 0; i < 100; i++) {
@@ -298,7 +300,7 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
             builder.setUid(String.valueOf(i));
             builder.setName(String.format("user%03d", i));
             builder.addAttribute(AttributeBuilder.buildEnabled(enabled));
-            Map<String, Object> mapAttribute = new HashMap<String, Object>();
+            Map<String, Object> mapAttribute = new HashMap<>();
             mapAttribute.put("email", "foo@example.com");
             mapAttribute.put("primary", true);
             mapAttribute.put("usage", Arrays.asList("home", "work"));

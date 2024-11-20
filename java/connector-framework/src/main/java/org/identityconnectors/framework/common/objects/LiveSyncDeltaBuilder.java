@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 2024 ConnId. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -19,21 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2014 ForgeRock AS.
- * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
 /**
- * Builder for {@link SyncDelta}.
+ * Builder for {@link LiveSyncDelta}.
  */
-public final class SyncDeltaBuilder {
-
-    private SyncToken syncToken;
-
-    private SyncDeltaType deltaType;
-
-    private Uid previousUid;
+public final class LiveSyncDeltaBuilder {
 
     private ObjectClass objectClass;
 
@@ -42,80 +34,20 @@ public final class SyncDeltaBuilder {
     private ConnectorObject connectorObject;
 
     /**
-     * Create a new <code>SyncDeltaBuilder</code>
+     * Create a new <code>LiveSyncDeltaBuilder</code>
      */
-    public SyncDeltaBuilder() {
+    public LiveSyncDeltaBuilder() {
     }
 
     /**
-     * Creates a new <code>SyncDeltaBuilder</code> whose values are initialized to those of the delta.
+     * Creates a new <code>LiveSyncDeltaBuilder</code> whose values are initialized to those of the delta.
      *
      * @param delta the original delta.
      */
-    public SyncDeltaBuilder(SyncDelta delta) {
-        syncToken = delta.getToken();
-        deltaType = delta.getDeltaType();
+    public LiveSyncDeltaBuilder(final LiveSyncDelta delta) {
         connectorObject = delta.getObject();
-        previousUid = delta.getPreviousUid();
         objectClass = delta.getObjectClass();
         uid = delta.getUid();
-    }
-
-    /**
-     * Returns the <code>SyncToken</code> of the object that changed.
-     *
-     * @return the <code>SyncToken</code> of the object that changed.
-     */
-    public SyncToken getToken() {
-        return syncToken;
-    }
-
-    /**
-     * Sets the <code>SyncToken</code> of the object that changed.
-     *
-     * @param token the <code>SyncToken</code> of the object that changed.
-     */
-    public SyncDeltaBuilder setToken(SyncToken token) {
-        syncToken = token;
-        return this;
-    }
-
-    /**
-     * Returns the type of the change that occurred.
-     *
-     * @return The type of change that occurred.
-     */
-    public SyncDeltaType getDeltaType() {
-        return deltaType;
-    }
-
-    /**
-     * Sets the type of the change that occurred.
-     *
-     * @param type The type of change that occurred.
-     */
-    public SyncDeltaBuilder setDeltaType(SyncDeltaType type) {
-        deltaType = type;
-        return this;
-    }
-
-    /**
-     * Gets the Uid of the object before the change.
-     *
-     * @return The Uid of the object before the change.
-     */
-    public Uid getPreviousUid() {
-        return previousUid;
-    }
-
-    /**
-     * Sets the Uid of the object before the change.
-     *
-     * @param previousUid The Uid of the object before the change.
-     */
-    public SyncDeltaBuilder setPreviousUid(Uid previousUid) {
-        this.previousUid = previousUid;
-        return this;
     }
 
     /**
@@ -133,7 +65,7 @@ public final class SyncDeltaBuilder {
      *
      * @param objectClass The ObjectClass of the object that changed.
      */
-    public SyncDeltaBuilder setObjectClass(ObjectClass objectClass) {
+    public LiveSyncDeltaBuilder setObjectClass(final ObjectClass objectClass) {
         this.objectClass = objectClass;
         return this;
     }
@@ -153,7 +85,7 @@ public final class SyncDeltaBuilder {
      *
      * @param uid The Uid of the object that changed.
      */
-    public SyncDeltaBuilder setUid(Uid uid) {
+    public LiveSyncDeltaBuilder setUid(final Uid uid) {
         this.uid = uid;
         return this;
     }
@@ -172,7 +104,7 @@ public final class SyncDeltaBuilder {
      *
      * @param object The object that changed. May be null for deletes.
      */
-    public SyncDeltaBuilder setObject(ConnectorObject object) {
+    public LiveSyncDeltaBuilder setObject(final ConnectorObject object) {
         connectorObject = object;
         if (object != null) {
             uid = object.getUid();
@@ -182,17 +114,13 @@ public final class SyncDeltaBuilder {
     }
 
     /**
-     * Creates a SyncDelta. Prior to calling the following must be specified:
+     * Creates a LiveSyncDelta. Prior to calling the following must be specified:
      * <ol>
-     * <li>{@link #setObject(ConnectorObject) Object} (for anything other than
-     * delete)</li>
-     * <li>{@link #setUid(Uid) Uid} (this is implictly set when calling
-     * {@link #setObject(ConnectorObject)})</li>
-     * <li>{@link #setToken(SyncToken) Token}</li>
-     * <li>{@link #setDeltaType(SyncDeltaType) DeltaType}</li>
+     * <li>{@link #setObject(ConnectorObject) Object}</li>
+     * <li>{@link #setUid(Uid) Uid} (this is implictly set when calling {@link #setObject(ConnectorObject)})</li>
      * </ol>
      */
-    public SyncDelta build() {
-        return new SyncDelta(syncToken, deltaType, previousUid, objectClass, uid, connectorObject);
+    public LiveSyncDelta build() {
+        return new LiveSyncDelta(objectClass, uid, connectorObject);
     }
 }

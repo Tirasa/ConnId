@@ -53,6 +53,7 @@ import org.identityconnectors.framework.api.ConnectorInfoManager;
 import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
+import org.identityconnectors.framework.api.operations.LiveSyncApiOp;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.common.FrameworkUtilTestHelpers;
@@ -202,8 +203,9 @@ public abstract class ConnectorInfoManagerTestBase {
         assertNotNull(property);
 
         Set<Class<? extends APIOperation>> operations = property.getOperations();
-        assertEquals(1, operations.size());
-        assertEquals(SyncApiOp.class, operations.iterator().next());
+        assertEquals(2, operations.size());
+        assertTrue(operations.contains(SyncApiOp.class));
+        assertTrue(operations.contains(LiveSyncApiOp.class));
 
         CurrentLocale.clear();
         assertEquals("Help for test field.", property.getHelpMessage(null));

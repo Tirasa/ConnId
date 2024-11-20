@@ -21,12 +21,12 @@
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
  * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.api.remote;
 
 import java.lang.reflect.InvocationHandler;
 import java.util.HashMap;
-
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
@@ -37,6 +37,13 @@ import org.identityconnectors.framework.impl.api.LoggingProxy;
  * Implements all the methods of the facade
  */
 public class RemoteConnectorFacadeImpl extends AbstractConnectorFacade {
+
+    private static String generateRemoteConnectorFacadeKey(final APIConfigurationImpl configuration) {
+        APIConfigurationImpl copy = new APIConfigurationImpl(configuration);
+        copy.setProducerBufferSize(0);
+        copy.setTimeoutMap(new HashMap<>());
+        return SerializerUtil.serializeBase64Object(copy);
+    }
 
     final String remoteConnectorFacadeKey;
 
@@ -57,13 +64,6 @@ public class RemoteConnectorFacadeImpl extends AbstractConnectorFacade {
         remoteConnectorFacadeKey = generateRemoteConnectorFacadeKey(getAPIConfiguration());
     }
 
-    private static String generateRemoteConnectorFacadeKey(final APIConfigurationImpl configuration){
-        APIConfigurationImpl copy = new APIConfigurationImpl(configuration);
-        copy.setProducerBufferSize(0);
-        copy.setTimeoutMap(new HashMap<Class<? extends APIOperation>, Integer>());
-        return SerializerUtil.serializeBase64Object(copy);
-    }
-
     @Override
     protected APIOperation getOperationImplementation(final Class<? extends APIOperation> api) {
         // add remote proxy
@@ -81,8 +81,8 @@ public class RemoteConnectorFacadeImpl extends AbstractConnectorFacade {
         return proxy;
     }
 
-	@Override
-	public void dispose() {
-		// Nothing to do here. No connection pools are maintained for remote connectors.
-	}
+    @Override
+    public void dispose() {
+        // Nothing to do here. No connection pools are maintained for remote connectors.
+    }
 }

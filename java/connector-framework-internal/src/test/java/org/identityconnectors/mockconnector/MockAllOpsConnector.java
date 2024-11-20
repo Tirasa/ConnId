@@ -20,13 +20,14 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.mockconnector;
 
 import java.util.Set;
-
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.LiveSyncResultsHandler;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
@@ -44,6 +45,7 @@ import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 import org.identityconnectors.framework.spi.operations.AuthenticateOp;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 import org.identityconnectors.framework.spi.operations.DeleteOp;
+import org.identityconnectors.framework.spi.operations.LiveSyncOp;
 import org.identityconnectors.framework.spi.operations.ResolveUsernameOp;
 import org.identityconnectors.framework.spi.operations.ScriptOnConnectorOp;
 import org.identityconnectors.framework.spi.operations.ScriptOnResourceOp;
@@ -55,7 +57,7 @@ import org.identityconnectors.framework.spi.operations.UpdateOp;
 
 public class MockAllOpsConnector extends MockConnector implements CreateOp, DeleteOp, UpdateOp,
         SearchOp<String>, UpdateAttributeValuesOp, AuthenticateOp, ResolveUsernameOp, TestOp,
-        ScriptOnConnectorOp, ScriptOnResourceOp , SyncOp {
+        ScriptOnConnectorOp, ScriptOnResourceOp, SyncOp, LiveSyncOp {
 
     @Override
     public Object runScriptOnConnector(ScriptContext request, OperationOptions options) {
@@ -74,8 +76,7 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp, Dele
     }
 
     @Override
-    public Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes,
-            OperationOptions options) {
+    public Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes, OperationOptions options) {
         assert createAttributes != null;
         addCall(createAttributes);
         return null;
@@ -88,30 +89,31 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp, Dele
     }
 
     @Override
-    public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> attrs,
-            OperationOptions options) {
+    public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> attrs, OperationOptions options) {
         assert objectClass != null && attrs != null;
         addCall(objectClass, attrs);
         return null;
     }
 
     @Override
-    public Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd,
-            OperationOptions options) {
+    public Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd, OperationOptions options) {
         addCall(objclass, valuesToAdd);
         return null;
     }
 
     @Override
-    public Uid removeAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToRemove,
+    public Uid removeAttributeValues(
+            ObjectClass objclass,
+            Uid uid,
+            Set<Attribute> valuesToRemove,
             OperationOptions options) {
+
         addCall(objclass, valuesToRemove);
         return null;
     }
 
     @Override
-    public FilterTranslator<String> createFilterTranslator(ObjectClass objectClass,
-            OperationOptions options) {
+    public FilterTranslator<String> createFilterTranslator(ObjectClass objectClass, OperationOptions options) {
         assert objectClass != null && options != null;
         addCall(objectClass, options);
         // no translation - ok since this is just for tests
@@ -120,8 +122,7 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp, Dele
     }
 
     @Override
-    public void executeQuery(ObjectClass objectClass, String query, ResultsHandler handler,
-            OperationOptions options) {
+    public void executeQuery(ObjectClass objectClass, String query, ResultsHandler handler, OperationOptions options) {
         assert objectClass != null && handler != null && options != null;
         addCall(objectClass, query, handler, options);
         if (null != options.getPageSize() && options.getPageSize() > 0) {
@@ -131,8 +132,12 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp, Dele
     }
 
     @Override
-    public Uid authenticate(ObjectClass objectClass, String username, GuardedString password,
+    public Uid authenticate(
+            ObjectClass objectClass,
+            String username,
+            GuardedString password,
             OperationOptions options) {
+
         assert username != null && password != null;
         addCall(username, password);
         return null;
@@ -170,5 +175,15 @@ public class MockAllOpsConnector extends MockConnector implements CreateOp, Dele
         assert objectClass != null;
         addCall(objectClass);
         return new SyncToken(0);
+    }
+
+    @Override
+    public void livesync(
+            final ObjectClass objectClass,
+            final LiveSyncResultsHandler handler,
+            final OperationOptions options) {
+
+        assert objectClass != null && handler != null && options != null;
+        addCall(objectClass, handler, options);
     }
 }

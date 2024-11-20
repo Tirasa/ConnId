@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -28,6 +29,8 @@ import static org.identityconnectors.framework.common.objects.NameUtil.namesEqua
 import static org.identityconnectors.framework.common.objects.ObjectClassUtil.createSpecialName;
 
 import java.util.Locale;
+import org.identityconnectors.framework.spi.operations.LiveSyncOp;
+import org.identityconnectors.framework.spi.operations.SyncOp;
 
 /**
  * An instance of <code>ObjectClass</code> specifies a <i>category or type</i>
@@ -42,7 +45,6 @@ public final class ObjectClass {
     // =======================================================================
     // Basic Types--i.e., common values of the ObjectClass attribute.
     // =======================================================================
-
     /**
      * This constant defines a specific {@linkplain #getObjectClassValue value
      * of ObjectClass} that is reserved for {@link ObjectClass#ACCOUNT}.
@@ -64,7 +66,6 @@ public final class ObjectClass {
     // =======================================================================
     // Create only after all other static initializers
     // =======================================================================
-
     /**
      * Represents a human being <i>in the context of a specific system or
      * application</i>.
@@ -93,9 +94,11 @@ public final class ObjectClass {
      * Represents all collections that contains any object.
      * <p>
      * This constant allowed to use in operation
-     * {@link org.identityconnectors.framework.spi.operations.SyncOp#getLatestSyncToken(ObjectClass)}
+     * {@link SyncOp#getLatestSyncToken(ObjectClass)}
      * and
-     * {@link org.identityconnectors.framework.spi.operations.SyncOp#sync(ObjectClass, SyncToken, SyncResultsHandler, OperationOptions)}
+     * {@link SyncOp#sync(ObjectClass, SyncToken, SyncResultsHandler, OperationOptions)}
+     * and
+     * {@link LiveSyncOp#sync(ObjectClass, LiveSyncResultsHandler, OperationOptions)}
      * any other operation throws {@link UnsupportedOperationException}
      */
     public static final ObjectClass ALL = new ObjectClass(ALL_NAME);
@@ -105,8 +108,7 @@ public final class ObjectClass {
     /**
      * Create a custom object class.
      *
-     * @param type
-     *            string representation for the name of the object class.
+     * @param type string representation for the name of the object class.
      */
     public ObjectClass(String type) {
         if (type == null) {
@@ -136,11 +138,9 @@ public final class ObjectClass {
     /**
      * Determines if the 'name' matches this {@link ObjectClass}.
      *
-     * @param name
-     *            case-insensitive string representation of the ObjectClass's
-     *            type.
+     * @param name case-insensitive string representation of the ObjectClass's type.
      * @return <code>true</code> if the case-insensitive name is equal to that
-     *         of the one in this {@link ObjectClass}.
+     * of the one in this {@link ObjectClass}.
      */
     public boolean is(String name) {
         return namesEqual(type, name);
@@ -168,15 +168,11 @@ public final class ObjectClass {
 
         ObjectClass other = (ObjectClass) obj;
 
-        if (!is(other.getObjectClassValue())) {
-            return false;
-        }
-        return true;
+        return is(other.getObjectClassValue());
     }
 
     @Override
     public String toString() {
         return "ObjectClass: " + type;
     }
-
 }

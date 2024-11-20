@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
  * Portions Copyrighted 2017-2022 Evolveum
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.common;
 
@@ -90,6 +91,7 @@ public final class FrameworkUtil {
         SPI_TO_API.put(ScriptOnConnectorOp.class, ScriptOnConnectorApiOp.class);
         SPI_TO_API.put(ScriptOnResourceOp.class, ScriptOnResourceApiOp.class);
         SPI_TO_API.put(SyncOp.class, SyncApiOp.class);
+        SPI_TO_API.put(LiveSyncOp.class, LiveSyncApiOp.class);
         SPI_TO_API.put(DiscoverConfigurationOp.class, DiscoverConfigurationApiOp.class);
     }
 

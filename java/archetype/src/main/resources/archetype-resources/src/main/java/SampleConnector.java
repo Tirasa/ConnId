@@ -11,6 +11,7 @@ import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.LiveSyncResultsHandler;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ObjectClassInfo;
 import org.identityconnectors.framework.common.objects.OperationOptionInfo;
@@ -30,6 +31,7 @@ import org.identityconnectors.framework.spi.operations.CreateOp;
 import org.identityconnectors.framework.spi.operations.DeleteOp;
 import org.identityconnectors.framework.spi.operations.SchemaOp;
 import org.identityconnectors.framework.spi.operations.SearchOp;
+import org.identityconnectors.framework.spi.operations.LiveSyncOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 import org.identityconnectors.framework.spi.operations.TestOp;
 import org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp;
@@ -42,7 +44,7 @@ import org.identityconnectors.framework.spi.operations.UpdateOp;
 @ConnectorClass(configurationClass = SampleConfiguration.class, displayNameKey = "sample.connector.display")
 public class SampleConnector implements Connector,
         CreateOp, UpdateOp, UpdateAttributeValuesOp, DeleteOp,
-        AuthenticateOp, ResolveUsernameApiOp, SchemaOp, SyncOp, TestOp, SearchOp<SampleFilter> {
+        AuthenticateOp, ResolveUsernameApiOp, SchemaOp, SyncOp, LiveSyncOp, TestOp, SearchOp<SampleFilter> {
 
     private static final Log LOG = Log.getLog(SampleConnector.class);
 
@@ -143,6 +145,13 @@ public class SampleConnector implements Connector,
             final ObjectClass objectClass,
             final SyncToken token,
             final SyncResultsHandler handler,
+            final OperationOptions options) {
+    }
+
+    @Override
+    public void livesync(
+            final ObjectClass objectClass,
+            final LiveSyncResultsHandler handler,
             final OperationOptions options) {
     }
 

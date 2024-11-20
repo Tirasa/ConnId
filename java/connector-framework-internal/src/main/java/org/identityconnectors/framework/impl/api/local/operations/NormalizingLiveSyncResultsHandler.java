@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2008-2009 Sun Microsystems, Inc. All rights reserved.
+ * Copyright 2024 ConnId. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -19,23 +19,21 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
- * Portions Copyrighted 2010-2014 ForgeRock AS.
- * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.Assertions;
-import org.identityconnectors.framework.common.objects.SyncDelta;
-import org.identityconnectors.framework.common.objects.SyncResultsHandler;
+import org.identityconnectors.framework.common.objects.LiveSyncDelta;
+import org.identityconnectors.framework.common.objects.LiveSyncResultsHandler;
 
-public class NormalizingSyncResultsHandler implements SyncResultsHandler {
+public class NormalizingLiveSyncResultsHandler implements LiveSyncResultsHandler {
 
-    private final SyncResultsHandler target;
+    private final LiveSyncResultsHandler target;
 
     private final ObjectNormalizerFacade normalizer;
 
-    public NormalizingSyncResultsHandler(
-            final SyncResultsHandler target,
+    public NormalizingLiveSyncResultsHandler(
+            final LiveSyncResultsHandler target,
             final ObjectNormalizerFacade normalizer) {
 
         Assertions.nullCheck(target, "target");
@@ -45,8 +43,8 @@ public class NormalizingSyncResultsHandler implements SyncResultsHandler {
     }
 
     @Override
-    public boolean handle(final SyncDelta delta) {
-        SyncDelta normalized = normalizer.normalizeSyncDelta(delta);
+    public boolean handle(final LiveSyncDelta delta) {
+        LiveSyncDelta normalized = normalizer.normalizeLiveSyncDelta(delta);
         return target.handle(normalized);
     }
 }

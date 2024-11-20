@@ -20,16 +20,19 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.LiveSyncDelta;
+import org.identityconnectors.framework.common.objects.LiveSyncDeltaBuilder;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
@@ -50,10 +53,12 @@ import org.identityconnectors.framework.common.objects.filter.StartsWithFilter;
 import org.identityconnectors.framework.spi.AttributeNormalizer;
 
 public final class ObjectNormalizerFacade {
+
     /**
      * The (non-null) object class
      */
     private final ObjectClass objectClass;
+
     /**
      * The (possibly null) attribute normalizer
      */
@@ -62,12 +67,10 @@ public final class ObjectNormalizerFacade {
     /**
      * Create a new ObjectNormalizer.
      *
-     * @param objectClass
-     *            The object class
-     * @param normalizer
-     *            The normalizer. May be null.
+     * @param objectClass The object class
+     * @param normalizer The normalizer. May be null.
      */
-    public ObjectNormalizerFacade(final ObjectClass objectClass,final AttributeNormalizer normalizer) {
+    public ObjectNormalizerFacade(final ObjectClass objectClass, final AttributeNormalizer normalizer) {
         Assertions.nullCheck(objectClass, "objectClass");
         this.objectClass = objectClass;
         this.normalizer = normalizer;
@@ -78,8 +81,7 @@ public final class ObjectNormalizerFacade {
      *
      * If no normalizer is specified, returns the original attribute.
      *
-     * @param attribute
-     *            The attribute to normalize.
+     * @param attribute The attribute to normalize.
      * @return The normalized attribute
      */
     public Attribute normalizeAttribute(Attribute attribute) {
@@ -93,18 +95,16 @@ public final class ObjectNormalizerFacade {
     }
 
     /**
-     * Returns the normalized set of attributes or null if the original set is
-     * null.
+     * Returns the normalized set of attributes or null if the original set is null.
      *
-     * @param attributes
-     *            The original attributes.
+     * @param attributes The original attributes.
      * @return The normalized attributes or null if the original set is null.
      */
     public Set<Attribute> normalizeAttributes(Set<Attribute> attributes) {
         if (attributes == null) {
             return null;
         }
-        Set<Attribute> temp = new HashSet<Attribute>();
+        Set<Attribute> temp = new HashSet<>();
         for (Attribute attribute : attributes) {
             temp.add(normalizeAttribute(attribute));
         }
@@ -114,8 +114,7 @@ public final class ObjectNormalizerFacade {
     /**
      * Returns the normalized object.
      *
-     * @param orig
-     *            The original object
+     * @param orig The original object
      * @return The normalized object.
      */
     public ConnectorObject normalizeObject(ConnectorObject orig) {
@@ -125,15 +124,24 @@ public final class ObjectNormalizerFacade {
     /**
      * Returns the normalized sync delta.
      *
-     * @param delta
-     *            The original delta.
+     * @param delta The original delta.
      * @return The normalized delta.
      */
     public SyncDelta normalizeSyncDelta(SyncDelta delta) {
         SyncDeltaBuilder builder = new SyncDeltaBuilder(delta);
-        if (delta.getObject() != null) {
-            builder.setObject(normalizeObject(delta.getObject()));
-        }
+        Optional.ofNullable(delta.getObject()).ifPresent(o -> builder.setObject(normalizeObject(o)));
+        return builder.build();
+    }
+
+    /**
+     * Returns the normalized live sync delta.
+     *
+     * @param delta The original delta.
+     * @return The normalized delta.
+     */
+    public LiveSyncDelta normalizeLiveSyncDelta(LiveSyncDelta delta) {
+        LiveSyncDeltaBuilder builder = new LiveSyncDeltaBuilder(delta);
+        Optional.ofNullable(delta.getObject()).ifPresent(o -> builder.setObject(normalizeObject(o)));
         return builder.build();
     }
 
@@ -141,8 +149,7 @@ public final class ObjectNormalizerFacade {
      * Returns a filter consisting of the original with all attributes
      * normalized.
      *
-     * @param filter
-     *            The original.
+     * @param filter The original.
      * @return The normalized filter.
      */
     public Filter normalizeFilter(Filter filter) {
@@ -178,15 +185,12 @@ public final class ObjectNormalizerFacade {
             return new NotFilter(normalizeFilter(notFilter.getFilter()));
         } else if (filter instanceof AndFilter) {
             AndFilter andFilter = (AndFilter) filter;
-            return new AndFilter(normalizeFilter(andFilter.getLeft()), normalizeFilter(andFilter
-                    .getRight()));
+            return new AndFilter(normalizeFilter(andFilter.getLeft()), normalizeFilter(andFilter.getRight()));
         } else if (filter instanceof OrFilter) {
             OrFilter orFilter = (OrFilter) filter;
-            return new OrFilter(normalizeFilter(orFilter.getLeft()), normalizeFilter(orFilter
-                    .getRight()));
+            return new OrFilter(normalizeFilter(orFilter.getLeft()), normalizeFilter(orFilter.getRight()));
         } else {
             return filter;
         }
     }
-
 }

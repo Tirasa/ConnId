@@ -20,11 +20,13 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
@@ -36,31 +38,34 @@ import org.identityconnectors.framework.spi.operations.SyncOp;
  * @see SyncApiOp
  * @see SyncOp
  */
-public final class SyncDelta {
+public final class SyncDelta extends LiveSyncDelta {
+
     private final SyncToken token;
+
     private final SyncDeltaType deltaType;
+
     private final Uid previousUid;
-    private final ObjectClass objectClass;
-    private final Uid uid;
-    private final ConnectorObject connectorObject;
 
     /**
      * Creates a SyncDelta.
      *
-     * @param token
-     *            The token. Must not be null.
-     * @param deltaType
-     *            The delta. Must not be null.
-     * @param uid
-     *            The uid. Must not be null.
-     * @param object
-     *            The object that has changed. May be null for delete.
+     * @param token The token. Must not be null.
+     * @param deltaType The delta. Must not be null.
+     * @param uid The uid. Must not be null.
+     * @param object The object that has changed. May be null for delete.
      */
-    SyncDelta(SyncToken token, SyncDeltaType deltaType, Uid previousUid, ObjectClass objectClass,
-            Uid uid, ConnectorObject object) {
+    SyncDelta(
+            final SyncToken token,
+            final SyncDeltaType deltaType,
+            final Uid previousUid,
+            final ObjectClass objectClass,
+            final Uid uid,
+            final ConnectorObject object) {
+
+        super(objectClass, uid, object);
+
         Assertions.nullCheck(token, "token");
         Assertions.nullCheck(deltaType, "deltaType");
-        Assertions.nullCheck(uid, "uid");
 
         // do not allow previous Uid for anything else than create or update
         if (previousUid != null && (deltaType == SyncDeltaType.DELETE || deltaType == SyncDeltaType.CREATE)) {
@@ -74,65 +79,19 @@ public final class SyncDelta {
                     "ConnectorObject must be specified for anything other than delete.");
         }
 
-        // if object not null, make sure its Uid matches
-        if (object != null && !uid.attributeEquals(object.getUid())) {
-            throw new IllegalArgumentException("Uid does not match that of the object.");
-        }
-        if (object != null && !objectClass.equals(object.getObjectClass())) {
-            throw new IllegalArgumentException("ObjectClass does not match that of the object.");
-        }
-
         this.token = token;
         this.deltaType = deltaType;
         this.previousUid = previousUid;
-        this.objectClass = objectClass;
-        this.uid = uid;
-        connectorObject = object;
     }
 
     /**
-     * If the change described by this <code>SyncDelta</code> modified the
-     * object's Uid, this method returns the Uid before the change. Not all
-     * resources can determine the previous Uid, so this method can return
-     * <code>null</code>.
+     * If the change described by this <code>SyncDelta</code> modified the object's Uid, this method returns the Uid
+     * before the change. Not all resources can determine the previous Uid, so this method can return {@code null}.
      *
-     * @return the previous Uid or null if it could not be determined or the
-     *         change did not modify the Uid.
+     * @return the previous Uid or null if it could not be determined or the change did not modify the Uid.
      */
     public Uid getPreviousUid() {
         return previousUid;
-    }
-
-    /**
-     * If the change described by this <code>SyncDelta.DELETE</code> and the
-     * deleted object value is <code>null</code>, this method returns the
-     * ObjectClass of the deleted object. If operation syncs
-     * {@link org.identityconnectors.framework.common.objects.ObjectClass#ALL}
-     * this must be set, otherwise this method can return <code>null</code>.
-     *
-     * @return the ObjectClass of the deleted object.
-     */
-    public ObjectClass getObjectClass() {
-        return objectClass;
-    }
-
-    /**
-     * Returns the Uid of the connector object that changed.
-     *
-     * @return The Uid.
-     */
-    public Uid getUid() {
-        return uid;
-    }
-
-    /**
-     * Returns the connector object that changed. This may be null in the case
-     * of delete.
-     *
-     * @return The object or possibly null if this represents a delete.
-     */
-    public ConnectorObject getObject() {
-        return connectorObject;
     }
 
     /**
@@ -155,63 +114,46 @@ public final class SyncDelta {
 
     @Override
     public String toString() {
-        Map<String, Object> values = new HashMap<String, Object>();
+        Map<String, Object> values = new HashMap<>();
         values.put("Token", token);
         values.put("DeltaType", deltaType);
         values.put("PreviousUid", previousUid);
-        values.put("ObjectClass", objectClass);
-        values.put("Uid", uid);
-        values.put("Object", connectorObject);
+        values.put("ObjectClass", getObjectClass());
+        values.put("Uid", getUid());
+        values.put("Object", getObject());
         return values.toString();
     }
 
     @Override
     public int hashCode() {
-        int result = token.hashCode();
-        result = 31 * result + deltaType.hashCode();
-        result = 31 * result + (previousUid != null ? previousUid.hashCode() : 0);
-        result = 31 * result + (objectClass != null ? objectClass.hashCode() : 0);
-        result = 31 * result + uid.hashCode();
-        result = 31 * result + (connectorObject != null ? connectorObject.hashCode() : 0);
-        return result;
+        int hash = super.hashCode();
+        hash = 89 * hash + Objects.hashCode(this.token);
+        hash = 89 * hash + Objects.hashCode(this.deltaType);
+        hash = 89 * hash + Objects.hashCode(this.previousUid);
+        return hash;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof SyncDelta) {
-            SyncDelta other = (SyncDelta) o;
-            if (!token.equals(other.token)) {
-                return false;
-            }
-            if (!deltaType.equals(other.deltaType)) {
-                return false;
-            }
-            if (previousUid == null) {
-                if (other.previousUid != null) {
-                    return false;
-                }
-            } else if (!previousUid.equals(other.previousUid)) {
-                return false;
-            }
-            if (objectClass == null) {
-                if (other.objectClass != null) {
-                    return false;
-                }
-            } else if (!objectClass.equals(other.objectClass)) {
-                return false;
-            }
-            if (!uid.equals(other.uid)) {
-                return false;
-            }
-            if (connectorObject == null) {
-                if (other.connectorObject != null) {
-                    return false;
-                }
-            } else if (!connectorObject.equals(other.connectorObject)) {
-                return false;
-            }
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        return false;
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SyncDelta other = (SyncDelta) obj;
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!Objects.equals(this.token, other.token)) {
+            return false;
+        }
+        if (this.deltaType != other.deltaType) {
+            return false;
+        }
+        return Objects.equals(this.previousUid, other.previousUid);
     }
 }

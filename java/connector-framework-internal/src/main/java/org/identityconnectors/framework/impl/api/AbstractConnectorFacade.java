@@ -21,7 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
- * Portions Copyrighted 2015-2018 ConnId
+ * Portions Copyrighted 2015-2024 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -130,7 +130,9 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      * {@inheritDoc}
      */
     @Override
-    public final Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes,
+    public final Uid create(
+            final ObjectClass objectClass,
+            final Set<Attribute> createAttributes,
             final OperationOptions options) {
 
         return ((CreateApiOp) getOperationCheckSupported(CreateApiOp.class)).
@@ -150,13 +152,14 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      */
     @Override
     public final SearchResult search(final ObjectClass objectClass, final Filter filter,
-            ResultsHandler handler, final OperationOptions options) {
+            final ResultsHandler handler, final OperationOptions options) {
 
+        ResultsHandler resultsHandler = handler;
         if (LoggingProxy.isLoggable()) {
-            handler = new SearchResultsHandlerLoggingProxy(handler, LOG, null);
+            resultsHandler = new SearchResultsHandlerLoggingProxy(handler, LOG, null);
         }
         return ((SearchApiOp) this.getOperationCheckSupported(SearchApiOp.class)).
-                search(objectClass, filter, handler, options);
+                search(objectClass, filter, resultsHandler, options);
     }
 
     /**
@@ -293,8 +296,21 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      * {@inheritDoc}
      */
     @Override
+    public void livesync(
+            final ObjectClass objectClass,
+            final LiveSyncResultsHandler handler,
+            final OperationOptions options) {
+
+        ((LiveSyncApiOp) this.getOperationCheckSupported(LiveSyncApiOp.class)).livesync(objectClass, handler, options);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final void testPartialConfiguration() {
-        ((DiscoverConfigurationApiOp) this.getOperationCheckSupported(DiscoverConfigurationApiOp.class)).testPartialConfiguration();
+        ((DiscoverConfigurationApiOp) this.getOperationCheckSupported(DiscoverConfigurationApiOp.class)).
+                testPartialConfiguration();
     }
 
     /**
@@ -302,7 +318,8 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      */
     @Override
     public final Map<String, SuggestedValues> discoverConfiguration() {
-        return ((DiscoverConfigurationApiOp) this.getOperationCheckSupported(DiscoverConfigurationApiOp.class)).discoverConfiguration();
+        return ((DiscoverConfigurationApiOp) this.getOperationCheckSupported(DiscoverConfigurationApiOp.class)).
+                discoverConfiguration();
     }
 
     private static final String MSG = "Operation ''{0}'' not supported.";
@@ -317,7 +334,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
     }
 
     @SafeVarargs
-    private final APIOperation getDeltaOperationCheckSupported(final Class<? extends APIOperation>... apis) {
+    private APIOperation getDeltaOperationCheckSupported(final Class<? extends APIOperation>... apis) {
         // check if this operation is supported.
         for (Class<? extends APIOperation> api : apis) {
             if (configuration.isSupportedOperation(api)) {

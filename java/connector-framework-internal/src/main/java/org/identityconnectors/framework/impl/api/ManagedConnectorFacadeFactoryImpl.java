@@ -19,13 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2024 ConnId
  */
-
 package org.identityconnectors.framework.impl.api;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.api.ConnectorFacade;
@@ -39,8 +38,7 @@ public class ManagedConnectorFacadeFactoryImpl extends ConnectorFacadeFactoryImp
     /**
      * Cache of the various ConnectorFacades.
      */
-    private static final ConcurrentMap<String, ConnectorFacade> CACHE =
-            new ConcurrentHashMap<String, ConnectorFacade>();
+    private static final ConcurrentMap<String, ConnectorFacade> CACHE = new ConcurrentHashMap<>();
 
     /**
      * {@inheritDoc}
@@ -82,7 +80,7 @@ public class ManagedConnectorFacadeFactoryImpl extends ConnectorFacadeFactoryImp
         for (ConnectorFacade facade : CACHE.values()) {
             if (facade instanceof LocalConnectorFacadeImpl) {
                 try {
-                    ((LocalConnectorFacadeImpl) facade).dispose();
+                    facade.dispose();
                 } catch (Exception e) {
                     LOG.warn(e, "Failed to dispose facade: {0}", facade);
                 }
@@ -90,5 +88,4 @@ public class ManagedConnectorFacadeFactoryImpl extends ConnectorFacadeFactoryImp
         }
         CACHE.clear();
     }
-
 }

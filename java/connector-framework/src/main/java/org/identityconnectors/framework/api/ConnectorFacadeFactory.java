@@ -43,6 +43,7 @@ public abstract class ConnectorFacadeFactory {
             "org.identityconnectors.framework.impl.api.ManagedConnectorFacadeFactoryImpl";
 
     private static ConnectorFacadeFactory instance;
+
     private static ConnectorFacadeFactory managedInstance;
 
     /**
@@ -90,8 +91,7 @@ public abstract class ConnectorFacadeFactory {
      * Get a new instance of {@link ConnectorFacade}.
      *
      * @param config
-     *            all the configuration that the framework, connector, and
-     *            pooling needs.
+     * all the configuration that the framework, connector, and pooling needs.
      * @return {@link ConnectorFacade} to call API operations against.
      */
     public abstract ConnectorFacade newInstance(APIConfiguration config);
@@ -99,12 +99,9 @@ public abstract class ConnectorFacadeFactory {
     /**
      * Get a new instance of {@link ConnectorFacade}.
      *
-     * @param connectorInfo
-     *            TODO Add JavaDoc later
-     * @param config
-     *            all the configuration that the framework, connector, and
-     *            pooling needs. It's a Base64 serialised APIConfiguration
-     *            instance.
+     * @param connectorInfo TODO Add JavaDoc later
+     * @param config all the configuration that the framework, connector, and pooling needs. It's a Base64 serialised
+     * APIConfiguration instance.
      * @return {@link ConnectorFacade} to call API operations against.
      * @since 1.4
      */

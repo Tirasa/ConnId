@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2014-2018 Evolveum
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -66,9 +67,9 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
             options = new OperationOptionsBuilder().build();
         }
 
-        ResultsHandlerConfiguration hdlCfg =
-                null != getOperationalContext() ? getOperationalContext()
-                                .getResultsHandlerConfiguration() : new ResultsHandlerConfiguration();
+        ResultsHandlerConfiguration hdlCfg = null != getOperationalContext()
+                ? getOperationalContext().getResultsHandlerConfiguration()
+                : new ResultsHandlerConfiguration();
 
         // add a handler in the chain to remove attributes
         String[] attrsToGet = options.getAttributesToGet();
@@ -77,8 +78,7 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
         }
         // chain a normalizing results handler
         if (getConnector() instanceof AttributeNormalizer && hdlCfg.isEnableNormalizingResultsHandler()) {
-            handler =
-                    new NormalizingSyncResultsHandler(handler, getNormalizer(objectClass));
+            handler = new NormalizingSyncResultsHandler(handler, getNormalizer(objectClass));
         }
 
         final SyncResultsHandler handlerChain = handler;
@@ -148,8 +148,7 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
     }
 
     /**
-     * Simple handler to reduce the attributes to only the set of attribute to
-     * get.
+     * Simple handler to reduce the attributes to only the set of attribute to get.
      */
     public static class AttributesToGetSyncResultsHandler
             extends AttributesToGetResultsHandler implements SyncResultsHandler {

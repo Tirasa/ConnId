@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.testconnector;
 
@@ -27,10 +28,13 @@ import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.spi.AbstractConfiguration;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
+import org.identityconnectors.framework.spi.operations.LiveSyncOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 
 public class TstConnectorConfig extends AbstractConfiguration {
+
     private String tstField;
+
     private String tst1Field;
 
     private int numResults;
@@ -43,18 +47,17 @@ public class TstConnectorConfig extends AbstractConfiguration {
         TstConnector.checkClassLoader();
     }
 
-
     public boolean getResetConnectionCount() {
         TstConnector.checkClassLoader();
         return resetConnectionCount;
     }
 
-    public void setResetConnectionCount( boolean count ) {
+    public void setResetConnectionCount(boolean count) {
         TstConnector.checkClassLoader();
         resetConnectionCount = count;
     }
 
-    @ConfigurationProperty(operations={SyncOp.class})
+    @ConfigurationProperty(operations = { SyncOp.class, LiveSyncOp.class })
     public String getTstField() {
         TstConnector.checkClassLoader();
         return tstField;
@@ -99,8 +102,7 @@ public class TstConnectorConfig extends AbstractConfiguration {
     public void validate() {
         TstConnector.checkClassLoader();
         if (failValidation) {
-            throw new ConnectorException("validation failed "+CurrentLocale.get().getLanguage());
+            throw new ConnectorException("validation failed " + CurrentLocale.get().getLanguage());
         }
     }
-
 }

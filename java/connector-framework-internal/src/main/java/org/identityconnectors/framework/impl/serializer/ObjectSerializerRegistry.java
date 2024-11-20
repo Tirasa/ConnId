@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -33,10 +34,9 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
 public final class ObjectSerializerRegistry {
 
-    private static final List<ObjectTypeMapper> HANDLERS = new ArrayList<ObjectTypeMapper>();
+    private static final List<ObjectTypeMapper> HANDLERS = new ArrayList<>();
 
-    private static final Map<String, ObjectTypeMapper> HANDLERS_BY_SERIAL_TYPE =
-            new HashMap<String, ObjectTypeMapper>();
+    private static final Map<String, ObjectTypeMapper> HANDLERS_BY_SERIAL_TYPE = new HashMap<>();
 
     // initialize list of handlers
     static {
@@ -46,13 +46,11 @@ public final class ObjectSerializerRegistry {
         HANDLERS.addAll(FilterHandlers.HANDLERS);
         HANDLERS.addAll(CommonObjectHandlers.HANDLERS);
         HANDLERS.addAll(MessageHandlers.HANDLERS);
-        // object is special - just map the type, but don't actually
-        // serialize
+        // object is special - just map the type, but don't actually serialize
         HANDLERS.add(new ObjectTypeMapperImpl(Object.class, "Object"));
 
         for (ObjectTypeMapper handler : HANDLERS) {
-            final ObjectTypeMapper previous =
-                    HANDLERS_BY_SERIAL_TYPE.put(handler.getHandledSerialType(), handler);
+            final ObjectTypeMapper previous = HANDLERS_BY_SERIAL_TYPE.put(handler.getHandledSerialType(), handler);
             if (previous != null) {
                 throw new ConnectorException("More than one handler of the" + " same type: "
                         + handler.getHandledSerialType());
@@ -63,8 +61,8 @@ public final class ObjectSerializerRegistry {
     /**
      * Mapping by class. Dynamically built since actual class may be a subclass.
      */
-    private static final Map<Class<?>, ObjectTypeMapper> HANDLERS_BY_OBJECT_TYPE = Collections
-            .synchronizedMap(new WeakHashMap<Class<?>, ObjectTypeMapper>());
+    private static final Map<Class<?>, ObjectTypeMapper> HANDLERS_BY_OBJECT_TYPE =
+            Collections.synchronizedMap(new WeakHashMap<>());
 
     public static ObjectTypeMapper getMapperBySerialType(final String type) {
         return HANDLERS_BY_SERIAL_TYPE.get(type);

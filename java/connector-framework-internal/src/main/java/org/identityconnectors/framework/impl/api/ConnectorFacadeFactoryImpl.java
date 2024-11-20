@@ -93,9 +93,8 @@ public class ConnectorFacadeFactoryImpl extends ConnectorFacadeFactory {
      */
     @Override
     public void dispose() {
-    	// Disposal of connector factory means shutdown of all connector pools.
-    	// This is the end. No more connector instances will be created.
+        // Disposal of connector factory means shutdown of all connector pools.
+        // This is the end. No more connector instances will be created.
         ConnectorPoolManager.shutdown();
     }
-
 }
