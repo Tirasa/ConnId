@@ -146,7 +146,7 @@
       <dependency>
         <groupId>org.ops4j.pax.swissbox</groupId>
         <artifactId>pax-swissbox-extender</artifactId>
-        <version>1.8.5</version>
+        <version>1.9.0</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
