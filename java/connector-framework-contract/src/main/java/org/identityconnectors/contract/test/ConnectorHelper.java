@@ -69,6 +69,7 @@ import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
 import org.identityconnectors.framework.common.objects.AttributeDeltaUtil;
 import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.LiveSyncDelta;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ObjectClassInfo;
@@ -318,6 +319,23 @@ public class ConnectorHelper {
     }
 
     /**
+     * Performs livesync on connector facade.
+     *
+     * @returns list of deltas
+     */
+    public static List<LiveSyncDelta> livesync(ConnectorFacade connectorFacade, ObjectClass objClass,
+            OperationOptions opOptions) {
+        final List<LiveSyncDelta> returnedDeltas = new ArrayList<>();
+
+        connectorFacade.livesync(objClass, delta -> {
+            returnedDeltas.add(delta);
+            return true;
+        }, opOptions);
+
+        return returnedDeltas;
+    }
+
+    /**
      * Performs sync on connector facade.
      *
      * @returns list of deltas
@@ -386,9 +404,9 @@ public class ConnectorHelper {
         boolean success = true;
 
         requestedAttributes.stream().
-                filter((attribute) -> (isReadable(objectClassInfo, attribute))).
-                filter((attribute) -> (checkNotReturnedByDefault || isReturnedByDefault(objectClassInfo, attribute))).
-                forEachOrdered((attribute) -> {
+                filter(attribute -> isReadable(objectClassInfo, attribute)).
+                filter(attribute -> checkNotReturnedByDefault || isReturnedByDefault(objectClassInfo, attribute)).
+                forEachOrdered(attribute -> {
                     Attribute createdAttribute = connectorObj.getAttributeByName(attribute.getName());
                     if (createdAttribute == null) {
                         fail(String.format("Attribute '%s' is missing.", attribute.getName()));
@@ -474,10 +492,33 @@ public class ConnectorHelper {
     }
 
     /**
-     * Check that passed SyncDelta has exptected values.
+     * Check that passed SyncDelta has expected values.
      */
-    public static void checkSyncDelta(ObjectClassInfo ocInfo, SyncDelta delta, Uid uid, Set<Attribute> attributes,
-            SyncDeltaType deltaType, boolean checkNotReturnedByDefault) {
+    public static void checkLiveSyncDelta(
+            final ObjectClassInfo ocInfo,
+            final LiveSyncDelta delta,
+            final Uid uid, Set<Attribute> attributes,
+            final boolean checkNotReturnedByDefault) {
+
+        // check that Uid is correct
+        String msg = "Sync returned wrong Uid, expected: %s, returned: %s.";
+        assertEquals(delta.getUid(), uid, String.format(msg, uid, delta.getUid()));
+
+        // check that attributes are correct
+        ConnectorHelper.checkObject(ocInfo, delta.getObject(), attributes, checkNotReturnedByDefault);
+    }
+
+    /**
+     * Check that passed SyncDelta has expected values.
+     */
+    public static void checkSyncDelta(
+            final ObjectClassInfo ocInfo,
+            final SyncDelta delta,
+            final Uid uid,
+            final Set<Attribute> attributes,
+            final SyncDeltaType deltaType,
+            boolean checkNotReturnedByDefault) {
+
         // check that Uid is correct
         String msg = "Sync returned wrong Uid, expected: %s, returned: %s.";
         assertEquals(delta.getUid(), uid, String.format(msg, uid, delta.getUid()));

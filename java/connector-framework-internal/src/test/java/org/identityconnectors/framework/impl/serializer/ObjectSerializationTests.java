@@ -46,7 +46,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Collections;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
 import org.identityconnectors.common.script.Script;
@@ -1073,6 +1072,28 @@ public class ObjectSerializationTests {
         assertEquals(new Uid("foo"), v2.getUid());
         assertEquals(new SyncToken("mytoken"), v2.getToken());
         assertEquals(SyncDeltaType.DELETE, v2.getDeltaType());
+        assertEquals(v1, v2);
+    }
+
+    @Test
+    public void testLiveSyncDelta() {
+        ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
+        bld.setUid("foo");
+        bld.setName("name");
+        LiveSyncDeltaBuilder builder = new LiveSyncDeltaBuilder();
+        builder.setObject(bld.build());
+        LiveSyncDelta v1 = builder.build();
+        LiveSyncDelta v2 = (LiveSyncDelta) cloneObject(v1);
+        assertEquals(new Uid("foo"), v2.getObject().getUid());
+        assertEquals(v1, v2);
+
+        builder = new LiveSyncDeltaBuilder();
+        builder.setObjectClass(ObjectClass.ACCOUNT);
+        builder.setUid(new Uid("foo"));
+        v1 = builder.build();
+        v2 = (LiveSyncDelta) cloneObject(v1);
+        assertEquals(ObjectClass.ACCOUNT, v2.getObjectClass());
+        assertEquals(new Uid("foo"), v2.getUid());
         assertEquals(v1, v2);
     }
 

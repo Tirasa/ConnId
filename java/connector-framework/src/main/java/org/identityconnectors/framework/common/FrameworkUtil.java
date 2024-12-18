@@ -40,7 +40,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.ReflectionUtil;
@@ -128,8 +127,7 @@ public final class FrameworkUtil {
     }
 
     /**
-     * Determines the default set of operations that a {@link Connector}
-     * supports.
+     * Determines the default set of operations that a {@link Connector} supports.
      */
     public static Set<Class<? extends APIOperation>> getDefaultSupportedOperations(
             Class<? extends Connector> connector) {
@@ -198,8 +196,7 @@ public final class FrameworkUtil {
     /**
      * Determines if the class is a supported configuration type.
      *
-     * @param clazz
-     * the type to check against the list of supported types.
+     * @param clazz the type to check against the list of supported types.
      * @return true if the type is in the list otherwise false.
      */
     public static boolean isSupportedConfigurationType(Class<?> clazz) {
@@ -249,8 +246,7 @@ public final class FrameworkUtil {
     /**
      * Determines if the class is a supported attribute type.
      *
-     * @param clazz
-     * the type to check against a supported list of types.
+     * @param clazz the type to check against a supported list of types.
      * @return true if the type is on the supported list otherwise false.
      */
     public static boolean isSupportedAttributeType(final Class<?> clazz) {
@@ -284,10 +280,8 @@ public final class FrameworkUtil {
      * <li>ZonedDateTime.class</li>
      * </ul>
      *
-     * @param clazz
-     * type to check against the support list of types.
-     * @throws IllegalArgumentException
-     * if the type is not on the supported list.
+     * @param clazz type to check against the support list of types.
+     * @throws IllegalArgumentException if the type is not on the supported list.
      */
     public static void checkAttributeType(final Class<?> clazz) {
         if (!FrameworkUtil.isSupportedAttributeType(clazz)) {
@@ -297,13 +291,11 @@ public final class FrameworkUtil {
     }
 
     /**
-     * Determines if the class of the object is a supported attribute type. If
-     * not it throws an {@link IllegalArgumentException}.
+     * Determines if the class of the object is a supported attribute type. If not it throws an
+     * {@link IllegalArgumentException}.
      *
-     * @param value
-     * The value to check or null.
-     * @throws IllegalArgumentException
-     * If the class of the object is a supported attribute type.
+     * @param value The value to check or null.
+     * @throws IllegalArgumentException If the class of the object is a supported attribute type.
      */
     public static void checkAttributeValue(Object value) {
         if (value != null) {
@@ -312,15 +304,12 @@ public final class FrameworkUtil {
     }
 
     /**
-     * Determines if the class of the object is a supported attribute type. If
-     * not it throws an {@link IllegalArgumentException}.
+     * Determines if the class of the object is a supported attribute type. If not it throws an
+     * {@link IllegalArgumentException}.
      *
-     * @param name
-     * The name of the attribute to check
-     * @param value
-     * The value to check or null.
-     * @throws IllegalArgumentException
-     * If the class of the object is a supported attribute type.
+     * @param name The name of the attribute to check
+     * @param value The value to check or null.
+     * @throws IllegalArgumentException If the class of the object is a supported attribute type.
      */
     public static void checkAttributeValue(String name, Object value) {
         if (value instanceof Map) {
@@ -352,10 +341,9 @@ public final class FrameworkUtil {
                         checkAttributeValue(nameBuilder, entryValue);
                     }
                 } else {
-                    throw new IllegalArgumentException(
-                            MessageFormat
-                                    .format("Map Attribute ''{0}'' must have String key, type ''{1}'' is not supported.",
-                                            name, null != key ? key.getClass() : "null"));
+                    throw new IllegalArgumentException(MessageFormat.format(
+                            "Map Attribute ''{0}'' must have String key, type ''{1}'' is not supported.",
+                            name, null != key ? key.getClass() : "null"));
                 }
             }
         } else if (value != null) {
@@ -367,17 +355,14 @@ public final class FrameworkUtil {
     }
 
     /**
-     * Determines if the class is a supported type for an OperationOption. If
-     * not it throws an {@link IllegalArgumentException}.
+     * Determines if the class is a supported type for an OperationOption. If not it throws an
+     * {@link IllegalArgumentException}.
      *
-     * @param clazz
-     * type to check against the support list of types.
-     * @throws IllegalArgumentException
-     * if the type is not on the supported list.
+     * @param clazz type to check against the support list of types.
+     * @throws IllegalArgumentException if the type is not on the supported list.
      */
     public static void checkOperationOptionType(final Class<?> clazz) {
-        // the set of supported operation option types
-        // is the same as that for configuration beans plus Name,
+        // the set of supported operation option types is the same as that for configuration beans plus Name,
         // ObjectClass, Uid, and QualifiedUid
 
         if (clazz.isArray()) {
@@ -405,19 +390,15 @@ public final class FrameworkUtil {
             return; // ok
         }
 
-        throw new IllegalArgumentException("OperationOption type '" + clazz.getName()
-                + "' is not supported.");
+        throw new IllegalArgumentException("OperationOption type '" + clazz.getName() + "' is not supported.");
     }
 
     /**
-     * Determines if the class of the object is a supported attribute type. If
-     * not it throws an {@link IllegalArgumentException}.
+     * Determines if the class of the object is a supported attribute type. If not it throws an
+     * {@link IllegalArgumentException}.
      *
-     * @param value
-     * The value to check or null.
-     * @throws IllegalArgumentException
-     * if the class of the object is a supported attribute type
-     *
+     * @param value The value to check or null.
+     * @throws IllegalArgumentException if the class of the object is a supported attribute type
      */
     public static void checkOperationOptionValue(Object value) {
         if (value != null) {
@@ -451,8 +432,7 @@ public final class FrameworkUtil {
             String version = props.getProperty(PROP_FRAMEWORK_VERSION);
             if (version == null) {
                 throw new IllegalStateException(
-                        "connectors-framework.properties does not contain a "
-                        + PROP_FRAMEWORK_VERSION + " property");
+                        "connectors-framework.properties does not contain a " + PROP_FRAMEWORK_VERSION + " property");
             }
             if (StringUtil.isBlank(version)) {
                 throw new IllegalStateException(

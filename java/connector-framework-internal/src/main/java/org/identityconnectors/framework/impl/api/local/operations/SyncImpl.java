@@ -25,6 +25,7 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
@@ -155,7 +156,7 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
 
         private final SyncResultsHandler handler;
 
-        public AttributesToGetSyncResultsHandler(final SyncResultsHandler handler, String[] attrsToGet) {
+        public AttributesToGetSyncResultsHandler(final SyncResultsHandler handler, final String[] attrsToGet) {
             super(attrsToGet);
             this.handler = handler;
         }
@@ -163,9 +164,7 @@ public class SyncImpl extends ConnectorAPIOperationRunner implements SyncApiOp {
         @Override
         public boolean handle(final SyncDelta delta) {
             SyncDeltaBuilder bld = new SyncDeltaBuilder(delta);
-            if (delta.getObject() != null) {
-                bld.setObject(reduceToAttrsToGet(delta.getObject()));
-            }
+            Optional.ofNullable(delta.getObject()).ifPresent(obj -> bld.setObject(reduceToAttrsToGet(obj)));
             return handler.handle(bld.build());
         }
     }

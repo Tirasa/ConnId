@@ -379,7 +379,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
     public void writeFloatContents(float v) {
         internalEncoder.startAnonymousField();
         // write as double since C# only knows how to deal with that
-        internalEncoder.writeDouble((double) v);
+        internalEncoder.writeDouble(v);
         internalEncoder.endField();
     }
 
@@ -387,7 +387,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
     public void writeFloatField(String fieldName, float v) {
         internalEncoder.startField(fieldName);
         // write as double since C# only knows how to deal with that
-        internalEncoder.writeDouble((double) v);
+        internalEncoder.writeDouble(v);
         internalEncoder.endField();
     }
 

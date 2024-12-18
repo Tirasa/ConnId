@@ -19,30 +19,33 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
 /**
- * Interface to be implemented to handle the serialization/
- * deserialization of an object.
+ * Interface to be implemented to handle the serialization/deserialization of an object.
  */
 public interface ObjectTypeMapper {
 
     /**
-     * Returns the type of object being serialized. This is
-     * an abstract type name that is intended to be language
-     * neutral.
+     * Returns the type of object being serialized.
+     *
+     * @return an abstract type name that is intended to be language neutral
      */
     String getHandledSerialType();
 
     /**
      * Returns the java class handled by this handler.
+     *
+     * @return the java class handled by this handler
      */
     Class<?> getHandledObjectType();
 
     /**
-     * Should we match subclasses of the given class or only
-     * the exact class?
+     * Should we match subclasses of the given class or only the exact class?
+     *
+     * @return whether subclasses of the given class or only the exact class should be matched
      */
     boolean isMatchSubclasses();
 }

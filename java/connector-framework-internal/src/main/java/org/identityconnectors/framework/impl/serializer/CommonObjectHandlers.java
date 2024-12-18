@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2015-2016 Evolveum
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -33,7 +34,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.identityconnectors.common.script.Script;
 import org.identityconnectors.common.script.ScriptBuilder;
 import org.identityconnectors.framework.api.operations.APIOperation;
@@ -713,6 +713,27 @@ class CommonObjectHandlers {
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final SyncToken val = (SyncToken) object;
                 encoder.writeObjectField("value", val.getValue(), false);
+            }
+        });
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(LiveSyncDelta.class, "LiveSyncDelta") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                return new LiveSyncDeltaBuilder().
+                        setObjectClass((ObjectClass) decoder.readObjectField("ObjectClass", ObjectClass.class, null)).
+                        setUid((Uid) decoder.readObjectField("Uid", Uid.class, null)).
+                        setObject((ConnectorObject) decoder.
+                                readObjectField("ConnectorObject", ConnectorObject.class, null)).
+                        build();
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final LiveSyncDelta val = (LiveSyncDelta) object;
+                encoder.writeObjectField("ObjectClass", val.getObjectClass(), true);
+                encoder.writeObjectField("Uid", val.getUid(), true);
+                encoder.writeObjectField("ConnectorObject", val.getObject(), true);
             }
         });
 

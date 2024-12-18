@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
  * Portions Copyrighted 2015 Evolveum
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -28,31 +29,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
 
 /**
  * Builder class to create a {@link ConnectorObject}.
  *
- * The developer of a Connector will construct a ConnectorObjectBuilder, and
- * then call the ConnectorObjectBuilder to set a {@link Uid}, add attributes,
- * and then finally to {@link #build()} the actual {@link ConnectorObject}.
+ * The developer of a Connector will construct a ConnectorObjectBuilder, and then call the ConnectorObjectBuilder to set
+ * a {@link Uid}, add attributes, and then finally to {@link #build()} the actual {@link ConnectorObject}.
  */
 public final class ConnectorObjectBuilder {
 
-    private ObjectClass objectClass;
+    private ObjectClass objectClass = ObjectClass.ACCOUNT;
 
-    private Map<String, Attribute> attributeMap;
-
-    // =======================================================================
-    // Constructors
-    // =======================================================================
-    public ConnectorObjectBuilder() {
-        attributeMap = new HashMap<>();
-        // default always add the account object class..
-        setObjectClass(ObjectClass.ACCOUNT);
-    }
+    private final Map<String, Attribute> attributeMap = new HashMap<>();
 
     // =======================================================================
     // Uid Setters
@@ -83,7 +73,7 @@ public final class ConnectorObjectBuilder {
     // =======================================================================
     // ObjectClass Setter
     // =======================================================================
-    public ConnectorObjectBuilder setObjectClass(ObjectClass oclass) {
+    public ConnectorObjectBuilder setObjectClass(final ObjectClass oclass) {
         if (ObjectClass.ALL.equals(oclass)) {
             throw new IllegalArgumentException("Connector object class can not be type of __ALL__");
         }
@@ -98,7 +88,7 @@ public final class ConnectorObjectBuilder {
      * Takes all the attribute from a {@link ConnectorObject} and add/overwrite
      * the current attributes.
      */
-    public ConnectorObjectBuilder add(ConnectorObject obj) {
+    public ConnectorObjectBuilder add(final ConnectorObject obj) {
         // simply add all the attributes
         for (Attribute attr : obj.getAttributes()) {
             addAttribute(attr);
@@ -113,7 +103,7 @@ public final class ConnectorObjectBuilder {
     /**
      * Adds one or many attributes to the {@link ConnectorObject}.
      */
-    public ConnectorObjectBuilder addAttribute(Attribute... attrs) {
+    public ConnectorObjectBuilder addAttribute(final Attribute... attrs) {
         Assertions.nullCheck(attrs, "attrs");
         for (Attribute a : attrs) {
             attributeMap.put(a.getName(), a);
@@ -124,7 +114,7 @@ public final class ConnectorObjectBuilder {
     /**
      * Add all the {@link Attribute}s of a {@link Collection}.
      */
-    public ConnectorObjectBuilder addAttributes(Collection<Attribute> attrs) {
+    public ConnectorObjectBuilder addAttributes(final Collection<Attribute> attrs) {
         Assertions.nullCheck(attrs, "attrs");
         for (Attribute a : attrs) {
             attributeMap.put(a.getName(), a);
@@ -135,7 +125,7 @@ public final class ConnectorObjectBuilder {
     /**
      * Adds values to the attribute.
      */
-    public ConnectorObjectBuilder addAttribute(String name, Object... objs) {
+    public ConnectorObjectBuilder addAttribute(final String name, final Object... objs) {
         addAttribute(AttributeBuilder.build(name, objs));
         return this;
     }
@@ -143,7 +133,7 @@ public final class ConnectorObjectBuilder {
     /**
      * Adds each object in the collection.
      */
-    public ConnectorObjectBuilder addAttribute(String name, Collection<?> obj) {
+    public ConnectorObjectBuilder addAttribute(final String name, final Collection<?> obj) {
         addAttribute(AttributeBuilder.build(name, obj));
         return this;
     }

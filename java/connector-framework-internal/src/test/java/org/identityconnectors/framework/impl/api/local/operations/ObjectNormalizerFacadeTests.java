@@ -31,6 +31,8 @@ import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
+import org.identityconnectors.framework.common.objects.LiveSyncDelta;
+import org.identityconnectors.framework.common.objects.LiveSyncDeltaBuilder;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
@@ -185,6 +187,29 @@ public class ObjectNormalizerFacadeTests {
         builder.setUid("myuid");
         builder.addAttribute(createNormalizedTestAttribute());
         ConnectorObject expected = builder.build();
+        assertEquals(v2, expected);
+        assertFalse(expected.equals(v1));
+    }
+
+    @Test
+    public void testLiveSyncDelta() {
+        ConnectorObjectBuilder objbuilder = new ConnectorObjectBuilder();
+        objbuilder.setName("myname");
+        objbuilder.setUid("myuid");
+        objbuilder.addAttribute(createTestAttribute());
+        ConnectorObject obj = objbuilder.build();
+
+        LiveSyncDeltaBuilder builder = new LiveSyncDeltaBuilder();
+        builder.setObject(obj);
+        LiveSyncDelta v1 = builder.build();
+        LiveSyncDelta v2 = createTestNormalizer().normalizeLiveSyncDelta(v1);
+        builder = new LiveSyncDeltaBuilder();
+        objbuilder = new ConnectorObjectBuilder();
+        objbuilder.setName("myname");
+        objbuilder.setUid("myuid");
+        objbuilder.addAttribute(createNormalizedTestAttribute());
+        builder.setObject(objbuilder.build());
+        LiveSyncDelta expected = builder.build();
         assertEquals(v2, expected);
         assertFalse(expected.equals(v1));
     }

@@ -25,31 +25,23 @@ package org.identityconnectors.framework.common.objects;
 
 /**
  * Callback interface for operations that are returning one or more results.
- * Currently used only by
- * {@link org.identityconnectors.framework.api.operations.SearchApiOp Search},
- * but may be used by other operations in the future.
+ * Currently used only by {@link org.identityconnectors.framework.api.operations.SearchApiOp Search}, but may be used
+ * by other operations in the future.
  */
+@FunctionalInterface
 public interface ResultsHandler {
 
     /**
-     * Invoked each time a matching {@link ConnectorObject} is returned from a
-     * query request.
+     * Invoked each time a matching {@link ConnectorObject} is returned from a query request.
      *
-     * @param connectorObject
-     *            The matching ConnectorObject.
-     * @return {@code true} if this handler should continue to be notified of
-     *         any remaining matching ConnectorObjects, or {@code false} if the
-     *         remaining ConnectorObjects should be skipped for some reason
-     *         (e.g. a client side size limit has been reached or the failed to
-     *         handle the last item). If returns {@code false} the last items
-     *         should be considers unhandled and in next page request it should
-     *         be the first item.
+     * @param connectorObject The matching ConnectorObject.
+     * @return {@code true} if this handler should continue to be notified of any remaining matching ConnectorObjects,
+     * or {@code false} if the remaining ConnectorObjects should be skipped for some reason (e.g. a client side size
+     * limit has been reached or the failed to handle the last item). If returns {@code false} the last items should be
+     * considers unhandled and in next page request it should be the first item.
      *
-     * @throws RuntimeException
-     *             the implementor should throw a {@link RuntimeException} that
-     *             wraps any native exception (or that describes any other
-     *             problem during execution) that is serious enough to stop the
-     *             iteration.
+     * @throws RuntimeException the implementor should throw a {@link RuntimeException} that wraps any native exception
+     * (or that describes any other problem during execution) that is serious enough to stop the iteration.
      */
     boolean handle(final ConnectorObject connectorObject);
 }

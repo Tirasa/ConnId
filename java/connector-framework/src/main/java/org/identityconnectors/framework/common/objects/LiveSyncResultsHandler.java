@@ -25,16 +25,17 @@ package org.identityconnectors.framework.common.objects;
 import org.identityconnectors.framework.api.operations.LiveSyncApiOp;
 
 /**
- * Callback interface that an application implements in order to handle results
- * from {@link LiveSyncApiOp} in a stream-processing fashion.
+ * Callback interface that an application implements in order to handle results from {@link LiveSyncApiOp} in a
+ * stream-processing fashion.
  */
+@FunctionalInterface
 public interface LiveSyncResultsHandler {
 
     /**
      * Called to handle a delta in the stream. The Connector framework will call this method multiple times, once for
      * each result. Although this method is callback, the framework will invoke it synchronously. Thus, the framework
      * guarantees that once an application's call to {@link LiveSyncApiOp#sync LiveSyncApiOp#sync()} returns, the
-     * framework will no longer call this method to handle results from that {@code sync} operation.
+     * framework will no longer call this method to handle results from that {@code livesync} operation.
      *
      * @param delta The change
      * @return True if the application wants to continue processing more results.

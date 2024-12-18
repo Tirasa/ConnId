@@ -19,13 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
@@ -33,18 +34,18 @@ import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
 import org.identityconnectors.framework.common.objects.OperationOptions;
 
-
 /**
  * Simple class for common results handler components that involve
  * {@link OperationOptions#OP_ATTRIBUTES_TO_GET}.
  */
 public abstract class AttributesToGetResultsHandler {
+
     private final String[] attrsToGet;
 
     /**
      * Keep the attribute to get..
      */
-    public AttributesToGetResultsHandler(String[] attributesToGet) {
+    public AttributesToGetResultsHandler(final String[] attributesToGet) {
         Assertions.nullCheck(attributesToGet, "attrsToGet");
         this.attrsToGet = attributesToGet;
     }
@@ -54,26 +55,22 @@ public abstract class AttributesToGetResultsHandler {
      * not in the {@link OperationOptions#OP_ATTRIBUTES_TO_GET} set.
      *
      * @param attributesToGet
-     *            case insensitive set of attribute names.
+     * case insensitive set of attribute names.
      */
     public Set<Attribute> reduceToAttrsToGet(Set<Attribute> attributesToGet) {
-        Set<Attribute> ret = new HashSet<Attribute>(attrsToGet.length);
+        Set<Attribute> ret = new HashSet<>(attrsToGet.length);
         Map<String, Attribute> map = AttributeUtil.toMap(attributesToGet);
         for (String attrName : attrsToGet) {
             Attribute attr = map.get(attrName);
-            // TODO: Should we throw if the attribute is not yet it was
-            // requested?? Or do we ignore because the API maybe asking
-            // for what the resource doesn't have??
-            if (attr != null) {
-                ret.add(attr);
-            }
+            // TODO: Should we throw if the attribute is not yet it was requested?? Or do we ignore because the API
+            // maybe asking for what the resource doesn't have??
+            Optional.ofNullable(attr).ifPresent(ret::add);
         }
         return ret;
     }
 
     public ConnectorObject reduceToAttrsToGet(ConnectorObject obj) {
-        // clone the object and reduce the attributes only the set of
-        // attributes.
+        // clone the object and reduce the attributes only the set of attributes.
         ConnectorObjectBuilder bld = new ConnectorObjectBuilder();
         bld.setUid(obj.getUid());
         bld.setName(obj.getName());

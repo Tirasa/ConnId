@@ -32,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.APIConfiguration;
@@ -47,6 +46,7 @@ import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.LiveSyncDelta;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
@@ -511,6 +511,24 @@ public class ConnectorFacadeTests {
     }
 
     @Test
+    public void livesyncCallPattern() {
+        testCallPattern(new TestOperationPattern() {
+
+            @Override
+            public void makeCall(ConnectorFacade facade) {
+                // create an empty results handler..
+                // call the search method..
+                facade.livesync(ObjectClass.ACCOUNT, (LiveSyncDelta delta) -> true, null);
+            }
+
+            @Override
+            public void checkCalls(List<Call> calls) {
+                assertEquals(calls.remove(0).getMethodName(), "livesync");
+            }
+        });
+    }
+
+    @Test
     public void syncCallPattern() {
         testCallPattern(new TestOperationPattern() {
 
@@ -585,8 +603,8 @@ public class ConnectorFacadeTests {
         addAttrSet.add(AttributeBuilder.build(ATTR_NAME, ADDED));
         Name name = obj.getName();
         addAttrSet.remove(name);
-        Uid uid = facade.
-                addAttributeValues(ObjectClass.ACCOUNT, obj.getUid(), AttributeUtil.filterUid(addAttrSet), null);
+        Uid uid = facade.addAttributeValues(
+                ObjectClass.ACCOUNT, obj.getUid(), AttributeUtil.filterUid(addAttrSet), null);
         // get back the object and see if there are the same..
         addAttrSet.add(name);
         ConnectorObject addO = new ConnectorObject(ObjectClass.ACCOUNT, addAttrSet);
@@ -603,8 +621,8 @@ public class ConnectorFacadeTests {
         // attempt to delete a value from an attribute..
         Set<Attribute> deleteAttrs = CollectionUtil.newSet(addO.getAttributes());
         deleteAttrs.remove(name);
-        uid = facade.removeAttributeValues(ObjectClass.ACCOUNT, addO.getUid(), AttributeUtil.filterUid(deleteAttrs),
-                null);
+        uid = facade.removeAttributeValues(
+                ObjectClass.ACCOUNT, addO.getUid(), AttributeUtil.filterUid(deleteAttrs), null);
         obj = facade.getObject(ObjectClass.ACCOUNT, uid, null);
         expected = AttributeBuilder.build(ATTR_NAME, ADDED);
         actual = obj.getAttributeByName(ATTR_NAME);
@@ -613,8 +631,7 @@ public class ConnectorFacadeTests {
         Set<Attribute> nonExist = new HashSet<>();
         nonExist.add(newUid(1));
         nonExist.add(AttributeBuilder.build("does not exist", "asdfe"));
-        uid = facade.removeAttributeValues(ObjectClass.ACCOUNT, addO.getUid(), AttributeUtil.filterUid(nonExist),
-                null);
+        facade.removeAttributeValues(ObjectClass.ACCOUNT, addO.getUid(), AttributeUtil.filterUid(nonExist), null);
         obj = facade.getObject(ObjectClass.ACCOUNT, newUid(1), null);
         assertTrue(obj.getAttributeByName("does not exist") == null);
     }

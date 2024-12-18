@@ -22,6 +22,7 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import java.util.Optional;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.ResultsHandlerConfiguration;
@@ -93,7 +94,7 @@ public class LiveSyncImpl extends ConnectorAPIOperationRunner implements LiveSyn
 
         private final LiveSyncResultsHandler handler;
 
-        public AttributesToGetLiveSyncResultsHandler(final LiveSyncResultsHandler handler, String[] attrsToGet) {
+        public AttributesToGetLiveSyncResultsHandler(final LiveSyncResultsHandler handler, final String[] attrsToGet) {
             super(attrsToGet);
             this.handler = handler;
         }
@@ -101,9 +102,7 @@ public class LiveSyncImpl extends ConnectorAPIOperationRunner implements LiveSyn
         @Override
         public boolean handle(final LiveSyncDelta delta) {
             LiveSyncDeltaBuilder bld = new LiveSyncDeltaBuilder(delta);
-            if (delta.getObject() != null) {
-                bld.setObject(reduceToAttrsToGet(delta.getObject()));
-            }
+            Optional.ofNullable(delta.getObject()).ifPresent(obj -> bld.setObject(reduceToAttrsToGet(obj)));
             return handler.handle(bld.build());
         }
     }

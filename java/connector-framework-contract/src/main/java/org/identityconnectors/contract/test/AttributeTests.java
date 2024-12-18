@@ -31,12 +31,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.api.operations.DeleteApiOp;
 import org.identityconnectors.framework.api.operations.GetApiOp;
+import org.identityconnectors.framework.api.operations.LiveSyncApiOp;
 import org.identityconnectors.framework.api.operations.SchemaApiOp;
 import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
@@ -46,6 +46,7 @@ import org.identityconnectors.framework.common.objects.AttributeBuilder;
 import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.AttributeUtil;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.LiveSyncDelta;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ObjectClassInfo;
 import org.identityconnectors.framework.common.objects.ObjectClassInfoBuilder;
@@ -67,9 +68,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Tests check:
  * <ul>
  * <li>non-readable attributes are not returnedByDefault</li>
- * <li>attributes which are not returnedByDefault really are not returned
- * unless</li>
- * specified in attrsToGet </li>
+ * <li>attributes which are not returnedByDefault really are not returned unless specified in attrsToGet </li>
  * <li>update of non-updateable attribute will fail</li>
  * <li>required attributes must be creatable</li>
  * </ul>
@@ -199,13 +198,10 @@ public class AttributeTests extends ObjectClassRunner {
     @MethodSource("objectClasses")
     public void testNonUpdateable(final ObjectClass objectClass) {
         boolean exceptionCaught = false;
-        /** is there any non updateable item? (if not skip this test) */
-        boolean isChanged = false;
         /** logging info bean */
         LogInfo logInfo = null;
 
         if (ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass, getAPIOperations())) {
-            ConnectorObject obj = null;
             Uid uid = null;
 
             try {
@@ -216,7 +212,7 @@ public class AttributeTests extends ObjectClassRunner {
                 assertNotNull(uid, "Create returned null Uid.");
 
                 // get by uid
-                obj = getConnectorFacade().getObject(objectClass,
+                ConnectorObject obj = getConnectorFacade().getObject(objectClass,
                         uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
                 assertNotNull(obj, "Cannot retrieve created object.");
 
@@ -226,7 +222,7 @@ public class AttributeTests extends ObjectClassRunner {
                 Set<Attribute> nonUpdateableAttrs = getNonUpdateableAttributes(schema, objectClass);
 
                 // null indicates an empty set ==> no non-updateable attributes
-                isChanged = (nonUpdateableAttrs != null);
+                boolean isChanged = (nonUpdateableAttrs != null);
 
                 if (isChanged) {
                     //keep logging info
@@ -286,7 +282,6 @@ public class AttributeTests extends ObjectClassRunner {
         } else {
             printSkipTestMsg("testNonUpdateable", objectClass);
         }
-
     }
 
     /**
@@ -459,6 +454,10 @@ public class AttributeTests extends ObjectClassRunner {
                         obj = coObjects.get(0);
                         break;
 
+                    case LIVE_SYNC:
+                        uid = testLivesync(objectClass, uid, attrs, oci, testMarkMsg);
+                        break;
+
                     case SYNC:
                         uid = testSync(objectClass, uid, token, attrs, oci, testMarkMsg);
                         break;
@@ -468,7 +467,7 @@ public class AttributeTests extends ObjectClassRunner {
                  * Check if attribute set contains non-returned by default
                  * Attributes. This is specific for AttributeTests
                  */
-                if (!apiOp.equals(ApiOperations.SYNC)) {
+                if (apiOp != ApiOperations.SYNC && apiOp != ApiOperations.LIVE_SYNC) {
                     assertNotNull(obj, "Unable to retrieve newly created object");
                     // obj is null for sync tests
                     checkAttributes(obj, oci, apiOp);
@@ -517,22 +516,18 @@ public class AttributeTests extends ObjectClassRunner {
     /**
      * test sync
      *
-     * @param token
-     * initialized token
-     * @param attrs
-     * newly created attributes
-     * @param uid
-     * the newly created object
-     * @param oci
-     * object class info
+     * @param attrs newly created attributes
+     * @param uid the newly created object
+     * @param oci object class info
      * @param testMarkMsg test marker
      * @return the updated Uid
      */
-    private Uid testSync(ObjectClass objectClass, Uid uid, SyncToken token,
-            Set<Attribute> attrs, ObjectClassInfo oci, String testMarkMsg) {
-
-        List<SyncDelta> deltas = null;
-        String msg = null;
+    private Uid testLivesync(
+            ObjectClass objectClass,
+            Uid uid,
+            Set<Attribute> attrs,
+            ObjectClassInfo oci,
+            String testMarkMsg) {
 
         /*
          * CREATE: (was handled in the calling method, result of create is in
@@ -540,17 +535,133 @@ public class AttributeTests extends ObjectClassRunner {
          */
         if (SyncApiOpTests.canSyncAfterOp(CreateApiOp.class)) {
             // sync after create
-            deltas = ConnectorHelper.sync(getConnectorFacade(),
-                    objectClass, token,
-                    null);
+            List<LiveSyncDelta> deltas = ConnectorHelper.livesync(getConnectorFacade(), objectClass, null);
 
             // check that returned one delta
-            msg = "%s Sync should have returned one sync delta after creation of one object, but returned: %d";
+            String msg = "%s Sync should have returned one sync delta after creation of one object, but returned: %d";
             assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
 
             // check delta
-            ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas.get(0),
-                    uid, attrs, SyncDeltaType.CREATE_OR_UPDATE, false);
+            ConnectorHelper.checkLiveSyncDelta(getObjectClassInfo(objectClass), deltas.get(0), uid, attrs, false);
+
+            /*
+             * check the attributes inside delta This is specific for
+             * AttributeTests
+             */
+            ConnectorObject obj = deltas.get(0).getObject();
+            checkAttributes(obj, oci, ApiOperations.LIVE_SYNC);
+        }
+
+        /* UPDATE: */
+        if (ConnectorHelper.operationSupported(getConnectorFacade(), UpdateApiOp.class)
+                && SyncApiOpTests.canSyncAfterOp(UpdateApiOp.class)) {
+
+            Set<Attribute> replaceAttributes = ConnectorHelper.getUpdateableAttributes(
+                    getDataProvider(),
+                    getObjectClassInfo(objectClass),
+                    getTestName(),
+                    SyncApiOpTests.MODIFIED,
+                    0,
+                    false,
+                    false);
+
+            // update only in case there is something to update
+            if (!replaceAttributes.isEmpty()) {
+                replaceAttributes.add(uid);
+
+                assertTrue(!replaceAttributes.isEmpty(), testMarkMsg + " no update attributes were found");
+                Uid newUid = getConnectorFacade().update(
+                        objectClass,
+                        uid,
+                        AttributeUtil.filterUid(replaceAttributes),
+                        null);
+
+                // Update change of Uid must be propagated to
+                // replaceAttributes
+                if (!newUid.equals(uid)) {
+                    replaceAttributes.remove(uid);
+                    replaceAttributes.add(newUid);
+                    uid = newUid;
+                }
+
+                // sync after update
+                List<LiveSyncDelta> deltas = ConnectorHelper.livesync(getConnectorFacade(), objectClass, null);
+
+                // check that returned one delta
+                String msg = "%s Sync should have returned one sync delta after update of one object, but returned: %d";
+                assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+
+                // check delta
+                ConnectorHelper.checkLiveSyncDelta(
+                        getObjectClassInfo(objectClass), deltas.get(0), uid, replaceAttributes, false);
+
+                /*
+                 * check the attributes inside delta This is specific for
+                 * AttributeTests
+                 */
+                ConnectorObject obj = deltas.get(0).getObject();
+                checkAttributes(obj, oci, ApiOperations.LIVE_SYNC);
+            }
+        }
+
+        /* DELETE: */
+        if (SyncApiOpTests.canSyncAfterOp(DeleteApiOp.class)) {
+            // delete object
+            getConnectorFacade().delete(objectClass, uid, null);
+
+            // sync after delete
+            List<LiveSyncDelta> deltas = ConnectorHelper.livesync(getConnectorFacade(), objectClass, null);
+
+            // check that returned one delta
+            String msg = "%s Sync should have returned one sync delta after delete of one object, but returned: %d";
+            assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+
+            // check delta
+            ConnectorHelper.checkLiveSyncDelta(getObjectClassInfo(objectClass), deltas.get(0), uid, null, false);
+
+            /*
+             * check the attributes inside delta This is specific for
+             * AttributeTests
+             */
+            ConnectorObject obj = deltas.get(0).getObject();
+            checkAttributes(obj, oci, ApiOperations.LIVE_SYNC);
+        }
+        return uid;
+    }
+
+    /**
+     * test sync
+     *
+     * @param token initialized token
+     * @param attrs newly created attributes
+     * @param uid the newly created object
+     * @param oci object class info
+     * @param testMarkMsg test marker
+     * @return the updated Uid
+     */
+    private Uid testSync(
+            ObjectClass objectClass,
+            Uid uid,
+            SyncToken token,
+            Set<Attribute> attrs,
+            ObjectClassInfo oci,
+            String testMarkMsg) {
+
+        /*
+         * CREATE: (was handled in the calling method, result of create is in
+         * param uid, cleanup is also in caller method.)
+         */
+        if (SyncApiOpTests.canSyncAfterOp(CreateApiOp.class)) {
+            // sync after create
+            List<SyncDelta> deltas = ConnectorHelper.sync(getConnectorFacade(), objectClass, token, null);
+
+            // check that returned one delta
+            String msg = "%s Sync should have returned one sync delta after creation of one object, but returned: %d";
+            assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+
+            // check delta
+            ConnectorHelper.checkSyncDelta(
+                    getObjectClassInfo(objectClass), deltas.get(0), uid, attrs, SyncDeltaType.CREATE_OR_UPDATE, false);
 
             /*
              * check the attributes inside delta This is specific for
@@ -572,10 +683,10 @@ public class AttributeTests extends ObjectClassRunner {
                             SyncApiOpTests.MODIFIED, 0, false, false);
 
             // update only in case there is something to update
-            if (replaceAttributes.size() > 0) {
+            if (!replaceAttributes.isEmpty()) {
                 replaceAttributes.add(uid);
 
-                assertTrue(replaceAttributes.size() > 0, testMarkMsg + " no update attributes were found");
+                assertTrue(!replaceAttributes.isEmpty(), testMarkMsg + " no update attributes were found");
                 Uid newUid = getConnectorFacade().update(
                         objectClass,
                         uid,
@@ -591,12 +702,10 @@ public class AttributeTests extends ObjectClassRunner {
                 }
 
                 // sync after update
-                deltas = ConnectorHelper.sync(getConnectorFacade(),
-                        objectClass, token,
-                        null);
+                List<SyncDelta> deltas = ConnectorHelper.sync(getConnectorFacade(), objectClass, token, null);
 
                 // check that returned one delta
-                msg = "%s Sync should have returned one sync delta after update of one object, but returned: %d";
+                String msg = "%s Sync should have returned one sync delta after update of one object, but returned: %d";
                 assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
 
                 // check delta
@@ -618,21 +727,18 @@ public class AttributeTests extends ObjectClassRunner {
         /* DELETE: */
         if (SyncApiOpTests.canSyncAfterOp(DeleteApiOp.class)) {
             // delete object
-            getConnectorFacade().delete(objectClass, uid,
-                    null);
+            getConnectorFacade().delete(objectClass, uid, null);
 
             // sync after delete
-            deltas = ConnectorHelper.sync(getConnectorFacade(),
-                    objectClass, token,
-                    null);
+            List<SyncDelta> deltas = ConnectorHelper.sync(getConnectorFacade(), objectClass, token, null);
 
             // check that returned one delta
-            msg = "%s Sync should have returned one sync delta after delete of one object, but returned: %d";
+            String msg = "%s Sync should have returned one sync delta after delete of one object, but returned: %d";
             assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
 
             // check delta
-            ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas.get(0),
-                    uid, null, SyncDeltaType.DELETE, false);
+            ConnectorHelper.checkSyncDelta(
+                    getObjectClassInfo(objectClass), deltas.get(0), uid, null, SyncDeltaType.DELETE, false);
 
             /*
              * check the attributes inside delta This is specific for
@@ -650,6 +756,7 @@ public class AttributeTests extends ObjectClassRunner {
 enum ApiOperations {
     SEARCH(SearchApiOp.class),
     GET(GetApiOp.class),
+    LIVE_SYNC(LiveSyncApiOp.class),
     SYNC(SyncApiOp.class);
 
     private final String s;
