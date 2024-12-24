@@ -108,6 +108,13 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://github.com/Tirasa/ConnIdGoogleAppsBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdGoogleAppsBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
+  <td>Kafka</td>
+  <td>https://github.com/Tirasa/ConnIdKafkaBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/Kafka">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/KAFKA">issues</a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdKafkaBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdKafkaBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
+ </tr>
+ <tr>
   <td>LDAP</td>
   <td>https://github.com/Tirasa/ConnIdLDAPBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/LDAP">wiki</a></td>
