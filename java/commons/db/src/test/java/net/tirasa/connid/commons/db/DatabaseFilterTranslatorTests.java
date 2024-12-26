@@ -39,10 +39,21 @@ import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
 import org.junit.jupiter.api.Test;
 
-/**
- * Attempts to test the Connector with the framework.
- */
-public class DatabaseFilterTranslatorTests {
+class DatabaseFilterTranslatorTests {
+
+    private static DatabaseFilterTranslator getDatabaseFilterTranslator() {
+        return new DatabaseFilterTranslator(ObjectClass.ACCOUNT, null) {
+
+            @Override
+            protected SQLParam getSQLParam(
+                    final Attribute attribute,
+                    final ObjectClass oclass,
+                    final OperationOptions options) {
+
+                return new SQLParam(attribute.getName(), AttributeUtil.getSingleValue(attribute), Types.NULL);
+            }
+        };
+    }
 
     /**
      * Test method for {@link org.identityconnectors.dbcommon.DatabaseFilterTranslator}.
@@ -50,7 +61,7 @@ public class DatabaseFilterTranslatorTests {
      * @throws Exception
      */
     @Test
-    public void testUnaryFilters() throws Exception {
+    void unaryFilters() throws Exception {
         Attribute attr = build("count", 2);
         Filter filters[] = new Filter[] {
             equalTo(attr), greaterThan(attr), greaterThanOrEqualTo(attr), lessThan(attr), lessThanOrEqualTo(attr) };
@@ -73,10 +84,10 @@ public class DatabaseFilterTranslatorTests {
      * @throws Exception
      */
     @Test
-    public void testCompositeFilters() throws Exception {
+    void compositeFilters() throws Exception {
         Filter lf = greaterThan(build("count", 4));
         Filter rf = lessThan(build("count", 20));
-        List<SQLParam> expected = new ArrayList<SQLParam>();
+        List<SQLParam> expected = new ArrayList<>();
         expected.add(new SQLParam("count", 4, Types.INTEGER));
         expected.add(new SQLParam("count", 20, Types.INTEGER));
         // test and
@@ -105,7 +116,7 @@ public class DatabaseFilterTranslatorTests {
      * @throws Exception
      */
     @Test
-    public void testCompositeFilterChainNotOr() throws Exception {
+    void compositeFilterChainNotOr() throws Exception {
         Filter lf = greaterThan(build("count", 4));
         Filter rf = lessThan(build("count", 20));
         List<SQLParam> expected = new ArrayList<>();
@@ -128,7 +139,7 @@ public class DatabaseFilterTranslatorTests {
      * @throws Exception
      */
     @Test
-    public void testCompositeFilterChainOrAnd() throws Exception {
+    void compositeFilterChainOrAnd() throws Exception {
         Filter f1 = greaterThan(build("count", 4));
         Filter f2 = lessThan(build("count", 20));
         Filter f3 = equalTo(build("count", 10));
@@ -153,7 +164,7 @@ public class DatabaseFilterTranslatorTests {
      * @throws Exception
      */
     @Test
-    public void testCompositeFilterChainAndOrAndOrAnd() throws Exception {
+    void compositeFilterChainAndOrAndOrAnd() throws Exception {
         Filter f1 = equalTo(build("a", 1));
         Filter f2 = equalTo(build("b", 1));
         Filter f3 = equalTo(build("c", 1));
@@ -189,7 +200,7 @@ public class DatabaseFilterTranslatorTests {
      * @throws Exception
      */
     @Test
-    public void testCompositeFilterChainOrAndNot() throws Exception {
+    void compositeFilterChainOrAndNot() throws Exception {
         Filter f1 = greaterThan(build("count", 4));
         Filter f2 = lessThan(build("count", 20));
         Filter f3 = equalTo(build("count", 10));
@@ -215,7 +226,7 @@ public class DatabaseFilterTranslatorTests {
      * @throws Exception
      */
     @Test
-    public void testNotfilter() throws Exception {
+    void notfilter() throws Exception {
         Filter gt = greaterThan(build("count", 4));
         Filter f = FilterBuilder.not(gt);
         DatabaseFilterTranslator tr = getDatabaseFilterTranslator();
@@ -229,7 +240,7 @@ public class DatabaseFilterTranslatorTests {
     }
 
     @Test
-    public void equalsIgnoreCase() {
+    void equalsIgnoreCase() {
         Filter f = FilterBuilder.equalsIgnoreCase(AttributeBuilder.build("name", "John"));
         DatabaseFilterTranslator tr = getDatabaseFilterTranslator();
         List<FilterWhereBuilder> blist = tr.translate(f);
@@ -238,13 +249,13 @@ public class DatabaseFilterTranslatorTests {
         assertEquals("LOWER(name) = LOWER( ? )", b.getWhereClause());
     }
 
-    private DatabaseFilterTranslator getDatabaseFilterTranslator() {
-        return new DatabaseFilterTranslator(ObjectClass.ACCOUNT, null) {
-
-            @Override
-            protected SQLParam getSQLParam(Attribute attribute, ObjectClass oclass, OperationOptions options) {
-                return new SQLParam(attribute.getName(), AttributeUtil.getSingleValue(attribute), Types.NULL);
-            }
-        };
+    @Test
+    void issueCOMMONS13() {
+        Filter f = FilterBuilder.equalTo(AttributeBuilder.build("last_name"));
+        DatabaseFilterTranslator tr = getDatabaseFilterTranslator();
+        List<FilterWhereBuilder> blist = tr.translate(f);
+        assertEquals(1, blist.size());
+        final FilterWhereBuilder b = blist.get(0);
+        assertEquals("last_name IS NULL", b.getWhereClause());
     }
 }

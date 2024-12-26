@@ -29,7 +29,7 @@
 
   <parent>
     <groupId>net.tirasa.connid</groupId>
-    <artifactId>connid</artifactId>
+    <artifactId>commons</artifactId>
     <version>1.6.0.0-SNAPSHOT</version>
   </parent>
 
