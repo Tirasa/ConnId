@@ -523,6 +523,7 @@
     <module>connector-framework-osgi</module>
     <module>connector-framework-contract</module>
     <module>slf4j-logging</module>
+    <module>commons</module>
     <module>connector-server-zip</module>
     <module>archetype</module>
   </modules>
