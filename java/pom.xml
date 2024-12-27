@@ -351,13 +351,7 @@
               <outputDirectory>${project.build.directory}/reports/apidocs/META-INF</outputDirectory>
               <resources>
                 <resource>
-                  <directory>..</directory>
-                  <includes>
-                    <include>LICENSE</include>
-                  </includes>
-                </resource>
-                <resource>
-                  <directory>../..</directory>
+                  <directory>${parent.path}/..</directory>
                   <includes>
                     <include>LICENSE</include>
                   </includes>
