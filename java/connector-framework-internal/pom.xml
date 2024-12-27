@@ -30,7 +30,7 @@
   <parent>
     <groupId>net.tirasa.connid</groupId>
     <artifactId>connid</artifactId>
-    <version>1.6.0.0-RC3</version>
+    <version>1.6.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>connector-framework-internal</artifactId>
