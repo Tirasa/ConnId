@@ -1,3 +1,5 @@
+net.tirasa.connid.commons.db
+net.tirasa.connid.commons.scripted
 org.identityconnectors.common
 org.identityconnectors.common.event
 org.identityconnectors.common.l10n
