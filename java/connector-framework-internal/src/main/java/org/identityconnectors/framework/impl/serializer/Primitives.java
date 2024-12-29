@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -260,7 +261,7 @@ class Primitives {
             @Override
             public Object deserialize(final ObjectDecoder decoder) {
                 final String val = decoder.readStringContents();
-                return new File(val);
+                return Path.of(val).toFile();
             }
 
             @Override

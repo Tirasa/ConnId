@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -667,9 +668,9 @@ public abstract class ConnectorInfoManagerTestBase {
         }
     }
 
-    final File getTestBundlesDir() throws URISyntaxException {
+    static File getTestBundlesDir() throws URISyntaxException {
         URL testOutputDirectory = ConnectorInfoManagerTestBase.class.getResource("/");
-        File testBundlesDir = new File(testOutputDirectory.toURI());
+        File testBundlesDir = Path.of(testOutputDirectory.toURI()).toFile();
         if (!testBundlesDir.isDirectory()) {
             throw new ConnectorException(testBundlesDir.getPath() + " does not exist");
         }

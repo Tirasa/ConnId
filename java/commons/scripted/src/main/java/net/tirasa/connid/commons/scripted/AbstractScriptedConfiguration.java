@@ -22,7 +22,8 @@
  */
 package net.tirasa.connid.commons.scripted;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.spi.AbstractConfiguration;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
@@ -380,9 +381,9 @@ public abstract class AbstractScriptedConfiguration extends AbstractConfiguratio
         if (fileName == null) {
             LOG.ok("{0} Script Filename is null", type);
         } else {
-            File file = new File(AbstractScriptedConnector.resolveVariables(fileName));
+            Path file = Path.of(AbstractScriptedConnector.resolveVariables(fileName));
             try {
-                if (file.canRead()) {
+                if (Files.isReadable(file)) {
                     LOG.ok("{0} is readable", fileName);
                 } else {
                     throw new IllegalArgumentException("Can't read " + fileName);
@@ -392,5 +393,4 @@ public abstract class AbstractScriptedConfiguration extends AbstractConfiguratio
             }
         }
     }
-
 }

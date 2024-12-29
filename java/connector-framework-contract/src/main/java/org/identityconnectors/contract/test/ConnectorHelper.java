@@ -31,8 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -1093,10 +1094,10 @@ public class ConnectorHelper {
         ConnectorInfoManager manager = null;
 
         // try to load bundleJar property (which should be set by ant)
-        File bundleJar = new File(((String) dataProvider.getTestSuiteAttribute("bundleJar")).trim());
-        assertTrue(bundleJar.isFile(), "BundleJar does not exist: " + bundleJar.getAbsolutePath());
+        Path bundleJar = Path.of(((String) dataProvider.getTestSuiteAttribute("bundleJar")).trim());
+        assertTrue(Files.isRegularFile(bundleJar), "BundleJar does not exist: " + bundleJar.toString());
         try {
-            manager = fact.getLocalManager(bundleJar.toURI().toURL());
+            manager = fact.getLocalManager(bundleJar.toUri().toURL());
         } catch (MalformedURLException ex) {
             throw ContractException.wrap(ex);
         }

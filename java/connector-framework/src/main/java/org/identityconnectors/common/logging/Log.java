@@ -25,13 +25,15 @@
 package org.identityconnectors.common.logging;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.ReflectionUtil;
@@ -43,10 +45,9 @@ import org.identityconnectors.common.StringUtil;
 public final class Log {
 
     /**
-     * Default SPI implementation should all attempts to load the custom logger
-     * fail.
+     * Default SPI implementation should all attempts to load the custom logger fail.
      */
-    private static Class<?> defaultSPI = StdOutLogger.class;
+    private static final Class<?> DEFAULT_SPI = StdOutLogger.class;
 
     // Hack for OIM: this ought to be Log.class.getPackage().getName(). However,
     // OIM's
@@ -102,6 +103,7 @@ public final class Log {
          * Maps to java.util.logging.Level.SEVERE.
          */
         ERROR;
+
     }
 
     /**
@@ -134,8 +136,7 @@ public final class Log {
      * private static final Log LOG = Log.getLog(MyClass.class);
      * </code>
      *
-     * @param clazz
-     *            class to log information about.
+     * @param clazz class to log information about.
      * @return logger to use for logging.
      */
     public static Log getLog(final Class<?> clazz) {
@@ -167,19 +168,18 @@ public final class Log {
     /**
      * Lowest level logging method.
      *
-     * @param clazz
-     *            Class that is being logged.
-     * @param method
-     *            Method name that is being logged.
-     * @param level
-     *            Logging level.
-     * @param message
-     *            Message about the log.
-     * @param ex
-     *            Exception to use process.
+     * @param clazz Class that is being logged.
+     * @param method Method name that is being logged.
+     * @param level Logging level.
+     * @param message Message about the log.
+     * @param ex Exception to use process.
      */
-    public void log(final Class<?> clazz, final String method, final Log.Level level,
-            final String message, final Throwable ex) {
+    public void log(
+            final Class<?> clazz,
+            final String method,
+            final Log.Level level,
+            final String message,
+            final Throwable ex) {
 
         if (isLoggable(level)) {
             logImpl.log(clazz, method, level, message, ex);
@@ -190,17 +190,17 @@ public final class Log {
      * Logs based on the parameters given. Uses the format parameter inside
      * {@link MessageFormat}.
      *
-     * @param level
-     *            the logging level at which to write the message.
-     * @param ex
-     *            [optional] exception stack trace to log.
-     * @param format
-     *            [optional] create a message of a particular format.
-     * @param args
-     *            [optional] parameters to the format string.
+     * @param level the logging level at which to write the message.
+     * @param ex [optional] exception stack trace to log.
+     * @param format [optional] create a message of a particular format.
+     * @param args [optional] parameters to the format string.
      */
-    public void log(final Level level, final Throwable ex, final String format,
+    public void log(
+            final Level level,
+            final Throwable ex,
+            final String format,
             final Object... args) {
+
         if (isLoggable(level)) {
             String message = format;
             if (format != null && args != null) {
@@ -210,24 +210,32 @@ public final class Log {
             } else if (format == null && ex != null) {
                 message = ex.getLocalizedMessage();
             }
-            //To get the StackTrace is expensive. Extract the method name only if it's necessary!!!
-            log(level, ex, message, logImpl.needToInferCaller(clazz, level) ? Thread.currentThread().getStackTrace() : null);
+
+            // To get the StackTrace is expensive. Extract the method name only if it's necessary!!!
+            log(level,
+                    ex,
+                    message,
+                    logImpl.needToInferCaller(clazz, level)
+                    ? Thread.currentThread().getStackTrace()
+                    : null);
         }
     }
 
-    protected void log(final Level level, final Throwable ex, final String message,
-                       final StackTraceElement[] locations) {
-        final StackTraceElement caller = extract(locations, EXCLUDE_LIST);
-        if (null != caller) {
-            logImpl.log(clazz, caller, level, message, ex);
-        } else {
-            logImpl.log(clazz, (String)null, level, message, ex);
-        }
+    protected void log(
+            final Level level,
+            final Throwable ex,
+            final String message,
+            final StackTraceElement[] locations) {
+
+        Optional.ofNullable(extract(locations, EXCLUDE_LIST)).ifPresentOrElse(
+                caller -> logImpl.log(clazz, caller, level, message, ex),
+                () -> logImpl.log(clazz, (String) null, level, message, ex));
     }
 
+    protected static StackTraceElement extract(
+            final StackTraceElement[] steArray,
+            final Collection<String> frameworkPackageList) {
 
-    protected StackTraceElement extract(StackTraceElement[] steArray,
-                                        Collection<String> frameworkPackageList) {
         if (steArray == null) {
             return null;
         }
@@ -237,10 +245,14 @@ public final class Log {
                 return current;
             }
         }
+
         return null;
     }
 
-    protected boolean isInFrameworkPackageList(String currentClass, Collection<String> frameworkPackageList) {
+    protected static boolean isInFrameworkPackageList(
+            final String currentClass,
+            final Collection<String> frameworkPackageList) {
+
         if (frameworkPackageList == null) {
             return false;
         }
@@ -322,25 +334,19 @@ public final class Log {
             return forName(impl);
         }
         // attempt to find the properties file..
-        final File javaHome = new File(System.getProperty("java.home"));
-        final File javaHomeLib = new File(javaHome, "lib");
-        final File propsFile = new File(javaHomeLib, LOGSPI_PROPS_FILE);
+        File propsFile = Path.of(System.getProperty("java.home")).resolve("lib").resolve(LOGSPI_PROPS_FILE).toFile();
         if (propsFile.isFile() && propsFile.canRead()) {
-            FileInputStream fis = null;
-            try {
-                final Properties props = new Properties();
-                fis = new FileInputStream(propsFile);
+            try (InputStream fis = Files.newInputStream(propsFile.toPath())) {
+                Properties props = new Properties();
                 props.load(fis);
                 // get the same system property from the properties file..
-                final String prop = props.getProperty(LOGSPI_PROP);
+                String prop = props.getProperty(LOGSPI_PROP);
                 if (StringUtil.isNotBlank(prop)) {
                     return forName(prop);
                 }
             } catch (IOException e) {
                 // throw to alert the caller the file is corrupt
                 throw new RuntimeException(e);
-            } finally {
-                IOUtil.quietClose(fis);
             }
         }
         // attempt to find through the jar META-INF/services..
@@ -350,7 +356,7 @@ public final class Log {
             return forName(clazz.trim());
         }
         // return the default..
-        return defaultSPI;
+        return DEFAULT_SPI;
     }
 
     /**

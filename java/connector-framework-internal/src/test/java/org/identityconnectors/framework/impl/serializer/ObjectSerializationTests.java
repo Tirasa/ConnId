@@ -36,6 +36,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -241,7 +242,7 @@ public class ObjectSerializationTests {
 
     @Test
     public void testFile() throws Exception {
-        File v1 = new File("c:/foo.txt");
+        File v1 = Path.of("c:/foo.txt").toFile();
         File v2 = (File) cloneObject(v1);
         assertTrue(v1 != v2);
         assertEquals(v1, v2);

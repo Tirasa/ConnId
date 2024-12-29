@@ -20,18 +20,19 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
- * Portions Copyrighted 2010-2018 ConnId
+ * Portions Copyrighted 2010 ConnId
  */
 package org.identityconnectors.framework.impl.api.local;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -90,8 +91,8 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             WorkingBundleInfo info = null;
             try {
                 if ("file".equals(url.getProtocol())) {
-                    final File file = new File(url.toURI());
-                    if (file.isDirectory()) {
+                    Path file = Path.of(url.toURI());
+                    if (Files.isDirectory(file)) {
                         info = processDirectory(file);
                     }
                 }
@@ -106,32 +107,27 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
         return rv;
     }
 
-    private static WorkingBundleInfo processDirectory(final File dir) throws ConfigurationException {
-        final WorkingBundleInfo info = new WorkingBundleInfo(dir.getAbsolutePath());
+    private static WorkingBundleInfo processDirectory(final Path dir) throws ConfigurationException {
+        final WorkingBundleInfo info = new WorkingBundleInfo(dir.toAbsolutePath().toString());
         try {
             // easy case - nothing needs to be copied
-            final File manifest = new File(dir, "META-INF/MANIFEST.MF");
-            InputStream in = null;
-            try {
-                in = new FileInputStream(manifest);
+            Path manifest = dir.resolve("META-INF/MANIFEST.MF");
+            try (InputStream in = Files.newInputStream(manifest)) {
                 Manifest rawManifest = new Manifest(in);
                 ConnectorBundleManifestParser parser =
                         new ConnectorBundleManifestParser(info.getOriginalLocation(), rawManifest);
                 info.setManifest(parser.parse());
-            } finally {
-                IOUtil.quietClose(in);
             }
-            info.getImmediateClassPath().add(dir.toURI().toURL());
-            final List<String> bundleContents = listBundleContents(dir);
-            info.getImmediateBundleContents().addAll(bundleContents);
-            final File libDir = new File(dir, "lib");
+            info.getImmediateClassPath().add(dir.toUri().toURL());
+            info.getImmediateBundleContents().addAll(listBundleContents(dir.toFile()));
+            final File libDir = dir.resolve("lib").toFile();
             if (libDir.exists()) {
                 final List<URL> libURLs = BundleLibSorter.getSortedURLs(libDir);
                 libURLs.forEach((lib) -> {
                     info.getEmbeddedBundles().add(processURL(lib, false));
                 });
             }
-            final File nativeDir = new File(dir, "native");
+            final File nativeDir = dir.resolve("native").toFile();
             if (nativeDir.exists()) {
                 for (File file : BundleLibSorter.getSortedFiles(nativeDir)) {
                     if (file.isFile()) {
@@ -328,7 +324,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
         try {
             final Class<? extends Connector> connectorClass = localInfo.getConnectorClass();
             final APIConfigurationImpl rv = new APIConfigurationImpl();
-            final Configuration config = 
+            final Configuration config =
                     localInfo.getConnectorConfigurationClass().getDeclaredConstructor().newInstance();
             final boolean pooling = PoolableConnector.class.isAssignableFrom(connectorClass);
             rv.setConnectorPoolingSupported(pooling);
@@ -450,16 +446,16 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             final File bundleDir = getBundleTempDir();
             File candidate;
             do {
-                candidate = new File(bundleDir, "file-" + nextRandom());
+                candidate = bundleDir.toPath().resolve("file-" + nextRandom()).toFile();
             } while (!candidate.createNewFile());
             candidate.deleteOnExit();
-            copyStream(stream, candidate);
+            copyStream(stream, candidate.toPath());
             return candidate;
         }
 
         public File copyStreamToFile(final InputStream stream, final String name) throws IOException {
             final File bundleDir = getBundleTempDir();
-            final File newFile = new File(bundleDir, name);
+            final File newFile = bundleDir.toPath().resolve(name).toFile();
             if (newFile.exists()) {
                 throw new IOException("File " + newFile + " already exists");
             }
@@ -472,12 +468,12 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                 parent = parent.getParentFile();
             }
             newFile.deleteOnExit();
-            copyStream(stream, newFile);
+            copyStream(stream, newFile.toPath());
             return newFile;
         }
 
-        private void copyStream(final InputStream stream, final File toFile) throws IOException {
-            try (FileOutputStream out = new FileOutputStream(toFile)) {
+        private static void copyStream(final InputStream stream, final Path toFile) throws IOException {
+            try (OutputStream out = Files.newOutputStream(toFile)) {
                 IOUtil.copyFile(stream, out);
             }
         }
@@ -486,13 +482,13 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             if (_bundleTempDir != null) {
                 return _bundleTempDir;
             }
-            final File tempDir = new File(System.getProperty("java.io.tmpdir"));
+            final File tempDir = Path.of(System.getProperty("java.io.tmpdir")).toFile();
             if (!tempDir.exists()) {
                 throw new IOException("Temporary directory " + tempDir + " does not exist");
             }
             File candidate;
             do {
-                candidate = new File(tempDir, "bundle-" + nextRandom());
+                candidate = tempDir.toPath().resolve("bundle-" + nextRandom()).toFile();
             } while (!candidate.mkdir());
             candidate.deleteOnExit();
             _bundleTempDir = candidate;

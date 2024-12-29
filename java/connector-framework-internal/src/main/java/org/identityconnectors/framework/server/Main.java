@@ -24,19 +24,16 @@
 package org.identityconnectors.framework.server;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.LogManager;
-
 import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.SecurityUtil;
@@ -112,13 +109,13 @@ public final class Main {
             }
             Properties properties = IOUtil.loadPropertiesFile(propertiesFileName);
             properties.put(PROP_KEY, SecurityUtil.computeBase64SHA1Hash(key.toCharArray()));
-            IOUtil.storePropertiesFile(new File(propertiesFileName), properties);
+            IOUtil.storePropertiesFile(Path.of(propertiesFileName), properties);
         } else if (cmd.equalsIgnoreCase("-setDefaults")) {
             if (propertiesFileName == null || key != null) {
                 usage();
                 return;
             }
-            IOUtil.extractResourceToFile(Main.class, "connectorserver.properties", new File(propertiesFileName));
+            IOUtil.extractResourceToFile(Main.class, "connectorserver.properties", Path.of(propertiesFileName));
         } else {
             usage();
         }
@@ -151,7 +148,6 @@ public final class Main {
 
         if (loggerClass == null) {
 
-
             System.out.println("Logger Class is null");
             loggerClass = DEFAULT_LOG_SPI;
         }
@@ -173,9 +169,9 @@ public final class Main {
 
         connectorServer = ConnectorServer.newInstance();
         connectorServer.setPort(port);
-        connectorServer.setBundleURLs(buildBundleURLs(new File(bundleDirStr)));
+        connectorServer.setBundleURLs(buildBundleURLs(Path.of(bundleDirStr)));
         if (libDirStr != null) {
-            ClassLoader cl = buildLibClassLoader(new File(libDirStr));
+            ClassLoader cl = buildLibClassLoader(Path.of(libDirStr));
             connectorServer.setBundleParentClassLoader(cl);
 
         }
@@ -226,29 +222,28 @@ public final class Main {
         }
     }
 
-    private static List<URL> buildBundleURLs(File dir) throws MalformedURLException {
-        List<URL> rv = getJarFiles(dir);
+    private static List<URL> buildBundleURLs(final Path dir) throws MalformedURLException {
+        List<URL> rv = getJarFiles(dir.toFile());
         if (rv.isEmpty()) {
             getLog().warn("No bundles found in the bundles directory.");
         }
         return rv;
     }
 
-    private static ClassLoader buildLibClassLoader(File dir) throws MalformedURLException {
-        List<URL> jars = getJarFiles(dir);
+    private static ClassLoader buildLibClassLoader(final Path dir) throws MalformedURLException {
+        List<URL> jars = getJarFiles(dir.toFile());
         if (!jars.isEmpty()) {
-            return new URLClassLoader(jars.toArray(new URL[jars.size()]),
-                    ConnectorInfoManagerFactory.class.getClassLoader());
+            return new URLClassLoader(jars.toArray(URL[]::new), ConnectorInfoManagerFactory.class.getClassLoader());
         }
         return null;
 
     }
 
-    private static List<URL> getJarFiles(File dir) throws MalformedURLException {
+    private static List<URL> getJarFiles(final File dir) throws MalformedURLException {
         if (!dir.isDirectory()) {
             throw new ConnectorException(dir.getPath() + " does not exist");
         }
-        List<URL> rv = new ArrayList<URL>();
+        List<URL> rv = new ArrayList<>();
         for (File bundle : dir.listFiles()) {
             if (bundle.getName().endsWith(".jar")) {
                 rv.add(bundle.toURI().toURL());

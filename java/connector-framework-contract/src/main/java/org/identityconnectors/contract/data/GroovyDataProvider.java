@@ -31,11 +31,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 import groovy.util.ConfigObject;
 import groovy.util.ConfigSlurper;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,7 +59,6 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.test.common.TestHelpers;
 
 /**
- * <p>
  * Default implementation of {@link DataProvider}. It uses ConfigSlurper from
  * Groovy to parse the property file.
  * The groovy files are read as classpath resources using following paths :
@@ -248,7 +250,7 @@ public class GroovyDataProvider implements DataProvider {
         String pOut = System.getProperty(PARAM_QUERIED_PROPERTY_OUT_FILE);
         if (StringUtil.isNotBlank(pOut)) {
             try {
-                _queriedPropsOutFile = new File(pOut);
+                _queriedPropsOutFile = Path.of(pOut).toFile();
                 if (!_queriedPropsOutFile.exists()) {
                     _queriedPropsOutFile.createNewFile();
                 }
@@ -274,7 +276,7 @@ public class GroovyDataProvider implements DataProvider {
         String pOut = System.getProperty(PARAM_PROPERTY_OUT_FILE);
         if (StringUtil.isNotBlank(pOut)) {
             try {
-                _propertyOutFile = new File(pOut);
+                _propertyOutFile = Path.of(pOut).toFile();
                 if (!_propertyOutFile.exists()) {
                     _propertyOutFile.createNewFile();
                 }
@@ -884,7 +886,11 @@ public class GroovyDataProvider implements DataProvider {
         // parse configuration information to flatten
         String result = flatten(configObject);
 
-        try (FileWriter fw = new FileWriter(_propertyOutFile, StandardCharsets.UTF_8, true)) {
+        try (Writer fw = Files.newBufferedWriter(
+                _propertyOutFile.toPath(),
+                StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
+
             fw.append("\n\n\n ============================ NEW TEST ==================== \n\n\n");
             fw.append(result);
         } catch (IOException e) {
@@ -903,7 +909,11 @@ public class GroovyDataProvider implements DataProvider {
             return null;
         }
 
-        try (FileWriter fw = new FileWriter(_queriedPropsOutFile, StandardCharsets.UTF_8, true)) {
+        try (Writer fw = Files.newBufferedWriter(
+                _queriedPropsOutFile.toPath(),
+                StandardCharsets.UTF_8,
+                StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
+
             fw.append("<dumpSummary>\n");
             // MISSING PROPS
             fw.append("  <missingProperties>\n");

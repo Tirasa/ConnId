@@ -25,7 +25,6 @@ package org.identityconnectors.common;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,11 +39,14 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -358,30 +360,24 @@ public final class IOUtil {
      * @param dest This can be a directory or a file.
      * @return True if succeeded otherwise false.
      */
-    public static boolean copyFile(final File src, File dest) throws IOException {
-        boolean ret = true;
+    public static boolean copyFile(final File src, final File dest) throws IOException {
         // quick exit if this is bogus
         if (src == null || dest == null || !src.isFile()) {
             throw new FileNotFoundException();
         }
+
         // check for directory
+        Path dst = dest.toPath();
         if (dest.isDirectory()) {
-            final String name = src.getName();
-            dest = new File(dest, name);
+            dst = dst.resolve(src.getName());
         }
-        FileInputStream fis = null;
-        FileOutputStream fout = null;
-        try {
-            // get source stream
-            fis = new FileInputStream(src);
-            // get destination stream
-            fout = new FileOutputStream(dest);
+
+        boolean ret;
+        try (InputStream fis = Files.newInputStream(src.toPath());
+                OutputStream fout = Files.newOutputStream(dst)) {
+
             // copy source to destination..
             ret = copyFile(fis, fout) > 0;
-        } finally {
-            // close open streams..
-            quietClose(fis);
-            quietClose(fout);
         }
         return ret;
     }
@@ -412,7 +408,7 @@ public final class IOUtil {
      * @return
      */
     public static long checksum(final String fileName) throws IOException, FileNotFoundException {
-        return (checksum(new File(fileName)));
+        return checksum(Path.of(fileName));
     }
 
     /**
@@ -421,12 +417,10 @@ public final class IOUtil {
      * @param file the file on which to calculate the checksum
      * @return
      */
-    public static long checksum(final File file) throws IOException, FileNotFoundException {
-        FileInputStream fis = null;
+    public static long checksum(final Path file) throws IOException, FileNotFoundException {
         final byte[] bytes = new byte[16384];
         int len;
-        try {
-            fis = new FileInputStream(file);
+        try (InputStream fis = Files.newInputStream(file)) {
             CRC32 chkSum = new CRC32();
             len = fis.read(bytes);
             while (len != -1) {
@@ -434,8 +428,6 @@ public final class IOUtil {
                 len = fis.read(bytes);
             }
             return chkSum.getValue();
-        } finally {
-            quietClose(fis);
         }
     }
 
@@ -503,27 +495,20 @@ public final class IOUtil {
      * the file to load the propertied from
      * @return properties loaded
      */
-    public static Properties loadPropertiesFile(final File file) throws IOException {
-        FileInputStream in = new FileInputStream(file);
-        try {
-            final Properties rv = new Properties();
+    public static Properties loadPropertiesFile(final Path file) throws IOException {
+        try (InputStream in = Files.newInputStream(file)) {
+            Properties rv = new Properties();
             rv.load(in);
             return rv;
-        } finally {
-            in.close();
         }
     }
 
     /**
      * Stores the given file as a Properties file.
      */
-    public static void storePropertiesFile(final File f, final Properties properties)
-            throws IOException {
-        final FileOutputStream out = new FileOutputStream(f);
-        try {
+    public static void storePropertiesFile(final Path file, final Properties properties) throws IOException {
+        try (OutputStream out = Files.newOutputStream(file)) {
             properties.store(out, null);
-        } finally {
-            out.close();
         }
     }
 
@@ -565,23 +550,16 @@ public final class IOUtil {
      * @throws IOException
      * If an error occurs reading it
      */
-    public static void extractResourceToFile(final Class<?> clazz, final String path,
-            final File file) throws IOException {
+    public static void extractResourceToFile(
+            final Class<?> clazz,
+            final String path,
+            final Path file) throws IOException {
 
-        final InputStream in = getResourceAsStream(clazz, path);
-        if (in == null) {
-            throw new IOException("Missing resource: " + path);
-        }
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(file);
-            IOUtil.copyFile(in, out);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
+        try (InputStream in = Optional.ofNullable(getResourceAsStream(clazz, path)).
+                orElseThrow(() -> new IOException("Missing resource: " + path));
+                OutputStream out = Files.newOutputStream(file)) {
 
-            in.close();
+            copyFile(in, out);
         }
     }
 
@@ -594,24 +572,15 @@ public final class IOUtil {
      * @param toDir
      * The directory to unjar to.
      */
-    public static void unjar(final JarFile jarFile, final File toDir) throws IOException {
-        final Enumeration<JarEntry> entries = jarFile.entries();
+    public static void unjar(final JarFile jarFile, final Path toDir) throws IOException {
+        Enumeration<JarEntry> entries = jarFile.entries();
         while (entries.hasMoreElements()) {
-            final JarEntry entry = entries.nextElement();
-            final File outFile = new File(toDir, entry.getName());
-            FileOutputStream fos = null;
-            InputStream in = null;
-            try {
-                fos = new FileOutputStream(outFile);
-                in = jarFile.getInputStream(entry);
-                IOUtil.copyFile(in, fos);
-            } finally {
-                if (in != null) {
-                    in.close();
-                }
-                if (fos != null) {
-                    fos.close();
-                }
+            JarEntry entry = entries.nextElement();
+            Path outFile = toDir.resolve(entry.getName());
+            try (InputStream in = jarFile.getInputStream(entry);
+                    OutputStream fos = Files.newOutputStream(outFile)) {
+
+                copyFile(in, fos);
             }
         }
     }
@@ -625,8 +594,8 @@ public final class IOUtil {
      * @throws IOException
      * if there is an issue reading the file.
      */
-    public static String readFileUTF8(final File file) throws IOException {
-        final byte[] bytes = IOUtil.readFileBytes(file);
+    public static String readFileUTF8(final Path file) throws IOException {
+        final byte[] bytes = readFileBytes(file);
         return new String(bytes, StandardCharsets.UTF_8);
     }
 
@@ -639,9 +608,8 @@ public final class IOUtil {
      * @throws IOException
      * if there is an issue reading the file.
      */
-    public static byte[] readFileBytes(final File file) throws IOException {
-        final InputStream ins = new FileInputStream(file);
-        return IOUtil.readInputStreamBytes(ins, true);
+    public static byte[] readFileBytes(final Path file) throws IOException {
+        return readInputStreamBytes(Files.newInputStream(file), true);
     }
 
     /**
@@ -656,8 +624,8 @@ public final class IOUtil {
      * @throws NullPointerException
      * if the file parameter is null.
      */
-    public static void writeFileUTF8(final File file, final String contents) throws IOException {
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+    public static void writeFileUTF8(final Path file, final String contents) throws IOException {
+        try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
             writer.write(contents);
         }
     }
@@ -674,8 +642,8 @@ public final class IOUtil {
      * if the URL create from the parameters does not specify a
      * file.
      */
-    public static URL makeURL(final File dir, final String path) throws IOException {
-        final File file = new File(dir, path);
+    public static URL makeURL(final Path dir, final String path) throws IOException {
+        final File file = dir.resolve(path).toFile();
         if (!file.isFile()) {
             throw new IOException(file.getPath() + " does not exist");
         }
@@ -692,6 +660,6 @@ public final class IOUtil {
      * if there is an issue.
      */
     public static Properties loadPropertiesFile(final String string) throws IOException {
-        return loadPropertiesFile(new File(string));
+        return loadPropertiesFile(Path.of(string));
     }
 }

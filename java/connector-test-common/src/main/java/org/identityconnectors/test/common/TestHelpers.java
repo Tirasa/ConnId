@@ -28,6 +28,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,7 +80,7 @@ public final class TestHelpers {
 
         try {
             URI relative = url.toURI();
-            for (File file : new File(url.toURI()).listFiles()) {
+            for (File file : Path.of(url.toURI()).toFile().listFiles()) {
                 bundleContents.add(relative.relativize(file.toURI()).getPath());
             }
             return getSpi().createTestConfiguration(clazz, bundleContents, configData, prefix);

@@ -19,11 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2024 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
@@ -33,13 +33,11 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
-
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509ExtendedKeyManager;
 import javax.net.ssl.X509ExtendedTrustManager;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.security.GuardedString;
@@ -55,9 +53,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
 
     private KeyStore loadKeyStoreResource(String name) {
         try {
-            File bundlesDir = getTestBundlesDir();
-            File file = new File(bundlesDir, name);
-            byte[] bytes = IOUtil.readFileBytes(file);
+            byte[] bytes = IOUtil.readFileBytes(getTestBundlesDir().toPath().resolve(name));
             KeyStore store = KeyStore.getInstance("PKCS12");
             store.load(new ByteArrayInputStream(bytes), "changeit".toCharArray());
             return store;

@@ -28,8 +28,8 @@ import static net.tirasa.connid.commons.scripted.Constants.MSG_BLANK_UID;
 import static net.tirasa.connid.commons.scripted.Constants.MSG_BLANK_RESULT_HANDLER;
 import static net.tirasa.connid.commons.scripted.Constants.MSG_INVALID_SCRIPT;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -158,7 +158,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
 
         try {
             if (scriptFileName != null) {
-                scriptCode = IOUtil.readFileUTF8(new File(resolveVariables(scriptFileName)));
+                scriptCode = IOUtil.readFileUTF8(Path.of(resolveVariables(scriptFileName)));
             }
             if (scriptCode.length() > 0) {
                 scriptExec = factory.newScriptExecutor(getClass().getClassLoader(), scriptCode, true);
