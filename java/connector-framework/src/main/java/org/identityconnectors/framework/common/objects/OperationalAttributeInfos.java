@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2025 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -80,7 +81,7 @@ public final class OperationalAttributeInfos {
      * <p>
      * Note: This pseudo attribute is not a clean solution. It is mostly just a legacy.
      * In original framework there was no clear way how to pass old/current password
-     * to an update operation. Therefore this pseudo-attribute was used. 
+     * to an update operation. Therefore this pseudo-attribute was used.
      * Do not use this this pseudo-attribute with newer operations, such as delta-based update
      * operation. Delta-based update has a better was to dead with old/current password values.
      */
@@ -93,10 +94,11 @@ public final class OperationalAttributeInfos {
      */
     public static final AttributeInfo PASSWORD_EXPIRED = AttributeInfoBuilder.build(
             OperationalAttributes.PASSWORD_EXPIRED_NAME, boolean.class);
-    
+
     /**
      * Gets/sets flag that forces immediate password change by the user (e.g. during next log on).
      * This can be used to set temporary password and the force user to change it to a permanent password.
+     *
      * @since 1.5.0.0
      */
     public static final AttributeInfo FORCE_PASSWORD_CHANGE = AttributeInfoBuilder.build(

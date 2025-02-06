@@ -51,12 +51,13 @@ import org.identityconnectors.common.CollectionUtil;
  * might use the same value for both <code>Name</code> and <code>Uid</code>.
  */
 public final class Name extends Attribute {
-    public static final String NAME = AttributeUtil.createSpecialName("NAME");
-    public static final AttributeInfo INFO = new AttributeInfoBuilder(NAME).setRequired(true)
-            .build();
 
-    public Name(String value) {
-        super(NAME, CollectionUtil.<Object> newReadOnlyList(value));
+    public static final String NAME = AttributeUtil.createSpecialName("NAME");
+
+    public static final AttributeInfo INFO = new AttributeInfoBuilder(NAME).setRequired(true).build();
+
+    public Name(final String value) {
+        super(NAME, CollectionUtil.newReadOnlyList(value));
     }
 
     /**

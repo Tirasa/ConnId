@@ -20,13 +20,11 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2025 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
-import static org.identityconnectors.framework.common.objects.AttributeUtil.createSpecialName;
-
 import java.util.Set;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.CreateOp;
@@ -50,38 +48,38 @@ public final class OperationalAttributes {
     /**
      * Gets/sets the enable status of an object.
      */
-    public static final String ENABLE_NAME = createSpecialName("ENABLE");
+    public static final String ENABLE_NAME = NameUtil.createSpecialName("ENABLE");
 
     /**
      * Gets/sets the enable date for an object.
      */
-    public static final String ENABLE_DATE_NAME = createSpecialName("ENABLE_DATE");
+    public static final String ENABLE_DATE_NAME = NameUtil.createSpecialName("ENABLE_DATE");
 
     /**
      * Gets/sets the disable date for an object.
      */
-    public static final String DISABLE_DATE_NAME = createSpecialName("DISABLE_DATE");
+    public static final String DISABLE_DATE_NAME = NameUtil.createSpecialName("DISABLE_DATE");
 
     /**
      * Gets/sets the lock out attribute for an object.
      */
-    public static final String LOCK_OUT_NAME = createSpecialName("LOCK_OUT");
+    public static final String LOCK_OUT_NAME = NameUtil.createSpecialName("LOCK_OUT");
 
     /**
      * Gets/sets the password expiration date for an object.
      */
     public static final String PASSWORD_EXPIRATION_DATE_NAME =
-            createSpecialName("PASSWORD_EXPIRATION_DATE");
+            NameUtil.createSpecialName("PASSWORD_EXPIRATION_DATE");
 
     /**
      * Gets/sets the password expired for an object.
      */
-    public static final String PASSWORD_EXPIRED_NAME = createSpecialName("PASSWORD_EXPIRED");
+    public static final String PASSWORD_EXPIRED_NAME = NameUtil.createSpecialName("PASSWORD_EXPIRED");
 
     /**
      * Normally this is a write-only attribute. Sets the password for an object.
      */
-    public static final String PASSWORD_NAME = createSpecialName("PASSWORD");
+    public static final String PASSWORD_NAME = NameUtil.createSpecialName("PASSWORD");
 
     /**
      * Used in conjunction with password to do an account level password change.
@@ -90,18 +88,19 @@ public final class OperationalAttributes {
      * <p>
      * Note: This pseudo attribute is not a clean solution. It is mostly just a legacy.
      * In original framework there was no clear way how to pass old/current password
-     * to an update operation. Therefore this pseudo-attribute was used. 
+     * to an update operation. Therefore this pseudo-attribute was used.
      * Do not use this this pseudo-attribute with newer operations, such as delta-based update
      * operation. Delta-based update has a better was to dead with old/current password values.
      */
-    public static final String CURRENT_PASSWORD_NAME = createSpecialName("CURRENT_PASSWORD");
-    
+    public static final String CURRENT_PASSWORD_NAME = NameUtil.createSpecialName("CURRENT_PASSWORD");
+
     /**
      * Gets/sets flag that forces immediate password change by the user (e.g. during next log on).
      * This can be used to set temporary password and the force user to change it to a permanent password.
+     *
      * @since 1.5.0.0
      */
-    public static final String FORCE_PASSWORD_CHANGE_NAME = createSpecialName("FORCE_PASSWORD_CHANGE");
+    public static final String FORCE_PASSWORD_CHANGE_NAME = NameUtil.createSpecialName("FORCE_PASSWORD_CHANGE");
 
     // =======================================================================
     // Helper Methods..
