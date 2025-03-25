@@ -389,57 +389,62 @@
         <artifactId>license-maven-plugin</artifactId>
         <version>5.0.0</version>
         <configuration>
-          <header>${parent.path}/src/main/resources/header.txt</header>
           <strictCheck>true</strictCheck>
           <failIfMissing>true</failIfMissing>
           <aggregate>true</aggregate>
           <useDefaultExcludes>true</useDefaultExcludes>
           <useDefaultMapping>true</useDefaultMapping>
-          <headerSections>
-            <headerSection>
-              <key>COPYRIGHT_SECTION</key>
-              <defaultValue>Copyright 2015 ConnId. All rights reserved.</defaultValue>
-              <ensureMatch>Copyright .*\. All rights reserved\.</ensureMatch>
-            </headerSection>
-            <headerSection>
-              <key>PORTIONS_COPYRIGHT_SECTION</key>
-              <defaultValue />
-              <ensureMatch>(.*^Portions Copyrighted .*)?</ensureMatch>
-            </headerSection>
-          </headerSections>
-          <headerDefinitions>
-            <headerDefinition>${parent.path}/src/main/resources/java-single-star.xml</headerDefinition>
-          </headerDefinitions>
           <mapping>
             <md>XML_STYLE</md>
             <java>JAVA-SINGLE-STAR</java>
             <groovy>JAVA-SINGLE-STAR</groovy>
+            <service>SCRIPT_STYLE</service>
           </mapping>
-          <excludes>
-            <exclude>**/LICENSE*</exclude>
-            <exclude>**/NOTICE*</exclude>
-            <exclude>**/*.pfx</exclude>
-            <exclude>**/*.dll</exclude>
-            <exclude>**/*.so</exclude>
-            <exclude>**/*.jnilib</exclude>
-            <exclude>nbactions.xml</exclude>
-            <exclude>nb-configuration.xml</exclude>
-            <exclude>**/META-INF/services/**</exclude>
-            <exclude>**/*.css</exclude>
-            <exclude>**/*.js</exclude>
-            <exclude>**/*.csv</exclude>
-            <exclude>**/maven-eclipse.xml</exclude>
-            <exclude>**/*.iml</exclude>
-            <exclude>**/*.log</exclude>
-            <exclude>.externalToolBuilders/**</exclude>
-            <exclude>.git/**</exclude>
-            <exclude>**/.idea/**</exclude>
-            <exclude>**/.*</exclude>
-            <exclude>build-number.txt</exclude>
-            <exclude>**/cov-int/**</exclude>
-            <exclude>**/archetype-resources/**</exclude>
-            <exclude>**/goal.txt</exclude>
-          </excludes>
+          <licenseSets>
+            <licenseSet>
+              <header>${parent.path}/src/main/resources/header.txt</header>
+              <headerSections>
+                <headerSection>
+                  <key>COPYRIGHT_SECTION</key>
+                  <defaultValue>Copyright 2015 ConnId. All rights reserved.</defaultValue>
+                  <ensureMatch>Copyright .*\. All rights reserved\.</ensureMatch>
+                </headerSection>
+                <headerSection>
+                  <key>PORTIONS_COPYRIGHT_SECTION</key>
+                  <defaultValue />
+                  <ensureMatch>(.*^Portions Copyrighted .*)?</ensureMatch>
+                </headerSection>
+              </headerSections>
+              <headerDefinitions>
+                <headerDefinition>${parent.path}/src/main/resources/java-single-star.xml</headerDefinition>
+              </headerDefinitions>
+              <excludes>
+                <exclude>**/LICENSE*</exclude>
+                <exclude>**/NOTICE*</exclude>
+                <exclude>**/*.pfx</exclude>
+                <exclude>**/*.dll</exclude>
+                <exclude>**/*.so</exclude>
+                <exclude>**/*.jnilib</exclude>
+                <exclude>nbactions.xml</exclude>
+                <exclude>nb-configuration.xml</exclude>
+                <exclude>**/META-INF/services/**</exclude>
+                <exclude>**/*.css</exclude>
+                <exclude>**/*.js</exclude>
+                <exclude>**/*.csv</exclude>
+                <exclude>**/maven-eclipse.xml</exclude>
+                <exclude>**/*.iml</exclude>
+                <exclude>**/*.log</exclude>
+                <exclude>.externalToolBuilders/**</exclude>
+                <exclude>.git/**</exclude>
+                <exclude>**/.idea/**</exclude>
+                <exclude>**/.*</exclude>
+                <exclude>build-number.txt</exclude>
+                <exclude>**/cov-int/**</exclude>
+                <exclude>**/archetype-resources/**</exclude>
+                <exclude>**/goal.txt</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
         </configuration>
         <executions>
           <execution>
@@ -463,6 +468,16 @@
             <additionalOption>none</additionalOption>
           </additionalOptions>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>3.1.4</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.1.4</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
