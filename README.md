@@ -108,6 +108,13 @@ Download instructions at [this page](https://connid.atlassian.net/wiki/display/B
   <td><a href="https://github.com/Tirasa/ConnIdLDAPBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdLDAPBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
  </tr>
  <tr>
+  <td>LdUp</td>
+  <td>https://github.com/Tirasa/ConnIdLdUpBundle</td>
+  <td><a href="https://connid.atlassian.net/wiki/display/BASE/LDUP">wiki</a></td>
+  <td><a href="https://connid.atlassian.net/browse/LdUP">issues</a></td>
+  <td><a href="https://github.com/Tirasa/ConnIdLdUpBundle/actions/workflows/ci.yml"><img src="https://github.com/Tirasa/ConnIdLdUpBundle/actions/workflows/ci.yml/badge.svg"/></a></td>
+ </tr>
+ <tr>
   <td>Okta</td>
   <td>https://github.com/Tirasa/ConnIdOktaBundle</td>
   <td><a href="https://connid.atlassian.net/wiki/display/BASE/Okta">wiki</a></td>
