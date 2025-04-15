@@ -28,6 +28,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>ConnId</name>
+  <description>ConnId parent POM</description>
+
   <groupId>net.tirasa.connid</groupId>
   <artifactId>connid</artifactId>
   <version>1.6.0.1-SNAPSHOT</version>
@@ -55,6 +57,10 @@
       <id>central-portal-snapshots</id>
       <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     </snapshotRepository>
+    <repository>
+      <id>central-portal</id>
+      <url>https://central.sonatype.com</url>
+    </repository>
   </distributionManagement>
 
   <repositories>
@@ -92,7 +98,60 @@
       <archive>http://groups.google.com/group/connid-users</archive>
     </mailingList>
   </mailingLists>
-    
+
+  <developers>
+    <developer>
+      <id>ilgrosso</id>
+      <email>ilgrosso@apache.org</email>
+      <name>Francesco Chicchiriccò</name>
+      <organization>Tirasa</organization>
+    </developer>
+    <developer>
+      <id>fmartelli</id>
+      <name>Fabio Martelli</name>
+      <organization>Tirasa</organization>
+    </developer>
+    <developer>
+      <id>mdisabatino</id>
+      <name>Marco Di Sabatino Di Diodoro</name>
+      <organization>Tirasa</organization>
+    </developer>
+    <developer>
+      <id>massi</id>
+      <name>Massimiliano Perrone</name>
+      <organization>Tirasa</organization>
+    </developer>
+    <developer>
+      <id>massi</id>
+      <name>Massimiliano Perrone</name>
+      <organization>Tirasa</organization>
+    </developer>
+    <developer>
+      <id>semancik</id>
+      <name>Radovan Semancik</name>
+      <organization>Evolveum</organization>
+    </developer>
+    <developer>
+      <id>semancik</id>
+      <name>Radovan Semancik</name>
+      <organization>Evolveum</organization>
+    </developer>
+    <developer>
+      <id>mederly</id>
+      <organization>Evolveum</organization>
+    </developer>
+    <developer>
+      <id>matusmacik</id>
+      <name>Matus Macik</name>
+      <organization>Evolveum</organization>
+    </developer>
+    <developer>
+      <id>virgo47</id>
+      <name>Richard "Virgo" Richter</name>
+      <organization>Evolveum</organization>
+    </developer>
+  </developers>
+
   <properties>
     <parent.path>${basedir}</parent.path>
 
@@ -311,16 +370,6 @@
             <arguments>${arguments} -Pcentral-portal-release</arguments>
           </configuration>
         </plugin>
-
-        <plugin>
-          <groupId>org.sonatype.central</groupId>
-          <artifactId>central-publishing-maven-plugin</artifactId>
-          <version>0.7.0</version>
-          <extensions>true</extensions>
-          <configuration>
-            <publishingServerId>central-portal</publishingServerId>
-          </configuration>
-        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -370,7 +419,7 @@
           </execution>
         </executions>
       </plugin>
-    
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -395,7 +444,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>ianal-maven-plugin</artifactId>
@@ -510,11 +559,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>3.1.4</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
         <version>3.1.1</version>
         <configuration>
@@ -569,12 +613,22 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>          
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.7.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central-portal</publishingServerId>
+              <waitUntil>uploaded</waitUntil>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
-    
+
   <modules>
     <module>connector-framework</module>
     <module>connector-test-common</module>
