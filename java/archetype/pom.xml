@@ -30,7 +30,7 @@
   <parent>
     <groupId>net.tirasa.connid</groupId>
     <artifactId>connid</artifactId>
-    <version>1.5.2.1-SNAPSHOT</version>
+    <version>1.5.2.1</version>
   </parent>
   
   <artifactId>connector-archetype</artifactId>
@@ -76,9 +76,7 @@
             <phase>prepare-package</phase>
             <configuration>
               <target>
-                <replace file="${project.build.outputDirectory}/archetype-resources/pom.xml"
-                         token="connidVersion"
-                         value="${project.version}"/>
+                <replace file="${project.build.outputDirectory}/archetype-resources/pom.xml" token="connidVersion" value="${project.version}" />
               </target>
             </configuration>
           </execution>
