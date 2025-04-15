@@ -23,7 +23,6 @@
 package org.identityconnectors.framework.api.operations;
 
 import java.util.Set;
-
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ObjectClass;

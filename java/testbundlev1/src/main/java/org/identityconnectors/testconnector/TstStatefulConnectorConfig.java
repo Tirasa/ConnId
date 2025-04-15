@@ -23,7 +23,6 @@
 package org.identityconnectors.testconnector;
 
 import java.util.UUID;
-
 import org.identityconnectors.framework.spi.StatefulConfiguration;
 
 public class TstStatefulConnectorConfig extends TstConnectorConfig implements StatefulConfiguration {

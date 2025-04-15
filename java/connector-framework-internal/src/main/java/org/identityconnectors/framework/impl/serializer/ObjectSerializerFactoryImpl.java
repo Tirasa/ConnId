@@ -25,7 +25,6 @@ package org.identityconnectors.framework.impl.serializer;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
-
 import org.identityconnectors.framework.common.serializer.BinaryObjectDeserializer;
 import org.identityconnectors.framework.common.serializer.BinaryObjectSerializer;
 import org.identityconnectors.framework.common.serializer.ObjectSerializerFactory;

@@ -34,7 +34,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.Properties;
-
 import org.identityconnectors.common.Version;
 import org.junit.jupiter.api.Test;
 

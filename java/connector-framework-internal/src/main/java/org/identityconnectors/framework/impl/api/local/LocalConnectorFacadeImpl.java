@@ -27,7 +27,6 @@ package org.identityconnectors.framework.impl.api.local;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.identityconnectors.framework.api.operations.*;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;

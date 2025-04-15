@@ -22,14 +22,8 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import org.identityconnectors.common.CollectionUtil;
-import org.identityconnectors.common.StringUtil;
-import org.identityconnectors.common.security.GuardedString;
-
 import java.util.*;
-
-import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
-import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
+import org.identityconnectors.common.CollectionUtil;
 
 /**
  * List of suggested values, with openness specification.

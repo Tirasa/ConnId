@@ -25,7 +25,6 @@
 package org.identityconnectors.framework.api;
 
 import java.util.Set;
-
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.spi.Connector;

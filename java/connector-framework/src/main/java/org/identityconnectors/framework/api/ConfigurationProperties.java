@@ -23,7 +23,6 @@
 package org.identityconnectors.framework.api;
 
 import java.util.List;
-
 import org.identityconnectors.framework.spi.Configuration;
 
 /**

@@ -24,7 +24,6 @@
 package org.identityconnectors.framework.api;
 
 import java.net.URL;
-
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
 /**

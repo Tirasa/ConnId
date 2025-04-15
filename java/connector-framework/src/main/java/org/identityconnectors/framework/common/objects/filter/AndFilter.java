@@ -25,7 +25,6 @@ package org.identityconnectors.framework.common.objects.filter;
 
 import java.util.Collection;
 import java.util.LinkedList;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 

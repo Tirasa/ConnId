@@ -24,7 +24,6 @@ package org.identityconnectors.mockconnector;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.ReflectionUtil;
 import org.identityconnectors.framework.common.objects.Schema;

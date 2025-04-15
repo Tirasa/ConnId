@@ -24,10 +24,8 @@ package org.identityconnectors.contract.data;
 
 import groovy.util.ConfigObject;
 import groovy.util.ConfigSlurper;
-
 import java.net.URL;
 import java.text.MessageFormat;
-
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 

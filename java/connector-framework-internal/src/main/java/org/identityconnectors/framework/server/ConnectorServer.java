@@ -28,9 +28,7 @@ package org.identityconnectors.framework.server;
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.List;
-
 import javax.net.ssl.KeyManager;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 

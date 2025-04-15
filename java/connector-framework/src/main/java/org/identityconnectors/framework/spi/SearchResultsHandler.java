@@ -23,8 +23,8 @@
 
 package org.identityconnectors.framework.spi;
 
-import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.SearchResult;
 
 /**
  * A SearchResultsHandler is a completion handler for consuming the results of a

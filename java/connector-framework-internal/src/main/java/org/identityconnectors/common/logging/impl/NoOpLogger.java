@@ -23,8 +23,8 @@
  */
 package org.identityconnectors.common.logging.impl;
 
-import org.identityconnectors.common.logging.LogSpi;
 import org.identityconnectors.common.logging.Log.Level;
+import org.identityconnectors.common.logging.LogSpi;
 
 /**
  * No operation logger. This {@link LogSpi} does nothing it is synonymous with

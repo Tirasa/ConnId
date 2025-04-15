@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
 public final class ObjectSerializerRegistry {

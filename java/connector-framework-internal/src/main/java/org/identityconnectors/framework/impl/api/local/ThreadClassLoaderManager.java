@@ -26,7 +26,6 @@ package org.identityconnectors.framework.impl.api.local;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-
 import org.identityconnectors.common.logging.Log;
 
 /**

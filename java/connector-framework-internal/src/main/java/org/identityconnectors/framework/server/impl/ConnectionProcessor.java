@@ -35,7 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;

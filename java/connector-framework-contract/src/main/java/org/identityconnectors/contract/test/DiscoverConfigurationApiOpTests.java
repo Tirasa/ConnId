@@ -22,18 +22,17 @@
  */
 package org.identityconnectors.contract.test;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.identityconnectors.framework.api.ConfigurationProperties;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.api.operations.DiscoverConfigurationApiOp;
 import org.identityconnectors.framework.common.objects.SuggestedValues;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Contract test of {@link DiscoverConfigurationApiOp}.

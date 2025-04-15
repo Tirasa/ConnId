@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.List;
-
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.common.Version;
 import org.ops4j.lang.NullArgumentException;

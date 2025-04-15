@@ -28,7 +28,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 

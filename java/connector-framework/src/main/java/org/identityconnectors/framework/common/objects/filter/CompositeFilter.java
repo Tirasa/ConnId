@@ -24,7 +24,6 @@
 package org.identityconnectors.framework.common.objects.filter;
 
 import java.util.Collection;
-
 import org.identityconnectors.common.CollectionUtil;
 
 /**

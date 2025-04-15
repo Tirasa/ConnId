@@ -25,7 +25,6 @@ package org.identityconnectors.test.common.spi;
 
 import java.util.Map;
 import java.util.Set;
-
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.common.objects.ConnectorMessages;
 import org.identityconnectors.framework.common.objects.ObjectClass;

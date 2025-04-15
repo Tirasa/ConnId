@@ -22,14 +22,8 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import org.identityconnectors.common.CollectionUtil;
-import org.identityconnectors.common.StringUtil;
-import org.identityconnectors.common.security.GuardedString;
-import org.identityconnectors.framework.api.operations.CreateApiOp;
-import org.identityconnectors.framework.api.operations.SearchApiOp;
-import org.identityconnectors.framework.common.FrameworkUtil;
-
 import java.util.*;
+import org.identityconnectors.common.CollectionUtil;
 
 /**
  * Builder for instances of {@link SuggestedValues}.

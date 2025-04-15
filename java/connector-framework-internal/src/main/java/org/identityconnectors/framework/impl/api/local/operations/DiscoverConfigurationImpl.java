@@ -22,19 +22,12 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
-import org.identityconnectors.common.Assertions;
-import org.identityconnectors.common.CollectionUtil;
+import java.util.*;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.DiscoverConfigurationApiOp;
-import org.identityconnectors.framework.api.operations.GetApiOp;
-import org.identityconnectors.framework.common.exceptions.InvalidAttributeValueException;
-import org.identityconnectors.framework.common.exceptions.UnknownUidException;
 import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.*;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Handles both version of update this include simple replace and the advance update.

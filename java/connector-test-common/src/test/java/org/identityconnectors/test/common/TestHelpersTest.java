@@ -40,7 +40,6 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Properties;
-
 import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.junit.jupiter.api.Test;

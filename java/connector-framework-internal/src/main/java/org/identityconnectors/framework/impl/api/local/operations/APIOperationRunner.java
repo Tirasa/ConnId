@@ -25,7 +25,6 @@ package org.identityconnectors.framework.impl.api.local.operations;
 import static org.identityconnectors.common.ReflectionUtil.getInterfaces;
 
 import java.util.List;
-
 import org.identityconnectors.framework.api.operations.APIOperation;
 
 /**

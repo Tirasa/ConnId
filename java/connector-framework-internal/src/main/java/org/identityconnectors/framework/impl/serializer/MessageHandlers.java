@@ -27,7 +27,6 @@ package org.identityconnectors.framework.impl.serializer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.api.operations.APIOperation;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;

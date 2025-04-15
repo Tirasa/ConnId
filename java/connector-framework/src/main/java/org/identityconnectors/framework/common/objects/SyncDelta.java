@@ -27,7 +27,6 @@ package org.identityconnectors.framework.common.objects;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;

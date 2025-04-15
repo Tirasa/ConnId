@@ -24,7 +24,6 @@ package org.identityconnectors.test.common;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 

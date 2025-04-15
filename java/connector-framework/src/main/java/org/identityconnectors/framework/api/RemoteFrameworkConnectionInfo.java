@@ -23,9 +23,7 @@
 package org.identityconnectors.framework.api;
 
 import java.util.List;
-
 import javax.net.ssl.TrustManager;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.security.GuardedString;

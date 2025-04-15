@@ -22,10 +22,9 @@
  */
 package org.identityconnectors.framework.spi.operations;
 
+import java.util.Map;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.*;
-
-import java.util.Map;
 
 /**
  * <p>

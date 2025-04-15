@@ -26,7 +26,6 @@ package org.identityconnectors.framework.impl.api.remote.messages;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;

@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.identityconnectors.framework.api.operations.SearchApiOp;
 import org.identityconnectors.framework.common.exceptions.OperationTimeoutException;
 import org.identityconnectors.framework.common.objects.ConnectorObject;

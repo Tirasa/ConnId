@@ -23,10 +23,9 @@
 package org.identityconnectors.framework.api.operations;
 
 
+import java.util.Map;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.objects.SuggestedValues;
-
-import java.util.Map;
 
 /**
  * <p>

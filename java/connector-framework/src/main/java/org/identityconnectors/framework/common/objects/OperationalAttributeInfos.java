@@ -25,7 +25,6 @@
 package org.identityconnectors.framework.common.objects;
 
 import java.util.EnumSet;
-
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 

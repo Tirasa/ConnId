@@ -24,7 +24,6 @@ package org.identityconnectors.framework.common.objects;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.identityconnectors.framework.common.serializer.ObjectSerializerFactory;
 
 /**

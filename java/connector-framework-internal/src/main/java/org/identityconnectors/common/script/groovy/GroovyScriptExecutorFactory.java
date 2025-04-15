@@ -25,9 +25,7 @@ package org.identityconnectors.common.script.groovy;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
-
 import java.util.Map;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.script.ScriptExecutor;
 import org.identityconnectors.common.script.ScriptExecutorFactory;

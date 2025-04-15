@@ -26,7 +26,6 @@ package org.identityconnectors.framework.common.objects;
 
 import java.util.Map;
 import java.util.Objects;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.api.operations.CreateApiOp;

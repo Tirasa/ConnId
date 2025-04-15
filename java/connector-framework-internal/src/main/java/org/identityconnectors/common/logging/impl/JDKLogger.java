@@ -26,9 +26,8 @@ package org.identityconnectors.common.logging.impl;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Logger;
-
-import org.identityconnectors.common.logging.LogSpi;
 import org.identityconnectors.common.logging.Log.Level;
+import org.identityconnectors.common.logging.LogSpi;
 
 /**
  * Provider to integrate with the JDK logger.

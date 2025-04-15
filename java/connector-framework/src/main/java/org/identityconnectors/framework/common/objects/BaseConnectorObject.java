@@ -22,11 +22,10 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import org.identityconnectors.common.CollectionUtil;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.identityconnectors.common.CollectionUtil;
 
 /**
  * Helps implementing {@link ConnectorObject} and {@link ConnectorObjectIdentification}.

@@ -24,7 +24,6 @@
 package org.identityconnectors.framework.common.objects;
 
 import java.util.EnumSet;
-
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
 
 public final class PredefinedAttributeInfos {

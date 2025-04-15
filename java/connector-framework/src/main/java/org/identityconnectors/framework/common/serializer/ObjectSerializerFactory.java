@@ -26,7 +26,6 @@ package org.identityconnectors.framework.common.serializer;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
-
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.xml.sax.InputSource;
 

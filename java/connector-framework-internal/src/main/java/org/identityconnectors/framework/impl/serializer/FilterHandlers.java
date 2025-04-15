@@ -25,7 +25,6 @@ package org.identityconnectors.framework.impl.serializer;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.filter.AndFilter;
 import org.identityconnectors.framework.common.objects.filter.AttributeFilter;

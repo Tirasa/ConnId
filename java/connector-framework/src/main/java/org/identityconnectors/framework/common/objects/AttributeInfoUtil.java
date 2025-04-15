@@ -25,7 +25,6 @@ package org.identityconnectors.framework.common.objects;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
 

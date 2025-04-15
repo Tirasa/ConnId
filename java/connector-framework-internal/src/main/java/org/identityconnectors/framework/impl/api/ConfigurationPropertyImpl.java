@@ -24,7 +24,6 @@ package org.identityconnectors.framework.impl.api;
 
 import java.util.Objects;
 import java.util.Set;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.api.ConfigurationProperty;
 import org.identityconnectors.framework.api.operations.APIOperation;

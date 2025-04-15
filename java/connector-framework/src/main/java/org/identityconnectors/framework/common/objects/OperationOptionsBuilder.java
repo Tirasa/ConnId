@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.serializer.ObjectSerializerFactory;

@@ -27,8 +27,8 @@ package org.identityconnectors.framework.impl.api.local.operations;
 import org.identityconnectors.common.Pair;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.local.ConnectorPoolManager;
-import org.identityconnectors.framework.impl.api.local.ObjectPool;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorInfoImpl;
+import org.identityconnectors.framework.impl.api.local.ObjectPool;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.PoolableConnector;
 

@@ -24,6 +24,8 @@
  */
 package org.identityconnectors.framework.impl.api.local;
 
+import static org.identityconnectors.framework.common.FrameworkUtil.isSupportedConfigurationType;
+
 import java.beans.BeanInfo;
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.Introspector;
@@ -32,13 +34,13 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.identityconnectors.common.ReflectionUtil;
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.api.operations.APIOperation;
@@ -53,10 +55,6 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.ConfigurationClass;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 import org.identityconnectors.framework.spi.operations.SPIOperation;
-
-import static org.identityconnectors.framework.common.FrameworkUtil.isSupportedConfigurationType;
-
-import java.util.Arrays;
 
 /**
  * Class for translating from a Java class to ConfigurationProperties and from

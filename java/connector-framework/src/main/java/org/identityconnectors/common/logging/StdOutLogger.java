@@ -28,7 +28,6 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.identityconnectors.common.StringPrintWriter;
 import org.identityconnectors.common.logging.Log.Level;
 

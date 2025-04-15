@@ -26,7 +26,6 @@ package org.identityconnectors.framework.impl.api.local.operations;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.api.operations.GetApiOp;
 import org.identityconnectors.framework.api.operations.SearchApiOp;

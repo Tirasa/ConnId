@@ -26,7 +26,6 @@ package org.identityconnectors.framework.common.objects;
 
 import java.util.EnumSet;
 import java.util.Set;
-
 import org.identityconnectors.common.StringUtil;
 import org.identityconnectors.framework.common.FrameworkUtil;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;

@@ -26,7 +26,6 @@ package org.identityconnectors.common.event;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.api.ConnectorKey;
 

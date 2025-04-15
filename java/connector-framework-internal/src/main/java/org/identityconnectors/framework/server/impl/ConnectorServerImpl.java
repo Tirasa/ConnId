@@ -28,12 +28,10 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.Calendar;
 import java.util.concurrent.CountDownLatch;
-
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocketFactory;
-
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.ConnectorFacadeFactory;
 import org.identityconnectors.framework.api.ConnectorInfoManagerFactory;

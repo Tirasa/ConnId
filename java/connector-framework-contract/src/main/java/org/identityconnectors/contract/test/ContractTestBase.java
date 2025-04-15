@@ -25,7 +25,6 @@
 package org.identityconnectors.contract.test;
 
 import java.util.Set;
-
 import org.identityconnectors.contract.data.DataProvider;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.api.operations.APIOperation;
