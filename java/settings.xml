@@ -29,7 +29,7 @@
 
   <servers>
     <server>
-      <id>sonatype-nexus-snapshots</id>
+      <id>central-portal-snapshots</id>
       <username>${env.SONATYPE_USER}</username>
       <password>${env.SONATYPE_PASSWORD}</password>
     </server>
