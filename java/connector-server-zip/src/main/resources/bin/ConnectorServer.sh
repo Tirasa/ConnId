@@ -25,7 +25,6 @@
 CLASSPATH=lib/framework/connector-framework.jar:\
 lib/framework/connector-framework-internal.jar:\
 lib/framework/groovy-templates.jar:\
-lib/framework/groovy-bsf.jar:\
 lib/framework/groovy-jsr223.jar:\
 lib/framework/groovy-datetime.jar:\
 lib/framework/groovy-dateutil.jar:\

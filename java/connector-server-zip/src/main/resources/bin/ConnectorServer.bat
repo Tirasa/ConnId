@@ -68,7 +68,6 @@ rem setup the classpath
 set CP=lib\framework\connector-framework.jar
 set CP=%CP%;lib\framework\connector-framework-internal.jar
 set CP=%CP%;lib\framework\groovy-templates.jar
-set CP=%CP%;lib\framework\groovy-bsf.jar
 set CP=%CP%;lib\framework\groovy-jsr223.jar
 set CP=%CP%;lib\framework\groovy-datetime.jar
 set CP=%CP%;lib\framework\groovy-dateutil.jar

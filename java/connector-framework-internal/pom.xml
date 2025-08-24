@@ -50,46 +50,54 @@
 
     <!-- Provided Dependencies -->
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-templates</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-bsf</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>      
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-jsr223</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-datetime</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-dateutil</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-sql</artifactId>
       <scope>provided</scope>
       <optional>true</optional>      
+    </dependency>
+
+    <dependency>
+      <groupId>net.tirasa</groupId>
+      <artifactId>groovy-security-sandbox</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>net.tirasa.connid</groupId>
@@ -99,14 +107,6 @@
       <optional>true</optional>
       <!-- @see: org/identityconnectors/framework/impl/test/TestHelpersImpl.java -->
     </dependency>
-
-    <!-- Test Dependencies -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>net.tirasa.connid</groupId>
       <artifactId>connector-framework</artifactId>

@@ -49,37 +49,32 @@
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-templates</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-bsf</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-jsr223</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-datetime</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-dateutil</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-sql</artifactId>
       <scope>test</scope>
     </dependency>
