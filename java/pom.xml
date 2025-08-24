@@ -155,7 +155,7 @@
   <properties>
     <parent.path>${basedir}</parent.path>
 
-    <groovy.version>4.0.28</groovy.version>
+    <groovy.version>5.0.0</groovy.version>
 
     <logback.version>1.5.18</logback.version>
     <slf4j.version>2.0.17</slf4j.version>
@@ -214,6 +214,12 @@
         <version>${groovy.version}</version>
       </dependency>
     
+      <dependency>
+        <groupId>net.tirasa</groupId>
+        <artifactId>groovy-security-sandbox</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
       <!-- OSGi -->
       <dependency>
         <groupId>org.ops4j.pax.swissbox</groupId>

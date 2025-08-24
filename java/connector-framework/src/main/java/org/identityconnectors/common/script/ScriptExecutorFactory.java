@@ -56,22 +56,22 @@ import org.identityconnectors.framework.spi.operations.ScriptOnResourceOp;
  */
 public abstract class ScriptExecutorFactory {
 
-    private static Map<String, Class<?>> factoryCache;
+    private static Map<String, Class<?>> FACTORY_CACHE;
 
     private static synchronized Map<String, Class<?>> getFactoryCache() {
-        if (factoryCache == null) {
-            factoryCache = CollectionUtil.newCaseInsensitiveMap();
+        if (FACTORY_CACHE == null) {
+            FACTORY_CACHE = CollectionUtil.newCaseInsensitiveMap();
             List<String> factories = getRegisteredFactories();
             factories.forEach(factory -> {
                 try {
                     Class<?> clazz = Class.forName(factory);
                     // Create an instance in order to get the supported language.
-                    ScriptExecutorFactory instance = 
+                    ScriptExecutorFactory instance =
                             (ScriptExecutorFactory) clazz.getDeclaredConstructor().newInstance();
                     String language = instance.getLanguageName();
                     // Do not override a factory earlier in the classpath.
-                    if (!factoryCache.containsKey(language)) {
-                        factoryCache.put(language, clazz);
+                    if (!FACTORY_CACHE.containsKey(language)) {
+                        FACTORY_CACHE.put(language, clazz);
                     }
                 } catch (RuntimeException e) {
                     throw e;
@@ -81,7 +81,7 @@ public abstract class ScriptExecutorFactory {
                 }
             });
         }
-        return factoryCache;
+        return FACTORY_CACHE;
     }
 
     /**
@@ -96,8 +96,7 @@ public abstract class ScriptExecutorFactory {
         List<String> result = new ArrayList<>();
         String path = "META-INF/services/" + ScriptExecutorFactory.class.getName();
         try {
-            Enumeration<URL> configFiles =
-                    ScriptExecutorFactory.class.getClassLoader().getResources(path);
+            Enumeration<URL> configFiles = ScriptExecutorFactory.class.getClassLoader().getResources(path);
             while (configFiles.hasMoreElements()) {
                 URL configFile = configFiles.nextElement();
                 addFactories(configFile, result);
@@ -108,11 +107,14 @@ public abstract class ScriptExecutorFactory {
         }
     }
 
-    private static void addFactories(URL configFile, List<String> result) throws IOException {
-        try (InputStream input = configFile.openStream(); // Encoding as per JAR file spec.
+    private static void addFactories(final URL configFile, final List<String> result) throws IOException {
+        // Encoding as per JAR file spec.
+        try (InputStream input = configFile.openStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
-            String line = reader.readLine();
-            while (line != null) {
+
+            reader.lines().forEach(l -> {
+                String line = l;
+
                 int comment = line.indexOf('#');
                 if (comment >= 0) {
                     line = line.substring(0, comment);
@@ -121,8 +123,7 @@ public abstract class ScriptExecutorFactory {
                 if (StringUtil.isNotBlank(line)) {
                     result.add(line);
                 }
-                line = reader.readLine();
-            }
+            });
         }
     }
 
@@ -142,14 +143,13 @@ public abstract class ScriptExecutorFactory {
      * @return The script executor factory
      * @throws IllegalArgumentException If the given language is not supported.
      */
-    public static ScriptExecutorFactory newInstance(String language) {
+    public static ScriptExecutorFactory newInstance(final String language) {
         if (StringUtil.isBlank(language)) {
             throw new IllegalArgumentException("Language must be specified");
         }
         Class<?> clazz = getFactoryCache().get(language);
         if (clazz == null) {
-            throw new IllegalArgumentException(String
-                    .format("Language not supported: %s", language));
+            throw new IllegalArgumentException(String.format("Language not supported: %s", language));
         }
         // exceptions here should not happened because of the register
         try {

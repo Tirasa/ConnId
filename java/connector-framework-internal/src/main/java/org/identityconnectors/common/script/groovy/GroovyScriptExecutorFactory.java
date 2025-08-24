@@ -22,26 +22,72 @@
  */
 package org.identityconnectors.common.script.groovy;
 
+import groovy.grape.GrabAnnotationTransformation;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Map;
+import java.util.Set;
+import org.codehaus.groovy.control.CompilerConfiguration;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.script.ScriptExecutor;
 import org.identityconnectors.common.script.ScriptExecutorFactory;
-
+import org.jenkinsci.plugins.scriptsecurity.sandbox.blacklists.Blacklist;
+import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.RejectASTTransformsCustomizer;
+import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor;
+import org.kohsuke.groovy.sandbox.GroovyInterceptor;
+import org.kohsuke.groovy.sandbox.SandboxTransformer;
 
 /**
- * Creates a new ScriptExecutorFactory for executing Groovy scripts. Scripts are
- * compiled at the creation of a new instance of {@link ScriptExecutor}.
+ * Creates a new ScriptExecutorFactory for executing Groovy scripts.
+ * Scripts are compiled at the creation of a new instance of {@link ScriptExecutor}.
  */
 public class GroovyScriptExecutorFactory extends ScriptExecutorFactory {
 
-    /**
-     * Make sure we blow up if Groovy does not exist.
-     */
-    public GroovyScriptExecutorFactory() {
-        new GroovyShell();
+    private static final CompilerConfiguration CC;
+
+    private static final Blacklist BLACKLIST;
+
+    static {
+        CC = new CompilerConfiguration();
+        CC.addCompilationCustomizers(new RejectASTTransformsCustomizer(), new SandboxTransformer());
+        CC.setDisabledGlobalASTTransformations(Set.of(GrabAnnotationTransformation.class.getName()));
+
+        try (InputStream in = GroovyScriptExecutorFactory.class.
+                getClassLoader().getResourceAsStream("META-INF/groovy.blacklist");
+                Reader reader = new InputStreamReader(in)) {
+
+            BLACKLIST = new Blacklist(reader);
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not load META-INF/groovy.blacklist", e);
+        }
+    }
+
+    private static class GroovyScriptExecutor implements ScriptExecutor {
+
+        private final Script groovyScript;
+
+        public GroovyScriptExecutor(final ClassLoader loader, final String script) {
+            groovyScript = new GroovyShell(loader, CC).parse(script);
+        }
+
+        @Override
+        public Object execute(final Map<String, Object> arguments) throws Exception {
+            GroovyInterceptor interceptor = new SandboxInterceptor(BLACKLIST);
+            try {
+                interceptor.register();
+
+                Map<String, Object> args = CollectionUtil.nullAsEmpty(arguments);
+                groovyScript.setBinding(new Binding(args));
+                return groovyScript.run();
+            } finally {
+                interceptor.unregister();
+            }
+        }
     }
 
     /**
@@ -50,24 +96,12 @@ public class GroovyScriptExecutorFactory extends ScriptExecutorFactory {
      * Always compile the script.
      */
     @Override
-    public ScriptExecutor newScriptExecutor(ClassLoader loader, String script,
-            boolean compile) {
+    public ScriptExecutor newScriptExecutor(
+            final ClassLoader loader,
+            final String script,
+            final boolean compile) {
+
         return new GroovyScriptExecutor(loader, script);
-    }
-
-    private static class GroovyScriptExecutor implements ScriptExecutor {
-        private final Script groovyScript;
-
-        public GroovyScriptExecutor(ClassLoader loader, String script) {
-            groovyScript = new GroovyShell(loader).parse(script);
-        }
-
-        @Override
-        public Object execute(Map<String, Object> arguments) throws Exception {
-            Map<String, Object> args = CollectionUtil.nullAsEmpty(arguments);
-            groovyScript.setBinding(new Binding(args));
-            return groovyScript.run();
-        }
     }
 
     /**
