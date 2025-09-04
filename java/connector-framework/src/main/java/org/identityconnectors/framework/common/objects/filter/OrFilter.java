@@ -79,7 +79,7 @@ public final class OrFilter extends CompositeFilter {
         if (subFilters.size() > 2) {
             final LinkedList<Filter> right = new LinkedList<Filter>(subFilters);
             right.removeFirst();
-            return new AndFilter(right);
+            return new OrFilter(right);
         } else if (subFilters.size() == 2) {
             return subFilters.getLast();
         } else {
