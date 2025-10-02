@@ -32,7 +32,7 @@
 
   <groupId>net.tirasa.connid</groupId>
   <artifactId>connid</artifactId>
-  <version>1.6.1.0-SNAPSHOT</version>
+  <version>1.6.1.0</version>
   <packaging>pom</packaging>
 
   <url>http://connid.tirasa.net/</url>
@@ -49,7 +49,7 @@
     <connection>scm:git:git@github.com:Tirasa/ConnId.git</connection>
     <url>scm:git:git@github.com:Tirasa/ConnId.git</url>
     <developerConnection>scm:git:git@github.com:Tirasa/ConnId.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>connid-1.6.1.0</tag>
   </scm>
 
   <distributionManagement>
