@@ -155,7 +155,7 @@
   <properties>
     <parent.path>${basedir}</parent.path>
 
-    <groovy.version>5.0.1</groovy.version>
+    <groovy.version>5.0.2</groovy.version>
 
     <logback.version>1.5.19</logback.version>
     <slf4j.version>2.0.17</slf4j.version>
