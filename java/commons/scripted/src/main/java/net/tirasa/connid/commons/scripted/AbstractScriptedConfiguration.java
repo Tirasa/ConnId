@@ -377,7 +377,7 @@ public abstract class AbstractScriptedConfiguration extends AbstractConfiguratio
         return fmt;
     }
 
-    private void checkFileIsReadable(final String type, final String fileName) {
+    protected void checkFileIsReadable(final String type, final String fileName) {
         if (fileName == null) {
             LOG.ok("{0} Script Filename is null", type);
         } else {

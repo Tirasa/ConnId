@@ -152,7 +152,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         // nothing to do
     }
 
-    private ScriptExecutor getScriptExecutor(String script, String scriptFileName) {
+    protected ScriptExecutor getScriptExecutor(String script, String scriptFileName) {
         String scriptCode = script;
         ScriptExecutor scriptExec = null;
 
@@ -887,7 +887,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         }
     }
 
-    private boolean checkReloadScript(
+    protected boolean checkReloadScript(
             final ScriptExecutor scriptExecutor,
             final String scriptString,
             final String scriptFileName) {
