@@ -158,7 +158,7 @@
     <groovy.version>5.0.6</groovy.version>
 
     <logback.version>1.5.32</logback.version>
-    <slf4j.version>2.0.17</slf4j.version>
+    <slf4j.version>2.0.18</slf4j.version>
 
     <junit.version>5.14.3</junit.version>
 
