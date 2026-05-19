@@ -31,9 +31,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.identityconnectors.common.logging.Log;
@@ -517,7 +517,7 @@ public class UpdateApiOpTests extends ObjectClassRunner {
         } catch (ObjectNotFoundException e) {
         }
         if (skippedAttributes == null) {
-            return Collections.emptyList();
+            return List.of();
         }
         if (!(skippedAttributes instanceof Collection<?>)) {
             throw new RuntimeException(MessageFormat.format(
@@ -525,6 +525,6 @@ public class UpdateApiOpTests extends ObjectClassRunner {
                     + TEST_NAME
                     + "." + "updateToNullValue.skippedAttributes", skippedAttributes.getClass()));
         }
-        return (Collection<String>) (skippedAttributes);
+        return (Collection<String>) skippedAttributes;
     }
 }

@@ -25,7 +25,6 @@ package org.identityconnectors.testconnector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -109,10 +108,10 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
         private List<Object> getValuesSorted(final ConnectorObject resource, final String field) {
             final Attribute value = AttributeUtil.find(field, resource.getAttributes());
             if (value == null || value.getValue() == null || value.getValue().isEmpty()) {
-                return Collections.emptyList();
+                return List.of();
             } else if (value.getValue().size() > 1) {
-                List<Object> results = new ArrayList<Object>(value.getValue());
-                Collections.sort(results, VALUE_COMPARATOR);
+                List<Object> results = new ArrayList<>(value.getValue());
+                results.sort(VALUE_COMPARATOR);
                 return results;
             } else {
                 return value.getValue();
@@ -190,7 +189,7 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
 
             @Override
             public List<Filter> translate(Filter filter) {
-                return Collections.singletonList(filter);
+                return List.of(filter);
             }
         };
     }

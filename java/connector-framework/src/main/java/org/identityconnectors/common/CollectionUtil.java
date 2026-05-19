@@ -338,7 +338,7 @@ public final class CollectionUtil {
     public static <T extends Object & Comparable<? super T>> List<T> newSortedList(
             final Collection<? extends T> col) {
         List<T> list = newList(col);
-        Collections.sort(list);
+        list.sort(Comparator.naturalOrder());
         return list;
     }
 

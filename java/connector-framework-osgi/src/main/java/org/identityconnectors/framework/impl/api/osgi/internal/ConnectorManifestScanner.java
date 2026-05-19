@@ -23,7 +23,6 @@
 package org.identityconnectors.framework.impl.api.osgi.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.List;
@@ -43,9 +42,13 @@ import org.osgi.framework.Bundle;
 public class ConnectorManifestScanner implements BundleScanner<ManifestEntry> {
 
     private static final String BUNDLE_PREFIX = "ConnectorBundle-";
+
     public static final String ATT_FRAMEWORK_VERSION = BUNDLE_PREFIX + "FrameworkVersion";
+
     public static final String ATT_BUNDLE_NAME = BUNDLE_PREFIX + "Name";
+
     public static final String ATT_BUNDLE_VERSION = BUNDLE_PREFIX + "Version";
+
     private final Version version;
 
     public ConnectorManifestScanner(Version version) {
@@ -64,7 +67,7 @@ public class ConnectorManifestScanner implements BundleScanner<ManifestEntry> {
         String bundleName = null;
         String bundleVersion = null;
 
-        final Dictionary<?,?> bundleHeaders = bundle.getHeaders();
+        final Dictionary<?, ?> bundleHeaders = bundle.getHeaders();
         if (bundleHeaders != null && !bundleHeaders.isEmpty()) {
             final Enumeration<?> keys = bundleHeaders.keys();
             while (keys.hasMoreElements()) {
@@ -90,7 +93,7 @@ public class ConnectorManifestScanner implements BundleScanner<ManifestEntry> {
             result.add(new ManifestEntry(ATT_BUNDLE_VERSION, bundleVersion));
             return result;
         } else {
-            return Collections.emptyList();
+            return List.of();
         }
     }
 }
