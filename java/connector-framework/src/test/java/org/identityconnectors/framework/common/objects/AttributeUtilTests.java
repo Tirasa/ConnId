@@ -37,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -147,7 +147,7 @@ public class AttributeUtilTests {
             value = AttributeUtil.getSingleValue(attr);
             assertNull(value);
             // test empty
-            attr = AttributeBuilder.build("long", Collections.emptyList());
+            attr = AttributeBuilder.build("long", List.of());
             value = AttributeUtil.getSingleValue(attr);
             assertNull(value);
             // test illegal argument exception

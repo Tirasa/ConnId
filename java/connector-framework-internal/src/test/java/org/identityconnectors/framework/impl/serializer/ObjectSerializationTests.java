@@ -39,7 +39,6 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1130,15 +1129,14 @@ public class ObjectSerializationTests {
 
     @Test
     public void testAttributeDeltaAddRemove() {
-        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A"), Collections.
-                emptyList());
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", List.of("A"), List.of());
         AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
         assertEquals(v1, v2);
     }
 
     @Test
     public void testAttributeDeltaReplace() {
-        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", Collections.singletonList("A"));
+        AttributeDelta v1 = AttributeDeltaBuilder.build("TestAttrOne", List.of("A"));
         AttributeDelta v2 = (AttributeDelta) cloneObject(v1);
         assertEquals(v1, v2);
     }

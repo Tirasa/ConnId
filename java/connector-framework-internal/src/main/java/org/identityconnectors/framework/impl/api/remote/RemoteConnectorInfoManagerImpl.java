@@ -25,7 +25,6 @@
 package org.identityconnectors.framework.impl.api.remote;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -160,10 +159,9 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
                 throw new ConnectorException("Received an invalid Error response object, exception parameter missing");
             }
         } else {
-
-            throw new ConnectorException("Received unknown response object type: " + response.getClass().getCanonicalName());
+            throw new ConnectorException(
+                    "Received unknown response object type: " + response.getClass().getCanonicalName());
         }
-
     }
 
     /**
@@ -176,7 +174,7 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
     public RemoteConnectorInfoManagerImpl derive(RemoteFrameworkConnectionInfo info) {
         RemoteConnectorInfoManagerImpl rv = new RemoteConnectorInfoManagerImpl();
         if (null == connectorInfoList || connectorInfoList.isEmpty()) {
-            rv.connectorInfoList = Collections.emptyList();
+            rv.connectorInfoList = List.of();
         } else {
             @SuppressWarnings("unchecked")
             List<RemoteConnectorInfoImpl> remoteInfos =
@@ -203,7 +201,7 @@ public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
     public List<ConnectorInfo> getConnectorInfos() {
         List<ConnectorInfo> result = connectorInfoList;
         if (null == result) {
-            result = Collections.emptyList();
+            result = List.of();
         }
         return result;
     }

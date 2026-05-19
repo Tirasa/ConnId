@@ -23,7 +23,6 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -165,7 +164,7 @@ public final class Schema {
     public Set<ObjectClassInfo> getSupportedObjectClassesByOperation(Class<? extends APIOperation> apiop) {
         Set<ObjectClassInfo> rv = supportedObjectClassesByOperation.get(apiop);
         return rv == null
-                ? Collections.emptySet()
+                ? Set.of()
                 : rv;
     }
 
@@ -179,7 +178,7 @@ public final class Schema {
     public Set<OperationOptionInfo> getSupportedOptionsByOperation(Class<? extends APIOperation> apiop) {
         Set<OperationOptionInfo> rv = supportedOptionsByOperation.get(apiop);
         return rv == null
-                ? Collections.emptySet()
+                ? Set.of()
                 : rv;
     }
 
