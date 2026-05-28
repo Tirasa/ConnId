@@ -426,6 +426,7 @@ public class ObjectSerializationTests {
         v1.setValue("bar");
         v1.setType(String.class);
         v1.setOperations(FrameworkUtil.allAPIOperations());
+        v1.setAllowedValues(SuggestedValuesBuilder.build("opt1", "opt2"));
 
         ConfigurationPropertyImpl v2 = (ConfigurationPropertyImpl) cloneObject(v1);
         assertEquals(1, v2.getOrder());
@@ -438,6 +439,8 @@ public class ObjectSerializationTests {
         assertEquals("bar", v2.getValue());
         assertEquals(String.class, v2.getType());
         assertEquals(FrameworkUtil.allAPIOperations(), v2.getOperations());
+        assertNotNull(v2.getAllowedValues());
+        assertEquals(CollectionUtil.newList("opt1", "opt2"), v2.getAllowedValues().getValues());
     }
 
     @Test

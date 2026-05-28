@@ -73,6 +73,7 @@ import org.identityconnectors.framework.common.objects.OperationOptions;
 import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.common.objects.ScriptContextBuilder;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
 import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.impl.api.local.ConnectorPoolManager;
@@ -207,6 +208,12 @@ public abstract class ConnectorInfoManagerTestBase {
         assertEquals(2, operations.size());
         assertTrue(operations.contains(SyncApiOp.class));
         assertTrue(operations.contains(LiveSyncApiOp.class));
+
+        SuggestedValues allowedValues = property.getAllowedValues();
+        assertNotNull(allowedValues);
+        assertEquals(2, allowedValues.getValues().size());
+        assertTrue(allowedValues.getValues().contains("value1"));
+        assertTrue(allowedValues.getValues().contains("value2"));
 
         CurrentLocale.clear();
         assertEquals("Help for test field.", property.getHelpMessage(null));

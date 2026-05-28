@@ -57,7 +57,7 @@ public class TstConnectorConfig extends AbstractConfiguration {
         resetConnectionCount = count;
     }
 
-    @ConfigurationProperty(operations = { SyncOp.class, LiveSyncOp.class })
+    @ConfigurationProperty(operations = { SyncOp.class, LiveSyncOp.class }, allowedValues = { "value1", "value2" })
     public String getTstField() {
         TstConnector.checkClassLoader();
         return tstField;
