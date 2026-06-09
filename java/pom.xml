@@ -49,7 +49,7 @@
     <connection>scm:git:git@github.com:Tirasa/ConnId.git</connection>
     <url>scm:git:git@github.com:Tirasa/ConnId.git</url>
     <developerConnection>scm:git:git@github.com:Tirasa/ConnId.git</developerConnection>
-    <tag>connid-1.6.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>

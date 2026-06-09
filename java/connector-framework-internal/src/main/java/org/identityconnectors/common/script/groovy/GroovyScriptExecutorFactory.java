@@ -37,7 +37,6 @@ import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.script.ScriptExecutor;
 import org.identityconnectors.common.script.ScriptExecutorFactory;
-import org.jenkinsci.plugins.scriptsecurity.sandbox.Whitelist;
 import org.jenkinsci.plugins.scriptsecurity.sandbox.blacklists.Blacklist;
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.RejectASTTransformsCustomizer;
 import org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor;
@@ -52,45 +51,39 @@ public class GroovyScriptExecutorFactory extends ScriptExecutorFactory {
 
     private static final Log LOG = Log.getLog(GroovyScriptExecutorFactory.class);
 
-    private static final CompilerConfiguration CC;
-
-    private static Object BLACKLIST;
-
-    static {
-        CC = new CompilerConfiguration();
-
-        try {
-            CC.addCompilationCustomizers(new RejectASTTransformsCustomizer(), new SandboxTransformer());
-            CC.setDisabledGlobalASTTransformations(Set.of(GrabAnnotationTransformation.class.getName()));
-
-            try (InputStream in = GroovyScriptExecutorFactory.class.
-                    getClassLoader().getResourceAsStream("META-INF/groovy.blacklist");
-                    Reader reader = new InputStreamReader(in)) {
-
-                BLACKLIST = new Blacklist(reader);
-            } catch (IOException e) {
-                throw new IllegalStateException("Could not load META-INF/groovy.blacklist", e);
-            }
-        } catch (NoClassDefFoundError noClassDefFound) {
-            LOG.warn(noClassDefFound, "Groovy Sandbox runtime not found, disabling");
-            BLACKLIST = null;
-        }
-    }
-
     private static class GroovyScriptExecutor implements ScriptExecutor {
+
+        private Blacklist blacklist;
 
         private final Script groovyScript;
 
         public GroovyScriptExecutor(final ClassLoader loader, final String script) {
-            groovyScript = new GroovyShell(loader, CC).parse(script);
+            CompilerConfiguration cc = new CompilerConfiguration();
+            try {
+                cc.addCompilationCustomizers(new RejectASTTransformsCustomizer(), new SandboxTransformer());
+                cc.setDisabledGlobalASTTransformations(Set.of(GrabAnnotationTransformation.class.getName()));
+
+                try (InputStream in = loader.getResourceAsStream("META-INF/groovy.blacklist");
+                        Reader reader = new InputStreamReader(in)) {
+
+                    blacklist = new Blacklist(reader);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Could not load META-INF/groovy.blacklist", e);
+                }
+            } catch (NoClassDefFoundError noClassDefFound) {
+                LOG.warn(noClassDefFound, "Groovy Sandbox runtime not found, disabling");
+                blacklist = null;
+            }
+
+            groovyScript = new GroovyShell(loader, cc).parse(script);
         }
 
         @Override
         public Object execute(final Map<String, Object> arguments) throws Exception {
-            Object interceptor = null;
+            GroovyInterceptor interceptor = null;
             try {
-                interceptor = new SandboxInterceptor((Whitelist) BLACKLIST);
-                ((GroovyInterceptor) interceptor).register();
+                interceptor = new SandboxInterceptor(blacklist);
+                interceptor.register();
             } catch (NoClassDefFoundError noClassDefFound) {
                 // ignore
             }
@@ -101,7 +94,7 @@ public class GroovyScriptExecutorFactory extends ScriptExecutorFactory {
             } finally {
                 if (interceptor != null) {
                     try {
-                        ((GroovyInterceptor) interceptor).unregister();
+                        interceptor.unregister();
                     } catch (NoClassDefFoundError noClassDefFound) {
                         // ignore
                     }
