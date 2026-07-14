@@ -256,8 +256,8 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
                 currentPagedResultsCookie = null;
             }
 
-            if (handler instanceof SearchResultsHandler) {
-                ((SearchResultsHandler) handler).handleResult(new SearchResult(
+            if (handler instanceof SearchResultsHandler searchResultsHandler) {
+                searchResultsHandler.handleResult(new SearchResult(
                         currentPagedResultsCookie, resultSet.size() - index));
             }
         } else {
@@ -267,16 +267,16 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
                     break;
                 }
             }
-            if (handler instanceof SearchResultsHandler) {
-                ((SearchResultsHandler) handler).handleResult(new SearchResult());
+            if (handler instanceof SearchResultsHandler searchResultsHandler) {
+                searchResultsHandler.handleResult(new SearchResult());
             }
         }
     }
 
     @Override
     public void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler, OperationOptions options) {
-        if (handler instanceof SyncTokenResultsHandler) {
-            ((SyncTokenResultsHandler) handler).handleResult(getLatestSyncToken(objectClass));
+        if (handler instanceof SyncTokenResultsHandler syncTokenResultsHandler) {
+            syncTokenResultsHandler.handleResult(getLatestSyncToken(objectClass));
         }
     }
 
@@ -297,7 +297,7 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
         for (int i = 0; i < 100; i++) {
             ConnectorObjectBuilder builder = new ConnectorObjectBuilder();
             builder.setUid(String.valueOf(i));
-            builder.setName(String.format("user%03d", i));
+            builder.setName("user%03d".formatted(i));
             builder.addAttribute(AttributeBuilder.buildEnabled(enabled));
             Map<String, Object> mapAttribute = new HashMap<>();
             mapAttribute.put("email", "foo@example.com");

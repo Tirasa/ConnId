@@ -36,18 +36,15 @@ public final class Assertions {
      * Throws {@link NullPointerException} if the parameter <code>o</code> is
      * <code>null</code>.
      *
-     * @param o
-     *            check if the object is <code>null</code>.
-     * @param param
-     *            name of the parameter to check for <code>null</code>.
+     * @param o check if the object is <code>null</code>.
+     * @param param name of the parameter to check for <code>null</code>.
      * @throws NullPointerException
-     *             if <code>o</code> is <code>null</code> and constructs a
-     *             message with the name of the parameter.
+     * if <code>o</code> is <code>null</code> and constructs a message with the name of the parameter.
      */
     public static void nullCheck(final Object o, final String param) {
         assert StringUtil.isNotBlank(param);
         if (o == null) {
-            throw new NullPointerException(String.format(NULL_FORMAT, param));
+            throw new NullPointerException(NULL_FORMAT.formatted(param));
         }
     }
 
@@ -56,16 +53,12 @@ public final class Assertions {
      * <code>null</code>, otherwise returns the value of the <code>o</code>
      * parameter.
      *
-     * @param o
-     *            check if the object is <code>null</code>.
-     * @param param
-     *            name of the parameter to check for <code>null</code>.
-     * @param <T>
-     *            the type of the value
+     * @param o check if the object is <code>null</code>.
+     * @param param name of the parameter to check for <code>null</code>.
+     * @param <T> the type of the value
      * @return the value of the <code>o</code> parameter.
      * @throws NullPointerException
-     *             if <code>o</code> is <code>null</code> and constructs a
-     *             message with the name of the parameter.
+     * if <code>o</code> is <code>null</code> and constructs a message with the name of the parameter.
      *
      * @since 1.1
      */
@@ -76,7 +69,7 @@ public final class Assertions {
         // possible.
         assert StringUtil.isNotBlank(param);
         if (o == null) {
-            throw new NullPointerException(String.format(NULL_FORMAT, param));
+            throw new NullPointerException(NULL_FORMAT.formatted(param));
         }
         return o;
     }
@@ -85,15 +78,13 @@ public final class Assertions {
      * Throws {@link IllegalArgumentException} if the parameter <code>o</code>
      * is <code>null</code> or blank.
      *
-     * @param o
-     *            value to test for blank.
-     * @param param
-     *            name of the parameter to check.
+     * @param o value to test for blank.
+     * @param param name of the parameter to check.
      */
     public static void blankCheck(final String o, final String param) {
         assert StringUtil.isNotBlank(param);
         if (StringUtil.isBlank(o)) {
-            throw new IllegalArgumentException(String.format(BLANK_FORMAT, param));
+            throw new IllegalArgumentException(BLANK_FORMAT.formatted(param));
         }
     }
 
@@ -102,22 +93,18 @@ public final class Assertions {
      * is <code>null</code> or blank, otherwise returns the value of the
      * <code>o</code> parameter.
      *
-     * @param o
-     *            value to test for blank.
-     * @param param
-     *            name of the parameter to check.
+     * @param o value to test for blank.
+     * @param param name of the parameter to check.
      * @return the value of the <code>o</code> parameter.
      *
      * @since 1.1
      */
     public static String blankChecked(final String o, final String param) {
-        // Avoid calling blankCheck() here to reuse code: it deepens the stack
-        // trace.
-        // We want the exception to be thrown as close to the call site as
-        // possible.
+        // Avoid calling blankCheck() here to reuse code: it deepens the stacktrace.
+        // We want the exception to be thrown as close to the call site as possible.
         assert StringUtil.isNotBlank(param);
         if (StringUtil.isBlank(o)) {
-            throw new IllegalArgumentException(String.format(BLANK_FORMAT, param));
+            throw new IllegalArgumentException(BLANK_FORMAT.formatted(param));
         }
         return o;
     }

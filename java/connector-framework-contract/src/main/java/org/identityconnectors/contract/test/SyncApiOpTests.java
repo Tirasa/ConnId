@@ -24,6 +24,7 @@
  */
 package org.identityconnectors.contract.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -109,7 +110,7 @@ public class SyncApiOpTests extends ObjectClassRunner {
 
                 // check that returned one delta
                 String msg = "Sync should have returned one sync delta after creation of one object, but returned: %d";
-                assertTrue(deltas.size() == 1, String.format(msg, deltas.size()));
+                assertEquals(1, deltas.size(), msg.formatted(deltas.size()));
 
                 // check delta
                 ConnectorHelper.checkSyncDelta(
@@ -150,7 +151,7 @@ public class SyncApiOpTests extends ObjectClassRunner {
                     // check that returned one delta
                     String msg =
                             "Sync should have returned one sync delta after update of one object, but returned: %d";
-                    assertTrue(deltas.size() == 1, String.format(msg, deltas.size()));
+                    assertEquals(1, deltas.size(), msg.formatted(deltas.size()));
 
                     // check delta
                     ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas.get(0), uid,
@@ -172,7 +173,7 @@ public class SyncApiOpTests extends ObjectClassRunner {
 
                 // check that returned one delta
                 String msg = "Sync should have returned one sync delta after delete of one object, but returned: %d";
-                assertTrue(deltas.size() == 1, String.format(msg, deltas.size()));
+                assertEquals(1, deltas.size(), msg.formatted(deltas.size()));
 
                 // check delta
                 ConnectorHelper.checkSyncDelta(
@@ -209,9 +210,9 @@ public class SyncApiOpTests extends ObjectClassRunner {
                 List<SyncDelta> deltas = ConnectorHelper.sync(getConnectorFacade(), objectClass, token, null);
 
                 // check that returned one delta
-                final String MSG =
+                final String msg =
                         "Sync should have returned one sync delta after creation of one object, but returned: %d";
-                assertTrue(deltas.size() == 1, String.format(MSG, deltas.size()));
+                assertEquals(1, deltas.size(), msg.formatted(deltas.size()));
 
                 // check delta, but don't check attributes which are not returned by default
                 ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas.get(0), uid, attrs,
@@ -256,9 +257,9 @@ public class SyncApiOpTests extends ObjectClassRunner {
                     return true;
                 }, null);
 
-                String msg1 = "Sync with previously retrieved latest sync token should not return any deltas, "
+                String msg = "Sync with previously retrieved latest sync token should not return any deltas, "
                         + "but returned: %d.";
-                assertTrue(deltas.isEmpty(), String.format(msg1, deltas.size()));
+                assertTrue(deltas.isEmpty(), msg.formatted(deltas.size()));
 
                 // create another object
                 Set<Attribute> attrs2 = ConnectorHelper.getCreateableAttributes(getDataProvider(),
@@ -273,9 +274,9 @@ public class SyncApiOpTests extends ObjectClassRunner {
                     return true;
                 }, null);
 
-                String msg2 = "Sync with latest sync token retrieved before one create should return one sync delta, "
+                msg = "Sync with latest sync token retrieved before one create should return one sync delta, "
                         + "but returned: %d";
-                assertTrue(deltas.size() == 1, String.format(msg2, deltas.size()));
+                assertEquals(1, deltas.size(), msg.formatted(deltas.size()));
 
                 ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas.get(0), uid2, attrs2,
                         SyncDeltaType.CREATE_OR_UPDATE, false);

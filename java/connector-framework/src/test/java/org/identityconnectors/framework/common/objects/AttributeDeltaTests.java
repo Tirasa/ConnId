@@ -86,7 +86,7 @@ public class AttributeDeltaTests {
     public void testEqualsObservesLocale() {
         Locale defLocale = Locale.getDefault();
         try {
-            Locale.setDefault(new Locale("tr"));
+            Locale.setDefault(Locale.of("tr"));
             AttributeDelta attribute1 = build("i");
             AttributeDelta attribute2 = build("I");
             assertFalse(attribute1.equals(attribute2));
@@ -102,7 +102,7 @@ public class AttributeDeltaTests {
             Locale.setDefault(Locale.US);
             final AttributeDelta attribute = build("i");
             final int hash1 = attribute.hashCode();
-            Locale.setDefault(new Locale("tr"));
+            Locale.setDefault(Locale.of("tr"));
             int hash2 = attribute.hashCode();
             assertEquals(hash1, hash2);
         } finally {

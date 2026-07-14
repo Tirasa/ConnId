@@ -36,27 +36,27 @@ import org.identityconnectors.framework.common.exceptions.ConfigurationException
 public class WorkingBundleInfo {
 
     // The original location for this bundle (for error reporting).
-    private String originalLocation;
+    private final String originalLocation;
 
     // The manifest for this bundle.
     private ConnectorBundleManifest bundleManifest;
 
     // Immediate contents of the bundle.
-    private Set<String> immediateBundleContents = new HashSet<String>();
+    private final Set<String> immediateBundleContents = new HashSet<>();
 
     // The immediate classpath of the bundle. Normally this only contains the
     // bundle JAR.
     // It does not include the embedded bundles (which are in
     // effectiveClassPath).
-    private List<URL> immediateClassPath = new ArrayList<URL>();
+    private final List<URL> immediateClassPath = new ArrayList<>();
 
     // The immediate native libraries in the bundle.
     // The key is the short library name (passed to System.loadLibrary()), and
     // the value is the library location on the file system.
-    private Map<String, String> immediateNativeLibraries = new HashMap<String, String>();
+    private final Map<String, String> immediateNativeLibraries = new HashMap<>();
 
     // List of included bundles.
-    private List<WorkingBundleInfo> embeddedBundles = new ArrayList<WorkingBundleInfo>();
+    private final List<WorkingBundleInfo> embeddedBundles = new ArrayList<>();
 
     // Effective classpath (includes the classpaths of embedded bundles).
     private List<URL> effectiveClassPath;
@@ -117,8 +117,7 @@ public class WorkingBundleInfo {
      * <code>effectiveContents</code>, etc.) while taking into account any
      * embedded bundles.
      */
-    public static void resolve(List<? extends WorkingBundleInfo> infos)
-            throws ConfigurationException {
+    public static void resolve(final List<? extends WorkingBundleInfo> infos) throws ConfigurationException {
         for (WorkingBundleInfo info : infos) {
             info.effectiveClassPath = null;
             info.effectiveContents = null;
@@ -134,11 +133,9 @@ public class WorkingBundleInfo {
             throws ConfigurationException {
         Set<BundleKey> bundleKeys = new HashSet<BundleKey>();
         for (WorkingBundleInfo info : working) {
-            BundleKey key =
-                    new BundleKey(info.bundleManifest.getBundleName(), info.bundleManifest
-                            .getBundleVersion());
+            BundleKey key = new BundleKey(info.bundleManifest.getBundleName(), info.bundleManifest.getBundleVersion());
             if (bundleKeys.contains(key)) {
-                throw new ConfigurationException(String.format(FORMAT, key));
+                throw new ConfigurationException(FORMAT.formatted(key));
             }
             bundleKeys.add(key);
         }
@@ -149,12 +146,12 @@ public class WorkingBundleInfo {
      */
     private static void resolveEffectiveProperties(List<? extends WorkingBundleInfo> infos)
             throws ConfigurationException {
+
         for (WorkingBundleInfo info : infos) {
-            List<URL> classPath = new ArrayList<URL>();
-            Map<String, String> nativeLibraries = new LinkedHashMap<String, String>();
-            Set<String> contents = new HashSet<String>();
-            // This bundle's classpath must go first, before the embedded
-            // bundles' classpaths.
+            List<URL> classPath = new ArrayList<>();
+            Map<String, String> nativeLibraries = new LinkedHashMap<>();
+            Set<String> contents = new HashSet<>();
+            // This bundle's classpath must go first, before the embedded bundles' classpaths.
             classPath.addAll(info.getImmediateClassPath());
             nativeLibraries.putAll(info.getImmediateNativeLibraries());
             contents.addAll(info.getImmediateBundleContents());
@@ -163,8 +160,7 @@ public class WorkingBundleInfo {
                 classPath.addAll(embedded.getEffectiveClassPath());
                 // Do now allow native libraries from embedded bundles to
                 // override this bundle's libraries.
-                for (Entry<String, String> entry : embedded.getEffectiveNativeLibraries()
-                        .entrySet()) {
+                for (Entry<String, String> entry : embedded.getEffectiveNativeLibraries().entrySet()) {
                     if (!nativeLibraries.containsKey(entry.getKey())) {
                         nativeLibraries.put(entry.getKey(), entry.getValue());
                     }

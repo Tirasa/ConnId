@@ -24,6 +24,7 @@
  */
 package org.identityconnectors.contract.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -143,8 +144,8 @@ public class AttributeTests extends ObjectClassRunner {
                 obj.getAttributes().stream().
                         filter((attr) -> (!ConnectorHelper.isReadable(oci, attr))).
                         forEachOrdered((attr) -> {
-                            String msg = String.format(
-                                    "Non-readable attribute should not be returned by default: %s", attr.getName());
+                            String msg = "Non-readable attribute should not be returned by default: %s".
+                                    formatted(attr.getName());
                             assertTrue(!ConnectorHelper.isReturnedByDefault(oci, attr), msg);
                         });
             } finally {
@@ -276,8 +277,8 @@ public class AttributeTests extends ObjectClassRunner {
 
             // in case no exception is thrown:
             if (!exceptionCaught) {
-                fail(String.format("No exception thrown when update is performed on non-updateable attribute(s). "
-                        + "(hint: throw a RuntimeException) %s", ((logInfo != null) ? logInfo.toString() : "")));
+                fail("No exception thrown when update is performed on non-updateable attribute(s). "
+                        + "(hint: throw a RuntimeException) %s".formatted(((logInfo != null) ? logInfo.toString() : "")));
             }
         } else {
             printSkipTestMsg("testNonUpdateable", objectClass);
@@ -372,12 +373,11 @@ public class AttributeTests extends ObjectClassRunner {
                 obj.getAttributes().stream().
                         filter((attr) -> (ConnectorHelper.isRequired(oci, attr))).
                         filter((attr) -> (!ConnectorHelper.isCreateable(oci, attr))).
-                        map((attr) -> String.format("Required attribute is not createable. Attribute name: %s",
-                        attr.getName())).
-                        forEachOrdered((msg) -> {
-                            //WARN
-                            fail(msg);
-                        });
+                        map((attr) -> "Required attribute is not createable. Attribute name: %s".
+                        formatted(attr.getName())).forEachOrdered(msg -> {
+                    //WARN
+                    fail(msg);
+                });
             } finally {
                 if (uid != null) {
                     // delete the object
@@ -400,10 +400,9 @@ public class AttributeTests extends ObjectClassRunner {
      */
     private void testReturnedByDefault(final ObjectClass objectClass, final ApiOperations apiOp) {
         /** marker in front of every assert message */
-        String testMarkMsg = String.format("[testReturnedByDefault/%s]", apiOp);
+        String testMarkMsg = "[testReturnedByDefault/%s]".formatted(apiOp);
 
-        // run the contract test only if <strong>apiOp</strong> APIOperation is
-        // supported
+        // run the contract test only if <strong>apiOp</strong> APIOperation is supported
         if (ConnectorHelper.operationSupported(getConnectorFacade(), objectClass, apiOp.getClazz())) {
             // start synchronizing from now
             SyncToken token = null;
@@ -430,13 +429,12 @@ public class AttributeTests extends ObjectClassRunner {
                 // get the user to make sure it exists now
                 ConnectorObject obj = null;
                 switch (apiOp) {
-                    case GET:
+                    case GET ->
                         /* last _null_ param - no operation option, response contains just attributes returned by
                          * default */
                         obj = getConnectorFacade().getObject(objectClass, uid, null);
-                        break;// GET
-
-                    case SEARCH:
+                    // GET
+                    case SEARCH -> {
                         Filter fltUid = FilterBuilder.equalTo(AttributeBuilder
                                 .build(Uid.NAME, uid.getUidValue()));
 
@@ -452,15 +450,13 @@ public class AttributeTests extends ObjectClassRunner {
                         assertNotNull(coObjects.get(0), testMarkMsg + " Unable to retrieve newly created object");
 
                         obj = coObjects.get(0);
-                        break;
+                    }
 
-                    case LIVE_SYNC:
+                    case LIVE_SYNC ->
                         uid = testLivesync(objectClass, uid, attrs, oci, testMarkMsg);
-                        break;
 
-                    case SYNC:
+                    case SYNC ->
                         uid = testSync(objectClass, uid, token, attrs, oci, testMarkMsg);
-                        break;
                 }
 
                 /*
@@ -498,9 +494,8 @@ public class AttributeTests extends ObjectClassRunner {
         // Check if attribute set contains non-returned by default
         // Attributes.
         for (Attribute attr : obj.getAttributes()) {
-            String msg = String.format(
-                    "[testReturnedByDefault / %s]Attribute %s returned. However it is _not_ returned by default.",
-                    apiOp, attr.getName());
+            String msg = "[testReturnedByDefault / %s]Attribute %s returned. However it is _not_ returned by default.".
+                    formatted(apiOp, attr.getName());
             /*
              * this is a hack that skips control of UID, as it is presently
              * non returned by default, however it is automatically returned.
@@ -539,7 +534,7 @@ public class AttributeTests extends ObjectClassRunner {
 
             // check that returned one delta
             String msg = "%s Sync should have returned one sync delta after creation of one object, but returned: %d";
-            assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+            assertEquals(1, deltas.size(), msg.formatted(testMarkMsg, deltas.size()));
 
             // check delta
             ConnectorHelper.checkLiveSyncDelta(getObjectClassInfo(objectClass), deltas.get(0), uid, attrs, false);
@@ -589,7 +584,7 @@ public class AttributeTests extends ObjectClassRunner {
 
                 // check that returned one delta
                 String msg = "%s Sync should have returned one sync delta after update of one object, but returned: %d";
-                assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+                assertEquals(1, deltas.size(), msg.formatted(testMarkMsg, deltas.size()));
 
                 // check delta
                 ConnectorHelper.checkLiveSyncDelta(
@@ -614,7 +609,7 @@ public class AttributeTests extends ObjectClassRunner {
 
             // check that returned one delta
             String msg = "%s Sync should have returned one sync delta after delete of one object, but returned: %d";
-            assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+            assertEquals(1, deltas.size(), msg.formatted(testMarkMsg, deltas.size()));
 
             // check delta
             ConnectorHelper.checkLiveSyncDelta(getObjectClassInfo(objectClass), deltas.get(0), uid, null, false);
@@ -657,7 +652,7 @@ public class AttributeTests extends ObjectClassRunner {
 
             // check that returned one delta
             String msg = "%s Sync should have returned one sync delta after creation of one object, but returned: %d";
-            assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+            assertEquals(1, deltas.size(), msg.formatted(testMarkMsg, deltas.size()));
 
             // check delta
             ConnectorHelper.checkSyncDelta(
@@ -706,7 +701,7 @@ public class AttributeTests extends ObjectClassRunner {
 
                 // check that returned one delta
                 String msg = "%s Sync should have returned one sync delta after update of one object, but returned: %d";
-                assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+                assertEquals(1, deltas.size(), msg.formatted(testMarkMsg, deltas.size()));
 
                 // check delta
                 ConnectorHelper.checkSyncDelta(
@@ -734,7 +729,7 @@ public class AttributeTests extends ObjectClassRunner {
 
             // check that returned one delta
             String msg = "%s Sync should have returned one sync delta after delete of one object, but returned: %d";
-            assertTrue(deltas.size() == 1, String.format(msg, testMarkMsg, deltas.size()));
+            assertEquals(1, deltas.size(), msg.formatted(testMarkMsg, deltas.size()));
 
             // check delta
             ConnectorHelper.checkSyncDelta(

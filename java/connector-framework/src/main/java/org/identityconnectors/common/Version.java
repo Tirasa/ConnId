@@ -35,14 +35,17 @@ import java.util.regex.Pattern;
  */
 public final class Version implements Comparable<Version> {
 
-    private static final Pattern PATTERN = Pattern
-            .compile("(\\d+)(\\.(\\d+))?(\\.(\\d+))?(\\.(\\d+))?(-\\w+)?");
+    private static final Pattern PATTERN = Pattern.compile("(\\d+)(\\.(\\d+))?(\\.(\\d+))?(\\.(\\d+))?(-\\w+)?");
+
     // The indexes of the version component groups in the above pattern.
     private static final int[] GROUPS = { 1, 3, 5, 7 };
 
     private static final int MAJOR = 0;
+
     private static final int MINOR = MAJOR + 1;
+
     private static final int MICRO = MINOR + 1;
+
     private static final int REVISION = MICRO + 1;
 
     private static final int MAX_COMPONENTS = REVISION + 1;
@@ -62,8 +65,7 @@ public final class Version implements Comparable<Version> {
      * <li>1.2.3.4-SNAPSHOT</li>
      * </ul>
      *
-     * @param version
-     *            the version string.
+     * @param version the version string.
      */
     public static Version parse(String version) {
         return new Version(parseInternal(version));
@@ -73,7 +75,7 @@ public final class Version implements Comparable<Version> {
      * Creates a new version from components.
      *
      * @param components
-     *            the components
+     * the components
      */
     public static Version create(Integer... components) {
         return new Version(components);
@@ -83,28 +85,27 @@ public final class Version implements Comparable<Version> {
         Assertions.nullCheck(version, "version");
         Matcher matcher = PATTERN.matcher(version.trim());
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(String.format("Invalid version number %s", version));
+            throw new IllegalArgumentException("Invalid version number %s".formatted(version));
         }
-        List<Integer> components = new ArrayList<Integer>(MAX_COMPONENTS);
+        List<Integer> components = new ArrayList<>(MAX_COMPONENTS);
         for (int group : GROUPS) {
             String text = matcher.group(group);
             if (text != null && !text.startsWith("-")) { // That would be the
-                                                         // qualifier.
+                // qualifier.
                 try {
                     components.add(Integer.valueOf(text));
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException(String.format(
-                            "Non-numeric version component %s", text));
+                    throw new IllegalArgumentException("Non-numeric version component %s".formatted(text));
                 }
             }
         }
-        return components.toArray(new Integer[components.size()]);
+        return components.toArray(Integer[]::new);
     }
 
     Version(Integer... components) {
         Assertions.nullCheck(components, "components");
-        for (int i = 0; i < components.length; i++) {
-            if (components[i] == null || components[i] < 0) {
+        for (Integer component : components) {
+            if (component == null || component < 0) {
                 throw new IllegalArgumentException("Illegal version number");
             }
         }
@@ -130,8 +131,7 @@ public final class Version implements Comparable<Version> {
     /**
      * Returns this version number's minor component.
      *
-     * @return the minor component or <code>null</code> if this version number
-     *         doesn't have a minor component.
+     * @return the minor component or <code>null</code> if this version number doesn't have a minor component.
      */
     public Integer getMinor() {
         return getComponent(MINOR);
@@ -140,8 +140,7 @@ public final class Version implements Comparable<Version> {
     /**
      * Returns this version number's minor component.
      *
-     * @return the minor component or <code>null</code> if this version number
-     *         doesn't have a minor component.
+     * @return the minor component or <code>null</code> if this version number doesn't have a minor component.
      */
     public Integer getMicro() {
         return getComponent(MICRO);
@@ -150,8 +149,7 @@ public final class Version implements Comparable<Version> {
     /**
      * Returns this version number's minor component.
      *
-     * @return the minor component or <code>null</code> if this version number
-     *         doesn't have a revision component.
+     * @return the minor component or <code>null</code> if this version number doesn't have a revision component.
      */
     public Integer getRevision() {
         return getComponent(REVISION);
@@ -192,8 +190,8 @@ public final class Version implements Comparable<Version> {
     @Override
     public int compareTo(Version that) {
         for (int i = 0; i < Math.max(this.components.length, that.components.length); i++) {
-            Integer c1 = i < this.components.length ? this.components[i] : Integer.valueOf(0);
-            Integer c2 = i < that.components.length ? that.components[i] : Integer.valueOf(0);
+            Integer c1 = i < this.components.length ? this.components[i] : 0;
+            Integer c2 = i < that.components.length ? that.components[i] : 0;
             int result = c1.compareTo(c2);
             if (result != 0) {
                 return result;

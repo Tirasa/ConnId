@@ -410,14 +410,14 @@ public class ConnectorHelper {
                 forEachOrdered(attribute -> {
                     Attribute createdAttribute = connectorObj.getAttributeByName(attribute.getName());
                     if (createdAttribute == null) {
-                        fail(String.format("Attribute '%s' is missing.", attribute.getName()));
+                        fail("Attribute '%s' is missing.".formatted(attribute.getName()));
                     }
 
                     List<Object> fetchedValue = createdAttribute.getValue();
                     List<Object> requestedValue = attribute.getValue();
-                    String msg = String.format(
-                            "Attribute '%s' was not properly created. Requested values: %s Fetched values: %s",
-                            attribute.getName(), requestedValue, fetchedValue);
+                    String msg = 
+                            "Attribute '%s' was not properly created. Requested values: %s Fetched values: %s".
+                                    formatted(attribute.getName(), requestedValue, fetchedValue);
                     assertTrue(checkValue(fetchedValue, requestedValue), msg);
                 });
 
@@ -454,14 +454,13 @@ public class ConnectorHelper {
                 forEachOrdered((attributeDelta) -> {
                     Attribute createdAttribute = connectorObj.getAttributeByName(attributeDelta.getName());
                     if (createdAttribute == null) {
-                        fail(String.format("Attribute '%s' is missing.", attributeDelta.getName()));
+                        fail("Attribute '%s' is missing.".formatted(attributeDelta.getName()));
                     }
 
                     List<Object> fetchedValue = createdAttribute.getValue();
                     List<Object> requestedValue = attributeDelta.getValuesToReplace();
-                    String msg = String.format(
-                            "AttributeDelta '%s' was not properly created. Requested values: %s Fetched values: %s",
-                            attributeDelta.getName(), requestedValue, fetchedValue);
+                    String msg = "AttributeDelta '%s' was not properly created. Requested values: %s Fetched values: %s".
+                                    formatted(attributeDelta.getName(), requestedValue, fetchedValue);
                     assertTrue(checkValue(fetchedValue, requestedValue), msg);
                 });
 
@@ -503,7 +502,7 @@ public class ConnectorHelper {
 
         // check that Uid is correct
         String msg = "Sync returned wrong Uid, expected: %s, returned: %s.";
-        assertEquals(delta.getUid(), uid, String.format(msg, uid, delta.getUid()));
+        assertEquals(delta.getUid(), uid, msg.formatted(uid, delta.getUid()));
 
         // check that attributes are correct
         ConnectorHelper.checkObject(ocInfo, delta.getObject(), attributes, checkNotReturnedByDefault);
@@ -522,7 +521,7 @@ public class ConnectorHelper {
 
         // check that Uid is correct
         String msg = "Sync returned wrong Uid, expected: %s, returned: %s.";
-        assertEquals(delta.getUid(), uid, String.format(msg, uid, delta.getUid()));
+        assertEquals(delta.getUid(), uid, msg.formatted(uid, delta.getUid()));
 
         if (deltaType != SyncDeltaType.DELETE) {
             // check that attributes are correct
@@ -531,7 +530,7 @@ public class ConnectorHelper {
 
         // check that delta type is expected
         msg = "Sync delta type should be %s, but returned: %s.";
-        assertTrue(delta.getDeltaType() == deltaType, String.format(msg, deltaType, delta.getDeltaType()));
+        assertEquals(deltaType, delta.getDeltaType(), msg.formatted(deltaType, delta.getDeltaType()));
     }
 
     /**
@@ -1170,10 +1169,13 @@ public class ConnectorHelper {
         String connectorName = (String) dataProvider.getTestSuiteAttribute("connectorName");
         ConnectorKey key = new ConnectorKey(bundleName, bundleVersion, connectorName);
         ConnectorInfo info = manager.findConnectorInfo(key);
-        final String MSG =
-                "Connector info wasn't found. Check values of bundleName, bundleVersion and connectorName properties."
-                + "\nbundleName:%s\nbundleVersion:%s\nconnectorName:%s";
-        assertNotNull(info, String.format(MSG, bundleName, bundleVersion, connectorName));
+        final String msg =
+                """
+                Connector info wasn't found. Check values of bundleName, bundleVersion and connectorName properties.
+                bundleName:%s
+                bundleVersion:%s
+                connectorName:%s""";
+        assertNotNull(info, msg.formatted(bundleName, bundleVersion, connectorName));
         APIConfiguration apiConfig = info.createDefaultAPIConfiguration();
 
         return apiConfig;

@@ -63,18 +63,18 @@ public class ValidateApiOpTests extends ContractTestBase {
             try {
                 o = getDataProvider().getTestSuiteAttribute(PROPERTY_NAME_INVALID_CONFIG, TEST_NAME);
             } catch (ObjectNotFoundException ex) {
-                fail(String.format("Missing test property: '%s'", testPropertyName));
+                fail("Missing test property: '%s'".formatted(testPropertyName));
             }
 
             if (!(o instanceof List<?>)) {
-                fail(String.format("Test property '%s' should be of type List", testPropertyName));
+                fail("Test property '%s' should be of type List".formatted(testPropertyName));
             }
 
             final List<?> wrongConfigList = (List<?>) o;
 
             wrongConfigList.forEach(currentWrongConfigMap -> {
                 if (!(currentWrongConfigMap instanceof Map<?, ?>)) {
-                    fail(String.format("Test property '%s' contains other than Map properties.", testPropertyName));
+                    fail("Test property '%s' contains other than Map properties.".formatted(testPropertyName));
                 }
                 Map<?, ?> currentWrongMapConfig = (Map<?, ?>) currentWrongConfigMap;
 
@@ -84,9 +84,8 @@ public class ValidateApiOpTests extends ContractTestBase {
                 try {
                     // should throw RuntimeException
                     getConnectorFacade().validate();
-                    String msg = String.format(
-                            "Validate should throw RuntimeException because configuration should be invalid. Wrong properties used: \n%s",
-                            currentWrongMapConfig.toString());
+                    String msg = "Validate should throw RuntimeException because configuration should be invalid. "
+                            + "Wrong properties used: \n%s".formatted(currentWrongMapConfig.toString());
                     fail(msg);
                 } catch (RuntimeException ex) {
                     // expected

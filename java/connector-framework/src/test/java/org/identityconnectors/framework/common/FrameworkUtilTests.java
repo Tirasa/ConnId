@@ -30,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
@@ -74,7 +75,7 @@ public class FrameworkUtilTests {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             try {
                 props.store(output, null);
-                return new URL("fakejar", null, 0, "connectors-framework.properties", new URLStreamHandler() {
+                return URL.of(URI.create("fakejar://connectors-framework.properties"), new URLStreamHandler() {
 
                     @Override
                     protected URLConnection openConnection(URL u) throws IOException {

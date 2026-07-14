@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
@@ -48,9 +49,8 @@ public class TestHelpersTest {
 
     @Test
     public void testLoadGroovyConfigFileIssue393() {
-        Map<?, ?> props =
-                TestHelpers.loadGroovyConfigFile(TestHelpersTest.class
-                        .getResource("properties.groovy"), null);
+        Map<?, ?> props = TestHelpers.loadGroovyConfigFile(
+                TestHelpersTest.class.getResource("properties.groovy"), null);
         assertEquals(props.get("prop.integerclass"), Integer.class);
     }
 
@@ -198,7 +198,7 @@ public class TestHelpersTest {
 
         };
         try {
-            return new URL(null, "file:///map", handler);
+            return URL.of(URI.create("file:///map"), handler);
         } catch (MalformedURLException e) {
             throw new IllegalStateException("Invalid url", e);
         }

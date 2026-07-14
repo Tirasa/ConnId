@@ -79,7 +79,7 @@ public class StdOutLoggerTests {
         assertEquals(map.get("Message"), MSG_EXP);
         assertEquals(map.get("Class"), String.class.getName());
         assertEquals(map.get("Level"), Log.Level.OK.toString());
-        assertEquals(map.get("Thread Id"), Long.toString(Thread.currentThread().getId()));
+        assertEquals(map.get("Thread Id"), Long.toString(Thread.currentThread().threadId()));
         // read construct the rest for the exception..
         StringPrintWriter actual = new StringPrintWriter();
         for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {

@@ -62,7 +62,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
     /**
      * All the operational attributes that can not be added or deleted.
      */
-    private static final Set<String> OPERATIONAL_ATTRIBUTE_NAMES = new HashSet<String>();
+    private static final Set<String> OPERATIONAL_ATTRIBUTE_NAMES = new HashSet<>();
 
     static {
         OPERATIONAL_ATTRIBUTE_NAMES.addAll(OperationalAttributes.getOperationalAttributeNames());
@@ -124,8 +124,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
         valuesToAdd = normalizer.normalizeAttributes(valuesToAdd);
         UpdateOp op = (UpdateOp) getConnector();
         Uid ret;
-        if (op instanceof UpdateAttributeValuesOp) {
-            UpdateAttributeValuesOp valueOp = (UpdateAttributeValuesOp) op;
+        if (op instanceof UpdateAttributeValuesOp valueOp) {
             logOpEntry("addAttributeValues", objclass, uid, valuesToAdd, options);
             try {
                 ret = valueOp.addAttributeValues(objclass, uid, valuesToAdd, options);
@@ -164,8 +163,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
         valuesToRemove = normalizer.normalizeAttributes(valuesToRemove);
         UpdateOp op = (UpdateOp) getConnector();
         Uid ret;
-        if (op instanceof UpdateAttributeValuesOp) {
-            UpdateAttributeValuesOp valueOp = (UpdateAttributeValuesOp) op;
+        if (op instanceof UpdateAttributeValuesOp valueOp) {
             logOpEntry("removeAttributeValues", objclass, uid, valuesToRemove, options);
             try {
                 ret = valueOp.removeAttributeValues(objclass, uid, valuesToRemove, options);
@@ -220,7 +218,11 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
     /**
      * Merges two connector objects into a single updated object.
      */
-    public Set<Attribute> merge(Set<Attribute> updateAttrs, Set<Attribute> baseAttrs, boolean add) {
+    public Set<Attribute> merge(
+            final Set<Attribute> updateAttrs,
+            final Set<Attribute> baseAttrs,
+            final boolean add) {
+
         // return the merged attributes
         Set<Attribute> ret = new HashSet<>();
         // create map that can be modified to get the subset of changes
@@ -277,8 +279,11 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
     /**
      * Makes things easier if you can trust the input.
      */
-    public static void validateInput(final ObjectClass objectClass, final Uid uid,
-            final Set<Attribute> replaceAttributes, boolean isDelta) {
+    public static void validateInput(
+            final ObjectClass objectClass,
+            final Uid uid,
+            final Set<Attribute> replaceAttributes,
+            boolean isDelta) {
 
         Assertions.nullCheck(uid, "uid");
         Assertions.nullCheck(objectClass, "objectClass");
@@ -303,8 +308,7 @@ public class UpdateImpl extends ConnectorAPIOperationRunner implements UpdateApi
                 // certain attributes because it doesn't make any sense..
                 String name = attr.getName();
                 if (OPERATIONAL_ATTRIBUTE_NAMES.contains(name)) {
-                    String msg = String.format(OPERATIONAL_ATTRIBUTE_ERR, name);
-                    throw new IllegalArgumentException(msg);
+                    throw new IllegalArgumentException(OPERATIONAL_ATTRIBUTE_ERR.formatted(name));
                 }
             });
         }

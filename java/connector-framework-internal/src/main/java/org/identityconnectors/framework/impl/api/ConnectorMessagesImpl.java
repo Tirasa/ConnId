@@ -58,15 +58,15 @@ public class ConnectorMessagesImpl implements ConnectorMessages {
         //first look for most-specific catalog
         String message = getCatalogMessage(locale, key);
         if (message == null) {
-            message = getCatalogMessage(new Locale(locale.getLanguage(), locale.getCountry()), key);
+            message = getCatalogMessage(Locale.of(locale.getLanguage(), locale.getCountry()), key);
         }
         //now look for language
         if (message == null) {
-            message = getCatalogMessage(new Locale(locale.getLanguage()), key);
+            message = getCatalogMessage(Locale.of(locale.getLanguage()), key);
         }
         //otherwise use the default catalog
         if (message == null) {
-            message = getCatalogMessage(new Locale(""), key);
+            message = getCatalogMessage(Locale.of(""), key);
         }
         //and default to framework
         if (message == null) {

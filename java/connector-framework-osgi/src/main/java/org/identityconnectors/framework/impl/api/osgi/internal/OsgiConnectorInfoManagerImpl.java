@@ -120,8 +120,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         ConnectorFacade ret = null;
         APIConfigurationImpl impl = (APIConfigurationImpl) config;
         AbstractConnectorInfo connectorInfo = impl.getConnectorInfo();
-        if (connectorInfo instanceof LocalConnectorInfoImpl) {
-            LocalConnectorInfoImpl localInfo = (LocalConnectorInfoImpl) connectorInfo;
+        if (connectorInfo instanceof LocalConnectorInfoImpl localInfo) {
             try {
                 // create a new Provisioner..
                 ret = new LocalConnectorFacadeImpl(localInfo, impl);
@@ -139,8 +138,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
     @Override
     public ConnectorFacade newInstance(ConnectorInfo connectorInfo, String config) {
         ConnectorFacade ret = null;
-        if (connectorInfo instanceof LocalConnectorInfoImpl) {
-            LocalConnectorInfoImpl localInfo = (LocalConnectorInfoImpl) connectorInfo;
+        if (connectorInfo instanceof LocalConnectorInfoImpl localInfo) {
             try {
                 // create a new Provisioner..
                 ret = new LocalConnectorFacadeImpl(localInfo, config);
@@ -245,12 +243,17 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         String bundleVersion = null;
 
         for (ManifestEntry entry : manifestEnties) {
-            if (ConnectorManifestScanner.ATT_FRAMEWORK_VERSION.equals(entry.getKey())) {
-                frameworkVersion = entry.getValue();
-            } else if (ConnectorManifestScanner.ATT_BUNDLE_NAME.equals(entry.getKey())) {
-                bundleName = entry.getValue();
-            } else if (ConnectorManifestScanner.ATT_BUNDLE_VERSION.equals(entry.getKey())) {
-                bundleVersion = entry.getValue();
+            if (null != entry.getKey()) {
+                switch (entry.getKey()) {
+                    case ConnectorManifestScanner.ATT_FRAMEWORK_VERSION ->
+                        frameworkVersion = entry.getValue();
+                    case ConnectorManifestScanner.ATT_BUNDLE_NAME ->
+                        bundleName = entry.getValue();
+                    case ConnectorManifestScanner.ATT_BUNDLE_VERSION ->
+                        bundleVersion = entry.getValue();
+                    default -> {
+                    }
+                }
             }
         }
 
@@ -399,13 +402,13 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
             variant = tok.nextToken();
         }
         if (variant != null) {
-            return new Locale(lang, country, variant);
+            return Locale.of(lang, country, variant);
         } else if (country != null) {
-            return new Locale(lang, country);
+            return Locale.of(lang, country);
         } else if (lang != null) {
-            return new Locale(lang);
+            return Locale.of(lang);
         } else {
-            return new Locale("");
+            return Locale.of("");
         }
     }
 

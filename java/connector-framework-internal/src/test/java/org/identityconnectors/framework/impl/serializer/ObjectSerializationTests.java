@@ -380,11 +380,11 @@ public class ObjectSerializationTests {
 
     @Test
     public void testLocale() throws Exception {
-        Locale v1 = new Locale("no", "NO", "NY");
+        Locale v1 = Locale.of("no", "NO", "NY");
         Locale v2 = (Locale) cloneObject(v1);
         assertEquals(v1, v2);
 
-        v1 = new Locale("");
+        v1 = Locale.of("");
         v2 = (Locale) cloneObject(v1);
         assertEquals(v1, v2);
     }
@@ -507,8 +507,8 @@ public class ObjectSerializationTests {
         Map<String, String> defaultMap = new HashMap<>();
         defaultMap.put("key1", "val1");
         Map<Locale, Map<String, String>> messages = new HashMap<>();
-        messages.put(new Locale("en"), defaultMap);
-        messages.put(new Locale(""), defaultMap);
+        messages.put(Locale.of("en"), defaultMap);
+        messages.put(Locale.of(""), defaultMap);
         v1.setCatalogs(messages);
 
         ConnectorMessagesImpl v2 = (ConnectorMessagesImpl) cloneObject(v1);

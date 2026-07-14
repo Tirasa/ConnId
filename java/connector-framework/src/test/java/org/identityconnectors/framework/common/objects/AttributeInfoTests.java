@@ -43,7 +43,7 @@ public class AttributeInfoTests {
     public void testEqualsObservesLocale() {
         Locale defLocale = Locale.getDefault();
         try {
-            Locale.setDefault(new Locale("tr"));
+            Locale.setDefault(Locale.of("tr"));
             AttributeInfo attribute1 = build("i");
             AttributeInfo attribute2 = build("I");
             assertFalse(attribute1.equals(attribute2));
@@ -59,7 +59,7 @@ public class AttributeInfoTests {
             Locale.setDefault(Locale.US);
             final AttributeInfo attribute = build("i");
             final int hash1 = attribute.hashCode();
-            Locale.setDefault(new Locale("tr"));
+            Locale.setDefault(Locale.of("tr"));
             int hash2 = attribute.hashCode();
             assertEquals(hash1, hash2);
         } finally {

@@ -225,7 +225,7 @@ public class GroovyDataProvider implements DataProvider {
      */
     private static void checkJarDependencies(DataProvider dp, ClassLoader classLoader) {
         final String PROP_REQUIRED_CLASSES = "requiredClasses";
-        Object o = null;
+        Object o;
         try {
             o = dp.getTestSuiteAttribute(PROP_REQUIRED_CLASSES);
         } catch (ObjectNotFoundException ex) {
@@ -239,7 +239,7 @@ public class GroovyDataProvider implements DataProvider {
                 try {
                     Class.forName(entry.getKey(), false, classLoader);
                 } catch (ClassNotFoundException e) {
-                    fail(String.format("Missing library from classpath: '%s'", entry.getValue()));
+                    fail("Missing library from classpath: '%s'".formatted(entry.getValue()));
                 }
             });
         }
@@ -307,9 +307,9 @@ public class GroovyDataProvider implements DataProvider {
     /** load the bootstrap configuration */
     private ConfigObject doBootstrap() {
         URL url = getClass().getClassLoader().getResource(BOOTSTRAP_FILE_NAME);
-        String msg = String.format("Missing bootstrap file: %s. (Hint: copy "
-                + "framework/test-contract/src/bootstrap.groovy to folder framework/test-contract/build)",
-                BOOTSTRAP_FILE_NAME);
+        String msg = "Missing bootstrap file: %s. (Hint: copy "
+                + "framework/test-contract/src/bootstrap.groovy to folder framework/test-contract/build)".formatted(
+                        BOOTSTRAP_FILE_NAME);
         assertNotNull(url, msg);
         return cs.parse(url);
     }
@@ -331,7 +331,7 @@ public class GroovyDataProvider implements DataProvider {
     /**
      * Main get method. Property lookup starts here.
      */
-    public Object get(String name, String type, boolean useDefault) {
+    public Object get(final String name, final String type, final boolean useDefault) {
         Object o = null;
         /** indicates if default value used */
         boolean isDefaultValue = false;
@@ -362,8 +362,8 @@ public class GroovyDataProvider implements DataProvider {
         }
 
         // resolve o.n.f.e.
-        if (o instanceof ObjectNotFoundException) {
-            throw (ObjectNotFoundException) o;
+        if (o instanceof ObjectNotFoundException objectNotFoundException) {
+            throw objectNotFoundException;
         }
 
         // cache resolved value
@@ -383,7 +383,7 @@ public class GroovyDataProvider implements DataProvider {
     private void logQueriedProperties(Object queriedObject, String name, String type,
             boolean isDefaultValue, boolean isFound) {
         String msg = "name: '%s' type: '%s' defaultReturned: '%s' %s: '%s'";
-        String appendInfo = String.format(msg, name, type,
+        String appendInfo = msg.formatted(name, type,
                 Boolean.toString(isDefaultValue), FOUND_MSG, Boolean.toString(isFound))
                 + ((queriedObject != null) ? (" value: " + flatten(queriedObject)) : "") + "\n";
         this.dumpBuffer.append(appendInfo);
@@ -408,13 +408,11 @@ public class GroovyDataProvider implements DataProvider {
             try {
 
                 // get the property for given name
-                // (in case property is not found, ObjectNotFoundException will be
-                // thrown.)
+                // (in case property is not found, ObjectNotFoundException will be thrown.)
                 response = configObjectRecursiveGet(name, this.configObject);
 
             } catch (ObjectNotFoundException onfe) {
-                // we did not found the property for given name, try to search it
-                // recursively
+                // we did not found the property for given name, try to search it recursively
                 // by deleting the first prefix
                 int separatorIndex = name.indexOf(PROPERTY_SEPARATOR, 0);
 
@@ -454,16 +452,16 @@ public class GroovyDataProvider implements DataProvider {
              */
             Object o = configObjectGet(co, currentNamePart);
 
-            if (o instanceof ConfigObject) {
+            if (o instanceof ConfigObject configObject1) {
                 // recursively resolve the hierarchical names (containing
                 // multiple dots.
-                return configObjectRecursiveGet(name.substring(dotIndex + 1), (ConfigObject) o);
+                return configObjectRecursiveGet(name.substring(dotIndex + 1), configObject1);
             } else {
                 final String MSG = "Unexpected object instance. "
                         + "Searching property: '%s', found value: '%s', expected value is ConfigObject."
                         + "Please check that property '%s' is defined - "
                         + "it can collide with attribute value definition.";
-                fail(String.format(MSG, name, o.toString(), name));
+                fail(MSG.formatted(name, o.toString(), name));
                 return null;
             }// fi inner
 
@@ -488,9 +486,8 @@ public class GroovyDataProvider implements DataProvider {
          */
         Object result = co.getProperty(currentNamePart);
 
-        if (result instanceof ConfigObject) {
+        if (result instanceof ConfigObject coResult) {
             // try if property value is empty
-            ConfigObject coResult = (ConfigObject) result;
             if (coResult.isEmpty()) {
                 throw new ObjectNotFoundException();
             }
@@ -514,9 +511,7 @@ public class GroovyDataProvider implements DataProvider {
     private Object resolvePropObject(Object o) {
         Object resolved = o;
 
-        if (o instanceof Lazy) {
-            Lazy lazy = (Lazy) o;
-
+        if (o instanceof Lazy lazy) {
             resolved = resolveLazy(lazy);
         } else if (o instanceof List<?>) {
             @SuppressWarnings("unchecked")
@@ -537,14 +532,13 @@ public class GroovyDataProvider implements DataProvider {
      * @param map
      * @return
      */
-    private Map<?, Object> resolveMap(Map<?, Object> map) {
+    private Map<?, Object> resolveMap(final Map<?, Object> map) {
         Map<?, Object> localMap = map;
         localMap.entrySet().forEach(pairKV -> {
             /** value */
             Object object = pairKV.getValue();
 
-            if (object instanceof Lazy) {
-                Lazy lazyO = (Lazy) object;
+            if (object instanceof Lazy lazyO) {
                 Object resolvedObj = resolveLazy(lazyO);
                 pairKV.setValue(resolvedObj);
             } else if (object instanceof Map<?, ?>) {
@@ -565,11 +559,10 @@ public class GroovyDataProvider implements DataProvider {
      * @param list
      * @return the list with resolved values
      */
-    private List<Object> resolveList(List<Object> list) {
+    private List<Object> resolveList(final List<Object> list) {
         List<Object> result = new ArrayList<>();
         list.forEach((object) -> {
-            if (object instanceof Lazy) {
-                Lazy lazyO = (Lazy) object;
+            if (object instanceof Lazy lazyO) {
                 Object resolvedObj = resolveLazy(lazyO);
                 result.add(resolvedObj);
             } else if (object instanceof List<?>) {
@@ -595,15 +588,15 @@ public class GroovyDataProvider implements DataProvider {
         Object value = lazy.getValue();
         Object resolvedValue = null;
         if (value != null) {
-            if (value instanceof Lazy) {
-                value = resolveLazy((Lazy) value);
+            if (value instanceof Lazy lazy1) {
+                value = resolveLazy(lazy1);
             }
             if (lazy instanceof Get) {
                 assertTrue(value instanceof String);
                 resolvedValue = get((String) value, null, false);
-            } else if (lazy instanceof Random) {
+            } else if (lazy instanceof Random random) {
                 assertTrue(value instanceof String);
-                Random rnd = (Random) lazy;
+                Random rnd = random;
                 resolvedValue = rnd.generate();
             }
         }
@@ -621,11 +614,15 @@ public class GroovyDataProvider implements DataProvider {
             sb.append(value.toString());
         }
         successors.forEach((o) -> {
-            if (o instanceof String) {
-                sb.append((String) o);
-            } else if (o instanceof Lazy) {
-                Object resolved = resolveLazy((Lazy) o);
-                sb.append(resolved.toString());
+            switch (o) {
+                case String string ->
+                    sb.append(string);
+                case Lazy lazy -> {
+                    Object resolved = resolveLazy(lazy);
+                    sb.append(resolved.toString());
+                }
+                default -> {
+                }
             }
         });
 
@@ -645,7 +642,7 @@ public class GroovyDataProvider implements DataProvider {
         String shortTypeName = getShortTypeName(dataTypeName);
         // for multi values add the multi prefix when searching for default value.
         if (isMultivalue) {
-            String tmp = String.format("multi%s%s", PROPERTY_SEPARATOR, shortTypeName);
+            String tmp = "multi%s%s".formatted(PROPERTY_SEPARATOR, shortTypeName);
             shortTypeName = tmp;
         }
 
@@ -788,7 +785,7 @@ public class GroovyDataProvider implements DataProvider {
      */
     @Override
     public Object get(String name, int sequenceNumber) {
-        String resolvedName = String.format("i%s%s%s", sequenceNumber, PROPERTY_SEPARATOR, name);
+        String resolvedName = "i%s%s%s".formatted(sequenceNumber, PROPERTY_SEPARATOR, name);
 
         return get(resolvedName);
     }
@@ -868,7 +865,7 @@ public class GroovyDataProvider implements DataProvider {
             }
         }
 
-        return String.format("T%s", shortName.toLowerCase());
+        return "T%s".formatted(shortName.toLowerCase());
     }
 
     /* **************** SNAPSHOT GENERATOR METHODS **************** */
@@ -965,20 +962,18 @@ public class GroovyDataProvider implements DataProvider {
             svalue = flattenMap(obj);
         } else if (obj instanceof List<?>) {
             svalue = flattenList(obj);
-        } else if (obj instanceof Lazy) {
-            Object resolvedObj = flattenLazy((Lazy) obj, prefix);
+        } else if (obj instanceof Lazy lazy) {
+            Object resolvedObj = flattenLazy(lazy, prefix);
             svalue = quoteLazyIfNeeded(resolvedObj.toString());
         } else {
             // resolve as "Object" and use quotes, if needed
             /* simply print out a string for all types of objects, that are not recognized */
             String output = (obj == null) ? "null" : obj.toString();
             switch (choice) {
-                case QUOTED:
-                    svalue = String.format("\"%s\"", output);
-                    break;
-                case NOT_QUOTED:
+                case QUOTED ->
+                    svalue = "\"%s\"".formatted(output);
+                case NOT_QUOTED ->
                     svalue = output;
-                    break;
             }
         }
 
@@ -1010,7 +1005,7 @@ public class GroovyDataProvider implements DataProvider {
      */
     private String quoteLazyIfNeeded(String string) {
         if (!string.startsWith("Lazy")) { // FIXME dependence on GroovyDataProvider Lazy loading method name
-            return String.format("\"%s\"", string);
+            return "\"%s\"".formatted(string);
         }
         return string;
     }
@@ -1019,14 +1014,13 @@ public class GroovyDataProvider implements DataProvider {
         Object value = lazy.getValue();
         Object resolvedValue = null;
         if (value != null) {
-            if (value instanceof Lazy) {
-                value = flattenLazy((Lazy) value, prefix);
+            if (value instanceof Lazy lazy1) {
+                value = flattenLazy(lazy1, prefix);
             }
             if (lazy instanceof Get) {
                 assertTrue(value instanceof String);
                 resolvedValue = "Lazy.get(\"" + value + "\")";//get((String)value, null, false);
-            } else if (lazy instanceof Random) {
-                Random randomLazy = (Random) lazy;
+            } else if (lazy instanceof Random randomLazy) {
                 // IF there is the queried value in cache, use it.
                 // OTHERWISE put Lazy.random("originalPattern", typeArgument);
                 if (cache.containsKey(prefix)) {
@@ -1046,8 +1040,8 @@ public class GroovyDataProvider implements DataProvider {
         }
     }
 
-    private String flattenCO(Object obj, String prefix) {
-        String svalue = null;
+    private String flattenCO(final Object obj, final String prefix) {
+        String svalue;
         StringBuilder sb = new StringBuilder();
         boolean first = false;
         @SuppressWarnings("unchecked")
@@ -1064,7 +1058,7 @@ public class GroovyDataProvider implements DataProvider {
             // e.g. foo.bar.laa):
             if (entry.getValue() instanceof ConfigObject) {
                 // #2 _key_ part of the entry:
-                String key = null;
+                String key;
                 if (first) {
                     // if first, no quotes are needed:
                     key = debugStr("FST|")
@@ -1072,11 +1066,11 @@ public class GroovyDataProvider implements DataProvider {
                 } else {
                     key = debugStr("MID|") + flatten(entry.getKey(), concatToPrefix(prefix, entry.getKey()));
                 }// fi (first)
-                sb.append(String.format("%s%s%s", key, PROPERTY_SEPARATOR, value));
+                sb.append("%s%s%s".formatted(key, PROPERTY_SEPARATOR, value));
 
-            } else {// fi (entry.getValue())
+            } else {
                 // no nested property names left (no foo.bar.laa)
-                String key = null;
+                String key;
 
                 if (prefix.equals(EMPTY_PREFIX)) {
                     key = debugStr("LSTinSNGL|") + flatten(entry.getKey(), Chooser.NOT_QUOTED, prefix);
@@ -1084,12 +1078,11 @@ public class GroovyDataProvider implements DataProvider {
                     key = debugStr("LSTinMULT|") + flatten(entry.getKey(), concatToPrefix(prefix, entry.getKey()));
                 }
 
-                sb.append(String.format("%s%s%s\n", batchAddQuotes(first, prefix) + key, ASSIGNMENT_MARK, value));
-            }// fi (entry.getValue())
+                sb.append("%s%s%s\n".formatted(batchAddQuotes(first, prefix) + key, ASSIGNMENT_MARK, value));
+            }
 
             first = true;
-
-        }// for
+        }
 
         svalue = sb.toString();
 
@@ -1097,7 +1090,7 @@ public class GroovyDataProvider implements DataProvider {
     }
 
     private String batchAddQuotes(boolean first, String prefix) {
-        String result = null;
+        String result;
         if (!first || prefix == null || prefix.length() == 0) {
             result = EMPTY_PREFIX;
         } else {
@@ -1119,7 +1112,7 @@ public class GroovyDataProvider implements DataProvider {
             if (i == 0) {
                 result.append(parts[i]);
             } else {
-                result.append(String.format("%s\"%s\"", PROPERTY_SEPARATOR, parts[i]));
+                result.append("%s\"%s\"".formatted(PROPERTY_SEPARATOR, parts[i]));
             }
         }
         return result.toString();
@@ -1139,7 +1132,7 @@ public class GroovyDataProvider implements DataProvider {
 
     /** does the same as {@link GroovyDataProvider#flattenMap(Object)} for lists */
     private String flattenList(Object obj) {
-        String svalue = null;
+        String svalue;
         StringBuilder sb = new StringBuilder();
         boolean first = true;
 
@@ -1153,7 +1146,7 @@ public class GroovyDataProvider implements DataProvider {
             first = false;
         }
 
-        svalue = String.format("[ %s ]", sb.toString());
+        svalue = "[ %s ]".formatted(sb.toString());
 
         return svalue;
     }
@@ -1165,7 +1158,7 @@ public class GroovyDataProvider implements DataProvider {
      * @return the string representation
      */
     private String flattenMap(Object obj) {
-        String svalue = null;
+        String svalue;
         StringBuilder sb = new StringBuilder();
         boolean first = true;
 
@@ -1177,11 +1170,11 @@ public class GroovyDataProvider implements DataProvider {
             if (!first) {
                 sb.append(", ");
             }
-            sb.append(String.format(" %s : %s ", key, value));
+            sb.append(" %s : %s ".formatted(key, value));
             first = false;
         }
 
-        svalue = String.format("[ %s ]", sb.toString());
+        svalue = "[ %s ]".formatted(sb.toString());
 
         return svalue;
     }

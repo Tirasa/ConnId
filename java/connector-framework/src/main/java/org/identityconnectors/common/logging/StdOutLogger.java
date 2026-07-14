@@ -43,6 +43,7 @@ class StdOutLogger implements LogSpi {
 
     private static final String PATTERN =
             "Thread Id: {0}\tTime: {1}\tClass: {2}\tMethod: {3}\tLevel: {4}\tMessage: {5}";
+
     /**
      * Insures there is only one MessageFormat per thread since MessageFormat is
      * not thread safe.
@@ -50,22 +51,22 @@ class StdOutLogger implements LogSpi {
     private static final ThreadLocal<MessageFormat> MSG_FORMAT_HANDLER =
             new ThreadLocal<MessageFormat>() {
 
-                @Override
-                protected MessageFormat initialValue() {
-                    return new MessageFormat(PATTERN);
-                }
-            };
+        @Override
+        protected MessageFormat initialValue() {
+            return new MessageFormat(PATTERN);
+        }
+    };
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     private static final ThreadLocal<DateFormat> DATE_FORMAT_HANDLER =
             new ThreadLocal<DateFormat>() {
 
-                @Override
-                protected DateFormat initialValue() {
-                    return new SimpleDateFormat(DATE_PATTERN);
-                }
-            };
+        @Override
+        protected DateFormat initialValue() {
+            return new SimpleDateFormat(DATE_PATTERN);
+        }
+    };
 
     /**
      * Logs the thread id, date, class, level, message, and optionally exception
@@ -83,9 +84,8 @@ class StdOutLogger implements LogSpi {
         } finally {
             DATE_FORMAT_HANDLER.remove();
         }
-        final Object[] args =
-                new Object[] { Thread.currentThread().getId(), now, clazz.getName(), methodName,
-                    level, message };
+        final Object[] args = new Object[] {
+            Thread.currentThread().threadId(), now, clazz.getName(), methodName, level, message };
 
         final String msg;
         try {
@@ -104,15 +104,20 @@ class StdOutLogger implements LogSpi {
         }
     }
 
-    public void log(final Class<?> clazz, final StackTraceElement caller, final Level level, final String message, final Throwable ex) {
-        String methodName = null;
+    @Override
+    public void log(
+            final Class<?> clazz,
+            final StackTraceElement caller,
+            final Level level,
+            final String message,
+            final Throwable ex) {
+
+        String methodName;
         if (null != caller) {
             // @formatter:off
-            methodName = caller.getMethodName() +
-                    (caller.isNativeMethod() ? "(Native Method)" :
-                            (caller.getFileName() != null && caller.getLineNumber() >= 0 ?
-                                    "(" + caller.getFileName() + ":" + caller.getLineNumber() + ")" :
-                                    (caller.getFileName() != null ? "(" + caller.getFileName() + ")" : "(Unknown Source)")));
+            methodName = caller.getMethodName() + (caller.isNativeMethod() ? "(Native Method)" : (caller.getFileName()
+                    != null && caller.getLineNumber() >= 0 ? "(" + caller.getFileName() + ":" + caller.getLineNumber()
+                    + ")" : (caller.getFileName() != null ? "(" + caller.getFileName() + ")" : "(Unknown Source)")));
             // @formatter:on
         } else {
             methodName = "unknown";

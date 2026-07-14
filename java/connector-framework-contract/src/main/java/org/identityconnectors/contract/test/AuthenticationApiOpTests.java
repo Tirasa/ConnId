@@ -122,7 +122,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                     + USERNAME_PROP, TEST_NAME);
 
             // test negative case with valid user, but wrong password
-            boolean authenticateFailed = false;
+            boolean authenticateFailed;
 
             // get wrong password
             GuardedString wrongPassword = (GuardedString) getDataProvider().getTestSuiteAttribute(objectClass.
@@ -141,7 +141,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
             Uid authenticatedUid = authenticateExpectingSuccess(objectClass, name, password);
 
             String msg = "Authenticate returned wrong Uid, expected: %s, returned: %s.";
-            assertEquals(uid, authenticatedUid, String.format(msg, uid, authenticatedUid));
+            assertEquals(uid, authenticatedUid, msg.formatted(uid, authenticatedUid));
 
             // test that PASSWORD change works, CURRENT_PASSWORD should be set
             // to old password value if supported
@@ -164,7 +164,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                 // authenticate with new password
                 authenticatedUid = authenticateExpectingSuccess(objectClass, name, newpassword);
 
-                assertEquals(uid, authenticatedUid, String.format(msg, uid, authenticatedUid));
+                assertEquals(uid, authenticatedUid, msg.formatted(uid, authenticatedUid));
 
                 // LAST_PASSWORD_CHANGE_DATE
                 if (ConnectorHelper.isAttrSupported(getObjectClassInfo(objectClass),
@@ -253,7 +253,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                         + "." + USERNAME_PROP,
                         TEST_NAME);
 
-                Set<Attribute> updateAttrs = new HashSet<Attribute>();
+                Set<Attribute> updateAttrs = new HashSet<>();
                 updateAttrs.add(AttributeBuilder.buildEnabled(false));
 
                 Uid newUid = getConnectorFacade().update(objectClass, uid,
@@ -337,7 +337,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                 assertNotNull(pwe, "Authenticate should throw PasswordExpiredException.");
 
                 final String msg = "PasswordExpiredException contains wrong Uid, expected: %s, returned: %s";
-                assertEquals(uid, pwe.getUid(), String.format(msg, uid, pwe.getUid()));
+                assertEquals(uid, pwe.getUid(), msg.formatted(uid, pwe.getUid()));
 
             } finally {
                 // delete the object
@@ -404,7 +404,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                 PasswordExpiredException pwe = authenticateExpectingPasswordExpired(objectClass, name, password);
                 assertNotNull(pwe, "Authenticate should throw PasswordExpiredException.");
                 final String msg = "PasswordExpiredException contains wrong Uid, expected: %s, returned: %s";
-                assertEquals(uid, pwe.getUid(), String.format(msg, uid, pwe.getUid()));
+                assertEquals(uid, pwe.getUid(), msg.formatted(uid, pwe.getUid()));
 
             } finally {
                 // delete the object
@@ -549,7 +549,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                 authenticateFailed = true;
                 break;
             }
-            LOG.info(String.format("Retrying authentication - iteration %d", i));
+            LOG.info("Retrying authentication - iteration %d".formatted(i));
             sleepIngoringInterruption(getLongTestParam(SLEEP_MILLISECONDS, 0));
         }
 
@@ -569,7 +569,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                 authenticateFailed = true;
                 break;
             }
-            LOG.info(String.format("Retrying authentication - iteration %d", i));
+            LOG.info("Retrying authentication - iteration %d".formatted(i));
             sleepIngoringInterruption(getLongTestParam(SLEEP_MILLISECONDS, 0));
         }
 
@@ -588,7 +588,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                 break;
             } catch (RuntimeException e) {
                 lastException = e;
-                LOG.info(String.format("Retrying authentication - iteration %d", i));
+                LOG.info("Retrying authentication - iteration %d".formatted(i));
                 sleepIngoringInterruption(getLongTestParam(SLEEP_MILLISECONDS, 0));
             }
         }
@@ -618,7 +618,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
             } catch (RuntimeException e) {
                 lastException = e;
             }
-            LOG.info(String.format("Retrying authentication - iteration %d", i));
+            LOG.info("Retrying authentication - iteration %d".formatted(i));
             sleepIngoringInterruption(getLongTestParam(SLEEP_MILLISECONDS, 0));
         }
 

@@ -149,7 +149,7 @@ public abstract class ScriptExecutorFactory {
         }
         Class<?> clazz = getFactoryCache().get(language);
         if (clazz == null) {
-            throw new IllegalArgumentException(String.format("Language not supported: %s", language));
+            throw new IllegalArgumentException("Language not supported: %s".formatted(language));
         }
         // exceptions here should not happened because of the register
         try {

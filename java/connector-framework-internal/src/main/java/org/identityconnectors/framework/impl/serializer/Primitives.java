@@ -524,7 +524,7 @@ class Primitives {
                 final String language = decoder.readStringField("language", "");
                 final String country = decoder.readStringField("country", "");
                 final String variant = decoder.readStringField("variant", "");
-                return new Locale(language, country, variant);
+                return Locale.of(language, country, variant);
             }
 
             @Override

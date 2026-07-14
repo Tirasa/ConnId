@@ -96,7 +96,7 @@ public class UpdateApiOpTests extends ObjectClassRunner {
      */
     @Override
     protected void testRun(ObjectClass objectClass) {
-        ConnectorObject obj = null;
+        ConnectorObject obj;
         Uid uid = null;
 
         try {
@@ -114,13 +114,13 @@ public class UpdateApiOpTests extends ObjectClassRunner {
                     getDataProvider(), getObjectClassInfo(objectClass), getTestName(), MODIFIED, 0, false,
                     false);
 
-            if (replaceAttributes.size() > 0 || !isObjectClassSupported(objectClass)) {
+            if (!replaceAttributes.isEmpty() || !isObjectClassSupported(objectClass)) {
                 /* TODO when object class is not supported?!
                  */
                 // update only in case there is something to update or when object class is not supported
                 replaceAttributes.add(uid);
 
-                assertTrue((replaceAttributes.size() > 0), "no update attributes were found");
+                assertTrue((!replaceAttributes.isEmpty()), "no update attributes were found");
                 Uid newUid = getConnectorFacade().update(
                         objectClass, uid, AttributeUtil.filterUid(replaceAttributes), getOperationOptionsByOp(
                         objectClass, UpdateApiOp.class));
@@ -144,7 +144,7 @@ public class UpdateApiOpTests extends ObjectClassRunner {
             // set of *multivalue* attributes with generated values
             Set<Attribute> addDelAttrs = ConnectorHelper.getUpdateableAttributes(getDataProvider(),
                     getObjectClassInfo(objectClass), getTestName(), ADDED, 0, false, true);
-            if (addDelAttrs.size() > 0) {
+            if (!addDelAttrs.isEmpty()) {
                 // uid must be present for update
                 addDelAttrs.add(uid);
                 Uid newUid = getConnectorFacade().addAttributeValues(objectClass,
@@ -222,7 +222,7 @@ public class UpdateApiOpTests extends ObjectClassRunner {
     public void testUpdateToNull(ObjectClass objectClass) {
         if (ConnectorHelper.operationsSupported(getConnectorFacade(), objectClass,
                 getAPIOperations())) {
-            ConnectorObject obj = null;
+            ConnectorObject obj;
             Uid uid = null;
 
             try {
@@ -243,7 +243,7 @@ public class UpdateApiOpTests extends ObjectClassRunner {
                             LOG.info("Attribute '" + attInfo.getName() + "' was skipped in testUpdateToNull");
                             continue;
                         }
-                        Set<Attribute> nullAttributes = new HashSet<Attribute>();
+                        Set<Attribute> nullAttributes = new HashSet<>();
                         Attribute attr = AttributeBuilder.build(attInfo.getName());
                         nullAttributes.add(attr);
 
@@ -274,18 +274,17 @@ public class UpdateApiOpTests extends ObjectClassRunner {
                                         + "Updated value is : '%s'";
                                 assertTrue(checkedAttribute == null || checkedAttribute.equals(attr)
                                         || checkedAttribute.getValue().isEmpty(),
-                                        String.format(msg, attInfo.getName(), checkedAttribute != null
+                                        msg.formatted(attInfo.getName(), checkedAttribute != null
                                                 ? checkedAttribute.getValue() : null));
                             }
                         } catch (RuntimeException ex) {
-                            // ok, this option is possible in case connector cannot neither remove the attribute entirely
-                            // nor set its value to null
-                            // every RuntimeException except for NPE is possible
-                            assertFalse(ex instanceof NullPointerException, String.format(
-                                    "Update of attribute '%s' to null thrown NullPointerException.",
-                                    attInfo.getName()));
-                            LOG.info(String.format("RuntimeException was thrown when trying to update '%s' to null.",
-                                    attInfo.getName()));
+                            // ok, this option is possible in case connector cannot neither remove the attribute
+                            // entirely nor set its value to null every RuntimeException except for NPE is possible
+                            assertFalse(ex instanceof NullPointerException,
+                                    "Update of attribute '%s' to null thrown NullPointerException.".
+                                            formatted(attInfo.getName()));
+                            LOG.info("RuntimeException was thrown when trying to update '%s' to null.".
+                                    formatted(attInfo.getName()));
                         }
                     }
                 }

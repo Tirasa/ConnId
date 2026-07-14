@@ -73,7 +73,7 @@ public final class ObjectClassInfoBuilder {
      */
     public ObjectClassInfoBuilder addAttributeInfo(final AttributeInfo info) {
         if (attributeInfoMap.containsKey(info.getName())) {
-            throw new IllegalArgumentException(String.format(FORMAT, info.getName()));
+            throw new IllegalArgumentException(FORMAT.formatted(info.getName()));
         }
         attributeInfoMap.put(info.getName(), info);
         return this;

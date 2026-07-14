@@ -36,7 +36,9 @@ import org.identityconnectors.framework.common.objects.Uid;
  * @see javax.security.auth.login.AccountNotFoundException
  */
 public class UnknownUidException extends InvalidCredentialException {
+
     private static final String MSG = "Object with Uid '%s' and ObjectClass '%s' does not exist!";
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -50,7 +52,7 @@ public class UnknownUidException extends InvalidCredentialException {
      * @see ConnectorException#ConnectorException(String)
      */
     public UnknownUidException(Uid uid, ObjectClass objclass) {
-        super(String.format(MSG, uid, objclass));
+        super(MSG.formatted(uid, objclass));
     }
 
     /**

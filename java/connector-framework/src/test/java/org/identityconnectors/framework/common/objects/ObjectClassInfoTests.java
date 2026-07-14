@@ -109,7 +109,7 @@ public class ObjectClassInfoTests {
     public void testEqualsObservesLocale() {
         Locale defLocale = Locale.getDefault();
         try {
-            Locale.setDefault(new Locale("tr"));
+            Locale.setDefault(Locale.of("tr"));
             ObjectClassInfo oci1 = build("i");
             ObjectClassInfo oci2 = build("I");
             assertFalse(oci1.equals(oci2));
@@ -125,7 +125,7 @@ public class ObjectClassInfoTests {
             Locale.setDefault(Locale.US);
             final ObjectClassInfo attribute = build("i");
             final int hash1 = attribute.hashCode();
-            Locale.setDefault(new Locale("tr"));
+            Locale.setDefault(Locale.of("tr"));
             int hash2 = attribute.hashCode();
             assertEquals(hash1, hash2);
         } finally {

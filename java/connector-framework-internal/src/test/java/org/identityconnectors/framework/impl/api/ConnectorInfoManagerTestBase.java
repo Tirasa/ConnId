@@ -213,17 +213,17 @@ public abstract class ConnectorInfoManagerTestBase {
         assertEquals("Display for test field.", property.getDisplayName(null));
         assertEquals("Test Framework Value", info.getMessages().format("TEST_FRAMEWORK_KEY", "empty"));
 
-        Locale xlocale = new Locale("es");
+        Locale xlocale = Locale.of("es");
         CurrentLocale.set(xlocale);
         assertEquals("tstField.help_es", property.getHelpMessage(null));
         assertEquals("tstField.display_es", property.getDisplayName(null));
 
-        Locale esESlocale = new Locale("es", "ES");
+        Locale esESlocale = Locale.of("es", "ES");
         CurrentLocale.set(esESlocale);
         assertEquals("tstField.help_es-ES", property.getHelpMessage(null));
         assertEquals("tstField.display_es-ES", property.getDisplayName(null));
 
-        Locale esARlocale = new Locale("es", "AR");
+        Locale esARlocale = Locale.of("es", "AR");
         CurrentLocale.set(esARlocale);
         assertEquals("tstField.help_es", property.getHelpMessage(null));
         assertEquals("tstField.display_es", property.getDisplayName(null));
@@ -260,7 +260,7 @@ public abstract class ConnectorInfoManagerTestBase {
         facade = facf.newInstance(api);
         // validate and also test that locale is propagated properly
         try {
-            CurrentLocale.set(new Locale("en"));
+            CurrentLocale.set(Locale.of("en"));
             facade.validate();
 
             fail("exception expected");
@@ -271,7 +271,7 @@ public abstract class ConnectorInfoManagerTestBase {
         }
         // validate and also test that locale is propagated properly
         try {
-            CurrentLocale.set(new Locale("es"));
+            CurrentLocale.set(Locale.of("es"));
             facade.validate();
 
             fail("exception expected");

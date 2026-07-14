@@ -95,7 +95,7 @@ public class ScriptOnConnectorApiOpTests extends ContractTestBase {
 
                 // check that returned result was expected
                 final String msg = "Script result was unexpected, expected: '%s', returned: '%s'.";
-                assertEquals(expResult, result, String.format(msg, expResult, result));
+                assertEquals(expResult, result, msg.formatted(expResult, result));
             } catch (ObjectNotFoundException ex) {
                 // ok - properties were not provided - test is skipped
                 LOG.info("Test properties not set, skipping the test " + TEST_NAME);

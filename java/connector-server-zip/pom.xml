@@ -30,7 +30,7 @@
   <parent>
     <groupId>net.tirasa.connid</groupId>
     <artifactId>connid</artifactId>
-    <version>1.6.1.2-SNAPSHOT</version>
+    <version>1.7.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>connector-server-zip</artifactId>    
@@ -104,14 +104,11 @@
     
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>ianal-maven-plugin</artifactId>
-        <inherited>true</inherited>
+        <groupId>org.apache.geronimo.genesis.plugins</groupId>
+        <artifactId>tools-maven-plugin</artifactId>
+        <inherited>false</inherited>
         <configuration>
-          <searchPaths>
-            <searchPath>META-INF</searchPath>
-            <searchPath>connid-connector-server</searchPath>
-          </searchPaths>
+          <strict>false</strict>
         </configuration>
       </plugin>
       

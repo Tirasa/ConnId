@@ -159,7 +159,7 @@ public class MultiOpTests extends ObjectClassRunner {
                             getOperationOptionsByOp(objectClass, SyncApiOp.class));
 
                     msg = "Sync after %d creates returned %d deltas.";
-                    assertTrue(deltas.size() == recordCount, String.format(msg, recordCount, deltas.size()));
+                    assertEquals(recordCount, deltas.size(), msg.formatted(recordCount, deltas.size()));
 
                     // check all deltas
                     for (int i = 0; i < recordCount; i++) {
@@ -351,7 +351,7 @@ public class MultiOpTests extends ObjectClassRunner {
                 deltas = ConnectorHelper.sync(getConnectorFacade(), objectClass, token,
                         getOperationOptionsByOp(objectClass, SyncApiOp.class));
                 msg = "Sync returned unexpected number of deltas. Exptected: %d, but returned: %d";
-                assertTrue(deltas.size() == uids.size(), String.format(msg, uids.size(), deltas.size()));
+                assertEquals(uids.size(), deltas.size(), msg.formatted(uids.size(), deltas.size()));
 
                 for (int i = 0; i < uids.size(); i++) {
                     ConnectorHelper.checkSyncDelta(getObjectClassInfo(objectClass), deltas.get(i),
@@ -484,14 +484,14 @@ public class MultiOpTests extends ObjectClassRunner {
     private long getDateProperty(String propName, long defaultValue, boolean isModified) {
         try {
             if (isModified) {
-                propName = String.format("%s.%s", MODIFIED, propName);
+                propName = "%s.%s".formatted(MODIFIED, propName);
             }
 
             Object obj = getDataProvider().getTestSuiteAttribute(propName, getTestName());
             if (obj instanceof Long) {
                 return (Long) obj;
             } else {
-                fail(String.format("Property 'testsuite.%s.%s' should be of type *long*", getTestName(), propName));
+                fail("Property 'testsuite.%s.%s' should be of type *long*".formatted(getTestName(), propName));
             }
         } catch (ObjectNotFoundException onfe) {
             // use the default value, OK
@@ -674,16 +674,16 @@ public class MultiOpTests extends ObjectClassRunner {
                 filter(attribute -> attribute.is(attrName)).
                 forEach(attribute -> {
                     List<Object> vals = attribute.getValue();
-                    assertTrue(vals.size() == 1, String.format(
-                            "Operational attribute %s must contain exactly one value.", attrName));
+                    assertTrue(vals.size() == 1,
+                            "Operational attribute %s must contain exactly one value.".formatted(attrName));
                     Object val = vals.get(0);
-                    assertEquals(type, val.getClass(), String.format(
-                            "Operational attribute %s value type must be %s, but is %s.", attrName,
-                            type.getSimpleName(), val.getClass().getSimpleName()));
+                    assertEquals(type, val.getClass(),
+                            "Operational attribute %s value type must be %s, but is %s.".formatted(attrName,
+                                    type.getSimpleName(), val.getClass().getSimpleName()));
 
-                    assertEquals(expValue, val, String.format(
-                            "Operational attribute %s value is different, expected: %s, returned: %s",
-                            attrName, expValue, val));
+                    assertEquals(expValue, val,
+                            "Operational attribute %s value is different, expected: %s, returned: %s".formatted(
+                                    attrName, expValue, val));
                 });
     }
 

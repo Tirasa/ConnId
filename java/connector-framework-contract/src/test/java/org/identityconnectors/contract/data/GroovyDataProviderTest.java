@@ -366,15 +366,14 @@ public class GroovyDataProviderTest {
             List<Object> objects = (List<Object>) obj;
             Object previous = null;
             for (Object object : objects) {
-                String msg = String.format(
+                String msg =
                         "default value for Random multiString should contain Strings only, "
-                        + "but found different type: %s", object.getClass().getName());
+                        + "but found different type: %s".formatted(object.getClass().getName());
                 assertTrue(object instanceof String, msg);
 
                 if (previous != null) {
-                    msg = String.format(
-                            "two objects on the randomized list should differ, but there are two equal values: %s = %s",
-                            previous, object);
+                    msg = "two objects on the randomized list should differ, but there are two equal values: %s = %s".
+                            formatted(previous, object);
                     assertTrue(!previous.equals(object), msg);
                 }
                 previous = object;
@@ -555,10 +554,9 @@ public class GroovyDataProviderTest {
         String fullName = (String) gdp.get("Xfull");
         assertNotNull(firstName);
 
-        String msg = String.format(
-                "Error, doesn't fulfill the concatenation: \n firstname: '%s' lastname: '%s' fullname: '%s'", firstName,
-                lastName, fullName);
-        assertTrue(String.format("%s %s", firstName, lastName).equals(fullName), msg);
+        String msg = "Error, doesn't fulfill the concatenation: \n firstname: '%s' lastname: '%s' fullname: '%s'".
+                formatted(firstName, lastName, fullName);
+        assertTrue("%s %s".formatted(firstName, lastName).equals(fullName), msg);
     }
 
     @Test
@@ -569,22 +567,25 @@ public class GroovyDataProviderTest {
         assertEquals(15, as.size());
 
         as.forEach((attr) -> {
-            if (attr.getName().equals("name")) {
-                assertEquals(attr.getValue().get(0), "String");
-            } else if (attr.getName().equals("id")) {
-                assertEquals(attr.getValue().get(0), 15);
-            } else if (attr.getName().equals("arl")) {
-                assertEquals(attr.getValue().size(), 2);
-                assertEquals(attr.getValue().get(0), "elm1");
-                assertEquals(attr.getValue().get(1), "elm2");
-            } else if (attr.getName().equals("ara")) {
-                assertEquals(attr.getValue().size(), 2);
-                assertEquals(attr.getValue().get(0), "elm1");
-                assertEquals(attr.getValue().get(1), "elm2");
-            } else if (attr.getName().equals("bool")) {
-                assertEquals(attr.getValue().get(0), true);
-            } else {
-                fail("Unexpected attribute");
+            switch (attr.getName()) {
+                case "name" ->
+                    assertEquals(attr.getValue().get(0), "String");
+                case "id" ->
+                    assertEquals(attr.getValue().get(0), 15);
+                case "arl" -> {
+                    assertEquals(attr.getValue().size(), 2);
+                    assertEquals(attr.getValue().get(0), "elm1");
+                    assertEquals(attr.getValue().get(1), "elm2");
+                }
+                case "ara" -> {
+                    assertEquals(attr.getValue().size(), 2);
+                    assertEquals(attr.getValue().get(0), "elm1");
+                    assertEquals(attr.getValue().get(1), "elm2");
+                }
+                case "bool" ->
+                    assertEquals(attr.getValue().get(0), true);
+                default ->
+                    fail("Unexpected attribute");
             }
         });
     }

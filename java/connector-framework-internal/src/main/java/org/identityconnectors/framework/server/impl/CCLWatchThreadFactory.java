@@ -31,25 +31,28 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CCLWatchThreadFactory implements ThreadFactory {
 
     // Copied from java.util.concurrent.Executors.DefaultThreadFactory.
-
     static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
+
     final ThreadGroup group;
+
     final AtomicInteger threadNumber = new AtomicInteger(1);
+
     final String namePrefix;
 
     CCLWatchThreadFactory() {
-        SecurityManager s = System.getSecurityManager();
-        group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        group = Thread.currentThread().getThreadGroup();
         namePrefix = "pool-" + POOL_NUMBER.getAndIncrement() + "-thread-";
     }
 
     @Override
     public Thread newThread(Runnable r) {
         Thread t = new CCLWatchThread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-        if (t.isDaemon())
+        if (t.isDaemon()) {
             t.setDaemon(false);
-        if (t.getPriority() != Thread.NORM_PRIORITY)
+        }
+        if (t.getPriority() != Thread.NORM_PRIORITY) {
             t.setPriority(Thread.NORM_PRIORITY);
+        }
         return t;
     }
 }

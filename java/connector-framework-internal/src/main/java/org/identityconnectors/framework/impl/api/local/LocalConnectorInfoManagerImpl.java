@@ -393,13 +393,13 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             variant = tok.nextToken();
         }
         if (variant != null) {
-            return new Locale(lang, country, variant);
+            return Locale.of(lang, country, variant);
         } else if (country != null) {
-            return new Locale(lang, country);
+            return Locale.of(lang, country);
         } else if (lang != null) {
-            return new Locale(lang);
+            return Locale.of(lang);
         } else {
-            return new Locale("");
+            return Locale.of("");
         }
     }
 
