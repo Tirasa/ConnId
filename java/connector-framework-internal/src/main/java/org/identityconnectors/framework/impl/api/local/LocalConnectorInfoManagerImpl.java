@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -353,18 +352,12 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                     if (path.startsWith(prefix)) {
                         String localeStr = path.substring(prefix.length());
                         if (localeStr.endsWith(suffix)) {
-                            localeStr =
-                                    localeStr.substring(0, localeStr.length() - suffix.length());
-                            final Locale locale = parseLocale(localeStr);
+                            localeStr = localeStr.substring(0, localeStr.length() - suffix.length());
+                            Locale locale = parseLocale(localeStr);
                             Properties properties = IOUtil.getResourceAsProperties(loader, path);
                             // get or create map
-                            Map<String, String> map = rv.getCatalogs().get(locale);
-                            if (map == null) {
-                                map = new HashMap<>();
-                                rv.getCatalogs().put(locale, map);
-                            }
-                            // merge properties into map, overwriting
-                            // any that already exist
+                            Map<String, String> map = rv.getCatalogs().computeIfAbsent(locale, l -> new HashMap<>());
+                            // merge properties into map, overwriting any that already exists
                             map.putAll(CollectionUtil.newMap(properties));
                         }
                     }
@@ -379,28 +372,35 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
     }
 
     private static Locale parseLocale(final String str) {
+        String input = str.trim();
+        if (input.startsWith("_")) {
+            input = input.substring(1);
+        }
+
+        String[] split = input.split("\\_");
+
         String lang = null;
+        if (split.length > 0) {
+            lang = split[0];
+        }
         String country = null;
+        if (split.length > 1) {
+            country = split[1];
+        }
         String variant = null;
-        final StringTokenizer tok = new StringTokenizer(str, "_", false);
-        if (tok.hasMoreTokens()) {
-            lang = tok.nextToken();
-        }
-        if (tok.hasMoreTokens()) {
-            country = tok.nextToken();
-        }
-        if (tok.hasMoreTokens()) {
-            variant = tok.nextToken();
+        if (split.length > 2) {
+            variant = split[2];
         }
         if (variant != null) {
             return Locale.of(lang, country, variant);
-        } else if (country != null) {
-            return Locale.of(lang, country);
-        } else if (lang != null) {
-            return Locale.of(lang);
-        } else {
-            return Locale.of("");
         }
+        if (country != null) {
+            return Locale.of(lang, country);
+        }
+        if (lang != null) {
+            return Locale.of(lang);
+        }
+        return Locale.of("");
     }
 
     private static String[] getBundleNamePrefixes(final Class<? extends Connector> connector) {

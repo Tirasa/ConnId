@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.Pair;
 import org.identityconnectors.common.ReflectionUtil;
@@ -367,13 +366,8 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                             Locale locale = parseLocale(localeStr);
                             Properties properties = getResourceAsProperties(loader, path);
                             // get or create map
-                            Map<String, String> map = rv.getCatalogs().get(locale);
-                            if (map == null) {
-                                map = new HashMap<>();
-                                rv.getCatalogs().put(locale, map);
-                            }
-                            // merge properties into map, overwriting
-                            // any that already exist
+                            Map<String, String> map = rv.getCatalogs().computeIfAbsent(locale, l -> new HashMap<>());
+                            // merge properties into map, overwriting any that already exists
                             map.putAll(CollectionUtil.newMap(properties));
                         }
                     }
@@ -387,29 +381,36 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         }
     }
 
-    private Locale parseLocale(String str) {
+    private static Locale parseLocale(final String str) {
+        String input = str.trim();
+        if (input.startsWith("_")) {
+            input = input.substring(1);
+        }
+
+        String[] split = input.split("\\_");
+
         String lang = null;
+        if (split.length > 0) {
+            lang = split[0];
+        }
         String country = null;
+        if (split.length > 1) {
+            country = split[1];
+        }
         String variant = null;
-        StringTokenizer tok = new StringTokenizer(str, "_", false);
-        if (tok.hasMoreTokens()) {
-            lang = tok.nextToken();
-        }
-        if (tok.hasMoreTokens()) {
-            country = tok.nextToken();
-        }
-        if (tok.hasMoreTokens()) {
-            variant = tok.nextToken();
+        if (split.length > 2) {
+            variant = split[2];
         }
         if (variant != null) {
             return Locale.of(lang, country, variant);
-        } else if (country != null) {
-            return Locale.of(lang, country);
-        } else if (lang != null) {
-            return Locale.of(lang);
-        } else {
-            return Locale.of("");
         }
+        if (country != null) {
+            return Locale.of(lang, country);
+        }
+        if (lang != null) {
+            return Locale.of(lang);
+        }
+        return Locale.of("");
     }
 
     private String[] getBundleNamePrefixes(Class<? extends Connector> connector) {
