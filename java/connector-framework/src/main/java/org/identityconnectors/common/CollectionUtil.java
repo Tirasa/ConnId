@@ -40,6 +40,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public final class CollectionUtil {
 
@@ -210,12 +211,13 @@ public final class CollectionUtil {
         return map;
     }
 
-    public static Map<String, String> newMap(Properties properties) {
-        Map<String, String> rv = new HashMap<>();
-        properties.entrySet().forEach((entry) -> {
-            rv.put((String) entry.getKey(), (String) entry.getValue());
-        });
-        return rv;
+    public static Map<String, String> newMap(final Properties properties) {
+        return properties.entrySet().stream().collect(
+                Collectors.toMap(
+                        e -> String.valueOf(e.getKey()),
+                        e -> String.valueOf(e.getValue()),
+                        (prev, next) -> next, HashMap::new
+                ));
     }
 
     public static <T, K> Map<T, K> newMap(T k0, K v0) {
