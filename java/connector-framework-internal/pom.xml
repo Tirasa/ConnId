@@ -99,9 +99,27 @@
     </dependency>
     <dependency>
       <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-yaml</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-groovysh</artifactId>
       <scope>provided</scope>
-      <optional>true</optional>      
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-nio</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-callsite</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>net.tirasa.connid</groupId>

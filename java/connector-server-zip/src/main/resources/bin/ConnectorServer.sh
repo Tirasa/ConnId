@@ -24,6 +24,8 @@
 
 CLASSPATH=lib/framework/connector-framework.jar:\
 lib/framework/connector-framework-internal.jar:\
+lib/framework/groovy-nio.jar:\
+lib/framework/groovy-callsite.jar:\
 lib/framework/groovy-templates.jar:\
 lib/framework/groovy-bsf.jar:\
 lib/framework/groovy-jsr223.jar:\
@@ -31,6 +33,7 @@ lib/framework/groovy-datetime.jar:\
 lib/framework/groovy-dateutil.jar:\
 lib/framework/groovy-sql.jar:\
 lib/framework/groovy-xml.jar:\
+lib/framework/groovy-json.jar:\
 lib/framework/groovy.jar:\
 lib/framework/slf4j-api.jar:\
 lib/framework/slf4j-logging.jar:\

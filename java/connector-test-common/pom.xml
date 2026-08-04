@@ -90,7 +90,22 @@
     </dependency>
     <dependency>
       <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-yaml</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-groovysh</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-nio</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.groovy</groupId>
+      <artifactId>groovy-callsite</artifactId>
       <scope>test</scope>
     </dependency>
 
