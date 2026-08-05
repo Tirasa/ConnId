@@ -22,12 +22,6 @@
  */
 package net.tirasa.connid.commons.scripted;
 
-import static net.tirasa.connid.commons.scripted.Constants.MSG_OBJECT_CLASS_REQUIRED;
-import static net.tirasa.connid.commons.scripted.Constants.MSG_INVALID_ATTRIBUTE_SET;
-import static net.tirasa.connid.commons.scripted.Constants.MSG_BLANK_UID;
-import static net.tirasa.connid.commons.scripted.Constants.MSG_BLANK_RESULT_HANDLER;
-import static net.tirasa.connid.commons.scripted.Constants.MSG_INVALID_SCRIPT;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -152,7 +146,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         // nothing to do
     }
 
-    protected ScriptExecutor getScriptExecutor(String script, String scriptFileName) {
+    protected ScriptExecutor getScriptExecutor(final String script, final String scriptFileName) {
         String scriptCode = script;
         ScriptExecutor scriptExec = null;
 
@@ -243,12 +237,12 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         }
         if (createExecutor != null) {
             if (objectClass == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_OBJECT_CLASS_REQUIRED));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_OBJECT_CLASS_REQUIRED));
             }
             LOG.ok("Object class: {0}", objectClass.getObjectClassValue());
 
             if (createAttributes == null || createAttributes.isEmpty()) {
-                throw new IllegalArgumentException(config.getMessage(MSG_INVALID_ATTRIBUTE_SET));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_INVALID_ATTRIBUTE_SET));
             }
 
             Map<String, Object> arguments = buildArguments();
@@ -285,10 +279,10 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
             }
 
             try {
-                Object uidAfter = createExecutor.execute(arguments);
-                if (uidAfter instanceof String) {
-                    LOG.ok("{0} created", uidAfter);
-                    return new Uid((String) uidAfter);
+                Object createdUid = createExecutor.execute(arguments);
+                if (createdUid instanceof String uid) {
+                    LOG.ok("{0} created", createdUid);
+                    return new Uid(uid);
                 } else {
                     throw new ConnectorException("Create script didn't return with the __UID__ value");
                 }
@@ -296,13 +290,13 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
                 throw new ConnectorException("Create script error", e);
             }
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
     private Map<String, Object> attributes2Arguments(final boolean plainUpdate, final Set<Attribute> attrs) {
         if (CollectionUtil.isEmpty(attrs)) {
-            throw new IllegalArgumentException(config.getMessage(MSG_INVALID_ATTRIBUTE_SET));
+            throw new IllegalArgumentException(config.getMessage(Constants.MSG_INVALID_ATTRIBUTE_SET));
         }
 
         Map<String, List<Object>> attrMap = new HashMap<>();
@@ -341,12 +335,12 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         }
         if (updateExecutor != null) {
             if (objectClass == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_OBJECT_CLASS_REQUIRED));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_OBJECT_CLASS_REQUIRED));
             }
             LOG.ok("Object class: {0}", objectClass.getObjectClassValue());
 
             if (uid == null || uid.getUidValue() == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_BLANK_UID));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_BLANK_UID));
             }
             String id = uid.getUidValue();
 
@@ -361,16 +355,16 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
 
             try {
                 Object uidAfter = updateExecutor.execute(arguments);
-                if (uidAfter instanceof String) {
+                if (uidAfter instanceof String updatedUid) {
                     LOG.ok("{0} updated ({1})", uidAfter, method);
-                    return new Uid((String) uidAfter);
+                    return new Uid(updatedUid);
                 }
             } catch (Exception e) {
                 throw new ConnectorException("Update(" + method + ") script error", e);
             }
             throw new ConnectorException("Update script didn't return with the __UID__ value");
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
@@ -392,7 +386,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
             final OperationOptions options) {
 
         if (CollectionUtil.isEmpty(modifications)) {
-            throw new IllegalArgumentException(config.getMessage(MSG_INVALID_ATTRIBUTE_SET));
+            throw new IllegalArgumentException(config.getMessage(Constants.MSG_INVALID_ATTRIBUTE_SET));
         }
 
         Map<String, List<Object>> valuesToAdd = new HashMap<>();
@@ -446,12 +440,12 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         }
         if (deleteExecutor != null) {
             if (objectClass == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_OBJECT_CLASS_REQUIRED));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_OBJECT_CLASS_REQUIRED));
             }
             LOG.ok("Object class: {0}", objectClass.getObjectClassValue());
 
             if (uid == null || uid.getUidValue() == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_BLANK_UID));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_BLANK_UID));
             }
             String id = uid.getUidValue();
 
@@ -470,7 +464,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
                 throw new ConnectorException("Delete script error", e);
             }
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
@@ -488,7 +482,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         }
         if (authenticateExecutor != null) {
             if (objectClass == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_OBJECT_CLASS_REQUIRED));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_OBJECT_CLASS_REQUIRED));
             }
             LOG.ok("Object class: {0}", objectClass.getObjectClassValue());
 
@@ -504,16 +498,16 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
 
             try {
                 Object uid = authenticateExecutor.execute(arguments);
-                if (uid instanceof String) {
+                if (uid instanceof String authenticatedUid) {
                     LOG.ok("{0} authenticated", uid);
-                    return new Uid((String) uid);
+                    return new Uid(authenticatedUid);
                 }
             } catch (Exception e) {
                 throw new ConnectorException("Authenticate script error", e);
             }
             throw new ConnectorException("Authenticate script didn't return with the __UID__ value");
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
@@ -530,7 +524,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         }
         if (resolveUsernameExecutor != null) {
             if (objectClass == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_OBJECT_CLASS_REQUIRED));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_OBJECT_CLASS_REQUIRED));
             }
             LOG.ok("Object class: {0}", objectClass.getObjectClassValue());
 
@@ -544,16 +538,16 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
 
             try {
                 Object uid = resolveUsernameExecutor.execute(arguments);
-                if (uid instanceof String) {
+                if (uid instanceof String resolvedUid) {
                     LOG.ok("{0} resolved", uid);
-                    return new Uid((String) uid);
+                    return new Uid(resolvedUid);
                 }
             } catch (Exception e) {
                 throw new ConnectorException("ResolveUsername script error", e);
             }
             throw new ConnectorException("ResolveUsername script didn't return with the __UID__ value");
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
@@ -594,11 +588,11 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         }
         if (searchExecutor != null) {
             if (objectClass == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_OBJECT_CLASS_REQUIRED));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_OBJECT_CLASS_REQUIRED));
             }
             LOG.ok("ObjectClass: {0}", objectClass.getObjectClassValue());
             if (handler == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_BLANK_RESULT_HANDLER));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_BLANK_RESULT_HANDLER));
             }
 
             Map<String, Object> arguments = buildArguments();
@@ -618,7 +612,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
                 throw new ConnectorException("Search script error", e);
             }
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
@@ -635,11 +629,11 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         }
         if (syncExecutor != null) {
             if (objectClass == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_OBJECT_CLASS_REQUIRED));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_OBJECT_CLASS_REQUIRED));
             }
             LOG.ok("ObjectClass: {0}", objectClass.getObjectClassValue());
             if (handler == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_BLANK_RESULT_HANDLER));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_BLANK_RESULT_HANDLER));
             }
 
             Map<String, Object> arguments = buildArguments();
@@ -659,7 +653,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
                 throw new ConnectorException("Sync script error", e);
             }
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
@@ -672,7 +666,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
         if (syncExecutor != null) {
             SyncToken st = null;
             if (objectClass == null) {
-                throw new IllegalArgumentException(config.getMessage(MSG_OBJECT_CLASS_REQUIRED));
+                throw new IllegalArgumentException(config.getMessage(Constants.MSG_OBJECT_CLASS_REQUIRED));
             }
             LOG.ok("ObjectClass: {0}", objectClass.getObjectClassValue());
 
@@ -696,7 +690,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
             }
             return st;
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
@@ -729,7 +723,7 @@ public abstract class AbstractScriptedConnector<C extends AbstractScriptedConfig
             }
             return result;
         } else {
-            throw new UnsupportedOperationException(config.getMessage(MSG_INVALID_SCRIPT));
+            throw new UnsupportedOperationException(config.getMessage(Constants.MSG_INVALID_SCRIPT));
         }
     }
 
