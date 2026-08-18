@@ -34,6 +34,8 @@ public abstract class BaseObjectClassInfoBuilder<T extends BaseObjectClassInfoBu
 
     protected String type;
 
+    protected String description;
+
     public BaseObjectClassInfoBuilder() {
         type = ObjectClass.ACCOUNT_NAME;
     }
@@ -71,6 +73,11 @@ public abstract class BaseObjectClassInfoBuilder<T extends BaseObjectClassInfoBu
     public T setEmbedded(final boolean embedded) {
 
         isEmbedded = embedded;
+        return getThis();
+    }
+
+    public T setDescription(final String description) {
+        this.description = description;
         return getThis();
     }
 

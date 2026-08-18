@@ -36,7 +36,7 @@ public interface PartialSchemaApiOp extends APIOperation {
      * The subset is defined as an array of {@link LightweightObjectClassInfo} which were provided by the
      * {@link PartialSchemaApiOp#getObjectClassInformation()} method.
      */
-    public Schema getPartialSchema(LightweightObjectClassInfo... ObjectClassInfo);
+    public Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos);
 
     /**
      * Retrieve and array of {@link LightweightObjectClassInfo} objects which can be provided in the schema of this

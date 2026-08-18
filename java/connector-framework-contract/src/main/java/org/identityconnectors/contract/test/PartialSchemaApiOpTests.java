@@ -23,9 +23,12 @@
 
 package org.identityconnectors.contract.test;
 import org.identityconnectors.framework.api.operations.*;
+import org.identityconnectors.framework.common.objects.*;
+import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -44,4 +47,40 @@ public class PartialSchemaApiOpTests extends ContractTestBase {
         s.add(PartialSchemaApiOp.class);
         return s;
     }
+
+
+    /**
+     * Basic test case.
+     */
+    @Test
+    protected void testBasic() {
+
+        LightweightObjectClassInfo[] lightweightObjectClassInfos =  getConnectorFacade().getObjectClassInformation();
+        assertNotNull(lightweightObjectClassInfos, "Null Object class information found");
+
+        Iterator<LightweightObjectClassInfo> iterator =  Arrays.stream(lightweightObjectClassInfos).iterator();
+
+        Schema schema = null;
+        LightweightObjectClassInfo lightweightObjectClassInfo = null;
+
+        if (iterator.hasNext()){
+
+            lightweightObjectClassInfo = iterator.next();
+
+            assertNotNull(lightweightObjectClassInfo, "Null object class information produced");
+            schema = getConnectorFacade().getPartialSchema(lightweightObjectClassInfo);
+
+        }
+
+        assertNotNull(schema, "Null schema produced");
+
+        Set<ObjectClassInfo> objectClassInfos = schema.getObjectClassInfo();
+        Iterator<ObjectClassInfo> infoIterator = objectClassInfos.iterator();
+
+        assertTrue(objectClassInfos.size() ==1);
+        assertTrue(lightweightObjectClassInfo.is(infoIterator.next().getType()));
+
+
+    }
+
 }

@@ -326,9 +326,9 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      * {@inheritDoc}
      */
     @Override
-    public final Schema getPartialSchema(LightweightObjectClassInfo ... ObjectClassInfo) {
+    public final Schema getPartialSchema(LightweightObjectClassInfo ... objectClassInfos) {
         return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).
-                getPartialSchema(ObjectClassInfo);
+                getPartialSchema(objectClassInfos);
     }
 
     /**

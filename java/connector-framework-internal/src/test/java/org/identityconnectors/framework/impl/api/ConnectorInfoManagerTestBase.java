@@ -374,6 +374,7 @@ public abstract class ConnectorInfoManagerTestBase {
 
         ObjectClassInfo userObjectClass = schema.findObjectClassInfo(TstConnector.USER_CLASS_NAME);
         assertNotNull(userObjectClass);
+        assertNotNull(userObjectClass.getDescription());
         userObjectClass.getAttributeInfo().stream()
                 .filter(attr -> attr.getName().equals(TstConnector.MEMBER_OF_ATTR_NAME))
                 .findFirst()

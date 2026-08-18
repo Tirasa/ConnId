@@ -50,12 +50,12 @@ public class PartialSchemaImpl extends ConnectorAPIOperationRunner implements Pa
 
 
     @Override
-    public Schema getPartialSchema(LightweightObjectClassInfo... ObjectClassInfo) {
+    public Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos) {
         SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getPartialSchema");
 
         Schema partialSchema;
         try {
-            partialSchema = ((PartialSchemaOp) getConnector()).getPartialSchema(ObjectClassInfo);
+            partialSchema = ((PartialSchemaOp) getConnector()).getPartialSchema(objectClassInfos);
         } catch (RuntimeException e) {
             SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getPartialSchema", e);
             throw e;

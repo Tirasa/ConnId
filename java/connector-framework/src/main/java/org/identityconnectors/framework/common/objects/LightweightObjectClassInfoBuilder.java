@@ -43,6 +43,7 @@ public class LightweightObjectClassInfoBuilder extends BaseObjectClassInfoBuilde
                 type,
                 isContainer,
                 isAuxiliary,
-                isEmbedded);
+                isEmbedded,
+                description);
     }
 }

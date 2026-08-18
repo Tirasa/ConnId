@@ -53,7 +53,7 @@ public interface PartialSchemaOp extends SPIOperation {
      *
      * @return a subset of the basic schema supported by this {@link Connector}.
      */
-    Schema getPartialSchema(LightweightObjectClassInfo... ObjectClassInfo);
+    Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos);
 
     /**
      * Provides the client with an array of {@link LightweightObjectClassInfo} which this {@link Connector} supports.

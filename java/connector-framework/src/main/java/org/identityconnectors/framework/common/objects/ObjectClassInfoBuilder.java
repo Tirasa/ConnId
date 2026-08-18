@@ -90,6 +90,7 @@ public final class ObjectClassInfoBuilder extends BaseObjectClassInfoBuilder<Obj
                 CollectionUtil.newSet(attributeInfoMap.values()),
                 isContainer,
                 isAuxiliary,
-                isEmbedded);
+                isEmbedded,
+                description);
     }
 }
