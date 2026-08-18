@@ -92,6 +92,7 @@ public final class FrameworkUtil {
         SPI_TO_API.put(SyncOp.class, SyncApiOp.class);
         SPI_TO_API.put(LiveSyncOp.class, LiveSyncApiOp.class);
         SPI_TO_API.put(DiscoverConfigurationOp.class, DiscoverConfigurationApiOp.class);
+        SPI_TO_API.put(ComplexUpdateDeltaOp.class, ComplexUpdateDeltaApiOp.class);
         SPI_TO_API.put(PartialSchemaOp.class, PartialSchemaApiOp.class);
     }
 
@@ -238,6 +239,7 @@ public final class FrameworkUtil {
         ATTR_SUPPORTED_TYPES.add(Map.class);
         ATTR_SUPPORTED_TYPES.add(ZonedDateTime.class);
         ATTR_SUPPORTED_TYPES.add(ConnectorObjectReference.class);
+        ATTR_SUPPORTED_TYPES.add(EmbeddedObject.class);
     }
 
     public static Set<Class<? extends Object>> getAllSupportedAttributeTypes() {

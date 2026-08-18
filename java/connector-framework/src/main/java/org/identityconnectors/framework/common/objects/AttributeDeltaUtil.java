@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -645,5 +646,22 @@ public final class AttributeDeltaUtil {
     public static Date getEnableDate(final Set<AttributeDelta> attrsDelta) {
         final AttributeDelta date = find(OperationalAttributes.ENABLE_DATE_NAME, attrsDelta);
         return (date == null) ? null : getDateValue(date);
+    }
+
+    public static Map<String, Attribute> applyDeltas(Set<Attribute> originalAttrs, Set<BaseAttributeDelta> deltas) {
+
+        var modified = new HashMap<String, Attribute>();
+        // Copy original attributes
+        for (var attr : originalAttrs) {
+            modified.put(attr.getName(), attr);
+        }
+        // apply deltas
+        for (BaseAttributeDelta delta : deltas) {
+            var attr = modified.get(delta.getName());
+            var modifiedAttr = delta.applyTo(attr);
+            modified.put(modifiedAttr.getName(), modifiedAttr);
+        }
+
+        return modified;
     }
 }

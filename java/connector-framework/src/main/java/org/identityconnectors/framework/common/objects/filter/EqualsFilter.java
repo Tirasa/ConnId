@@ -24,6 +24,7 @@
 package org.identityconnectors.framework.common.objects.filter;
 
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 /**
@@ -61,7 +62,7 @@ public final class EqualsFilter extends AttributeFilter {
      * @see Filter#accept(ConnectorObject)
      */
     @Override
-    public boolean accept(ConnectorObject obj) {
+    public boolean accept(BaseObject obj) {
         boolean ret = false;
         Attribute thisAttr = getAttribute();
         Attribute attr = obj.getAttributeByName(thisAttr.getName());
@@ -71,6 +72,12 @@ public final class EqualsFilter extends AttributeFilter {
             ret = true;
         }
         return ret;
+    }
+
+    // Important: Needs to be present for binary backwards compatibility
+    @Override
+    public boolean accept(ConnectorObject obj) {
+        return accept((BaseObject)  obj);
     }
 
     @Override

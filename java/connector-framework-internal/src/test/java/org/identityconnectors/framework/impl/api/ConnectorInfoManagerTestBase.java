@@ -191,6 +191,12 @@ public abstract class ConnectorInfoManagerTestBase {
         assertTrue(operations.contains(SyncApiOp.class));
         assertTrue(operations.contains(LiveSyncApiOp.class));
 
+        SuggestedValues allowedValues = property.getAllowedValues();
+        assertNotNull(allowedValues);
+        assertEquals(2, allowedValues.getValues().size());
+        assertTrue(allowedValues.getValues().contains("value1"));
+        assertTrue(allowedValues.getValues().contains("value2"));
+
         CurrentLocale.clear();
         assertEquals("Help for test field.", property.getHelpMessage(null));
         assertEquals("Display for test field.", property.getDisplayName(null));

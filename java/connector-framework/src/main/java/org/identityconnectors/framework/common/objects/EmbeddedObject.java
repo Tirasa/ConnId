@@ -2,7 +2,7 @@
  * ====================
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright 2024 Evolveum. All rights reserved.
+ * Copyright 2015 ConnId. All rights reserved.
  *
  * The contents of this file are subject to the terms of the Common Development
  * and Distribution License("CDDL") (the "License").  You may not use this file
@@ -22,26 +22,12 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import org.identityconnectors.common.CollectionUtil;
 
-/**
- * Helps implementing {@link ConnectorObject} and {@link ConnectorObjectIdentification}.
- */
-public abstract class BaseConnectorObject extends BaseObject {
+public class EmbeddedObject extends BaseObject {
 
-    public BaseConnectorObject(ObjectClass objectClass, Set<? extends Attribute> attributes) {
+    public EmbeddedObject(ObjectClass objectClass, Set<? extends Attribute> attributes) {
         super(objectClass, attributes);
     }
-
-    /**
-     * Returns the identification of this object. For full objects it means providing {@link Name} and {@link Uid}
-     * attributes.
-     * (We have no other way of telling what attributes are the identifiers.)
-     */
-    public abstract ConnectorObjectIdentification getIdentification();
-
 
 }

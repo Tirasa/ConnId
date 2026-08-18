@@ -24,6 +24,7 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.SearchResult;
@@ -95,6 +96,11 @@ public final class FilteredResultsHandler implements SearchResultsHandler {
 
         @Override
         public boolean accept(final ConnectorObject obj) {
+            return true;
+        }
+
+        @Override
+        public boolean accept(BaseObject obj) {
             return true;
         }
 

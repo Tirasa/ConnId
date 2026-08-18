@@ -296,7 +296,7 @@ public class FilterBuilderTests {
     static class TrueFilter implements Filter {
 
         @Override
-        public boolean accept(ConnectorObject obj) {
+        public boolean accept(BaseObject obj) {
             return true;
         }
 
@@ -309,7 +309,7 @@ public class FilterBuilderTests {
     static class FalseFilter implements Filter {
 
         @Override
-        public boolean accept(ConnectorObject obj) {
+        public boolean accept(BaseObject obj) {
             return false;
         }
 

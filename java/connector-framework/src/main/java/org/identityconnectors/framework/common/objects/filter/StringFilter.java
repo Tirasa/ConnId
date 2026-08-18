@@ -25,6 +25,7 @@ package org.identityconnectors.framework.common.objects.filter;
 
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 /**
@@ -59,7 +60,7 @@ public abstract class StringFilter extends SingleValueAttributeFilter {
      * @see org.identityconnectors.framework.common.objects.filter.Filter#accept(ConnectorObject)
      */
     @Override
-    public boolean accept(ConnectorObject obj) {
+    public boolean accept(BaseObject obj) {
         boolean ret = false;
         Attribute attr = obj.getAttributeByName(getName());
         if (attr != null && !CollectionUtil.isEmpty(attr.getValue())) {
@@ -69,6 +70,12 @@ public abstract class StringFilter extends SingleValueAttributeFilter {
             ret = accept((String) attr.getValue().get(0));
         }
         return ret;
+    }
+
+    // Important: Needs to be present for binary backwards compatibility
+    @Override
+    public boolean accept(ConnectorObject obj) {
+        return accept((BaseObject)  obj);
     }
 
     public abstract boolean accept(String value);

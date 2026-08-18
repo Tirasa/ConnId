@@ -409,6 +409,26 @@ class CommonObjectHandlers {
             }
         });
 
+        HANDLERS.add(new AbstractObjectSerializationHandler(EmbeddedObject.class, "EmbeddedObject" ) {
+
+            @Override
+            public Object deserialize(ObjectDecoder decoder) {
+                final ObjectClass objectClass = (ObjectClass) decoder.
+                        readObjectField("ObjectClass", ObjectClass.class, null);
+                @SuppressWarnings("unchecked")
+                Set<? extends Attribute> atts = (Set<? extends Attribute>) decoder.
+                        readObjectField("Attributes", Set.class, null);
+                return new ConnectorObject(objectClass, atts);
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final ConnectorObject val = (ConnectorObject) object;
+                encoder.writeObjectField("ObjectClass", val.getObjectClass(), true);
+                encoder.writeObjectField("Attributes", val.getAttributes(), true);
+            }
+        });
+
         HANDLERS.add(new AbstractObjectSerializationHandler(
                 ConnectorObjectIdentification.class, "ConnectorObjectIdentification") {
 

@@ -23,6 +23,7 @@
 package org.identityconnectors.framework.common.objects.filter;
 
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 public abstract class AttributeFilter implements Filter {
@@ -57,7 +58,12 @@ public abstract class AttributeFilter implements Filter {
      * Determines if the attribute provided is present in the
      * {@link ConnectorObject}.
      */
-    public boolean isPresent(ConnectorObject obj) {
+    public boolean isPresent(BaseObject obj) {
         return obj.getAttributeByName(this.attr.getName()) != null;
+    }
+
+    // Needs to be present for binary backwards API compatibity
+    public boolean isPresent(ConnectorObject obj) {
+        return isPresent((BaseObject) obj);
     }
 }

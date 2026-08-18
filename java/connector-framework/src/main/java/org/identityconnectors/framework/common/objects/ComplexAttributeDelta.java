@@ -23,16 +23,9 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
-import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import org.identityconnectors.common.CollectionUtil;
-import org.identityconnectors.common.StringUtil;
+
+import java.util.*;
 
 /**
  * <p>
@@ -80,69 +73,35 @@ import org.identityconnectors.common.StringUtil;
  * @author Radovan Semancik
  * @since 1.4.3
  */
-public class AttributeDelta extends BaseAttributeDelta {
+public class ComplexAttributeDelta extends BaseAttributeDelta {
+
+
 
     /**
      * Attribute values to add
      */
-    private final List<Object> valuesToAdd;
-
-    /**
-     * Attribute values to remove
-     */
-    private final List<Object> valuesToRemove;
-
-    /**
-     * Attribute values to replace
-     */
-    private final List<Object> valuesToReplace;
+    private final List<ComplexValueDelta> valueDeltas;
 
     /**
      * Create an attribute delta.
      */
-    AttributeDelta(String name, List<Object> valuesToAdd, List<Object> valuesToRemove, List<Object> valuesToReplace) {
+    ComplexAttributeDelta(String name, List<ComplexValueDelta> valueDeltas) {
         super(name);
-        // sanity
-        if (valuesToReplace != null && (valuesToAdd != null || valuesToRemove != null)) {
-            throw new IllegalArgumentException("Delta of attribute '" + name
-                    + "' may be either replace or add/remove but not both at the same time");
-        }
         // copy to prevent corruption..
-        this.valuesToAdd = (valuesToAdd == null) ? null : CollectionUtil.newReadOnlyList(valuesToAdd);
-        this.valuesToRemove = (valuesToRemove == null) ? null : CollectionUtil.newReadOnlyList(valuesToRemove);
-        this.valuesToReplace = (valuesToReplace == null) ? null : CollectionUtil.newReadOnlyList(valuesToReplace);
+        this.valueDeltas = (valueDeltas == null) ? null : CollectionUtil.newReadOnlyList(valueDeltas);
     }
 
-    // Needs to be present for backwards binary compatibility.
-    @Override
     public String getName() {
         return super.getName();
     }
 
-    public List<Object> getValuesToAdd() {
-        return (this.valuesToAdd == null) ? null : Collections.unmodifiableList(this.valuesToAdd);
+    public List<ComplexValueDelta> getValueDeltas() {
+        return valueDeltas;
     }
-
-    public List<Object> getValuesToRemove() {
-        return (this.valuesToRemove == null) ? null : Collections.unmodifiableList(this.valuesToRemove);
-    }
-
-    public List<Object> getValuesToReplace() {
-        return (this.valuesToReplace == null) ? null : Collections.unmodifiableList(this.valuesToReplace);
-    }
-
-    /**
-     * Determines if the 'name' matches this {@link AttributeDelta}.
-     */
-    public boolean is(String name) {
-        return super.is(name);
-    }
-
 
     protected void extendToStringMap(final Map<String, Object> map) {
-        map.put("ValuesToAdd", getValuesToAdd());
-        map.put("ValuesToRemove", getValuesToRemove());
-        map.put("ValuesToReplace", getValuesToReplace());
+        // Nothing to do here. Just for use in subclasses.
+        map.put("valueDeltas", valueDeltas);
     }
 
     @Override
@@ -153,41 +112,26 @@ public class AttributeDelta extends BaseAttributeDelta {
         }
         if (!super.equals(obj)) {
             return false;
-        }
-
+        };
         // test that the exact class matches
         if (!(getClass().equals(obj.getClass()))) {
             return false;
         }
-        var other = (AttributeDelta) (obj);
-        if (!CollectionUtil.equals(valuesToAdd, other.valuesToAdd)) {
-            return false;
-        }
+        ComplexAttributeDelta other = (ComplexAttributeDelta) obj;
 
-        if (!CollectionUtil.equals(valuesToRemove, other.valuesToRemove)) {
-            return false;
-        }
-
-        if (!CollectionUtil.equals(valuesToReplace, other.valuesToReplace)) {
+        if (!CollectionUtil.equals(valueDeltas, other.valueDeltas)) {
             return false;
         }
 
         return true;
     }
 
-    @Override
-    public Attribute applyTo(Attribute attr) {
-        var values = attr != null ? new ArrayList<>(attr.getValue()) :  new ArrayList<>();
-        if (valuesToReplace != null) {
-            return new Attribute(getName(), List.copyOf(valuesToReplace));
+    public Attribute applyTo(Attribute attribute) {
+        var values = attribute != null ? new ArrayList<>(attribute.getValue()) :  new ArrayList<>();
+        for (ComplexValueDelta delta : valueDeltas) {
+            delta.applyTo(values);
         }
-        var ret = new ArrayList<>(values);
-        if (valuesToRemove != null) {
-            ret.removeAll(valuesToRemove);
-        }
-        if (valuesToAdd != null) {
-            ret.addAll(valuesToAdd);
-        }
-        return new Attribute(getName(),ret);
+        return new Attribute(getName(), values);
     }
+
 }

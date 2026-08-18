@@ -33,6 +33,7 @@ import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
 import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.api.ResultsHandlerConfiguration;
 import org.identityconnectors.framework.api.operations.APIOperation;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
 import org.identityconnectors.framework.impl.api.APIConfigurationImpl;
 import org.identityconnectors.framework.impl.api.ConfigurationPropertiesImpl;
 import org.identityconnectors.framework.impl.api.ConfigurationPropertyImpl;
@@ -132,6 +133,7 @@ class APIConfigurationHandlers {
                 @SuppressWarnings("unchecked")
                 Set<Class<? extends APIOperation>> ops = (Set) decoder.readObjectField("operations", Set.class, null);
                 rv.setOperations(ops);
+                rv.setAllowedValues((SuggestedValues) decoder.readObjectField("allowedValues", SuggestedValues.class, null));
                 return rv;
             }
 
@@ -148,6 +150,7 @@ class APIConfigurationHandlers {
                 encoder.writeClassField("type", val.getType());
                 encoder.writeObjectField("value", val.getValue(), false);
                 encoder.writeObjectField("operations", val.getOperations(), true);
+                encoder.writeObjectField("allowedValues", val.getAllowedValues(), true);
             }
         });
 

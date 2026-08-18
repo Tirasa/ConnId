@@ -23,6 +23,7 @@
  */
 package org.identityconnectors.framework.common.objects.filter;
 
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 /**
@@ -41,8 +42,22 @@ public interface Filter {
      * @return {@code true} if the object matches (that is, satisfies all
      *         selection criteria of) this filter; otherwise {@code false}.
      */
-    boolean accept(ConnectorObject obj);
+    default boolean accept(ConnectorObject obj) {
+        // Needs to be present for binary API backwards compatibility
+        return accept((BaseObject) obj);
+    }
 
+
+    /**
+     * Determines whether the specified {@link ConnectorObject} matches this
+     * filter.
+     *
+     * @param obj
+     *            - The specified ConnectorObject.
+     * @return {@code true} if the object matches (that is, satisfies all
+     *         selection criteria of) this filter; otherwise {@code false}.
+     */
+    boolean accept(BaseObject obj);
     /**
      * Applies a {@code FilterVisitor} to this {@code Filter}.
      *
