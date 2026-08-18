@@ -59,8 +59,26 @@ public final class ObjectClassInfo {
      * @param type The name of the object class
      * @param attrInfo The attributes of the object class.
      * @param isContainer True if this can contain other object classes.
+     */
+    public ObjectClassInfo(
+            final String type,
+            final Set<AttributeInfo> attrInfo,
+            final boolean isContainer,
+            final boolean isAuxiliary,
+            final boolean isEmbedded) {
+
+        this(type, attrInfo, isContainer, isAuxiliary, isEmbedded, null);
+    }
+
+    /**
+     * Public only for serialization; Use ObjectClassInfoBuilder instead.
+     *
+     * @param type The name of the object class
+     * @param attrInfo The attributes of the object class.
+     * @param isContainer True if this can contain other object classes.
      * @param description The description of the object class.
      */
+
     public ObjectClassInfo(
             final String type,
             final Set<AttributeInfo> attrInfo,
@@ -75,12 +93,12 @@ public final class ObjectClassInfo {
         this.isContainer = isContainer;
         this.isAuxiliary = isAuxiliary;
         this.isEmbedded = isEmbedded;
+        this.description = description;
         // check to make sure name exists and if not throw
         Map<String, AttributeInfo> map = AttributeInfoUtil.toMap(attrInfo);
         if (!map.containsKey(Name.NAME)) {
             throw new IllegalArgumentException("Missing 'Name' attribute info.");
         }
-        this.description = description;
     }
 
     public boolean isContainer() {
@@ -116,9 +134,9 @@ public final class ObjectClassInfo {
     }
 
     /**
-     * Returns the description of this {@link ObjectClass}.
-     * Can be used to determine the potential use of the {@link ObjectClass}.
-     * @return a string description of this {@link ObjectClass}
+     * Returns the description of this object class.
+     * Can be used to determine the potential use of the object class.
+     * @return a string description of this object class
      */
     public String getDescription() {
         return description;
@@ -163,9 +181,11 @@ public final class ObjectClassInfo {
         if (!isAuxiliary == other.isAuxiliary) {
             return false;
         }
+
         if (!Objects.equals(description, other.getDescription())) {
             return false;
         }
+
         return !isEmbedded != other.isEmbedded;
     }
 
