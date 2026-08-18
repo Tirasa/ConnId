@@ -93,4 +93,35 @@ public final class ObjectClassInfoBuilder extends BaseObjectClassInfoBuilder<Obj
                 isEmbedded,
                 description);
     }
+
+
+    // Binary level backwards compatibility
+    // Moving method to superclass is source-level backwards compatible change, but not binary-level backwards compatible
+    // change, so we need to override this methods in order to provide backwards compatibility for connectors builded
+    // with previous version of APIs.
+
+    @Override
+    public ObjectClassInfoBuilder setDescription(String description) {
+        return super.setDescription(description);
+    }
+
+    @Override
+    public ObjectClassInfoBuilder setEmbedded(boolean embedded) {
+        return super.setEmbedded(embedded);
+    }
+
+    @Override
+    public ObjectClassInfoBuilder setType(String type) {
+        return super.setType(type);
+    }
+
+    @Override
+    public void setAuxiliary(boolean isAuxiliary) {
+        super.setAuxiliary(isAuxiliary);
+    }
+
+    @Override
+    public void setContainer(boolean container) {
+        super.setContainer(container);
+    }
 }
