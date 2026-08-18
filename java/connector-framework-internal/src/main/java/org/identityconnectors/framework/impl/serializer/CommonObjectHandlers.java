@@ -369,6 +369,7 @@ class CommonObjectHandlers {
                 builder.setSubtype(decoder.readStringField("subtype", null));
                 builder.setReferencedObjectClassName(decoder.readStringField("referencedObjectClassName", null));
                 builder.setRoleInReference(decoder.readStringField("roleInReference", null));
+                builder.setDescription(decoder.readStringField("description", null));
                 return builder.build();
             }
 
@@ -384,6 +385,7 @@ class CommonObjectHandlers {
                 encoder.writeStringField("subtype", val.getSubtype());
                 encoder.writeStringField("referencedObjectClassName", val.getReferencedObjectClassName());
                 encoder.writeStringField("roleInReference", val.getRoleInReference());
+                encoder.writeStringField("description", val.getDescription());
             }
         });
 
@@ -480,11 +482,12 @@ class CommonObjectHandlers {
                 final boolean container = decoder.readBooleanField("container", false);
                 final boolean auxiliary = decoder.readBooleanField("auxiliary", false);
                 final boolean embedded = decoder.readBooleanField("embedded", false);
+                final String description = decoder.readStringField("description", null);
 
                 @SuppressWarnings("unchecked")
                 final Set<AttributeInfo> attrInfo = (Set) decoder.readObjectField("AttributeInfos", Set.class, null);
 
-                return new ObjectClassInfo(type, attrInfo, container, auxiliary, embedded);
+                return new ObjectClassInfo(type, attrInfo, container, auxiliary, embedded, description);
             }
 
             @Override
@@ -496,6 +499,7 @@ class CommonObjectHandlers {
                 encoder.writeBooleanField("auxiliary", val.isAuxiliary());
                 encoder.writeBooleanField("embedded", val.isEmbedded());
                 encoder.writeObjectField("AttributeInfos", val.getAttributeInfo(), true);
+                encoder.writeStringField("description", val.getDescription());
             }
         });
 
