@@ -34,6 +34,7 @@ public final class ConnectorBundleManifest {
     private String frameworkVersion;
     private String bundleName;
     private String bundleVersion;
+    private String connectorClass;
 
     public String getFrameworkVersion() {
         return frameworkVersion;
@@ -57,5 +58,13 @@ public final class ConnectorBundleManifest {
 
     public void setBundleVersion(String ver) {
         bundleVersion = ver;
+    }
+
+    public String getConnectorClass() {
+        return connectorClass;
+    }
+
+    public void setConnectorClass(String connectorClass) {
+        this.connectorClass = connectorClass;
     }
 }

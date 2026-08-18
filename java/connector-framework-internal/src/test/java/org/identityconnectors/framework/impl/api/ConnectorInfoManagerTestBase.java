@@ -23,13 +23,6 @@
  */
 package org.identityconnectors.framework.impl.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -82,6 +75,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ConnectorInfoManagerTestBase {
 
@@ -666,6 +661,21 @@ public abstract class ConnectorInfoManagerTestBase {
         } catch (OperationTimeoutException e) {
             //expected
         }
+    }
+
+    @Test
+    public void testCongifurationOverride() throws Exception {
+        ConnectorInfoManager manager = getConnectorInfoManager();
+        ConnectorInfo info = findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
+        APIConfiguration api = info.createDefaultAPIConfiguration();
+
+        ConfigurationProperties props = api.getConfigurationProperties();
+        ConfigurationProperty property = props.getProperty("hiddenField");
+        // Property should be hidden from configuration.
+        assertNull(property);
     }
 
     static File getTestBundlesDir() throws URISyntaxException {

@@ -27,15 +27,18 @@ package org.identityconnectors.testconnector;
 import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.spi.AbstractConfiguration;
+import org.identityconnectors.framework.spi.ConfigurationClass;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 import org.identityconnectors.framework.spi.operations.LiveSyncOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
 
+@ConfigurationClass(overrideFile = "TstConnectorConfig.override.properties")
 public class TstConnectorConfig extends AbstractConfiguration {
 
     private String tstField;
 
     private String tst1Field;
+    private String hiddenField;
 
     private int numResults;
 
@@ -104,5 +107,13 @@ public class TstConnectorConfig extends AbstractConfiguration {
         if (failValidation) {
             throw new ConnectorException("validation failed " + CurrentLocale.get().getLanguage());
         }
+    }
+
+    public String getHiddenField() {
+        return hiddenField;
+    }
+
+    public void setHiddenField(String tst2Field) {
+        this.hiddenField = tst2Field;
     }
 }

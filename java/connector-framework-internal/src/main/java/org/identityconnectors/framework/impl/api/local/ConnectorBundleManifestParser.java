@@ -39,6 +39,7 @@ public final class ConnectorBundleManifestParser {
     private static final String ATT_BUNDLE_NAME = BUNDLE_PREFIX + "Name";
 
     private static final String ATT_BUNDLE_VERSION = BUNDLE_PREFIX + "Version";
+    private static final String ATT_CONNECTOR_CLASS = BUNDLE_PREFIX + "ConnectorClass";
 
     private final String fileName;
 
@@ -68,7 +69,7 @@ public final class ConnectorBundleManifestParser {
         String frameworkVersion = getRequiredAttribute(ATT_FRAMEWORK_VERSION);
         String bundleName = getRequiredAttribute(ATT_BUNDLE_NAME);
         String bundleVersion = getRequiredAttribute(ATT_BUNDLE_VERSION);
-
+        String connectorClass = getAttribute(ATT_CONNECTOR_CLASS);
         if (FrameworkUtil.getFrameworkVersion().compareTo(Version.parse(frameworkVersion)) < 0) {
             String message =
                     "Bundle " + fileName + " requests an unrecognized " + "framework version "
@@ -82,7 +83,7 @@ public final class ConnectorBundleManifestParser {
         rv.setFrameworkVersion(frameworkVersion);
         rv.setBundleName(bundleName);
         rv.setBundleVersion(bundleVersion);
-
+        rv.setConnectorClass(connectorClass);
         return rv;
     }
 
