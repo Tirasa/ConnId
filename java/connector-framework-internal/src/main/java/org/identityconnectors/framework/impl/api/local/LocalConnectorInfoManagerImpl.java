@@ -255,62 +255,89 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                         // However, we should definitely warn
                         LOG.info(LOG.isOk() ? e : null,
                                 "Unable to load class {0} from bundle {1}. Class will be ignored and will not be "
-                                + "listed in list of connectors.",
+                                        + "listed in list of connectors.",
                                 className, bundleInfo.getOriginalLocation());
                     }
-                    if (connectorClass != null && options == null) {
-                        for (Annotation annotation : connectorClass.getAnnotations()) {
-                            if (ConnectorClass.class.getName().equals(annotation.annotationType().getName())) {
-                                // Same class name as the annotation we are looking for. But the previous code haven't 
-                                // found it.
-                                // So it looks like the annotation on this class is actually the correct one but it is
-                                // loaded by wrong classloader.
-                                // Note: This error is very difficult to diagnose. Therefore we are explicitly checking 
-                                // for it here.
-                                throw new ConfigurationException("Class " + connectorClass.getName()
-                                        + " has ConnectorClass annotation but it looks like it is "
-                                        + "loaded by a wrong classloader. Maybe the connector bundle contains the "
-                                        + "connector frameworks JAR? (it should NOT contain it).");
-                            }
-                        }
-                    }
                 }
-                if (connectorClass != null && options != null) {
-                    if (!Connector.class.isAssignableFrom(connectorClass)) {
-                        throw new ConfigurationException("Class " + connectorClass
-                                + " does not implement " + Connector.class.getName());
-                    }
-                    final LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
-                    info.setConnectorClass(connectorClass.asSubclass(Connector.class));
-                    try {
-                        info.setConnectorConfigurationClass(options.configurationClass());
-                        info.setConnectorDisplayNameKey(options.displayNameKey());
-                        info.setConnectorCategoryKey(options.categoryKey());
-                        info.setConnectorKey(new ConnectorKey(bundleInfo.getManifest().getBundleName(),
-                                bundleInfo.getManifest().getBundleVersion(), connectorClass.getName()));
-                        final ConnectorMessagesImpl messages =
-                                loadMessageCatalog(bundleInfo.getEffectiveContents(), loader, info
-                                        .getConnectorClass());
-                        info.setMessages(messages);
-                        info.setDefaultAPIConfiguration(createDefaultAPIConfiguration(info));
-                        rv.add(info);
-                        LOG.info("Add ConnectorInfo {0} to Local Connector Info Manager from {1}",
-                                info.getConnectorKey(), bundleInfo.getOriginalLocation());
-                    } catch (final NoClassDefFoundError e) {
-                        LOG.info(LOG.isOk() ? e : null,
-                                "Unable to load configuration class of connector {0} from bundle {1}. "
-                                + "Class will be ignored and will not be listed in list of connectors.",
-                                connectorClass, bundleInfo.getOriginalLocation());
-                    } catch (final TypeNotPresentException e) {
-                        LOG.info(LOG.isOk() ? e : null,
-                                "Unable to load configuration class of connector {0} from bundle {1}. "
-                                + "Class will be ignored and will not be listed in list of connectors.",
-                                connectorClass, bundleInfo.getOriginalLocation());
-                    }
+                if (connectorClass != null) {
+                    addValidConnectorToList(bundleInfo, loader, connectorClass, options, rv);
                 }
             });
+            String className = bundleInfo.getManifest().getConnectorClass();
+            if (className != null) {
+                Class<?> connectorClass = null;
+                ConnectorClass options = null;
+                try {
+                    connectorClass = loader.loadClass(className);
+                    options = connectorClass.getAnnotation(ConnectorClass.class);
+                } catch (Throwable e) {
+                    // probe for the class. this might not be an error since
+                    // it might be from a bundle
+                    // fragment ( a bundle only included by other bundles ).
+                    // However, we should definitely warn
+                    LOG.info(LOG.isOk() ? e : null,
+                            "Unable to load class {0} from bundle {1}. Class will be ignored and will not be "
+                                    + "listed in list of connectors.",
+                            className, bundleInfo.getOriginalLocation());
+                }
+                if (connectorClass != null) {
+                    addValidConnectorToList(bundleInfo, loader, connectorClass, options, rv);
+                }
+            }
         });
         return rv;
+    }
+
+    private static void addValidConnectorToList(WorkingBundleInfo bundleInfo, ClassLoader loader, Class<?> connectorClass, ConnectorClass options, List<ConnectorInfo> rv) {
+        if (options == null) {
+            for (Annotation annotation : connectorClass.getAnnotations()) {
+                if (ConnectorClass.class.getName().equals(annotation.annotationType().getName())) {
+                    // Same class name as the annotation we are looking for. But the previous code haven't
+                    // found it.
+                    // So it looks like the annotation on this class is actually the correct one but it is
+                    // loaded by wrong classloader.
+                    // Note: This error is very difficult to diagnose. Therefore we are explicitly checking
+                    // for it here.
+                    throw new ConfigurationException("Class " + connectorClass.getName()
+                            + " has ConnectorClass annotation but it looks like it is "
+                            + "loaded by a wrong classloader. Maybe the connector bundle contains the "
+                            + "connector frameworks JAR? (it should NOT contain it).");
+                }
+            }
+        }
+        if (options != null) {
+            if (!Connector.class.isAssignableFrom(connectorClass)) {
+                throw new ConfigurationException("Class " + connectorClass
+                        + " does not implement " + Connector.class.getName());
+            }
+            final LocalConnectorInfoImpl info = new LocalConnectorInfoImpl();
+            info.setConnectorClass(connectorClass.asSubclass(Connector.class));
+            try {
+                info.setConnectorConfigurationClass(options.configurationClass());
+                info.setConnectorDisplayNameKey(options.displayNameKey());
+                info.setConnectorCategoryKey(options.categoryKey());
+                info.setConnectorKey(new ConnectorKey(bundleInfo.getManifest().getBundleName(),
+                        bundleInfo.getManifest().getBundleVersion(), connectorClass.getName()));
+                final ConnectorMessagesImpl messages =
+                        loadMessageCatalog(bundleInfo.getEffectiveContents(), loader, info
+                                .getConnectorClass());
+                info.setMessages(messages);
+                info.setDefaultAPIConfiguration(createDefaultAPIConfiguration(info));
+                rv.add(info);
+                LOG.info("Add ConnectorInfo {0} to Local Connector Info Manager from {1}",
+                        info.getConnectorKey(), bundleInfo.getOriginalLocation());
+            } catch (final NoClassDefFoundError e) {
+                LOG.info(LOG.isOk() ? e : null,
+                        "Unable to load configuration class of connector {0} from bundle {1}. "
+                                + "Class will be ignored and will not be listed in list of connectors.",
+                        connectorClass, bundleInfo.getOriginalLocation());
+            } catch (final TypeNotPresentException e) {
+                LOG.info(LOG.isOk() ? e : null,
+                        "Unable to load configuration class of connector {0} from bundle {1}. "
+                                + "Class will be ignored and will not be listed in list of connectors.",
+                        connectorClass, bundleInfo.getOriginalLocation());
+            }
+        }
     }
 
     /**

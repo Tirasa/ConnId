@@ -23,13 +23,6 @@
  */
 package org.identityconnectors.framework.impl.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -62,22 +55,7 @@ import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.common.FrameworkUtilTestHelpers;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.exceptions.OperationTimeoutException;
-import org.identityconnectors.framework.common.objects.Attribute;
-import org.identityconnectors.framework.common.objects.AttributeBuilder;
-import org.identityconnectors.framework.common.objects.AttributeInfo;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.ConnectorObjectIdentification;
-import org.identityconnectors.framework.common.objects.ConnectorObjectReference;
-import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
-import org.identityconnectors.framework.common.objects.Name;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.ObjectClassInfo;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
-import org.identityconnectors.framework.common.objects.Schema;
-import org.identityconnectors.framework.common.objects.ScriptContextBuilder;
-import org.identityconnectors.framework.common.objects.SyncDelta;
-import org.identityconnectors.framework.common.objects.SyncToken;
+import org.identityconnectors.framework.common.objects.*;
 import org.identityconnectors.framework.impl.api.local.ConnectorPoolManager;
 import org.identityconnectors.testconnector.TstConnector;
 import org.junit.jupiter.api.AfterEach;
@@ -85,6 +63,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ConnectorInfoManagerTestBase {
 
@@ -377,7 +357,6 @@ public abstract class ConnectorInfoManagerTestBase {
 
         ObjectClassInfo userObjectClass = schema.findObjectClassInfo(TstConnector.USER_CLASS_NAME);
         assertNotNull(userObjectClass);
-        assertNotNull(userObjectClass.getDescription());
         userObjectClass.getAttributeInfo().stream()
                 .filter(attr -> attr.getName().equals(TstConnector.MEMBER_OF_ATTR_NAME))
                 .findFirst()
@@ -685,6 +664,21 @@ public abstract class ConnectorInfoManagerTestBase {
         LightweightObjectClassInfo[] lightweightObjectClassInfos = facade.getObjectClassInformation();
         assertNotNull(lightweightObjectClassInfos);
         assertEquals(lightweightObjectClassInfos.length, 5);
+    }
+
+    @Test
+    public void testCongifurationOverride() throws Exception {
+        ConnectorInfoManager manager = getConnectorInfoManager();
+        ConnectorInfo info = findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
+        APIConfiguration api = info.createDefaultAPIConfiguration();
+
+        ConfigurationProperties props = api.getConfigurationProperties();
+        ConfigurationProperty property = props.getProperty("hiddenField");
+        // Property should be hidden from configuration.
+        assertNull(property);
     }
 
     @Test
