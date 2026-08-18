@@ -31,6 +31,7 @@ import java.util.Set;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.objects.Attribute;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.EmbeddedObject;
 import org.identityconnectors.framework.common.objects.LiveSyncDelta;
 import org.identityconnectors.framework.common.objects.LiveSyncDeltaBuilder;
 import org.identityconnectors.framework.common.objects.ObjectClass;
@@ -119,6 +120,14 @@ public final class ObjectNormalizerFacade {
      */
     public ConnectorObject normalizeObject(ConnectorObject orig) {
         return new ConnectorObject(orig.getObjectClass(), normalizeAttributes(orig.getAttributes()));
+    }
+
+    public BaseObject normalizeObject(BaseObject orig) {
+        var attributes = normalizeAttributes(orig.getAttributes());
+        if (orig instanceof EmbeddedObject) {
+            return new EmbeddedObject(orig.getObjectClass(), attributes);
+        }
+        return new ConnectorObject(orig.getObjectClass(), attributes);
     }
 
     /**

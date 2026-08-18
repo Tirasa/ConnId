@@ -26,6 +26,7 @@ package org.identityconnectors.framework.common.objects.filter;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.identityconnectors.common.CollectionUtil;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 public final class AndFilter extends CompositeFilter {
@@ -53,7 +54,7 @@ public final class AndFilter extends CompositeFilter {
      * @see Filter#accept(ConnectorObject)
      */
     @Override
-    public boolean accept(final ConnectorObject obj) {
+    public boolean accept(final BaseObject obj) {
         boolean result = true;
         for (final Filter subFilter : subFilters) {
             result = subFilter.accept(obj);
@@ -64,6 +65,11 @@ public final class AndFilter extends CompositeFilter {
         return result;
     }
 
+    // Important: Needs to be present for binary backwards compatibility
+    @Override
+    public boolean accept(ConnectorObject obj) {
+        return accept((BaseObject)  obj);
+    }
 
     @Override
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {

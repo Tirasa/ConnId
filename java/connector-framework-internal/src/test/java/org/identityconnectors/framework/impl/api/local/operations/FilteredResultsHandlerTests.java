@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.filter.Filter;
@@ -123,7 +124,7 @@ public class FilteredResultsHandlerTests {
         }
 
         @Override
-        public boolean accept(ConnectorObject obj) {
+        public boolean accept(BaseObject obj) {
             boolean ret = false;
             Attribute attr = obj.getAttributeByName("count");
             if (attr != null) {

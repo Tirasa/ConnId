@@ -24,6 +24,7 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.filter.ExternallyChainedFilter;
 import org.identityconnectors.framework.common.objects.filter.Filter;
@@ -54,8 +55,14 @@ public class NormalizingFilter extends ExternallyChainedFilter {
      *            - The specified ConnectorObject.
      * @return
      */
-    public boolean accept(ConnectorObject obj) {
+    public boolean accept(BaseObject obj) {
         return getFilter().accept(normalizerFacade.normalizeObject(obj));
+    }
+
+    // Important: Needs to be present for binary backwards compatibility
+    @Override
+    public boolean accept(ConnectorObject obj) {
+        return accept((BaseObject)  obj);
     }
 
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {

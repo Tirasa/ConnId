@@ -24,6 +24,7 @@
 package org.identityconnectors.framework.common.objects.filter;
 
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 public final class GreaterThanFilter extends ComparableAttributeFilter {
@@ -43,10 +44,15 @@ public final class GreaterThanFilter extends ComparableAttributeFilter {
      * @see org.identityconnectors.framework.common.objects.filter.Filter#accept(ConnectorObject)
      */
     @Override
-    public boolean accept(ConnectorObject obj) {
+    public boolean accept(BaseObject obj) {
         return isPresent(obj) && this.compare(obj) > 0;
     }
 
+    // Important: Needs to be present for binary backwards compatibility
+    @Override
+    public boolean accept(ConnectorObject obj) {
+        return accept((BaseObject)  obj);
+    }
     @Override
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitGreaterThanFilter(p, this);

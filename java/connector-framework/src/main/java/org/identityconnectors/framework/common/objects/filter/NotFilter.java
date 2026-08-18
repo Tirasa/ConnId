@@ -23,6 +23,7 @@
  */
 package org.identityconnectors.framework.common.objects.filter;
 
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 /**
@@ -52,8 +53,14 @@ public final class NotFilter implements Filter {
      * @see Filter#accept(ConnectorObject)
      */
     @Override
-    public boolean accept(ConnectorObject obj) {
+    public boolean accept(BaseObject obj) {
         return !this.filter.accept(obj);
+    }
+
+    // Important: Needs to be present for binary backwards compatibility
+    @Override
+    public boolean accept(ConnectorObject obj) {
+        return accept((BaseObject)  obj);
     }
 
     @Override

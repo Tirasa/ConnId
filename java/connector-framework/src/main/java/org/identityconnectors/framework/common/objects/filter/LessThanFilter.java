@@ -24,6 +24,7 @@
 package org.identityconnectors.framework.common.objects.filter;
 
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 public final class LessThanFilter extends ComparableAttributeFilter {
@@ -33,8 +34,14 @@ public final class LessThanFilter extends ComparableAttributeFilter {
     }
 
     @Override
-    public boolean accept(ConnectorObject obj) {
+    public boolean accept(BaseObject obj) {
         return isPresent(obj) && compare(obj) < 0;
+    }
+
+    // Important: Needs to be present for binary backwards compatibility
+    @Override
+    public boolean accept(ConnectorObject obj) {
+        return accept((BaseObject)  obj);
     }
 
     @Override

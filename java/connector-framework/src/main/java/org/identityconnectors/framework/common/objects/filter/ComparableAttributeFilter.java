@@ -24,6 +24,7 @@ package org.identityconnectors.framework.common.objects.filter;
 
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 
 /**
@@ -46,7 +47,7 @@ public abstract class ComparableAttributeFilter extends SingleValueAttributeFilt
      * Call compareTo on the attribute values. If the attribute is not present
      * in the {@link ConnectorObject} return -1.
      */
-    public int compare(ConnectorObject obj) {
+    public int compare(BaseObject obj) {
         int ret = -1;
         Attribute attr = obj.getAttributeByName(getName());
         if (attr != null && attr.getValue().size() == 1) {
@@ -60,5 +61,10 @@ public abstract class ComparableAttributeFilter extends SingleValueAttributeFilt
             ret = CollectionUtil.forceCompare(o1, o2);
         }
         return ret;
+    }
+
+    // Important: Needs to be present for binary backwards compatibility
+    public int compare(ConnectorObject obj) {
+        return compare((BaseObject) obj);
     }
 }
