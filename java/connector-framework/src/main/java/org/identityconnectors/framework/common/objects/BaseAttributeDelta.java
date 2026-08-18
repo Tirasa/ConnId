@@ -30,7 +30,7 @@ import java.util.Map;
 import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
 import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
 
-public class BaseAttributeDelta {
+public abstract class BaseAttributeDelta {
     /**
      * Name of the attribute
      */
@@ -85,4 +85,6 @@ public class BaseAttributeDelta {
         BaseAttributeDelta other = (BaseAttributeDelta) obj;
         return is(other.name);
     }
+
+    public abstract Attribute applyTo(Attribute attr);
 }

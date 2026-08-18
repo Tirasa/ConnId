@@ -24,15 +24,8 @@
 package org.identityconnectors.framework.common.objects;
 
 import org.identityconnectors.common.CollectionUtil;
-import org.identityconnectors.common.StringUtil;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
-import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
+import java.util.*;
 
 /**
  * <p>
@@ -87,12 +80,12 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
     /**
      * Attribute values to add
      */
-    private final List<AttributeValueDelta> valueDeltas;
+    private final List<ComplexValueDelta> valueDeltas;
 
     /**
      * Create an attribute delta.
      */
-    ComplexAttributeDelta(String name, List<AttributeValueDelta> valueDeltas) {
+    ComplexAttributeDelta(String name, List<ComplexValueDelta> valueDeltas) {
         super(name);
         // copy to prevent corruption..
         this.valueDeltas = (valueDeltas == null) ? null : CollectionUtil.newReadOnlyList(valueDeltas);
@@ -102,7 +95,7 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
         return super.getName();
     }
 
-    public List<AttributeValueDelta> getValueDeltas() {
+    public List<ComplexValueDelta> getValueDeltas() {
         return valueDeltas;
     }
 
@@ -132,4 +125,13 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
 
         return true;
     }
+
+    public Attribute applyTo(Attribute attribute) {
+        var values = attribute != null ? new ArrayList<>(attribute.getValue()) :  new ArrayList<>();
+        for (ComplexValueDelta delta : valueDeltas) {
+            delta.applyTo(values);
+        }
+        return new Attribute(getName(), values);
+    }
+
 }
