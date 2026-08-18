@@ -93,6 +93,7 @@ public final class FrameworkUtil {
         SPI_TO_API.put(LiveSyncOp.class, LiveSyncApiOp.class);
         SPI_TO_API.put(DiscoverConfigurationOp.class, DiscoverConfigurationApiOp.class);
         SPI_TO_API.put(ComplexUpdateDeltaOp.class, ComplexUpdateDeltaApiOp.class);
+        SPI_TO_API.put(PartialSchemaOp.class, PartialSchemaApiOp.class);
     }
 
     /**

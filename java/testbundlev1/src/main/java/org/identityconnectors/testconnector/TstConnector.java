@@ -24,15 +24,22 @@
  */
 package org.identityconnectors.testconnector;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.AttributeInfo.RoleInReference;
 import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
 import org.identityconnectors.framework.common.objects.ConnectorObjectReference;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfoBuilder;
 import org.identityconnectors.framework.common.objects.LiveSyncDeltaBuilder;
 import org.identityconnectors.framework.common.objects.LiveSyncResultsHandler;
 import org.identityconnectors.framework.common.objects.Name;
@@ -58,6 +65,7 @@ import org.identityconnectors.framework.spi.SearchResultsHandler;
 import org.identityconnectors.framework.spi.SyncTokenResultsHandler;
 import org.identityconnectors.framework.spi.operations.CreateOp;
 import org.identityconnectors.framework.spi.operations.LiveSyncOp;
+import org.identityconnectors.framework.spi.operations.PartialSchemaOp;
 import org.identityconnectors.framework.spi.operations.SchemaOp;
 import org.identityconnectors.framework.spi.operations.SearchOp;
 import org.identityconnectors.framework.spi.operations.SyncOp;
@@ -67,7 +75,7 @@ import org.identityconnectors.testcommon.TstCommon;
         displayNameKey = "TestConnector",
         categoryKey = "TestConnector.category",
         configurationClass = TstConnectorConfig.class)
-public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, SearchOp<String>, SyncOp, LiveSyncOp {
+public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, SearchOp<String>, SyncOp, LiveSyncOp, PartialSchemaOp {
 
     public static final String USER_CLASS_NAME = "user";
 
@@ -101,6 +109,18 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
     public static final String GROUP_1_NAME = "group1";
 
     public static final String GROUP_2_NAME = "group2";
+
+    public static final String USER_CLASS_DESCRIPTION = "A User object is a digital identity object that represents a single human user or, a non-human agent (e.g., service account) authorized to access digital resources.";
+    private static final String USER_CLASS_UID_DESCRIPTION = "A unique, immutable identifier for the user.";
+    private static final String USER_CLASS_NAME_DESCRIPTION = "A human-readable login name.";
+    private static final String USER_CLASS_MEMBER_OF_DESCRIPTION = "Unique identifiers of groups represented as a list of memberships for policy inheritance.";
+    private static final String USER_CLASS_ACCESS_DESCRIPTION = "Unique identifiers of group access policies, .";
+    public static final String GROUP_CLASS_DESCRIPTION = "A Group is a logical container object that represents a collection of user accounts or other groups.";
+    private static final String GROUP_CLASS_UID_DESCRIPTION = "A unique, immutable identifier for the group.";
+    private static final String GROUP_CLASS_NAME_DESCRIPTION = "A human-readable name.";
+    private static final String GROUP_CLASS_MEMBERS_ATTR_DESCRIPTION = "List of user identifiers or nested group identifiers.";
+    private static final String ACCESS_CLASS_DESCRIPTION = "This object represents a form of access to a group, either by another group or a user.";
+    private static final String ACCESS_CLASS_ATTR_REFERENCE_DESCRIPTION = "Reference attribute representing the relationship between a group and a user";
 
     private static int _connectionCount = 0;
 
@@ -327,57 +347,24 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         SchemaBuilder schemaBuilder = new SchemaBuilder(TstConnector.class);
         for (int i = 0; i < 2; i++) {
             ObjectClassInfoBuilder classBuilder = new ObjectClassInfoBuilder();
-            classBuilder.setType("class" + i);
-            for (int j = 0; j < 200; j++) {
-                classBuilder.addAttributeInfo(AttributeInfoBuilder.build("attributename" + j, String.class));
-            }
+            String type = "class" + i;
+            classBuilder.setType(type);
+            classBuilder.addAllAttributeInfo(buildAttributeInfos(type));
             schemaBuilder.defineObjectClass(classBuilder.build());
         }
         // Special classes to test object references
         schemaBuilder.defineObjectClass(
                 new ObjectClassInfoBuilder()
                         .setType(USER_CLASS_NAME)
-                        .addAttributeInfo(
-                                new AttributeInfoBuilder(Uid.NAME, String.class)
-                                        .setRequired(true)
-                                        .build())
-                        .addAttributeInfo(
-                                new AttributeInfoBuilder(Name.NAME, String.class)
-                                        .setRequired(true)
-                                        .build())
-                        .addAttributeInfo(
-                                new AttributeInfoBuilder(MEMBER_OF_ATTR_NAME, ConnectorObjectReference.class)
-                                        .setReferencedObjectClassName(GROUP_CLASS_NAME)
-                                        .setSubtype(GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME)
-                                        .setRoleInReference(RoleInReference.SUBJECT.toString())
-                                        .setMultiValued(true)
-                                        .build())
-                        .addAttributeInfo(
-                                new AttributeInfoBuilder(ACCESS_ATTR_NAME, ConnectorObjectReference.class)
-                                        .setReferencedObjectClassName(ACCESS_CLASS_NAME)
-                                        .setRoleInReference(RoleInReference.SUBJECT.toString())
-                                        .setMultiValued(true)
-                                        .build())
+                        .setDescription(USER_CLASS_DESCRIPTION)
+                        .addAllAttributeInfo(buildAttributeInfos(USER_CLASS_NAME))
                         .build());
 
         schemaBuilder.defineObjectClass(
                 new ObjectClassInfoBuilder()
                         .setType(GROUP_CLASS_NAME)
-                        .addAttributeInfo(
-                                new AttributeInfoBuilder(Uid.NAME, String.class)
-                                        .setRequired(true)
-                                        .build())
-                        .addAttributeInfo(
-                                new AttributeInfoBuilder(Name.NAME, String.class)
-                                        .setRequired(true)
-                                        .build())
-                        .addAttributeInfo(
-                                new AttributeInfoBuilder(MEMBERS_ATTR_NAME, ConnectorObjectReference.class)
-                                        .setReferencedObjectClassName(USER_CLASS_NAME)
-                                        .setSubtype(GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME)
-                                        .setRoleInReference(RoleInReference.OBJECT.toString())
-                                        .setMultiValued(true)
-                                        .build())
+                        .setDescription(GROUP_CLASS_DESCRIPTION)
+                        .addAllAttributeInfo(buildAttributeInfos(GROUP_CLASS_NAME))
                         .build());
 
         // A bit artificial class to test object references: defines which user
@@ -386,10 +373,8 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
                 new ObjectClassInfoBuilder()
                         .setType(ACCESS_CLASS_NAME)
                         .setEmbedded(true)
-                        .addAttributeInfo(
-                                new AttributeInfoBuilder(GROUP_ATTR_NAME, ConnectorObjectReference.class)
-                                        .setReferencedObjectClassName(GROUP_CLASS_NAME)
-                                        .build())
+                        .setDescription(ACCESS_CLASS_DESCRIPTION)
+                        .addAllAttributeInfo(buildAttributeInfos(ACCESS_CLASS_NAME))
                         .build());
 
         return schemaBuilder.build();
@@ -397,5 +382,132 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
 
     public static ObjectClass userObjectClass() {
         return new ObjectClass(USER_CLASS_NAME);
+    }
+
+
+    // Get only the parts of the schema which are requested by the IAM system.
+    @Override
+    public Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos) {
+
+        SchemaBuilder schemaBuilder = new SchemaBuilder(TstConnector.class);
+        Iterator<LightweightObjectClassInfo> iterator = Arrays.stream(objectClassInfos).iterator();
+
+        while (iterator.hasNext()) {
+
+            LightweightObjectClassInfo lightweightObjectClassInfo = iterator.next();
+            ObjectClassInfoBuilder objectClassInfoBuilder = new ObjectClassInfoBuilder();
+            String type = lightweightObjectClassInfo.getType();
+            objectClassInfoBuilder.setType(type);
+            objectClassInfoBuilder.setDescription(lightweightObjectClassInfo.getDescription());
+            objectClassInfoBuilder.setEmbedded(lightweightObjectClassInfo.isEmbedded());
+            objectClassInfoBuilder.setAuxiliary(lightweightObjectClassInfo.isAuxiliary());
+            objectClassInfoBuilder.setContainer(lightweightObjectClassInfo.isContainer());
+            objectClassInfoBuilder.addAllAttributeInfo(buildAttributeInfos(type));
+            schemaBuilder.defineObjectClass(objectClassInfoBuilder.build());
+        }
+
+        return schemaBuilder.build();
+    }
+
+    private Collection<AttributeInfo> buildAttributeInfos(String type) {
+
+        Collection<AttributeInfo> attributeInfos = new ArrayList<>();
+        if (USER_CLASS_NAME.equals(type)) {
+
+            attributeInfos.add(
+                    new AttributeInfoBuilder(Uid.NAME, String.class)
+                            .setRequired(true)
+                            .setDescription(USER_CLASS_UID_DESCRIPTION)
+                            .build());
+            attributeInfos.add(
+                    new AttributeInfoBuilder(Name.NAME, String.class)
+                            .setRequired(true)
+                            .setDescription(USER_CLASS_NAME_DESCRIPTION)
+                            .build());
+            attributeInfos.add(
+                    new AttributeInfoBuilder(MEMBER_OF_ATTR_NAME, ConnectorObjectReference.class)
+                            .setReferencedObjectClassName(GROUP_CLASS_NAME)
+                            .setSubtype(GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME)
+                            .setRoleInReference(RoleInReference.SUBJECT.toString())
+                            .setMultiValued(true)
+                            .setDescription(USER_CLASS_MEMBER_OF_DESCRIPTION)
+                            .build());
+            attributeInfos.add(
+                    new AttributeInfoBuilder(ACCESS_ATTR_NAME, ConnectorObjectReference.class)
+                            .setReferencedObjectClassName(ACCESS_CLASS_NAME)
+                            .setRoleInReference(RoleInReference.SUBJECT.toString())
+                            .setMultiValued(true)
+                            .setDescription(USER_CLASS_ACCESS_DESCRIPTION)
+                            .build());
+
+        } else if (GROUP_CLASS_NAME.equals(type)) {
+            attributeInfos.add(
+                    new AttributeInfoBuilder(Uid.NAME, String.class)
+                            .setRequired(true)
+                            .setDescription(GROUP_CLASS_UID_DESCRIPTION)
+                            .build());
+            attributeInfos.add(
+                    new AttributeInfoBuilder(Name.NAME, String.class)
+                            .setRequired(true)
+                            .setDescription(GROUP_CLASS_NAME_DESCRIPTION)
+                            .build());
+            attributeInfos.add(
+                    new AttributeInfoBuilder(MEMBERS_ATTR_NAME, ConnectorObjectReference.class)
+                            .setReferencedObjectClassName(USER_CLASS_NAME)
+                            .setSubtype(GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME)
+                            .setRoleInReference(RoleInReference.OBJECT.toString())
+                            .setMultiValued(true)
+                            .setDescription(GROUP_CLASS_MEMBERS_ATTR_DESCRIPTION)
+                            .build());
+
+        } else if (ACCESS_CLASS_NAME.equals(type)) {
+
+            attributeInfos.add(
+                    new AttributeInfoBuilder(GROUP_ATTR_NAME, ConnectorObjectReference.class)
+                            .setReferencedObjectClassName(GROUP_CLASS_NAME)
+                            .setDescription(ACCESS_CLASS_ATTR_REFERENCE_DESCRIPTION)
+                            .build());
+
+        } else {
+            for (int j = 0; j < 200; j++) {
+                attributeInfos.add(AttributeInfoBuilder.build("attributename" + j, String.class));
+            }
+        }
+        return attributeInfos;
+    }
+
+    // Provide this to the IAM system to choose the object class information.
+    @Override
+    public LightweightObjectClassInfo[] getObjectClassInformation() {
+
+        ArrayList<LightweightObjectClassInfo> lightweightObjectClassInfos = new ArrayList<>();
+
+        for (int i = 0; i < 2; i++) {
+            lightweightObjectClassInfos.add(
+                    new LightweightObjectClassInfoBuilder()
+                            .setType("class" + i)
+                            .setDescription("Object class of the type class" + i)
+                            .build()
+            );
+        }
+        lightweightObjectClassInfos.add(
+                new LightweightObjectClassInfoBuilder()
+                        .setType(USER_CLASS_NAME)
+                        .setDescription(USER_CLASS_DESCRIPTION)
+                        .build());
+
+        lightweightObjectClassInfos.add(
+                new LightweightObjectClassInfoBuilder()
+                        .setType(GROUP_CLASS_NAME)
+                        .setDescription(GROUP_CLASS_DESCRIPTION)
+                        .build());
+        lightweightObjectClassInfos.add(
+                new LightweightObjectClassInfoBuilder()
+                        .setType(ACCESS_CLASS_NAME)
+                        .setEmbedded(true)
+                        .setDescription(ACCESS_CLASS_DESCRIPTION)
+                        .build());
+
+        return lightweightObjectClassInfos.toArray(new LightweightObjectClassInfo[0]);
     }
 }

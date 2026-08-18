@@ -24,9 +24,9 @@
 package org.identityconnectors.framework.common.objects;
 
 import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
-import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
@@ -38,17 +38,9 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
  * @author Will Droste
  * @since 1.0
  */
-public final class ObjectClassInfo {
-
-    private final String type;
+public final class ObjectClassInfo extends LightweightObjectClassInfo {
 
     private final Set<AttributeInfo> attributeInfos;
-
-    private final boolean isContainer;
-
-    private final boolean isAuxiliary;
-
-    private final boolean isEmbedded;
 
     /**
      * Public only for serialization; Use ObjectClassInfoBuilder instead.
@@ -64,12 +56,29 @@ public final class ObjectClassInfo {
             final boolean isAuxiliary,
             final boolean isEmbedded) {
 
-        Assertions.nullCheck(type, "type");
-        this.type = type;
+        this(type, attrInfo, isContainer, isAuxiliary, isEmbedded, null);
+    }
+
+    /**
+     * Public only for serialization; Use ObjectClassInfoBuilder instead.
+     *
+     * @param type The name of the object class
+     * @param attrInfo The attributes of the object class.
+     * @param isContainer True if this can contain other object classes.
+     * @param description The description of the object class.
+     */
+
+    public ObjectClassInfo(
+            final String type,
+            final Set<AttributeInfo> attrInfo,
+            final boolean isContainer,
+            final boolean isAuxiliary,
+            final boolean isEmbedded,
+            final String description) {
+
+        super(type, isContainer, isAuxiliary, isEmbedded, description);
+
         this.attributeInfos = CollectionUtil.newReadOnlySet(attrInfo);
-        this.isContainer = isContainer;
-        this.isAuxiliary = isAuxiliary;
-        this.isEmbedded = isEmbedded;
         // check to make sure name exists and if not throw
         Map<String, AttributeInfo> map = AttributeInfoUtil.toMap(attrInfo);
         if (!map.containsKey(Name.NAME)) {
@@ -77,47 +86,9 @@ public final class ObjectClassInfo {
         }
     }
 
-    public boolean isContainer() {
-        return isContainer;
-    }
-
-    /**
-     * Returns flag indicating whether this is a definition of auxiliary object class.
-     * Auxiliary object classes define additional characteristics of the object.
-     */
-    public boolean isAuxiliary() {
-        return isAuxiliary;
-    }
-
-    /**
-     * If {@code true}, objects of this class are meant to be embedded in other objects.
-     * (They may or may not be queryable or updatable directly.)
-     *
-     * Currently, this information serves just as a hint for the client code. In the future,
-     * we may relax some of requirements on embedded objects, for example, they may not need to have
-     * the {@link Name} and/or {@link Uid} attributes.
-     */
-    public boolean isEmbedded() {
-        return isEmbedded;
-    }
 
     public Set<AttributeInfo> getAttributeInfo() {
         return CollectionUtil.newReadOnlySet(attributeInfos);
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    /**
-     * Determines if the 'name' matches this {@link ObjectClassInfo}.
-     *
-     * @param name case-insensitive string representation of the ObjectClassInfo's type.
-     * @return <code>true</code> if the case insensitive type is equal to that of the one in this
-     * {@link ObjectClassInfo}.
-     */
-    public boolean is(final String name) {
-        return namesEqual(type, name);
     }
 
     @Override
@@ -143,18 +114,23 @@ public final class ObjectClassInfo {
         if (!CollectionUtil.equals(getAttributeInfo(), other.getAttributeInfo())) {
             return false;
         }
-        if (!isContainer == other.isContainer) {
+        if (!isContainer() == other.isContainer()) {
             return false;
         }
-        if (!isAuxiliary == other.isAuxiliary) {
+        if (!isAuxiliary() == other.isAuxiliary()) {
             return false;
         }
-        return !isEmbedded != other.isEmbedded;
+
+        if (!Objects.equals(getDescription(), other.getDescription())) {
+            return false;
+        }
+
+        return !isEmbedded() != other.isEmbedded();
     }
 
     @Override
     public int hashCode() {
-        return nameHashCode(type);
+        return nameHashCode(getType());
     }
 
     @Override

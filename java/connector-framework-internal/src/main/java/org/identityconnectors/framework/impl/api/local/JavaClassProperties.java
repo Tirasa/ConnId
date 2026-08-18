@@ -30,6 +30,8 @@ import java.beans.BeanInfo;
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
@@ -40,6 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Properties;
 import java.util.TreeSet;
 import org.identityconnectors.common.ReflectionUtil;
 import org.identityconnectors.common.StringUtil;
@@ -55,6 +58,7 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.ConfigurationClass;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 import org.identityconnectors.framework.spi.operations.SPIOperation;
+
 
 /**
  * Class for translating from a Java class to ConfigurationProperties and from
@@ -280,6 +284,16 @@ public class JavaClassProperties {
         if (null != options) {
             excludes.addAll(Arrays.asList(options.ignore()));
             filterUnsupported = options.skipUnsupported();
+
+            if (null != options.overrideFile() && !options.overrideFile().isEmpty()) {
+                Properties props = loadPropertiesOverrideFile(config, options.overrideFile());
+                for (String key : props.stringPropertyNames()) {
+                    String value = props.getProperty(key, null);
+                    if ("ignore".equals(value)) {
+                        excludes.add(key);
+                    }
+                }
+            }
         }
 
         for (PropertyDescriptor descriptor : descriptors) {
@@ -303,6 +317,19 @@ public class JavaClassProperties {
             rv.put(propName, descriptor);
         }
         return rv;
+    }
+
+    private static Properties loadPropertiesOverrideFile(Class<? extends Configuration> config, String resourcePath) {
+        Properties props = new Properties();
+        InputStream resource = config.getClassLoader().getResourceAsStream(resourcePath);
+        if (resource != null) {
+            try (resource) {
+                props.load(resource);
+            } catch (IOException e) {
+                // Silently ignoring
+            };
+        }
+        return props;
     }
 
     /**

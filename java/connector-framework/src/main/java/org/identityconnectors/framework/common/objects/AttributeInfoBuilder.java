@@ -59,6 +59,8 @@ public final class AttributeInfoBuilder {
 
     private String roleInReference;
 
+    private String description;
+
     /**
      * Creates an builder with all the defaults set.
      *
@@ -126,7 +128,8 @@ public final class AttributeInfoBuilder {
      * @return {@link AttributeInfo} based on the properties set.
      */
     public AttributeInfo build() {
-        return new AttributeInfo(name, type, subtype, nativeName, flags, referencedObjectClassName, roleInReference);
+        return new AttributeInfo(name, type, subtype, nativeName, flags, referencedObjectClassName, roleInReference,
+                description);
     }
 
     /**
@@ -275,6 +278,11 @@ public final class AttributeInfoBuilder {
 
     public AttributeInfoBuilder setRoleInReference(String value) {
         this.roleInReference = value;
+        return this;
+    }
+
+    public AttributeInfoBuilder setDescription(String description) {
+        this.description = description;
         return this;
     }
 

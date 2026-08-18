@@ -322,6 +322,23 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
                 discoverConfiguration();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final Schema getPartialSchema(LightweightObjectClassInfo ... objectClassInfos) {
+        return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).
+                getPartialSchema(objectClassInfos);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final LightweightObjectClassInfo[] getObjectClassInformation() {
+        return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).getObjectClassInformation();
+    }
+
     private static final String MSG = "Operation ''{0}'' not supported.";
 
     private APIOperation getOperationCheckSupported(final Class<? extends APIOperation> api) {
