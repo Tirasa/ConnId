@@ -31,39 +31,16 @@ import org.identityconnectors.common.CollectionUtil;
 /**
  * Simplifies the construction of {@link ObjectClassInfo} instances.
  */
-public final class ObjectClassInfoBuilder {
-
-    private boolean isContainer;
-
-    private boolean isAuxiliary;
-
-    private boolean isEmbedded;
-
-    private String type;
+public final class ObjectClassInfoBuilder extends BaseObjectClassInfoBuilder<ObjectClassInfoBuilder,
+        ObjectClassInfo> {
 
     private final Map<String, AttributeInfo> attributeInfoMap;
 
     public ObjectClassInfoBuilder() {
-        type = ObjectClass.ACCOUNT_NAME;
+        super();
         attributeInfoMap = new HashMap<>();
     }
 
-    /**
-     * Sets the specified {@link ObjectClassInfo#getType() type} for the
-     * {@link ObjectClassInfo} object that is being built.
-     *
-     * (If this method is not called, the <code>ObjectClassInfo</code> that is
-     * being built will default to {@link ObjectClass#ACCOUNT_NAME} -- that is,
-     * its <code>type</code> will default to to a String value of
-     * {@link ObjectClass#ACCOUNT_NAME}.)
-     *
-     * @see ObjectClassInfo#getType()
-     * @see ObjectClass#ACCOUNT_NAME
-     */
-    public ObjectClassInfoBuilder setType(final String type) {
-        this.type = type;
-        return this;
-    }
 
     private static final String FORMAT = "AttributeInfo of name '%s' already exists!";
 
@@ -90,21 +67,8 @@ public final class ObjectClassInfoBuilder {
         return this;
     }
 
-    /**
-     * Set to true to indicate this is a container type.
-     *
-     * @param container True if this is a container type.
-     */
-    public void setContainer(final boolean container) {
-        isContainer = container;
-    }
-
-    public void setAuxiliary(final boolean isAuxiliary) {
-        this.isAuxiliary = isAuxiliary;
-    }
-
-    public ObjectClassInfoBuilder setEmbedded(final boolean embedded) {
-        isEmbedded = embedded;
+    @Override
+    protected ObjectClassInfoBuilder getThis() {
         return this;
     }
 
@@ -115,6 +79,7 @@ public final class ObjectClassInfoBuilder {
      * @return an instance of {@link ObjectClassInfo} with the characteristics
      * previously specified.
      */
+    @Override
     public ObjectClassInfo build() {
         // determine if name is missing and add it by default
         if (!attributeInfoMap.containsKey(Name.NAME)) {
@@ -125,6 +90,38 @@ public final class ObjectClassInfoBuilder {
                 CollectionUtil.newSet(attributeInfoMap.values()),
                 isContainer,
                 isAuxiliary,
-                isEmbedded);
+                isEmbedded,
+                description);
+    }
+
+
+    // Binary level backwards compatibility
+    // Moving method to superclass is source-level backwards compatible change, but not binary-level backwards compatible
+    // change, so we need to override this methods in order to provide backwards compatibility for connectors builded
+    // with previous version of APIs.
+
+    @Override
+    public ObjectClassInfoBuilder setDescription(String description) {
+        return super.setDescription(description);
+    }
+
+    @Override
+    public ObjectClassInfoBuilder setEmbedded(boolean embedded) {
+        return super.setEmbedded(embedded);
+    }
+
+    @Override
+    public ObjectClassInfoBuilder setType(String type) {
+        return super.setType(type);
+    }
+
+    @Override
+    public void setAuxiliary(boolean isAuxiliary) {
+        super.setAuxiliary(isAuxiliary);
+    }
+
+    @Override
+    public void setContainer(boolean container) {
+        super.setContainer(container);
     }
 }

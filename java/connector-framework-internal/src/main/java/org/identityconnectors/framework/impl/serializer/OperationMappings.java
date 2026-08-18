@@ -41,6 +41,7 @@ import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.api.operations.TestApiOp;
 import org.identityconnectors.framework.api.operations.UpdateApiOp;
 import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
+import org.identityconnectors.framework.api.operations.PartialSchemaApiOp;
 import org.identityconnectors.framework.api.operations.ValidateApiOp;
 
 class OperationMappings {
@@ -64,5 +65,6 @@ class OperationMappings {
         MAPPINGS.add(new ObjectTypeMapperImpl(SyncApiOp.class, "SyncApiOp"));
         MAPPINGS.add(new ObjectTypeMapperImpl(LiveSyncApiOp.class, "LiveSyncApiOp"));
         MAPPINGS.add(new ObjectTypeMapperImpl(DiscoverConfigurationApiOp.class, "DiscoverConfigurationApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(PartialSchemaApiOp.class, "PartialSchemaApiOp"));
     }
 }

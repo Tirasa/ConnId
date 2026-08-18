@@ -369,6 +369,7 @@ class CommonObjectHandlers {
                 builder.setSubtype(decoder.readStringField("subtype", null));
                 builder.setReferencedObjectClassName(decoder.readStringField("referencedObjectClassName", null));
                 builder.setRoleInReference(decoder.readStringField("roleInReference", null));
+                builder.setDescription(decoder.readStringField("description", null));
                 return builder.build();
             }
 
@@ -384,6 +385,7 @@ class CommonObjectHandlers {
                 encoder.writeStringField("subtype", val.getSubtype());
                 encoder.writeStringField("referencedObjectClassName", val.getReferencedObjectClassName());
                 encoder.writeStringField("roleInReference", val.getRoleInReference());
+                encoder.writeStringField("description", val.getDescription());
             }
         });
 
@@ -480,11 +482,12 @@ class CommonObjectHandlers {
                 final boolean container = decoder.readBooleanField("container", false);
                 final boolean auxiliary = decoder.readBooleanField("auxiliary", false);
                 final boolean embedded = decoder.readBooleanField("embedded", false);
+                final String description = decoder.readStringField("description", null);
 
                 @SuppressWarnings("unchecked")
                 final Set<AttributeInfo> attrInfo = (Set) decoder.readObjectField("AttributeInfos", Set.class, null);
 
-                return new ObjectClassInfo(type, attrInfo, container, auxiliary, embedded);
+                return new ObjectClassInfo(type, attrInfo, container, auxiliary, embedded, description);
             }
 
             @Override
@@ -496,6 +499,7 @@ class CommonObjectHandlers {
                 encoder.writeBooleanField("auxiliary", val.isAuxiliary());
                 encoder.writeBooleanField("embedded", val.isEmbedded());
                 encoder.writeObjectField("AttributeInfos", val.getAttributeInfo(), true);
+                encoder.writeStringField("description", val.getDescription());
             }
         });
 
@@ -845,5 +849,32 @@ class CommonObjectHandlers {
         });
 
         HANDLERS.add(new EnumSerializationHandler(ValueListOpenness.class, "ValueListOpenness"));
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(LightweightObjectClassInfo.class,
+                "LightweightObjectClassInfo") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final String type = decoder.readStringField("type", null);
+                final boolean container = decoder.readBooleanField("container", false);
+                final boolean auxiliary = decoder.readBooleanField("auxiliary", false);
+                final boolean embedded = decoder.readBooleanField("embedded", false);
+                final String description = decoder.readStringField("description", null);
+
+                return new LightweightObjectClassInfo(type, container, auxiliary, embedded, description);
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final LightweightObjectClassInfo val = (LightweightObjectClassInfo) object;
+
+                encoder.writeStringField("type", val.getType());
+                encoder.writeBooleanField("container", val.isContainer());
+                encoder.writeBooleanField("auxiliary", val.isAuxiliary());
+                encoder.writeBooleanField("embedded", val.isEmbedded());
+                encoder.writeStringField("description", val.getDescription());
+            }
+        });
+
     }
 }

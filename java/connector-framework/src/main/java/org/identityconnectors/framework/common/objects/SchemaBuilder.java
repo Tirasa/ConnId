@@ -44,11 +44,7 @@ import org.identityconnectors.framework.api.operations.UpdateApiOp;
 import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
 import org.identityconnectors.framework.common.FrameworkUtil;
 import org.identityconnectors.framework.spi.Connector;
-import org.identityconnectors.framework.spi.operations.SPIOperation;
-import org.identityconnectors.framework.spi.operations.SchemaOp;
-import org.identityconnectors.framework.spi.operations.ScriptOnConnectorOp;
-import org.identityconnectors.framework.spi.operations.ScriptOnResourceOp;
-import org.identityconnectors.framework.spi.operations.TestOp;
+import org.identityconnectors.framework.spi.operations.*;
 
 /**
  * Simple builder class to help facilitate creating a {@link Schema} object.
@@ -147,7 +143,8 @@ public final class SchemaBuilder {
             declaredObjectClasses.add(objectClassInfo);
             for (Class<? extends SPIOperation> spi : operations) {
                 if (SchemaOp.class.equals(spi) || ScriptOnConnectorOp.class.equals(spi)
-                        || ScriptOnResourceOp.class.equals(spi) || TestOp.class.equals(spi)) {
+                        || ScriptOnResourceOp.class.equals(spi) || TestOp.class.equals(spi)
+                        || PartialSchemaOp.class.equals(spi)) {
                     continue;
                 }
                 Set<Class<? extends APIOperation>> apiOperations = FrameworkUtil.spi2apis(spi);
@@ -217,7 +214,7 @@ public final class SchemaBuilder {
             }
             declaredOperationOptions.add(operationOptionInfo);
             for (Class<? extends SPIOperation> spi : operations) {
-                if (SchemaOp.class.equals(spi) || TestOp.class.equals(spi)) {
+                if (SchemaOp.class.equals(spi) || TestOp.class.equals(spi) || PartialSchemaOp.class.equals(spi)) {
                     continue;
                 }
                 Set<Class<? extends APIOperation>> apiOperations = FrameworkUtil.spi2apis(spi);

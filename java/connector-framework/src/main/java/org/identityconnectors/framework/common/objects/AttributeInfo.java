@@ -65,6 +65,8 @@ public final class AttributeInfo {
 
     private final String roleInReference;
 
+    private final String description;
+
     /**
      * Enum of modifier flags to use for attributes. Note that this enum is
      * designed for configuration by exception such that an empty set of flags
@@ -177,8 +179,14 @@ public final class AttributeInfo {
     }
 
     AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName,
+                  final Set<Flags> flags,
+                  String referencedObjectClassName, String roleInReference){
+        this(name, type, subtype, nativeName, flags, referencedObjectClassName, roleInReference, null);
+    }
+
+    AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName,
             final Set<Flags> flags,
-            String referencedObjectClassName, String roleInReference) {
+            String referencedObjectClassName, String roleInReference, String description) {
         if (StringUtil.isBlank(name)) {
             throw new IllegalStateException("Name must not be blank!");
         }
@@ -210,6 +218,7 @@ public final class AttributeInfo {
         }
         this.referencedObjectClassName = referencedObjectClassName;
         this.roleInReference = roleInReference;
+        this.description = description;
     }
 
     /**
@@ -370,6 +379,15 @@ public final class AttributeInfo {
     }
 
     /**
+     * Returns the description of this {@link Attribute}.
+     * Can be used to determine the potential use of the {@link Attribute}.
+     * @return a string description of this {@link Attribute}
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
      * Determines if the name parameter matches this {@link AttributeInfo}.
      */
     public boolean is(String name) {
@@ -394,6 +412,9 @@ public final class AttributeInfo {
                 return false;
             }
             if (!Objects.equals(referencedObjectClassName, other.referencedObjectClassName)) {
+                return false;
+            }
+            if (!Objects.equals(description, other.getDescription())) {
                 return false;
             }
             return Objects.equals(roleInReference, other.roleInReference);
