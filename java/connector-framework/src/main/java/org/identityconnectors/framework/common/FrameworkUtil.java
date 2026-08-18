@@ -237,6 +237,7 @@ public final class FrameworkUtil {
         ATTR_SUPPORTED_TYPES.add(Map.class);
         ATTR_SUPPORTED_TYPES.add(ZonedDateTime.class);
         ATTR_SUPPORTED_TYPES.add(ConnectorObjectReference.class);
+        ATTR_SUPPORTED_TYPES.add(EmbeddedObject.class);
     }
 
     public static Set<Class<? extends Object>> getAllSupportedAttributeTypes() {
