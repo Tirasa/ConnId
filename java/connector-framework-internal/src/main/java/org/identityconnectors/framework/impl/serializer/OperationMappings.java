@@ -27,6 +27,7 @@ package org.identityconnectors.framework.impl.serializer;
 import java.util.ArrayList;
 import java.util.List;
 import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
+import org.identityconnectors.framework.api.operations.ComplexUpdateDeltaApiOp;
 import org.identityconnectors.framework.api.operations.CreateApiOp;
 import org.identityconnectors.framework.api.operations.DeleteApiOp;
 import org.identityconnectors.framework.api.operations.DiscoverConfigurationApiOp;
@@ -64,5 +65,6 @@ class OperationMappings {
         MAPPINGS.add(new ObjectTypeMapperImpl(SyncApiOp.class, "SyncApiOp"));
         MAPPINGS.add(new ObjectTypeMapperImpl(LiveSyncApiOp.class, "LiveSyncApiOp"));
         MAPPINGS.add(new ObjectTypeMapperImpl(DiscoverConfigurationApiOp.class, "DiscoverConfigurationApiOp"));
+        MAPPINGS.add(new ObjectTypeMapperImpl(ComplexUpdateDeltaApiOp.class, "ComplexUpdateDeltaApiOp"));
     }
 }

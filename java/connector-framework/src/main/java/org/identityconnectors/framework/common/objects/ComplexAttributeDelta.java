@@ -80,93 +80,35 @@ import static org.identityconnectors.framework.common.objects.NameUtil.namesEqua
  * @author Radovan Semancik
  * @since 1.4.3
  */
-public class ComplexAttributeDelta {
+public class ComplexAttributeDelta extends BaseAttributeDelta {
 
-    /**
-     * Name of the attribute
-     */
-    private final String name;
+
 
     /**
      * Attribute values to add
      */
-    private final List<Object> valuesToAdd;
-
-    /**
-     * Attribute values to remove
-     */
-    private final List<Object> valuesToRemove;
-
-    /**
-     * Attribute values to replace
-     */
-    private final List<Object> valuesToReplace;
+    private final List<AttributeValueDelta> valueDeltas;
 
     /**
      * Create an attribute delta.
      */
-    ComplexAttributeDelta(String name, List<Object> valuesToAdd, List<Object> valuesToRemove, List<Object> valuesToReplace) {
-        if (StringUtil.isBlank(name)) {
-            throw new IllegalArgumentException("Name must not be blank!");
-        }
-        // make this case insensitive
-        this.name = name;
-        // sanity
-        if (valuesToReplace != null && (valuesToAdd != null || valuesToRemove != null)) {
-            throw new IllegalArgumentException("Delta of attribute '" + name
-                    + "' may be either replace or add/remove but not both at the same time");
-        }
+    ComplexAttributeDelta(String name, List<AttributeValueDelta> valueDeltas) {
+        super(name);
         // copy to prevent corruption..
-        this.valuesToAdd = (valuesToAdd == null) ? null : CollectionUtil.newReadOnlyList(valuesToAdd);
-        this.valuesToRemove = (valuesToRemove == null) ? null : CollectionUtil.newReadOnlyList(valuesToRemove);
-        this.valuesToReplace = (valuesToReplace == null) ? null : CollectionUtil.newReadOnlyList(valuesToReplace);
+        this.valueDeltas = (valueDeltas == null) ? null : CollectionUtil.newReadOnlyList(valueDeltas);
     }
 
     public String getName() {
-        return this.name;
+        return super.getName();
     }
 
-    public List<Object> getValuesToAdd() {
-        return (this.valuesToAdd == null) ? null : Collections.unmodifiableList(this.valuesToAdd);
-    }
-
-    public List<Object> getValuesToRemove() {
-        return (this.valuesToRemove == null) ? null : Collections.unmodifiableList(this.valuesToRemove);
-    }
-
-    public List<Object> getValuesToReplace() {
-        return (this.valuesToReplace == null) ? null : Collections.unmodifiableList(this.valuesToReplace);
-    }
-
-    /**
-     * Determines if the 'name' matches this {@link ComplexAttributeDelta}.
-     */
-    public boolean is(String name) {
-        return namesEqual(this.name, name);
-    }
-
-    @Override
-    public int hashCode() {
-        return nameHashCode(name);
-    }
-
-    @Override
-    public String toString() {
-        // poor man's consistent toString impl..
-        StringBuilder bld = new StringBuilder();
-        bld.append("Attribute: ");
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
-        map.put("Name", getName());
-        map.put("ValuesToAdd", getValuesToAdd());
-        map.put("ValuesToRemove", getValuesToRemove());
-        map.put("ValuesToReplace", getValuesToReplace());
-        extendToStringMap(map);
-        bld.append(map);
-        return bld.toString();
+    public List<AttributeValueDelta> getValueDeltas() {
+        return valueDeltas;
     }
 
     protected void extendToStringMap(final Map<String, Object> map) {
         // Nothing to do here. Just for use in subclasses.
+        map.put("valueDeltas", valueDeltas);
     }
 
     @Override
@@ -175,29 +117,16 @@ public class ComplexAttributeDelta {
         if (this == obj) {
             return true;
         }
-        // test for null..
-        if (obj == null) {
+        if (!super.equals(obj)) {
             return false;
-        }
+        };
         // test that the exact class matches
         if (!(getClass().equals(obj.getClass()))) {
             return false;
         }
-        // test name field..
-        final ComplexAttributeDelta other = (ComplexAttributeDelta) obj;
-        if (!is(other.name)) {
-            return false;
-        }
+        ComplexAttributeDelta other = (ComplexAttributeDelta) obj;
 
-        if (!CollectionUtil.equals(valuesToAdd, other.valuesToAdd)) {
-            return false;
-        }
-
-        if (!CollectionUtil.equals(valuesToRemove, other.valuesToRemove)) {
-            return false;
-        }
-
-        if (!CollectionUtil.equals(valuesToReplace, other.valuesToReplace)) {
+        if (!CollectionUtil.equals(valueDeltas, other.valueDeltas)) {
             return false;
         }
 

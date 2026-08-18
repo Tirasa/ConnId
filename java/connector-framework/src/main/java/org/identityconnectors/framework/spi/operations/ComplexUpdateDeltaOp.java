@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  * <p>
- * Implementation of {@link UpdateDeltaOp with support for complex attribtues.
+ * Implementation of {@link UpdateDeltaOp} with support for complex attribtues.
  * This operation updates the values in relative or absolute way. Modification
  * of each attribute is described by {@link AttributeDelta}.
  * </p>
