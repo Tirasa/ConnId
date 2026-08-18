@@ -203,10 +203,11 @@ public final class AttributeInfo {
                     + " is flagged as not-readable, so it should also be as not-returned-by-default.");
         }
         if ((referencedObjectClassName != null || roleInReference != null)
-                && !ConnectorObjectReference.class.equals(type)) {
+                && !ConnectorObjectReference.class.equals(type)
+                && !EmbeddedObject.class.equals(type)) {
 
             throw new IllegalArgumentException(
-                    "Referenced object class name and/or role in reference can be set only for reference attributes.");
+                    "Referenced object class name and/or role in reference can be set only for reference or complex attributes.");
         }
         this.referencedObjectClassName = referencedObjectClassName;
         this.roleInReference = roleInReference;
