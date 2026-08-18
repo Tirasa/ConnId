@@ -49,4 +49,11 @@ public @interface ConfigurationClass {
      * List of properties which should be excluded from configuration properties.
      */
     public String[] ignore() default {};
+
+    /**
+     * Optional Property file which overrides configuration property visibility.
+     *
+     * @return
+     */
+    String overrideFile() default "";
 }
