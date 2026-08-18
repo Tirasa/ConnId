@@ -30,6 +30,7 @@ import java.util.Optional;
 import java.util.Set;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.BaseObject;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.EmbeddedObject;
 import org.identityconnectors.framework.common.objects.LiveSyncDelta;

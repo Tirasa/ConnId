@@ -140,7 +140,7 @@ public abstract class ComplexValueDelta {
 
                 var originalAttrs = object.getAttributes();
                 var modified = AttributeDeltaUtil.applyDeltas(originalAttrs, deltas);
-                return new EmbeddedObject(object.getObjectClass(), modified);
+                return new EmbeddedObject(object.getObjectClass(), Set.copyOf(modified.values()));
             }
             return value;
         }
