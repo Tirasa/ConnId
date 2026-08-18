@@ -22,6 +22,7 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.ComplexUpdateDeltaApiOp;
 import org.identityconnectors.framework.common.objects.*;
@@ -43,12 +44,16 @@ public class ComplexUpdateDeltaImpl extends ConnectorAPIOperationRunner implemen
 
     @Override
     public Set<BaseAttributeDelta> complexUpdateDelta(ObjectClass objclass, Uid uid, Set<BaseAttributeDelta> modifications, OperationOptions options) {
+        // validate all the parameters..
+        Assertions.nullCheck(uid, "uid");
+        Assertions.nullCheck(objclass, "objectClass");
+        if (ObjectClass.ALL.equals(objclass)) {
+            throw new UnsupportedOperationException("Operation is not allowed on __ALL__ object class");
+        }
+        Assertions.nullCheck(modifications, "modifications");
         var connector = getConnector();
-        if (connector instanceof ComplexUpdateDeltaOp) {
-        ComplexUpdateDeltaOp deltaOp = (ComplexUpdateDeltaOp) connector;
-
+        if (connector instanceof ComplexUpdateDeltaOp deltaOp)  {
             logOpEntry("complexUpdateDelta", objclass, uid, modifications, options);
-
             Set<BaseAttributeDelta> attrsDelta;
             try {
                 attrsDelta = deltaOp.complexUpdateDelta(objclass, uid, modifications, options);
@@ -57,9 +62,9 @@ public class ComplexUpdateDeltaImpl extends ConnectorAPIOperationRunner implemen
                 throw e;
             }
             logOpExit("complexUpdateDelta", attrsDelta);
+            return attrsDelta;
         }
-        // FIXME: Add correct exceptions
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Connector must support " + ComplexUpdateDeltaOp.class);
     }
 
     private void logOpEntry(String opName, Object... params) {
