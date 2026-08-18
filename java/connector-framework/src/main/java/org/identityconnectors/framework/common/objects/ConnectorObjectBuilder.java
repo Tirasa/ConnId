@@ -156,4 +156,8 @@ public final class ConnectorObjectBuilder {
     public ConnectorObjectIdentification buildIdentification() {
         return new ConnectorObjectIdentification(objectClass, CollectionUtil.newReadOnlySet(attributeMap.values()));
     }
+
+    public EmbeddedObject buildEmbedded() {
+        return new EmbeddedObject(objectClass, CollectionUtil.newReadOnlySet(attributeMap.values()));
+    }
 }
