@@ -86,7 +86,7 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
      */
     @Override
     protected void testRun(ObjectClass objectClass) {
-        ConnectorObject obj = null;
+        ConnectorObject obj;
         Uid uid = null;
 
         try {
@@ -97,7 +97,8 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
             assertNotNull(uid, "Create returned null Uid.");
 
             // get by uid
-            obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
+            obj = getConnectorFacade().getObject(
+                    objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
             assertNotNull(obj, "Cannot retrieve created object.");
 
             Set<AttributeDelta> replaceAttributesDelta = ConnectorHelper.getUpdateableAttributesDelta(
@@ -115,13 +116,13 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
             replaceAndAddAttrsDelta.addAll(replaceAttributesDelta);
             replaceAndAddAttrsDelta.addAll(addAttributesDelta);
 
-            if (replaceAndAddAttrsDelta.size() > 0 || !isObjectClassSupported(objectClass)) {
+            if (!replaceAndAddAttrsDelta.isEmpty() || !isObjectClassSupported(objectClass)) {
                 /* TODO when object class is not supported?!
                  */
                 // update only in case there is something to update or when object class is not supported
                 replaceAndAddAttrsDelta.add(AttributeDeltaBuilder.build(uid.getName(), uid.getValue()));
 
-                assertTrue((replaceAndAddAttrsDelta.size() > 0), "no update attributesDelta were found");
+                assertTrue((!replaceAndAddAttrsDelta.isEmpty()), "no update attributesDelta were found");
                 Set<AttributeDelta> sideEffectModificationAttributesDelta = getConnectorFacade().updateDelta(
                         objectClass, uid, AttributeDeltaUtil.filterUid(replaceAndAddAttrsDelta),
                         getOperationOptionsByOp(objectClass, UpdateDeltaApiOp.class));
@@ -145,7 +146,7 @@ public class UpdateDeltaApiOpTests extends ObjectClassRunner {
             // TODO Here it jumps to finally section which is wrong...
             // DELETE update test:
 
-            if (removeAttributesDelta.size() > 0) {
+            if (!removeAttributesDelta.isEmpty()) {
                 // uid must be present for update
                 removeAttributesDelta.add(AttributeDeltaBuilder.build(uid.getName(), uid.getValue()));
 

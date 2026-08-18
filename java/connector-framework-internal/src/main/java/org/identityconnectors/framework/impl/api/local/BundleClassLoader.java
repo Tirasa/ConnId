@@ -34,8 +34,7 @@ class BundleClassLoader extends URLClassLoader {
 
     private static final String FRAMEWORK_PACKAGE = "org.identityconnectors.framework";
 
-    // The set of packages a connector is allowed to access from the
-    // parent class loader.
+    // The set of packages a connector is allowed to access from the parent class loader.
     private static final String[] ALLOWED_FRAMEWORK_PACKAGES = {
         FRAMEWORK_PACKAGE + ".api",
         FRAMEWORK_PACKAGE + ".common",
@@ -44,8 +43,8 @@ class BundleClassLoader extends URLClassLoader {
 
     private final Map<String, String> nativeLibs;
 
-    public BundleClassLoader(final List<URL> urls, final Map<String, String> nativeLibs, final ClassLoader parent) {
-        super(urls.toArray(new URL[urls.size()]), parent);
+    BundleClassLoader(final List<URL> urls, final Map<String, String> nativeLibs, final ClassLoader parent) {
+        super(urls.toArray(URL[]::new), parent);
         this.nativeLibs = newReadOnlyMap(nativeLibs);
     }
 
@@ -82,7 +81,8 @@ class BundleClassLoader extends URLClassLoader {
                     // framework is running a connector operation, the thread context class loader is
                     // BundleClassLoader. Without the hack, BundleClassLoader would delegate to its parent
                     // (i.e., tcADPClassLoader), which would again delegate to the thread context class loader
-                    // (i.e., BundleClassLoader), resulting in an infinite loop reported by the JVM through a ClassCircularityError.
+                    // (i.e., BundleClassLoader), resulting in an infinite loop reported by the JVM through a
+                    // ClassCircularityError.
                     // The hack sets the thread context class loader to its initial value when
                     // BundleClassLoader delegates to its parent.
                     if (runningInOIM()) {
@@ -125,10 +125,8 @@ class BundleClassLoader extends URLClassLoader {
                 return;
             }
         }
-        String message =
-            "Connector may not reference class '"+name+"', "+
-            "it is an internal framework class.";
-        throw new ClassNotFoundException(message);
+        throw new ClassNotFoundException(
+                "Connector may not reference class '" + name + "', " + "it is an internal framework class.");
     }
 
     @Override

@@ -43,9 +43,9 @@ import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoImpl;
 /**
  * Serialization handles for APIConfiguration and dependencies.
  */
-class APIConfigurationHandlers {
+final class APIConfigurationHandlers {
 
-    public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<ObjectTypeMapper>();
+    public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<>();
 
     static {
         HANDLERS.add(new AbstractObjectSerializationHandler(ObjectPoolConfiguration.class,
@@ -133,7 +133,8 @@ class APIConfigurationHandlers {
                 @SuppressWarnings("unchecked")
                 Set<Class<? extends APIOperation>> ops = (Set) decoder.readObjectField("operations", Set.class, null);
                 rv.setOperations(ops);
-                rv.setAllowedValues((SuggestedValues) decoder.readObjectField("allowedValues", SuggestedValues.class, null));
+                rv.setAllowedValues((SuggestedValues) decoder.readObjectField("allowedValues", SuggestedValues.class,
+                        null));
                 return rv;
             }
 
@@ -291,5 +292,8 @@ class APIConfigurationHandlers {
                 encoder.writeObjectField("APIConfiguration", val.getDefaultAPIConfiguration(), true);
             }
         });
+    }
+
+    private APIConfigurationHandlers() {
     }
 }

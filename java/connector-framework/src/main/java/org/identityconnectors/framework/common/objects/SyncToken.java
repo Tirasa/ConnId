@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -44,9 +45,7 @@ public final class SyncToken {
     /**
      * Creates a new
      *
-     * @param value
-     *            May not be null. TODO: define set of allowed value types
-     *            (currently same as set of allowed attribute values).
+     * @param value May not be null.
      */
     public SyncToken(Object value) {
         Assertions.nullCheck(value, "value");
@@ -75,11 +74,9 @@ public final class SyncToken {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof SyncToken) {
-            SyncToken other = (SyncToken) o;
+        if (o instanceof SyncToken other) {
             return CollectionUtil.equals(value, other.value);
         }
         return false;
     }
-
 }

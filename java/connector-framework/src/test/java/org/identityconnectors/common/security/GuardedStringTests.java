@@ -153,7 +153,8 @@ public class GuardedStringTests {
     }
 
     // This test must be here, even though it would be better to have it in AttributeBuilderTests
-    // GuardedString.setEncryptor() method is package-private, therefore it cannot be initialized in AttributeBuilderTests.
+    // GuardedString.setEncryptor() method is package-private, therefore it cannot be initialized in
+    // AttributeBuilderTests.
     @Test
     public void passwordAttribute() {
         AttributeBuilder bld = new AttributeBuilder();
@@ -163,6 +164,6 @@ public class GuardedStringTests {
         assertEquals(OperationalAttributes.PASSWORD_NAME, attr.getName());
         assertEquals(1, attr.getValue().size());
         assertTrue(attr.getValue().get(0) instanceof GuardedString);
-        assertEquals("foobar", decryptToString((GuardedString)attr.getValue().get(0)));
+        assertEquals("foobar", decryptToString((GuardedString) attr.getValue().get(0)));
     }
 }

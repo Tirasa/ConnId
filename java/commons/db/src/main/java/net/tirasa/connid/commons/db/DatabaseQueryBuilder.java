@@ -47,7 +47,7 @@ public class DatabaseQueryBuilder {
 
     private FilterWhereBuilder where = null;
 
-    private Set<String> columns = new HashSet<String>();
+    private Set<String> columns = new HashSet<>();
 
     private List<OrderBy> orderBy = null;
 
@@ -242,7 +242,7 @@ public class DatabaseQueryBuilder {
          * @return a name
          */
         public String getColumnName() {
-            return this.first;
+            return getKey();
         }
 
         /**
@@ -251,7 +251,7 @@ public class DatabaseQueryBuilder {
          * @return a boolean true/false as ascendent/descendent
          */
         public boolean isAscendent() {
-            return this.second;
+            return getValue();
         }
     }
 }

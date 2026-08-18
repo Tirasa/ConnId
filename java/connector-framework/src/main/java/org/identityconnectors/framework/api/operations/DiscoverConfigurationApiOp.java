@@ -19,9 +19,9 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
-
 
 import java.util.Map;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
@@ -43,28 +43,28 @@ import org.identityconnectors.framework.common.objects.SuggestedValues;
  * <p>
  * The discovery process is supposed to work as follows:
  * <ol>
- *     <li>Create new connector facade with minimal configuration.
- *     This usually means just hostname, username and password.
- *     Note: Mind the connector pool size when creating this configuration.
- *     We really want minimal pool size set to zero. This connector instance is supposed to be
- *     very short-lived. We do not want it to stay in the pool for a long time.</li>
+ * <li>Create new connector facade with minimal configuration.
+ * This usually means just hostname, username and password.
+ * Note: Mind the connector pool size when creating this configuration.
+ * We really want minimal pool size set to zero. This connector instance is supposed to be
+ * very short-lived. We do not want it to stay in the pool for a long time.</li>
  *
- *     <li>Invoke testPartialConfiguration() method on the facade.
- *     If the method returns without an exception the provided configuration is correct,
- *     e.g. connection to the server was established, the username/password is correct.</li>
+ * <li>Invoke testPartialConfiguration() method on the facade.
+ * If the method returns without an exception the provided configuration is correct,
+ * e.g. connection to the server was established, the username/password is correct.</li>
  *
- *     <li>Invoke discoverConfiguration() method on the facade.
- *     The connector will try to use the connection to discover additional configuration options,
- *     suggesting values for configuration properties.
- *     </li>
+ * <li>Invoke discoverConfiguration() method on the facade.
+ * The connector will try to use the connection to discover additional configuration options,
+ * suggesting values for configuration properties.
+ * </li>
  *
- *     <li>Interact with user.
- *     Present the suggested values to the user, let user choose the right values, add additional configuration, etc.</li>
+ * <li>Interact with user.
+ * Present the suggested values to the user, let user choose the right values, add additional configuration, etc.</li>
  *
- *     <li>Apply the values chosen by the user to a new APIConfiguration, creating a new connector facade.
- *     This is supposed to be a fully-configured, production-ready facade.</li>
+ * <li>Apply the values chosen by the user to a new APIConfiguration, creating a new connector facade.
+ * This is supposed to be a fully-configured, production-ready facade.</li>
  *
- *     <li>Use the new facade as usual.</li>
+ * <li>Use the new facade as usual.</li>
  * </ol>
  * The discovery process is usually used only once. Once the correct connector configuration is determined,
  * the discovery is no longer needed.
@@ -78,16 +78,16 @@ import org.identityconnectors.framework.common.objects.SuggestedValues;
  * <p>
  * Tips for creating connectors with discoverable configuration:
  * <ul>
- *     <li>Allow minimal configuration for the connector.
- *     Define only a very small set of mandatory configuration properties.
- *     Validate only those properties for presence in validate() method of connector configuration object.
- *     (Of course, it is perfectly OK validating proper formats of any property that has a value.)
- *     Keep the validations simple.</li>
+ * <li>Allow minimal configuration for the connector.
+ * Define only a very small set of mandatory configuration properties.
+ * Validate only those properties for presence in validate() method of connector configuration object.
+ * (Of course, it is perfectly OK validating proper formats of any property that has a value.)
+ * Keep the validations simple.</li>
  *
- *     <li>Make a more in-depth validations in test() and testPartialConfiguration() methods.
- *     These methods are supposed to make a connection to the resource.
- *     Therefore, they can validate much more that just data formats.
- *     They can validate that a particular value is valid for that particular system.</li>
+ * <li>Make a more in-depth validations in test() and testPartialConfiguration() methods.
+ * These methods are supposed to make a connection to the resource.
+ * Therefore, they can validate much more that just data formats.
+ * They can validate that a particular value is valid for that particular system.</li>
  * </ul>
  * </p>
  *
@@ -97,7 +97,6 @@ import org.identityconnectors.framework.common.objects.SuggestedValues;
 public interface DiscoverConfigurationApiOp extends APIOperation {
 
     // Maintenance note: Do not forget to update documentation in DiscoverConfigurationOp, when updating this interface.
-
     /**
      * <p>
      * Tests partial configuration of the connector.
@@ -129,10 +128,10 @@ public interface DiscoverConfigurationApiOp extends APIOperation {
      * </p>
      *
      * @throws RuntimeException
-     *             if the minimal configuration is not valid or the test failed.
-     *             Implementations are encouraged to throw the most specific
-     *             exception available. When no specific exception is available,
-     *             implementations can throw {@link ConnectorException}.
+     * if the minimal configuration is not valid or the test failed.
+     * Implementations are encouraged to throw the most specific
+     * exception available. When no specific exception is available,
+     * implementations can throw {@link ConnectorException}.
      */
     void testPartialConfiguration();
 
@@ -175,9 +174,8 @@ public interface DiscoverConfigurationApiOp extends APIOperation {
      * </p>
      *
      * @return Collection (map) of discovered configuration values.
-     *         If no values can be discovered, empty collection should be returned.
-     *         Null is not a legal return value.
+     * If no values can be discovered, empty collection should be returned.
+     * Null is not a legal return value.
      */
     Map<String, SuggestedValues> discoverConfiguration();
-
 }

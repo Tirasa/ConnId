@@ -22,20 +22,16 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import org.identityconnectors.common.StringUtil;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
-import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
+import org.identityconnectors.common.StringUtil;
 
 public abstract class BaseAttributeDelta {
+
     /**
      * Name of the attribute
      */
     private final String name;
-
 
     public BaseAttributeDelta(String name) {
         if (StringUtil.isBlank(name)) {
@@ -49,21 +45,20 @@ public abstract class BaseAttributeDelta {
     }
 
     public boolean is(String name) {
-        return namesEqual(this.name, name);
+        return NameUtil.namesEqual(this.name, name);
     }
 
     @Override
     public int hashCode() {
-        return nameHashCode(name);
+        return NameUtil.nameHashCode(name);
     }
-
 
     @Override
     public String toString() {
         // poor man's consistent toString impl..
         StringBuilder bld = new StringBuilder();
         bld.append("Attribute: ");
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("Name", getName());
         extendToStringMap(map);
         bld.append(map);
@@ -71,7 +66,6 @@ public abstract class BaseAttributeDelta {
     }
 
     protected void extendToStringMap(Map<String, Object> map) {
-
     }
 
     @Override

@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2015 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -28,7 +29,6 @@ import static org.identityconnectors.framework.common.objects.NameUtil.nameHashC
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 
@@ -67,7 +67,6 @@ public final class ObjectClassInfo extends LightweightObjectClassInfo {
      * @param isContainer True if this can contain other object classes.
      * @param description The description of the object class.
      */
-
     public ObjectClassInfo(
             final String type,
             final Set<AttributeInfo> attrInfo,
@@ -85,7 +84,6 @@ public final class ObjectClassInfo extends LightweightObjectClassInfo {
             throw new IllegalArgumentException("Missing 'Name' attribute info.");
         }
     }
-
 
     public Set<AttributeInfo> getAttributeInfo() {
         return CollectionUtil.newReadOnlySet(attributeInfos);

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common;
 
@@ -33,14 +34,16 @@ import java.io.StringWriter;
  * a buffer.
  */
 public class StringPrintWriter extends PrintWriter {
+
     // =======================================================================
     // Constants
     // =======================================================================
     private static final int DEFAULT_SIZE = 256;
+
     // =======================================================================
     // Fields
     // =======================================================================
-    final private int initialSize;
+    private final int initialSize;
 
     /**
      * Create with the default initial size.
@@ -77,9 +80,9 @@ public class StringPrintWriter extends PrintWriter {
      */
     public void println(final String[] value) {
         assert value != null;
-        for (int i = 0; i < value.length; i++) {
-            assert value[i] != null;
-            println(value[i]);
+        for (String v : value) {
+            assert v != null;
+            println(v);
         }
     }
 
@@ -87,12 +90,12 @@ public class StringPrintWriter extends PrintWriter {
      * Call print for every string in the array.
      *
      * @throws NullPointerException
-     *             if value is null.
+     * if value is null.
      */
     public void print(final String[] value) {
-        for (int i = 0; i < value.length; i++) {
-            assert value[i] != null;
-            print(value[i]);
+        for (String v : value) {
+            assert v != null;
+            print(v);
         }
     }
 

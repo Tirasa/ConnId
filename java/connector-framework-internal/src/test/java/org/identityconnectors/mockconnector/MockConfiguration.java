@@ -26,7 +26,7 @@ import org.identityconnectors.framework.spi.AbstractConfiguration;
 
 public class MockConfiguration extends AbstractConfiguration {
 
-    boolean fail;
+    private boolean fail;
 
     public MockConfiguration() {
 

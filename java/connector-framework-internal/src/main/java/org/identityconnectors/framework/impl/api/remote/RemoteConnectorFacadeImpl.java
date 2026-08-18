@@ -45,7 +45,7 @@ public class RemoteConnectorFacadeImpl extends AbstractConnectorFacade {
         return SerializerUtil.serializeBase64Object(copy);
     }
 
-    final String remoteConnectorFacadeKey;
+    private final String remoteConnectorFacadeKey;
 
     /**
      * Builds up the maps of supported operations and calls.

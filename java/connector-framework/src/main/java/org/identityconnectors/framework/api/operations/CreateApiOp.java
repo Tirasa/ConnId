@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -40,27 +41,16 @@ public interface CreateApiOp extends APIOperation {
      * <code>ObjectClass</code> attribute and that no two attributes in the set
      * have the same {@link Attribute#getName() name}.
      *
-     * @param objectClass
-     *            the type of object to create. Must not be null.
-     * @param createAttributes
-     *            includes all the attributes necessary to create the target
-     *            object (including the <code>ObjectClass</code> attribute).
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
-     * @return the unique id for the object that is created. For instance in
-     *         LDAP this would be the 'dn', for a database this would be the
-     *         primary key, and for 'ActiveDirectory' this would be the GUID.
-     * @throws IllegalArgumentException
-     *             if <code>ObjectClass</code> is missing or elements of the set
-     *             produce duplicate values of {@link Attribute#getName()}.
-     * @throws NullPointerException
-     *             if the parameter <code>createAttributes</code> is
-     *             <code>null</code>.
-     * @throws RuntimeException
-     *             if the {@link Connector} SPI throws a native
-     *             {@link Exception}.
+     * @param objectClass the type of object to create. Must not be null.
+     * @param createAttributes includes all the attributes necessary to create the target
+     * object (including the <code>ObjectClass</code> attribute).
+     * @param options additional options that impact the way this operation is run. May be null.
+     * @return the unique id for the object that is created. For instance in LDAP this would be the 'dn', for a database
+     * this would be the primary key, and for 'ActiveDirectory' this would be the GUID.
+     * @throws IllegalArgumentException if <code>ObjectClass</code> is missing or elements of the set
+     * produce duplicate values of {@link Attribute#getName()}.
+     * @throws NullPointerException if the parameter <code>createAttributes</code> is <code>null</code>.
+     * @throws RuntimeException if the {@link Connector} SPI throws a native {@link Exception}.
      */
-    public Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes,
-            final OperationOptions options);
+    Uid create(ObjectClass objectClass, Set<Attribute> createAttributes, OperationOptions options);
 }

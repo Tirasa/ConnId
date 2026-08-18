@@ -159,8 +159,13 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
      * @param options The options
      * @param operationalContext
      */
-    public static void rawSearch(final SearchOp<?> search, final ObjectClass objectClass, final Filter filter,
-            SearchResultsHandler handler, final OperationOptions options, ConnectorOperationalContext operationalContext) {
+    public static void rawSearch(
+            final SearchOp<?> search,
+            final ObjectClass objectClass,
+            final Filter filter,
+            SearchResultsHandler handler,
+            final OperationOptions options,
+            final ConnectorOperationalContext operationalContext) {
 
         FilterTranslator<?> translator = search.createFilterTranslator(objectClass, options);
         List<?> queries = translator.translate(filter);
@@ -202,8 +207,7 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
                     throw e;
                 }
                 // don't run any more queries if the consumer has stopped
-                if (handler instanceof DuplicateFilteringResultsHandler) {
-                    DuplicateFilteringResultsHandler h = (DuplicateFilteringResultsHandler) handler;
+                if (handler instanceof DuplicateFilteringResultsHandler h) {
                     if (!h.isStillHandling()) {
                         break;
                     }
@@ -223,8 +227,8 @@ public class SearchImpl extends ConnectorAPIOperationRunner implements SearchApi
             SearchResultsHandler handler) {
 
         ResultsHandler origHandler = handler;
-        if (handler instanceof SearchResultsHandlerLoggingProxy) {
-            origHandler = ((SearchResultsHandlerLoggingProxy) handler).getOrigHandler();
+        if (handler instanceof SearchResultsHandlerLoggingProxy searchResultsHandlerLoggingProxy) {
+            origHandler = searchResultsHandlerLoggingProxy.getOrigHandler();
         }
         SpiOperationLoggingUtil.logOpEntry(
                 OP_LOG, operationalContext, SearchOp.class, "executeQuery", objectClass, object, origHandler);

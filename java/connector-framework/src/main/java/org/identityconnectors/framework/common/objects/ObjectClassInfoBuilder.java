@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2015 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -31,8 +32,7 @@ import org.identityconnectors.common.CollectionUtil;
 /**
  * Simplifies the construction of {@link ObjectClassInfo} instances.
  */
-public final class ObjectClassInfoBuilder extends BaseObjectClassInfoBuilder<ObjectClassInfoBuilder,
-        ObjectClassInfo> {
+public final class ObjectClassInfoBuilder extends BaseObjectClassInfoBuilder<ObjectClassInfoBuilder, ObjectClassInfo> {
 
     private final Map<String, AttributeInfo> attributeInfoMap;
 
@@ -40,7 +40,6 @@ public final class ObjectClassInfoBuilder extends BaseObjectClassInfoBuilder<Obj
         super();
         attributeInfoMap = new HashMap<>();
     }
-
 
     private static final String FORMAT = "AttributeInfo of name '%s' already exists!";
 
@@ -94,12 +93,10 @@ public final class ObjectClassInfoBuilder extends BaseObjectClassInfoBuilder<Obj
                 description);
     }
 
-
     // Binary level backwards compatibility
-    // Moving method to superclass is source-level backwards compatible change, but not binary-level backwards compatible
-    // change, so we need to override this methods in order to provide backwards compatibility for connectors builded
-    // with previous version of APIs.
-
+    // Moving method to superclass is source-level backwards compatible change, but not binary-level backwards
+    // compatible change, so we need to override this methods in order to provide backwards compatibility for connectors
+    // built with previous version of APIs.
     @Override
     public ObjectClassInfoBuilder setDescription(String description) {
         return super.setDescription(description);

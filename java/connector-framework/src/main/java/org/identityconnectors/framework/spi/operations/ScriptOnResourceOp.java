@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -40,16 +41,12 @@ import org.identityconnectors.framework.common.serializer.ObjectSerializerFactor
 public interface ScriptOnResourceOp extends SPIOperation {
 
     /**
-     * Run the specified script <i>on the target resource</i> that this
-     * connector manages.
+     * Run the specified script <i>on the target resource</i> that this connector manages.
      *
-     * @param request
-     *            The script and arguments to run.
-     * @param options
-     *            Additional options that control how the script is run.
-     * @return The result of the script. The return type must be a type that the
-     *         framework supports for serialization. See
-     *         {@link ObjectSerializerFactory} for a list of supported types.
+     * @param request The script and arguments to run.
+     * @param options Additional options that control how the script is run.
+     * @return The result of the script. The return type must be a type that the framework supports for serialization.
+     * See {@link ObjectSerializerFactory} for a list of supported types.
      */
-    public Object runScriptOnResource(ScriptContext request, OperationOptions options);
+    Object runScriptOnResource(ScriptContext request, OperationOptions options);
 }

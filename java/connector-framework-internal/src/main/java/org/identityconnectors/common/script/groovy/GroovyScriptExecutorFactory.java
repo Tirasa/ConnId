@@ -57,7 +57,7 @@ public class GroovyScriptExecutorFactory extends ScriptExecutorFactory {
 
         private final Script groovyScript;
 
-        public GroovyScriptExecutor(final ClassLoader loader, final String script) {
+        GroovyScriptExecutor(final ClassLoader loader, final String script) {
             CompilerConfiguration cc = new CompilerConfiguration();
             try {
                 cc.addCompilationCustomizers(new RejectASTTransformsCustomizer(), new SandboxTransformer());

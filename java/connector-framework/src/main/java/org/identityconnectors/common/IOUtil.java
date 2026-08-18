@@ -242,7 +242,7 @@ public final class IOUtil {
         assert clazz != null && StringUtil.isNotBlank(res);
         InputStream ret = null;
         final ClassLoader classLoader = clazz.getClassLoader();
-        final String name[] = { res, getResourcePath(clazz, res), "/" + getResourcePath(clazz, res) };
+        final String[] name = { res, getResourcePath(clazz, res), "/" + getResourcePath(clazz, res) };
         for (int i = 0; ret == null && i < name.length; i++) {
             ret = classLoader.getResourceAsStream(name[i]);
         }

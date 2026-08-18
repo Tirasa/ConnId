@@ -91,7 +91,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
     @Override
     public ConnectorInfo findConnectorInfo(ConnectorKey key) {
         for (Pair<Bundle, List<ConnectorInfo>> bundle : connectorInfoCache.values()) {
-            for (ConnectorInfo info : bundle.second) {
+            for (ConnectorInfo info : bundle.getValue()) {
                 if (info.getConnectorKey().equals(key)) {
                     return info;
                 }
@@ -103,9 +103,7 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
     @Override
     public List<ConnectorInfo> getConnectorInfos() {
         List<ConnectorInfo> result = new ArrayList<>();
-        connectorInfoCache.values().forEach((info) -> {
-            result.addAll(info.second);
-        });
+        connectorInfoCache.values().forEach(info -> result.addAll(info.getValue()));
         return CollectionUtil.newReadOnlyList(result);
     }
 
@@ -161,9 +159,9 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
                 Pair<Bundle, List<ConnectorInfo>> info = processBundle(bundle, list);
                 if (null != info) {
                     connectorInfoCache.put(bundle.getSymbolicName(), info);
-                    info.second.forEach((connectorInfo) -> {
+                    info.getValue().forEach((connectorInfo) -> {
                         notifyListeners(buildEvent(
-                                ConnectorEvent.CONNECTOR_REGISTERED, info.first, connectorInfo.getConnectorKey()));
+                                ConnectorEvent.CONNECTOR_REGISTERED, info.getKey(), connectorInfo.getConnectorKey()));
                     });
                 }
                 LOG.info("Add Connector {}, list: {}", bundle.getSymbolicName(), list);
@@ -178,9 +176,9 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
             Pair<Bundle, List<ConnectorInfo>> info =
                     connectorInfoCache.remove(bundle.getSymbolicName());
             if (null != info) {
-                info.second.forEach((connectorInfo) -> {
+                info.getValue().forEach((connectorInfo) -> {
                     notifyListeners(buildEvent(
-                            ConnectorEvent.CONNECTOR_UNREGISTERING, info.first, connectorInfo.getConnectorKey()));
+                            ConnectorEvent.CONNECTOR_UNREGISTERING, info.getKey(), connectorInfo.getConnectorKey()));
                 });
             }
         }
@@ -196,14 +194,10 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
             throw new NullPointerException();
         }
         if (!eventHandlers.contains(hook)) {
-            // TODO: hook is not wired to the listeners and it's not called if a
-            // new connector registered meanwhile
-            connectorInfoCache.forEach((key, value) -> {
-                value.second.forEach((connectorInfo) -> {
-                    hook.handleEvent(buildEvent(
-                            ConnectorEvent.CONNECTOR_REGISTERED, value.first, connectorInfo.getConnectorKey()));
-                });
-            });
+            // hook is not wired to the listeners and it's not called if a new connector registered meanwhile
+            connectorInfoCache.forEach((key, value) -> value.getValue().
+                    forEach(connectorInfo -> hook.handleEvent(buildEvent(
+                            ConnectorEvent.CONNECTOR_REGISTERED, value.getKey(), connectorInfo.getConnectorKey()))));
             eventHandlers.add(hook);
         }
     }
@@ -242,17 +236,12 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         String bundleVersion = null;
 
         for (ManifestEntry entry : manifestEnties) {
-            if (null != entry.getKey()) {
-                switch (entry.getKey()) {
-                    case ConnectorManifestScanner.ATT_FRAMEWORK_VERSION ->
-                        frameworkVersion = entry.getValue();
-                    case ConnectorManifestScanner.ATT_BUNDLE_NAME ->
-                        bundleName = entry.getValue();
-                    case ConnectorManifestScanner.ATT_BUNDLE_VERSION ->
-                        bundleVersion = entry.getValue();
-                    default -> {
-                    }
-                }
+            if (ConnectorManifestScanner.ATT_FRAMEWORK_VERSION.equals(entry.getKey())) {
+                frameworkVersion = entry.getValue();
+            } else if (ConnectorManifestScanner.ATT_BUNDLE_NAME.equals(entry.getKey())) {
+                bundleName = entry.getValue();
+            } else if (ConnectorManifestScanner.ATT_BUNDLE_VERSION.equals(entry.getKey())) {
+                bundleVersion = entry.getValue();
             }
         }
 
@@ -269,7 +258,6 @@ public class OsgiConnectorInfoManagerImpl extends ConnectorFacadeFactory impleme
         }
 
         while (classFiles.hasMoreElements()) {
-
             Class<?> connectorClass = null;
             ConnectorClass options = null;
             String name = classFiles.nextElement().getFile();

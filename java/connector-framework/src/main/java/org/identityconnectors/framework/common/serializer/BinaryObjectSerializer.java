@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.serializer;
 
@@ -26,20 +27,22 @@ package org.identityconnectors.framework.common.serializer;
  * Interface for writing objects to a stream.
  */
 public interface BinaryObjectSerializer {
+
     /**
      * Writes the next object to the stream.
+     *
      * @param object The object to write.
      * @see ObjectSerializerFactory for a list of supported types.
      */
-    public void writeObject(Object object);
+    void writeObject(Object object);
 
     /**
      * Flushes the underlying stream.
      */
-    public void flush();
+    void flush();
 
     /**
      * Closes the underylying stream after first flushing it.
      */
-    public void close();
+    void close();
 }

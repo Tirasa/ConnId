@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -40,17 +41,12 @@ public interface DeleteOp extends SPIOperation {
      * The {@link Connector} developer is responsible for calling the native
      * delete methods to remove the object specified by its unique id.
      *
-     * @param objectClass
-     *            type of object to delete.
-     * @param uid
-     *            The unique id that specifies the object to delete.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            If the caller passes null, the framework will convert this
-     *            into an empty set of options, so SPI need not worry about this
-     *            ever being null.
-     * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException
-     *             if the {@link Uid} does not exist on the resource.
+     * @param objectClass type of object to delete.
+     * @param uid The unique id that specifies the object to delete.
+     * @param options additional options that impact the way this operation is run. If the caller passes null, the
+     * framework will convert this into an empty set of options, so SPI need not worry about this ever being null.
+     * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException if the {@link Uid} does not exist
+     * on the resource.
      */
-    void delete(final ObjectClass objectClass, final Uid uid, final OperationOptions options);
+    void delete(ObjectClass objectClass, Uid uid, OperationOptions options);
 }

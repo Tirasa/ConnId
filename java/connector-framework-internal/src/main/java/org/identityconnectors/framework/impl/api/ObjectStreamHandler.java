@@ -25,5 +25,5 @@ package org.identityconnectors.framework.impl.api;
 
 public interface ObjectStreamHandler {
 
-    public boolean handle(Object object);
+    boolean handle(Object object);
 }

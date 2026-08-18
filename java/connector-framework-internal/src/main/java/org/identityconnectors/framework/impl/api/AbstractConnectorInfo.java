@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -31,11 +32,14 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 /**
  * Common base class shared between local and remote implementations
  */
-abstract public class AbstractConnectorInfo implements ConnectorInfo {
+public abstract class AbstractConnectorInfo implements ConnectorInfo {
 
     private String connectorDisplayNameKey;
+
     private ConnectorKey connectorKey;
+
     private ConnectorMessages messages;
+
     private String connectorCategoryKey;
 
     private APIConfigurationImpl defaultAPIConfiguration;
@@ -90,8 +94,7 @@ abstract public class AbstractConnectorInfo implements ConnectorInfo {
 
     @Override
     public final APIConfiguration createDefaultAPIConfiguration() {
-        APIConfigurationImpl rv =
-                (APIConfigurationImpl) SerializerUtil.cloneObject(defaultAPIConfiguration);
+        APIConfigurationImpl rv = (APIConfigurationImpl) SerializerUtil.cloneObject(defaultAPIConfiguration);
         rv.setConnectorInfo(this);
         return rv;
     }

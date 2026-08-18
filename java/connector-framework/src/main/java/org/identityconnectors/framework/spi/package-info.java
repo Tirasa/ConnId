@@ -19,23 +19,26 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 /**
- * This is the "Service Provider Interface" package.  The {@link org.identityconnectors.framework.spi.Connector} developer
- * is responsible for implementing the following interfaces to build a {@link org.identityconnectors.framework.spi.Connector}.
+ * This is the "Service Provider Interface" package.  The {@link org.identityconnectors.framework.spi.Connector}
+ * developer is responsible for implementing the following interfaces to build a
+ * {@link org.identityconnectors.framework.spi.Connector}.
  * <ul>
  * <li>First, one must implement the {@link org.identityconnectors.framework.spi.Configuration} interface.
  * The {@link org.identityconnectors.framework.spi.Configuration#validate} method is used to determine
- * whether the configuration information that has been provided is valid.  The implementation should simply be a Java Bean.
- * There should be a getter and setter for each configuration property. For instance, if the resource is a database instance
- * then some typical configuration information would include the JDBC driver, the host name of remote machine or the URL,
- * and some connection credentials.  The getter should return the default value.
+ * whether the configuration information that has been provided is valid. The implementation should simply be a Java
+ * Bean.
+ * There should be a getter and setter for each configuration property. For instance, if the resource is a database
+ * instance then some typical configuration information would include the JDBC driver, the host name of remote machine
+ * or the URL, and some connection credentials. The getter should return the default value.
  * </li>
  * <li>Second, one should implement the {@link org.identityconnectors.framework.spi.Connector} interface.
- * This interface insures proper initialization and disposal of the {@link org.identityconnectors.framework.spi.Connector}.
- * If the {@link org.identityconnectors.framework.spi.Connector} developer would like the API to handle 'Connection Pooling',
- * the Connector must implement the {@link org.identityconnectors.framework.spi.PoolableConnector} interface.
+ * This interface insures proper initialization and disposal of the
+ * {@link org.identityconnectors.framework.spi.Connector}.
+ * If the {@link org.identityconnectors.framework.spi.Connector} developer would like the API to handle 'Connection
+ * Pooling', the Connector must implement the {@link org.identityconnectors.framework.spi.PoolableConnector} interface.
  * </li>
  * <li>Third, one should implement all the operations the resource can support, such as
  * {@link org.identityconnectors.framework.spi.operations.CreateOp},
@@ -45,7 +48,7 @@
  * <p>
  * The {@link org.identityconnectors.framework.spi.operations operations} package
  * has many operations from which to choose. In some cases, one operation does the same thing as another
- * but exposes more options.   For instance there are two update operations.
+ * but exposes more options. For instance there are two update operations.
  * {@link org.identityconnectors.framework.spi.operations.UpdateOp} is simpler to implement than
  * {@link org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp}.
  */

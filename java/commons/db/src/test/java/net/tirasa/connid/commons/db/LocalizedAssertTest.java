@@ -68,11 +68,11 @@ public class LocalizedAssertTest {
         }
     }
 
-    static LocalizedAssert testee;
+    private static LocalizedAssert TESTEE;
 
     @BeforeAll
     public static void setup() {
-        testee = new LocalizedAssert(new TestConnectorMessages());
+        TESTEE = new LocalizedAssert(new TestConnectorMessages());
     }
 
     /**
@@ -81,10 +81,10 @@ public class LocalizedAssertTest {
      */
     @Test
     public final void testAssertNotNull() {
-        Integer i = testee.assertNotNull(1, "i");
+        Integer i = TESTEE.assertNotNull(1, "i");
         assertEquals(1, i);
         try {
-            testee.assertNotNull(null, "i");
+            TESTEE.assertNotNull(null, "i");
             fail("Must fail for null argument");
         } catch (RuntimeException e) {
             assertEquals("Argument [i] cannot be null", e.getMessage());
@@ -97,10 +97,10 @@ public class LocalizedAssertTest {
      */
     @Test
     public final void testAssertNull() {
-        Integer i = testee.assertNull(null, "i");
+        Integer i = TESTEE.assertNull(null, "i");
         assertNull(i);
         try {
-            testee.assertNull(1, "i");
+            TESTEE.assertNull(1, "i");
             fail("Must fail for not null argument");
         } catch (RuntimeException e) {
             assertEquals("Argument [i] must be null", e.getMessage());
@@ -113,16 +113,16 @@ public class LocalizedAssertTest {
      */
     @Test
     public final void testAssertNotBlank() {
-        String os = testee.assertNotBlank("Linux", "os");
+        String os = TESTEE.assertNotBlank("Linux", "os");
         assertEquals("Linux", os);
         try {
-            testee.assertNotBlank(null, "os");
+            TESTEE.assertNotBlank(null, "os");
             fail("Must fail for null argument");
         } catch (RuntimeException e) {
             assertEquals("Argument [os] cannot be blank", e.getMessage());
         }
         try {
-            testee.assertNotBlank("", "os");
+            TESTEE.assertNotBlank("", "os");
             fail("Must fail for blank argument");
         } catch (RuntimeException e) {
             assertEquals("Argument [os] cannot be blank", e.getMessage());
@@ -135,12 +135,12 @@ public class LocalizedAssertTest {
      */
     @Test
     public final void testAsserBlank() {
-        String os = testee.assertBlank(null, "os");
+        String os = TESTEE.assertBlank(null, "os");
         assertNull(os);
-        os = testee.assertBlank("", "os");
+        os = TESTEE.assertBlank("", "os");
         assertEquals("", os);
         try {
-            testee.assertBlank("Some os", "os");
+            TESTEE.assertBlank("Some os", "os");
             fail("Must fail for non blank argument");
         } catch (RuntimeException e) {
             assertEquals("Argument [os] must be blank", e.getMessage());

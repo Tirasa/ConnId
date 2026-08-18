@@ -47,7 +47,7 @@ public final class ConfigurationTests {
 
     private static final Log LOG = Log.getLog(ConfigurationTests.class);
 
-    private ConfigurationProperties _configProperties = null;
+    private ConfigurationProperties configProperties = null;
 
     /**
      * Initialize the unit test
@@ -55,7 +55,7 @@ public final class ConfigurationTests {
     @BeforeEach
     public void init() {
         DataProvider dataProvider = ConnectorHelper.createDataProvider();
-        _configProperties = ConnectorHelper.getConfigurationProperties(dataProvider);
+        configProperties = ConnectorHelper.getConfigurationProperties(dataProvider);
     }
 
     /**
@@ -63,7 +63,7 @@ public final class ConfigurationTests {
      */
     @AfterEach
     public void dispose() {
-        _configProperties = null;
+        configProperties = null;
     }
 
     /**
@@ -71,14 +71,14 @@ public final class ConfigurationTests {
      */
     @Test
     public void testPropertiesType() {
-        assertNotNull(_configProperties);
+        assertNotNull(configProperties);
 
-        List<String> propertyNames = _configProperties.getPropertyNames();
+        List<String> propertyNames = configProperties.getPropertyNames();
         assertNotNull(propertyNames);
 
         // go through the properties and check the type
         propertyNames.forEach(propertyName -> {
-            ConfigurationProperty property = _configProperties.getProperty(propertyName);
+            ConfigurationProperty property = configProperties.getProperty(propertyName);
             assertNotNull(property);
 
             String typeName = property.getType().getName();

@@ -25,5 +25,5 @@ package net.tirasa.connid.commons.db;
 
 public abstract class OperationBuilder {
 
-    public abstract OperationBuilder addBind(final SQLParam param);
+    public abstract OperationBuilder addBind(SQLParam param);
 }

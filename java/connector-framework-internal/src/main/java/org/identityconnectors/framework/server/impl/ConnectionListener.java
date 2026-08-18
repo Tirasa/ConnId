@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.server.impl;
 
@@ -41,7 +42,7 @@ class ConnectionListener extends CCLWatchThread {
      * small because I want the OS to manage the connect queue coming in. That
      * way it can properly turn away excessive requests
      */
-    private final static int INTERNAL_QUEUE_SIZE = 2;
+    private static final int INTERNAL_QUEUE_SIZE = 2;
 
     private static final Log LOG = Log.getLog(ConnectionListener.class);
 
@@ -71,18 +72,18 @@ class ConnectionListener extends CCLWatchThread {
      * @param server The server object
      * @param socket The socket (should already be bound)
      */
-    public ConnectionListener(ConnectorServer server, ServerSocket socket) {
+    ConnectionListener(ConnectorServer server, ServerSocket socket) {
         super("ConnectionListener");
         connectorServer = server;
         this.socket = socket;
         // idle time timeout
         threadPool =
                 new ThreadPoolExecutor(server.getMinWorkers(), server.getMaxWorkers(), 30,
-                        TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(INTERNAL_QUEUE_SIZE,
-                        true), // fair
+                        TimeUnit.SECONDS, new ArrayBlockingQueue<>(INTERNAL_QUEUE_SIZE,
+                                true), // fair
                         new CCLWatchThreadFactory());
-        LOG.ok("Initialized instance of Connection listener with min amount of worker threads: {0} ,and " +
-                "max worker threads: {1}", server.getMinWorkers(), server.getMaxWorkers());
+        LOG.ok("Initialized instance of Connection listener with min amount of worker threads: {0} ,and "
+                + "max worker threads: {1}", server.getMinWorkers(), server.getMaxWorkers());
     }
 
     @Override
@@ -102,12 +103,16 @@ class ConnectionListener extends CCLWatchThread {
                         threadPool.execute(processor);
                         break;
                     } catch (RejectedExecutionException e) {
-                        LOG.warn(e, "Execution exception occurred during Connector Server connection runtime: {0}", e.getLocalizedMessage());
+                        LOG.warn(e,
+                                "Execution exception occurred during Connector Server connection runtime: {0}",
+                                e.getLocalizedMessage());
                         try {
                             Thread.sleep(100);
                         } catch (Exception e2) {
                             /* ignore */
-                            LOG.warn(e, "Handled exception occurred during Connector Server connection runtime: {0}", e2.getLocalizedMessage());
+                            LOG.warn(e,
+                                    "Handled exception occurred during Connector Server connection runtime: {0}",
+                                    e2.getLocalizedMessage());
                         }
                     }
                 }
@@ -124,7 +129,9 @@ class ConnectionListener extends CCLWatchThread {
                         Thread.sleep(1000);
                     } catch (Exception e2) {
                         /* ignore */
-                        LOG.warn(e, "Handled exception occurred during Connector Server connection runtime: {0}", e2.getLocalizedMessage());
+                        LOG.warn(e,
+                                "Handled exception occurred during Connector Server connection runtime: {0}",
+                                e2.getLocalizedMessage());
                     }
                 }
             }
@@ -149,14 +156,13 @@ class ConnectionListener extends CCLWatchThread {
                 // shutdown and don't log the SocketException
                 markStopped();
                 // close the socket - this causes accept to throw an exception
-
                 LOG.info("About do close the Connector Server connection socket.");
                 socket.close();
-                // wait for the main listener thread to die so we don't
-                // get any new requests
-                join();
-                // wait for all in-progress requests to finish
 
+                // wait for the main listener thread to die so we don't get any new requests
+                join();
+
+                // wait for all in-progress requests to finish
                 LOG.info("Shutting down Connector Server connection thread pool.");
                 threadPool.shutdown();
 

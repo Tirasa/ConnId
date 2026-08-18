@@ -36,15 +36,15 @@ import org.identityconnectors.framework.common.FrameworkUtil;
 
 public class AttributeDeltaBuilder {
 
-    private final static String NAME_ERROR = "Name must not be blank!";
+    private static final String NAME_ERROR = "Name must not be blank!";
 
-    private final static String COLLISION_ERROR =
+    private static final String COLLISION_ERROR =
             "Collision, valuesToReplace, valuesToAdd and valuesToRemove can't be used together!";
 
-    private final static String COLLISION_ERROR_REPLACE =
+    private static final String COLLISION_ERROR_REPLACE =
             "Collision, valuesToReplace can't be used together with valuesToAdd or valuesToRemove!";
 
-    private final static String COLLISION_ERROR_ADDORREMOVE =
+    private static final String COLLISION_ERROR_ADDORREMOVE =
             "Collision, valuesToAdd or valuesToRemove can't be used together with valuesToReplace!";
 
     private String name;
@@ -371,12 +371,12 @@ public class AttributeDeltaBuilder {
         return Arrays.asList(valuesToReplace.get(0));
     }
 
-    private List<Object> addValuesInternal(final Iterable<?> values, List<Object> ListValues) {
+    private List<Object> addValuesInternal(final Iterable<?> values, List<Object> listValues) {
         if (values != null) {
             // make sure the list is ready to receive values.
             List<Object> ret = new ArrayList<>();
-            if (ListValues != null) {
-                ret.addAll(ListValues);
+            if (listValues != null) {
+                ret.addAll(listValues);
             }
             // add each value checking to make sure its correct
             for (Object v : values) {
@@ -385,7 +385,7 @@ public class AttributeDeltaBuilder {
             }
             return ret;
         }
-        return ListValues;
+        return listValues;
     }
 
     // =======================================================================

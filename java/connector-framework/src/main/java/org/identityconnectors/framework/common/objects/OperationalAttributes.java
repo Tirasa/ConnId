@@ -105,7 +105,7 @@ public final class OperationalAttributes {
     // =======================================================================
     // Helper Methods..
     // =======================================================================
-    public final static Set<String> OPERATIONAL_ATTRIBUTE_NAMES = CollectionUtil.newReadOnlySet(
+    public static final Set<String> OPERATIONAL_ATTRIBUTE_NAMES = CollectionUtil.newReadOnlySet(
             LOCK_OUT_NAME, ENABLE_NAME, ENABLE_DATE_NAME, DISABLE_DATE_NAME,
             PASSWORD_EXPIRATION_DATE_NAME, PASSWORD_NAME, CURRENT_PASSWORD_NAME,
             PASSWORD_EXPIRED_NAME, FORCE_PASSWORD_CHANGE_NAME);

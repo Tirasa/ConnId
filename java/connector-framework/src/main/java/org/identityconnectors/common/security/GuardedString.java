@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common.security;
 
@@ -61,14 +62,17 @@ public final class GuardedString {
          *
          * @param clearChars
          */
-        public void access(char[] clearChars);
+        void access(char[] clearChars);
     }
 
-    static Encryptor encryptor;
+    private static Encryptor ENCRYPTOR;
 
     private boolean readOnly;
+
     private boolean disposed;
+
     private byte[] encryptedBytes;
+
     private String base64SHA1Hash;
 
     /**
@@ -84,8 +88,7 @@ public final class GuardedString {
      * Caller is responsible for zeroing out the array of characters after the
      * call.
      *
-     * @param clearChars
-     *            The clear-text characters
+     * @param clearChars The clear-text characters
      */
     public GuardedString(char[] clearChars) {
         encryptChars(clearChars);
@@ -103,10 +106,8 @@ public final class GuardedString {
      * is merely to verify the contents of the string match an expected hash
      * value.
      *
-     * @param accessor
-     *            Accessor callback.
-     * @throws IllegalStateException
-     *             If the string has been disposed
+     * @param accessor Accessor callback.
+     * @throws IllegalStateException If the string has been disposed
      */
     public void access(Accessor accessor) {
         checkNotDisposed();
@@ -125,12 +126,9 @@ public final class GuardedString {
      * The in-memory data will be decrypted, the character will be appended, and
      * then it will be re-encrypted.
      *
-     * @param c
-     *            The character to append.
-     * @throws IllegalStateException
-     *             If the string is read-only
-     * @throws IllegalStateException
-     *             If the string has been disposed
+     * @param c The character to append.
+     * @throws IllegalStateException If the string is read-only
+     * @throws IllegalStateException If the string has been disposed
      */
     public void appendChar(char c) {
         checkNotDisposed();
@@ -161,8 +159,7 @@ public final class GuardedString {
      * Returns true if this string has been marked read-only.
      *
      * @return true if this string has been marked read-only.
-     * @throws IllegalStateException
-     *             If the string has been disposed
+     * @throws IllegalStateException If the string has been disposed
      */
     public boolean isReadOnly() {
         checkNotDisposed();
@@ -172,8 +169,7 @@ public final class GuardedString {
     /**
      * Mark this string as read-only.
      *
-     * @throws IllegalStateException
-     *             If the string has been disposed
+     * @throws IllegalStateException If the string has been disposed
      */
     public void makeReadOnly() {
         checkNotDisposed();
@@ -186,8 +182,7 @@ public final class GuardedString {
      * If this instance is read-only, the copy will not be read-only.
      *
      * @return A copy of the string.
-     * @throws IllegalStateException
-     *             If the string has been disposed
+     * @throws IllegalStateException If the string has been disposed
      */
     public GuardedString copy() {
         checkNotDisposed();
@@ -202,11 +197,9 @@ public final class GuardedString {
      * Verifies that this base-64 encoded SHA1 hash of this string matches the
      * given value.
      *
-     * @param hash
-     *            The hash to verify against.
+     * @param hash The hash to verify against.
      * @return True if the hash matches the given parameter.
-     * @throws IllegalStateException
-     *             If the string has been disposed
+     * @throws IllegalStateException If the string has been disposed
      */
     public boolean verifyBase64SHA1Hash(String hash) {
         checkNotDisposed();
@@ -246,14 +239,14 @@ public final class GuardedString {
     }
 
     private static synchronized Encryptor getEncryptor() {
-        if (encryptor == null) {
-            encryptor = EncryptorFactory.getInstance().newRandomEncryptor();
+        if (ENCRYPTOR == null) {
+            ENCRYPTOR = EncryptorFactory.getInstance().newRandomEncryptor();
         }
-        return encryptor;
+        return ENCRYPTOR;
     }
 
-    static synchronized void setEncryptor(Encryptor encryptor) {
-        GuardedString.encryptor = encryptor;
+    static synchronized void setEncryptor(final Encryptor encryptor) {
+        GuardedString.ENCRYPTOR = encryptor;
     }
 
     private byte[] decryptBytes() {
@@ -271,8 +264,7 @@ public final class GuardedString {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof GuardedString) {
-            GuardedString other = (GuardedString) o;
+        if (o instanceof GuardedString other) {
             // not the true contract of equals. however,
             // due to the high mathematical improbability of
             // two unequal strings having the same secure hash,

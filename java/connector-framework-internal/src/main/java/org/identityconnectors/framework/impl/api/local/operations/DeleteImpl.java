@@ -50,13 +50,10 @@ public class DeleteImpl extends ConnectorAPIOperationRunner implements DeleteApi
     /**
      * Calls the delete method on the Connector side.
      *
-     * @see
-     * org.identityconnectors.framework.api.operations.CreateApiOp#create(org.identityconnectors.framework.common.objects.ObjectClass,
-     * java.util.Set, org.identityconnectors.framework.common.objects.OperationOptions)
+     * @see org.identityconnectors.framework.api.operations.CreateApiOp#create
      */
     @Override
     public void delete(final ObjectClass objectClass, final Uid uid, OperationOptions options) {
-
         Assertions.nullCheck(objectClass, "objectClass");
         if (ObjectClass.ALL.equals(objectClass)) {
             throw new UnsupportedOperationException(

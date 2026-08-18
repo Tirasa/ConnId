@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.serializer;
 
@@ -28,15 +29,17 @@ import java.io.EOFException;
  * Interface for reading objects from a stream.
  */
 public interface BinaryObjectDeserializer {
+
     /**
      * Reads the next object from the stream. Throws
      * a wrapped {@link EOFException} if end of stream is reached.
+     *
      * @return The next object from the stream.
      */
-    public Object readObject();
+    Object readObject();
 
     /**
      * Closes the underlying stream
      */
-    public void close();
+    void close();
 }

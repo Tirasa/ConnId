@@ -48,7 +48,7 @@ import org.identityconnectors.framework.common.FrameworkUtil;
  */
 public final class AttributeBuilder {
 
-    private final static String NAME_ERROR = "Name must not be blank!";
+    private static final String NAME_ERROR = "Name must not be blank!";
 
     private String name;
 

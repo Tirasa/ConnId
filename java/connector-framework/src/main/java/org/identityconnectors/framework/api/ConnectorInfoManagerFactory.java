@@ -36,7 +36,7 @@ public abstract class ConnectorInfoManagerFactory {
     private static final String IMPL_NAME =
             "org.identityconnectors.framework.impl.api.ConnectorInfoManagerFactoryImpl";
 
-    private static ConnectorInfoManagerFactory instance;
+    private static ConnectorInfoManagerFactory INSTANCE;
 
     /**
      * Returns the instance of this factory.
@@ -44,16 +44,16 @@ public abstract class ConnectorInfoManagerFactory {
      * @return The instance of this factory
      */
     public static synchronized ConnectorInfoManagerFactory getInstance() {
-        if (instance == null) {
+        if (INSTANCE == null) {
             try {
                 Class<?> clazz = Class.forName(IMPL_NAME);
                 Object object = clazz.getDeclaredConstructor().newInstance();
-                instance = ConnectorInfoManagerFactory.class.cast(object);
+                INSTANCE = ConnectorInfoManagerFactory.class.cast(object);
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -63,13 +63,12 @@ public abstract class ConnectorInfoManagerFactory {
      * keyed by the list of URLs passed in. To clear the cache, call
      * {@link #clearLocalCache}.
      *
-     * @param urls
-     *            The list of bundle URLs. This list may consist of directories
-     *            consisting of un-jarred bundles and/or bundle jars.
+     * @param urls The list of bundle URLs. This list may consist of directories consisting of un-jarred bundles and/or
+     * bundle jars.
      *
      * @return The manager
-     * @throws org.identityconnectors.framework.common.exceptions.ConfigurationException
-     *             If there was any problem with any of the bundles.
+     * @throws org.identityconnectors.framework.common.exceptions.ConfigurationException If there was any problem with
+     * any of the bundles.
      */
     public abstract ConnectorInfoManager getLocalManager(URL... urls);
 
@@ -80,12 +79,10 @@ public abstract class ConnectorInfoManagerFactory {
      * keyed by the RemoteFrameworkConnectionInfo passed in. To clear the cache,
      * call {@link #clearRemoteCache}.
      *
-     * @param info
-     *            The connection information.
+     * @param info The connection information.
      *
      * @return The manager
-     * @throws RuntimeException
-     *             If there was any problem connecting
+     * @throws RuntimeException If there was any problem connecting
      */
     public abstract ConnectorInfoManager getRemoteManager(RemoteFrameworkConnectionInfo info);
 
@@ -103,15 +100,13 @@ public abstract class ConnectorInfoManagerFactory {
      * RemoteFrameworkConnectionInfo passed in. To clear the cache, call
      * {@link #clearRemoteCache}.
      *
-     * @param info
-     *            The connection information.
+     * @param info The connection information.
      *
      * @return The manager
      *
      * @since 1.2
      */
-    public abstract ConnectorInfoManager getUnCheckedRemoteManager(
-            RemoteFrameworkConnectionInfo info);
+    public abstract ConnectorInfoManager getUnCheckedRemoteManager(RemoteFrameworkConnectionInfo info);
 
     /**
      * Clears the local bundle manager cache. NOTE: Avoid using this method
@@ -125,5 +120,4 @@ public abstract class ConnectorInfoManagerFactory {
      * connector server and reset it.
      */
     public abstract void clearRemoteCache();
-
 }

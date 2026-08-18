@@ -20,8 +20,8 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.impl.api.local;
 
 import org.identityconnectors.common.pooling.ObjectPoolConfiguration;
@@ -36,10 +36,10 @@ public interface ObjectPoolHandler<T> {
      * configuration.
      *
      * @param original
-     *            custom configured instance.
+     * custom configured instance.
      * @return new instance of the {@code original} config.
      */
-    public ObjectPoolConfiguration validate(ObjectPoolConfiguration original);
+    ObjectPoolConfiguration validate(ObjectPoolConfiguration original);
 
     /**
      * Makes a new instance of the pooled object.
@@ -48,7 +48,7 @@ public interface ObjectPoolHandler<T> {
      *
      * @return new instance of T.
      */
-    public T makeObject();
+    T makeObject();
 
     /**
      * Tests the borrowed object.
@@ -57,9 +57,9 @@ public interface ObjectPoolHandler<T> {
      * borrowed from the pool.
      *
      * @param object
-     *            the pooled object.
+     * the pooled object.
      */
-    public void testObject(T object);
+    void testObject(T object);
 
     /**
      * Disposes the object.
@@ -69,9 +69,9 @@ public interface ObjectPoolHandler<T> {
      * or for reasons specific to the pool implementation.)
      *
      * @param object
-     *            The "dropped" object.
+     * The "dropped" object.
      */
-    public void disposeObject(T object);
+    void disposeObject(T object);
 
     /**
      * Releases any allocated resources.
@@ -79,5 +79,5 @@ public interface ObjectPoolHandler<T> {
      * Existing active objects will remain alive and be allowed to shutdown
      * gracefully, but no more objects will be allocated.
      */
-    public void shutdown();
+    void shutdown();
 }

@@ -19,18 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.common.objects;
 
+import java.util.Objects;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
-
-import java.util.Objects;
-
-import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
-import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
-
 
 /**
  * Definition of an object class without the attributeInfos.
@@ -51,9 +46,8 @@ public class LightweightObjectClassInfo {
      * Public only for serialization; Use LightweightObjectClassInfoBuilder instead.
      *
      * @param objectClassInfo Inheritor {@link ObjectClassInfo} class which will be simplified to
-     *                       a {@link LightweightObjectClassInfo} class
+     * a {@link LightweightObjectClassInfo} class
      */
-
     public LightweightObjectClassInfo(ObjectClassInfo objectClassInfo) {
 
         this(objectClassInfo.getType(), objectClassInfo.isContainer(),
@@ -82,7 +76,6 @@ public class LightweightObjectClassInfo {
      * @param isContainer True if this can contain other object classes.
      * @param description The description of the object class.
      */
-
     public LightweightObjectClassInfo(
             final String type,
             final boolean isContainer,
@@ -130,11 +123,13 @@ public class LightweightObjectClassInfo {
     /**
      * Returns the description of this object class.
      * Can be used to determine the potential use of the object class.
+     *
      * @return a string description of this object class
      */
     public String getDescription() {
         return description;
     }
+
     /**
      * Determines if the 'name' matches this {@link LightweightObjectClassInfo}.
      *
@@ -143,7 +138,7 @@ public class LightweightObjectClassInfo {
      * {@link LightweightObjectClassInfo}.
      */
     public boolean is(final String name) {
-        return namesEqual(type, name);
+        return NameUtil.namesEqual(type, name);
     }
 
     @Override
@@ -182,7 +177,7 @@ public class LightweightObjectClassInfo {
 
     @Override
     public int hashCode() {
-        return nameHashCode(type);
+        return NameUtil.nameHashCode(type);
     }
 
     @Override

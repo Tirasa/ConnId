@@ -24,12 +24,15 @@ package org.identityconnectors.framework.common;
 
 import org.identityconnectors.common.Version;
 
-public class FrameworkUtilTestHelpers {
+public final class FrameworkUtilTestHelpers {
 
-    private FrameworkUtilTestHelpers() {}
+    private FrameworkUtilTestHelpers() {
+    }
 
     /**
      * Allows other test packages to set a fake framework version.
+     *
+     * @param version
      */
     public static void setFrameworkVersion(Version version) {
         FrameworkUtil.setFrameworkVersion(version);

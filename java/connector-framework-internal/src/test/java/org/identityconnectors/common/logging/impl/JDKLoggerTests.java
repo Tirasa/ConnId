@@ -145,13 +145,13 @@ public class JDKLoggerTests {
         assertEquals(keys, logger.getMap().keySet());
     }
 
-    private static class CreateLogger implements Runnable {
+    private static final class CreateLogger implements Runnable {
 
-        final CyclicBarrier barier;
+        private final CyclicBarrier barier;
 
-        final JDKLogger logger;
+        private final JDKLogger logger;
 
-        final String key;
+        private final String key;
 
         private CreateLogger(CyclicBarrier barier, JDKLogger logger, String key) {
             this.barier = barier;

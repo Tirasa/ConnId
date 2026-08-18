@@ -69,8 +69,37 @@ import org.identityconnectors.framework.common.exceptions.OperationTimeoutExcept
 import org.identityconnectors.framework.common.exceptions.PasswordExpiredException;
 import org.identityconnectors.framework.common.exceptions.PermissionDeniedException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
+import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
+import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
+import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
+import org.identityconnectors.framework.common.objects.AttributeUtil;
+import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
+import org.identityconnectors.framework.common.objects.LiveSyncDelta;
+import org.identityconnectors.framework.common.objects.LiveSyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.ObjectClassInfo;
+import org.identityconnectors.framework.common.objects.ObjectClassInfoBuilder;
+import org.identityconnectors.framework.common.objects.OperationOptionInfo;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
+import org.identityconnectors.framework.common.objects.QualifiedUid;
+import org.identityconnectors.framework.common.objects.Schema;
+import org.identityconnectors.framework.common.objects.ScriptContext;
+import org.identityconnectors.framework.common.objects.ScriptContextBuilder;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
+import org.identityconnectors.framework.common.objects.SuggestedValuesBuilder;
+import org.identityconnectors.framework.common.objects.SyncDelta;
+import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.SyncDeltaType;
+import org.identityconnectors.framework.common.objects.SyncToken;
+import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.ValueListOpenness;
 import org.identityconnectors.framework.common.objects.filter.AndFilter;
 import org.identityconnectors.framework.common.objects.filter.ContainsAllValuesFilter;
 import org.identityconnectors.framework.common.objects.filter.ContainsFilter;
@@ -783,109 +812,124 @@ public class ObjectSerializationTests {
     }
 
     @Test
-    public void testExceptions() {
-        {
-            AlreadyExistsException v1 = new AlreadyExistsException("ex");
-            AlreadyExistsException v2 = (AlreadyExistsException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    public void testExceptions1() {
+        AlreadyExistsException v1 = new AlreadyExistsException("ex");
+        AlreadyExistsException v2 = (AlreadyExistsException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            ConfigurationException v1 = new ConfigurationException("ex");
-            ConfigurationException v2 = (ConfigurationException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    @Test
+    public void testExceptions2() {
+        ConfigurationException v1 = new ConfigurationException("ex");
+        ConfigurationException v2 = (ConfigurationException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            ConnectionBrokenException v1 = new ConnectionBrokenException("ex");
-            ConnectionBrokenException v2 = (ConnectionBrokenException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    @Test
+    public void testExceptions3() {
+        ConnectionBrokenException v1 = new ConnectionBrokenException("ex");
+        ConnectionBrokenException v2 = (ConnectionBrokenException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            ConnectionFailedException v1 = new ConnectionFailedException("ex");
-            ConnectionFailedException v2 = (ConnectionFailedException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    @Test
+    public void testExceptions4() {
+        ConnectionFailedException v1 = new ConnectionFailedException("ex");
+        ConnectionFailedException v2 = (ConnectionFailedException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            ConnectorException v1 = new ConnectorException("ex");
-            ConnectorException v2 = (ConnectorException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
-        {
-            ConnectorIOException v1 = new ConnectorIOException("ex");
-            ConnectorIOException v2 = (ConnectorIOException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
-        {
-            ConnectorSecurityException v1 = new ConnectorSecurityException("ex");
-            ConnectorSecurityException v2 = (ConnectorSecurityException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    @Test
+    public void testExceptions5() {
+        ConnectorException v1 = new ConnectorException("ex");
+        ConnectorException v2 = (ConnectorException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            InvalidCredentialException v1 = new InvalidCredentialException("ex");
-            InvalidCredentialException v2 = (InvalidCredentialException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    @Test
+    public void testExceptions6() {
+        ConnectorIOException v1 = new ConnectorIOException("ex");
+        ConnectorIOException v2 = (ConnectorIOException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            InvalidPasswordException v1 = new InvalidPasswordException("ex");
-            InvalidPasswordException v2 = (InvalidPasswordException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    @Test
+    public void testExceptions7() {
+        ConnectorSecurityException v1 = new ConnectorSecurityException("ex");
+        ConnectorSecurityException v2 = (ConnectorSecurityException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            PasswordExpiredException v1 = new PasswordExpiredException("ex");
-            v1.initUid(new Uid("myuid"));
-            PasswordExpiredException v2 = (PasswordExpiredException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-            assertEquals("myuid", v2.getUid().getUidValue());
-        }
+    @Test
+    public void testExceptions8() {
+        InvalidCredentialException v1 = new InvalidCredentialException("ex");
+        InvalidCredentialException v2 = (InvalidCredentialException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            OperationTimeoutException v1 = new OperationTimeoutException();
-            OperationTimeoutException v2 = (OperationTimeoutException) cloneObject(v1);
-            assertNotNull(v2);
-        }
+    @Test
+    public void testExceptions9() {
+        InvalidPasswordException v1 = new InvalidPasswordException("ex");
+        InvalidPasswordException v2 = (InvalidPasswordException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            PermissionDeniedException v1 = new PermissionDeniedException("ex");
-            PermissionDeniedException v2 = (PermissionDeniedException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    @Test
+    public void testExceptions10() {
+        PasswordExpiredException v1 = new PasswordExpiredException("ex");
+        v1.initUid(new Uid("myuid"));
+        PasswordExpiredException v2 = (PasswordExpiredException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+        assertEquals("myuid", v2.getUid().getUidValue());
+    }
 
-        {
-            UnknownUidException v1 = new UnknownUidException("ex");
-            UnknownUidException v2 = (UnknownUidException) cloneObject(v1);
-            assertEquals("ex", v2.getMessage());
-        }
+    @Test
+    public void testExceptions11() {
+        OperationTimeoutException v1 = new OperationTimeoutException();
+        OperationTimeoutException v2 = (OperationTimeoutException) cloneObject(v1);
+        assertNotNull(v2);
+    }
 
-        {
-            IllegalArgumentException v1 = new IllegalArgumentException("my msg");
-            IllegalArgumentException v2 = (IllegalArgumentException) cloneObject(v1);
-            assertEquals("my msg", v2.getMessage());
-        }
+    @Test
+    public void testExceptions12() {
+        PermissionDeniedException v1 = new PermissionDeniedException("ex");
+        PermissionDeniedException v2 = (PermissionDeniedException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            RuntimeException v1 = new RuntimeException("my msg");
-            RuntimeException v2 = (RuntimeException) cloneObject(v1);
-            assertEquals("my msg", v2.getMessage());
-        }
+    @Test
+    public void testExceptions13() {
+        UnknownUidException v1 = new UnknownUidException("ex");
+        UnknownUidException v2 = (UnknownUidException) cloneObject(v1);
+        assertEquals("ex", v2.getMessage());
+    }
 
-        {
-            Exception v1 = new Exception("my msg2");
-            Exception v2 = (Exception) cloneObject(v1);
-            assertEquals("my msg2", v2.getMessage());
-        }
+    @Test
+    public void testExceptions14() {
+        IllegalArgumentException v1 = new IllegalArgumentException("my msg");
+        IllegalArgumentException v2 = (IllegalArgumentException) cloneObject(v1);
+        assertEquals("my msg", v2.getMessage());
+    }
 
-        {
-            Throwable v1 = new Throwable("my msg3");
-            Exception v2 = (Exception) cloneObject(v1);
-            assertEquals("my msg3", v2.getMessage());
-        }
+    @Test
+    public void testExceptions15() {
+        RuntimeException v1 = new RuntimeException("my msg");
+        RuntimeException v2 = (RuntimeException) cloneObject(v1);
+        assertEquals("my msg", v2.getMessage());
+    }
 
+    @Test
+    public void testExceptions16() {
+        Exception v1 = new Exception("my msg2");
+        Exception v2 = (Exception) cloneObject(v1);
+        assertEquals("my msg2", v2.getMessage());
+    }
+
+    @Test
+    public void testExceptions17() {
+        Throwable v1 = new Throwable("my msg3");
+        Exception v2 = (Exception) cloneObject(v1);
+        assertEquals("my msg3", v2.getMessage());
     }
 
     @Test

@@ -116,10 +116,9 @@ public class ConnectorAPIOperationRunnerProxy implements InvocationHandler {
                         //don't let pool exceptions propagate or mask other exceptions. do log it though.
                         LOG.error(e, null);
                     }
-                } //not pooled - just dispose
-                else {
-                    //dispose it not supposed to throw, but just in case, catch the exception and log it so we know about it
-                    //but don't let the exception prevent additional cleanup that needs to happen
+                } else {
+                    //dispose it not supposed to throw, but just in case, catch the exception and log it so we know
+                    // about it Ibut don't let the exception prevent additional cleanup that needs to happen
                     try {
                         connector.dispose();
                     } catch (Exception e) {

@@ -125,7 +125,7 @@ public final class SearchResult implements Serializable {
     public String toString() {
         StringBuilder bld = new StringBuilder();
         bld.append("SearchResult: ");
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("PagedResultsCookie", getPagedResultsCookie());
         map.put("RemainingPagedResults", getRemainingPagedResults());
         map.put("AllResultsReturned", isAllResultsReturned());
@@ -133,41 +133,41 @@ public final class SearchResult implements Serializable {
         return bld.toString();
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (allResultsReturned ? 1231 : 1237);
-		result = prime * result + ((pagedResultsCookie == null) ? 0 : pagedResultsCookie.hashCode());
-		result = prime * result + remainingPagedResults;
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (allResultsReturned ? 1231 : 1237);
+        result = prime * result + ((pagedResultsCookie == null) ? 0 : pagedResultsCookie.hashCode());
+        result = prime * result + remainingPagedResults;
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		SearchResult other = (SearchResult) obj;
-		if (allResultsReturned != other.allResultsReturned) {
-			return false;
-		}
-		if (pagedResultsCookie == null) {
-			if (other.pagedResultsCookie != null) {
-				return false;
-			}
-		} else if (!pagedResultsCookie.equals(other.pagedResultsCookie)) {
-			return false;
-		}
-		if (remainingPagedResults != other.remainingPagedResults) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        SearchResult other = (SearchResult) obj;
+        if (allResultsReturned != other.allResultsReturned) {
+            return false;
+        }
+        if (pagedResultsCookie == null) {
+            if (other.pagedResultsCookie != null) {
+                return false;
+            }
+        } else if (!pagedResultsCookie.equals(other.pagedResultsCookie)) {
+            return false;
+        }
+        if (remainingPagedResults != other.remainingPagedResults) {
+            return false;
+        }
+        return true;
+    }
 }

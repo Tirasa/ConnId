@@ -20,8 +20,8 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.server.impl;
 
 import java.net.InetAddress;
@@ -42,8 +42,11 @@ import org.identityconnectors.framework.server.ConnectorServer;
 public class ConnectorServerImpl extends ConnectorServer {
 
     private ConnectionListener listener;
+
     private CountDownLatch stopLatch;
+
     private Long startDate = null;
+
     private static final Log LOG = Log.getLog(ConnectorServerImpl.class);
 
     @Override
@@ -58,7 +61,6 @@ public class ConnectorServerImpl extends ConnectorServer {
 
     @Override
     public void start() {
-
         LOG.info("Starting Connector Server.");
 
         if (isStarted()) {
@@ -76,15 +78,15 @@ public class ConnectorServerImpl extends ConnectorServer {
         factory.getLocalManager(getBundleURLs(), getBundleParentClassLoader());
 
         final ServerSocket socket = createServerSocket();
-        final ConnectionListener listener = new ConnectionListener(this, socket);
-        listener.start();
+        final ConnectionListener localListener = new ConnectionListener(this, socket);
+        localListener.start();
         stopLatch = new CountDownLatch(1);
         startDate = System.currentTimeMillis();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(startDate);
         LOG.info("Connector Server started at {0}", calendar.getTime());
-        this.listener = listener;
+        this.listener = localListener;
     }
 
     private ServerSocket createServerSocket() {
@@ -106,15 +108,14 @@ public class ConnectorServerImpl extends ConnectorServer {
 
             if (ifAddress == null) {
 
-                LOG.ok("Creating server socket with the following parameters, port = {0}, max connections {1}"
-                        , String.valueOf(port), String.valueOf(maxConnections));
+                LOG.ok("Creating server socket with the following parameters, port = {0}, max connections {1}",
+                         String.valueOf(port), String.valueOf(maxConnections));
                 rv = factory.createServerSocket(port, maxConnections);
             } else {
 
-
-                LOG.ok("Creating server socket with the following parameters," +
-                                " port = {0}, network interface address = {1}, max connections {2}"
-                        , String.valueOf(port), String.valueOf(maxConnections), ifAddress);
+                LOG.ok("Creating server socket with the following parameters,"
+                        + " port = {0}, network interface address = {1}, max connections {2}",
+                         String.valueOf(port), String.valueOf(maxConnections), ifAddress);
                 rv = factory.createServerSocket(port, maxConnections, ifAddress);
             }
             return rv;
@@ -126,7 +127,7 @@ public class ConnectorServerImpl extends ConnectorServer {
     private ServerSocketFactory createSSLServerSocketFactory() throws Exception {
         KeyManager[] keyManagers = null;
         // convert empty to null
-        if (getKeyManagers().size() > 0) {
+        if (!getKeyManagers().isEmpty()) {
             keyManagers = getKeyManagers().toArray(new KeyManager[getKeyManagers().size()]);
         }
         // the only way to get the default keystore is this way
@@ -162,5 +163,4 @@ public class ConnectorServerImpl extends ConnectorServer {
     public void awaitStop() throws InterruptedException {
         stopLatch.await();
     }
-
 }

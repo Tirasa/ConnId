@@ -51,9 +51,9 @@ public class StdOutLoggerTests {
 
     @Test
     public void checkLogFormat() throws Exception {
-        String MSG_EXP = "Expected message from logger attempt";
+        String msg = "Expected message from logger attempt";
         PrintStream tmp = System.out;
-        Exception EXCEPTION_EXP = new Exception();
+        Exception exception = new Exception();
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         PrintStream pstrm = new PrintStream(bout, true, "UTF-8");
         try {
@@ -61,7 +61,7 @@ public class StdOutLoggerTests {
             System.setOut(pstrm);
             // write something to the log..
             LogSpi logSpi = new StdOutLogger();
-            logSpi.log(String.class, "checkLogFormtat", Log.Level.OK, MSG_EXP, EXCEPTION_EXP);
+            logSpi.log(String.class, "checkLogFormtat", Log.Level.OK, msg, exception);
             pstrm.flush();
         } finally {
             // no matter what put it back..
@@ -70,13 +70,13 @@ public class StdOutLoggerTests {
         // okay check the results..
         String logRecord = new String(bout.toByteArray(), StandardCharsets.UTF_8);
         BufferedReader rdr = new BufferedReader(new StringReader(logRecord));
-        String records[] = rdr.readLine().split("\t");
+        String[] records = rdr.readLine().split("\t");
         Map<String, String> map = new HashMap<>();
         for (String record : records) {
-            String frag[] = record.split(":");
+            String[] frag = record.split(":");
             map.put(frag[0].trim(), frag[1].trim());
         }
-        assertEquals(map.get("Message"), MSG_EXP);
+        assertEquals(map.get("Message"), msg);
         assertEquals(map.get("Class"), String.class.getName());
         assertEquals(map.get("Level"), Log.Level.OK.toString());
         assertEquals(map.get("Thread Id"), Long.toString(Thread.currentThread().threadId()));
@@ -86,7 +86,7 @@ public class StdOutLoggerTests {
             actual.println(line);
         }
         StringPrintWriter expected = new StringPrintWriter();
-        EXCEPTION_EXP.printStackTrace(expected);
+        exception.printStackTrace(expected);
         assertEquals(actual.getString(), expected.getString());
     }
 }

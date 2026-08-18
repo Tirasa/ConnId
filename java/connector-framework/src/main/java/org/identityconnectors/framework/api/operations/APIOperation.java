@@ -30,5 +30,6 @@ public interface APIOperation {
     /**
      * Default timeout for all operations.
      */
-    public static int NO_TIMEOUT = -1;
+    int NO_TIMEOUT = -1;
+
 }

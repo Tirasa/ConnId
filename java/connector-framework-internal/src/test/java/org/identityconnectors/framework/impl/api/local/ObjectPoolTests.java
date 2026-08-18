@@ -38,29 +38,29 @@ public class ObjectPoolTests {
 
     private class MyTestConnection {
 
-        private boolean _isGood = true;
+        private boolean isGood = true;
 
         @Test
         public void test() {
-            if (!_isGood) {
+            if (!isGood) {
                 throw new ConnectorException("Connection is bad");
             }
         }
 
-        public void dispose() {
-            _isGood = false;
+        void dispose() {
+            isGood = false;
         }
 
-        public boolean isGood() {
-            return _isGood;
+        boolean isGood() {
+            return isGood;
         }
     }
 
     private class MyTestConnectionFactory implements ObjectPoolHandler<MyTestConnection> {
 
-        private boolean _createBadConnection = false;
+        private boolean createBadConnection = false;
 
-        private int _totalCreatedConnections = 0;
+        private int totalCreatedConnections = 0;
 
         @Override
         public ObjectPoolConfiguration validate(ObjectPoolConfiguration original) {
@@ -72,9 +72,9 @@ public class ObjectPoolTests {
 
         @Override
         public MyTestConnection makeObject() {
-            _totalCreatedConnections++;
+            totalCreatedConnections++;
             MyTestConnection rv = new MyTestConnection();
-            if (_createBadConnection) {
+            if (createBadConnection) {
                 rv.dispose();
             }
             return rv;
@@ -91,12 +91,12 @@ public class ObjectPoolTests {
             object.dispose();
         }
 
-        public int getTotalCreatedConnections() {
-            return _totalCreatedConnections;
+        int getTotalCreatedConnections() {
+            return totalCreatedConnections;
         }
 
-        public void setCreateBadConnection(boolean v) {
-            _createBadConnection = v;
+        void setCreateBadConnection(boolean v) {
+            createBadConnection = v;
         }
 
         @Override
@@ -106,38 +106,36 @@ public class ObjectPoolTests {
 
     private class MyTestThread extends Thread {
 
-        private final ObjectPool<MyTestConnection> _pool;
+        private final ObjectPool<MyTestConnection> pool;
 
-        private final int _numIterations;
+        private final int numIterations;
 
-        private Exception _exception;
+        private Exception exception;
 
-        public MyTestThread(ObjectPool<MyTestConnection> pool,
-                int numIterations) {
-            _pool = pool;
-            _numIterations = numIterations;
+        MyTestThread(ObjectPool<MyTestConnection> pool, int numIterations) {
+            this.pool = pool;
+            this.numIterations = numIterations;
         }
 
         @Override
         public void run() {
             try {
-                for (int i = 0; i < _numIterations; i++) {
-                    try (ObjectPoolEntry<MyTestConnection> con = _pool.borrowObject()) {
+                for (int i = 0; i < numIterations; i++) {
+                    try (ObjectPoolEntry<MyTestConnection> con = pool.borrowObject()) {
                         Thread.sleep(300);
                     }
                 }
             } catch (Exception e) {
-                _exception = e;
+                exception = e;
             }
         }
 
         public void shutdown() throws Exception {
             join();
-            if (_exception != null) {
-                throw _exception;
+            if (exception != null) {
+                throw exception;
             }
         }
-
     }
 
     @Test

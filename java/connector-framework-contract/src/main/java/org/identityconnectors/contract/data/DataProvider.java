@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.contract.data;
 
@@ -46,7 +47,7 @@ public interface DataProvider {
      * @return
      * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
      */
-    public Object get(Class<?> dataTypeName, String name,
+    Object get(Class<?> dataTypeName, String name,
             String componentName, int sequenceNumber, boolean isMultivalue);
 
     /**
@@ -58,8 +59,7 @@ public interface DataProvider {
      * @return
      * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
      */
-    public Object get(Class<?> dataTypeName, String name,
-            String componentName);
+    Object get(Class<?> dataTypeName, String name, String componentName);
 
     /**
      * Gets data value by the specified parameters
@@ -70,8 +70,7 @@ public interface DataProvider {
      * @return
      * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
      */
-    public String getString(String name,
-            String componentName, int sequenceNumber);
+    String getString(String name, String componentName, int sequenceNumber);
 
     /**
      * Gets data value by the specified parameters
@@ -81,43 +80,43 @@ public interface DataProvider {
      * @return
      * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
      */
-    public String getString(String name,
-            String componentName);
+    String getString(String name, String componentName);
 
     /**
      * Gets data value by the specified parameters
+     *
      * @param propName
      *
      * @return
      * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
      */
-    public Object getConnectorAttribute(String propName);
+    Object getConnectorAttribute(String propName);
 
     /**
      * Gets test suite attribute
+     *
      * @param propName
      *
      * @return
      * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
      */
-    public Object getTestSuiteAttribute(String propName);
+    Object getTestSuiteAttribute(String propName);
 
     /**
      * Gets test suite attribute
+     *
      * @param propName
      *
      * @return
      * @throws org.identityconnectors.contract.exceptions.ObjectNotFoundException
      */
-    public Object getTestSuiteAttribute(String propName,
-            String testName);
+    Object getTestSuiteAttribute(String propName, String testName);
 
     /* *********** METHODS FOR UNIT TESTS ************** */
-
     /**
      * Acquire a property value for given name
      */
-    public Object get(String name);
+    Object get(String name);
 
     /**
      * Aquire a property value marked with given iteration,
@@ -127,7 +126,7 @@ public interface DataProvider {
      * @param sequenceNumber
      * @return the property value
      */
-    public Object get(String name, int sequenceNumber);
+    Object get(String name, int sequenceNumber);
 
     /**
      * <p>
@@ -156,26 +155,26 @@ public interface DataProvider {
      * @param clazz the type of returned random object
      * @return randomly generated object with content based on given type.
      */
-    public Object generate(String pattern, Class<?> clazz);
+    Object generate(String pattern, Class<?> clazz);
 
     /**
      * generates a random string dynamically.
      * {@link DataProvider#generate(String, Class)}
      */
-    public Object generate(String pattern);
+    Object generate(String pattern);
 
     /* ***************** ADDITIONAL PROPERTY UTILS ************** */
     /**
      * adds to 'cfg' the complete map defined by property 'propertyName'
      *
      * @param propertyName
-     *            the name of property which represents the submap that will be
-     *            converted to configuration
+     * the name of property which represents the submap that will be
+     * converted to configuration
      * @param cfg
-     *            the configuration that will be updated by information from
-     *            property 'propertyName'
-     *            <p>
-     *            Sample usage:<br>
+     * the configuration that will be updated by information from
+     * property 'propertyName'
+     * <p>
+     * Sample usage:<br>
      *
      * <pre>
      *     static final String DEFAULT_CONFIGURATINON = "configuration.init"
@@ -194,12 +193,13 @@ public interface DataProvider {
      *       init.port="boo"
      *     }
      * </pre>
+     *
      * @throws NoSuchMethodException the Setter method for the property in the configuration does not exist
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      * @throws SecurityException
      */
-    public void loadConfiguration(final String propertyName, Configuration cfg);
+    void loadConfiguration(String propertyName, Configuration cfg);
 
     /**
      * converts the given property submap to Attribute set.
@@ -225,11 +225,9 @@ public interface DataProvider {
      *     }
      * </pre>
      */
-    public Set<Attribute> getAttributeSet(final String propertySetName);
+    Set<Attribute> getAttributeSet(String propertySetName);
 
     /* ************************************************* */
-
     /** free the allocated resources */
-    public void dispose();
-
+    void dispose();
 }

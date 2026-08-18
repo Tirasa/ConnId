@@ -39,7 +39,7 @@ import org.identityconnectors.framework.common.exceptions.OperationTimeoutExcept
 
 public class BufferedResultsProxy implements InvocationHandler {
 
-    private final static Log LOG = Log.getLog(BufferedResultsProxy.class);
+    private static final Log LOG = Log.getLog(BufferedResultsProxy.class);
 
     private final Object target;
 
@@ -83,12 +83,11 @@ public class BufferedResultsProxy implements InvocationHandler {
 
         private Object result = null;
 
-        public BufferedResultsHandler(Method method, Object target, Object[] arguments,
-                int bufferSize, long timeoutMillis) {
+        BufferedResultsHandler(Method method, Object target, Object[] arguments, int bufferSize, long timeoutMillis) {
             this.method = method;
             this.target = target;
             this.arguments = arguments;
-            buffer = new ArrayBlockingQueue<Object>(bufferSize);
+            buffer = new ArrayBlockingQueue<>(bufferSize);
             this.timeoutMillis = timeoutMillis;
         }
 
@@ -203,9 +202,9 @@ public class BufferedResultsProxy implements InvocationHandler {
             } else if (obj == DONE) {
                 stop(true); // stop and wait
                 return null;
-            } else if (obj instanceof RuntimeException) {
+            } else if (obj instanceof RuntimeException runtimeException) {
                 stop(true); // stop and wait
-                throw (RuntimeException) obj;
+                throw runtimeException;
             } else if (obj instanceof Error) {
                 stop(true); // stop and wait
                 throw (Error) obj;

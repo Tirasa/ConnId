@@ -19,8 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.spi;
 
 /**
@@ -55,6 +55,5 @@ public interface StatefulConfiguration extends Configuration {
     /**
      * Release any allocated resources.
      */
-    public void release();
-
+    void release();
 }

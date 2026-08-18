@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -31,6 +32,7 @@ import org.identityconnectors.framework.common.objects.ConnectorObject;
 public class ContainsAllValuesFilter extends AttributeFilter {
 
     private final String name;
+
     private final List<Object> values;
 
     /**
@@ -58,11 +60,11 @@ public class ContainsAllValuesFilter extends AttributeFilter {
     public boolean accept(BaseObject obj) {
         Attribute found = obj.getAttributeByName(name);
         if (found != null) {
-            // TODO: possible optimization using 'Set'
-        	List<Object> value = found.getValue();
-        	if (value == null) {
-        		throw new IllegalStateException("Null value found in attribute "+name+" of connector object "+obj);
-        	}
+            List<Object> value = found.getValue();
+            if (value == null) {
+                throw new IllegalStateException(
+                        "Null value found in attribute " + name + " of connector object " + obj);
+            }
             return value.containsAll(values);
         }
         return false;
@@ -78,7 +80,7 @@ public class ContainsAllValuesFilter extends AttributeFilter {
     public <R, P> R accept(FilterVisitor<R, P> v, P p) {
         return v.visitContainsAllValuesFilter(p, this);
     }
-    
+
     @Override
     public String toString() {
         StringBuilder bld = new StringBuilder();

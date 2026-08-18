@@ -19,22 +19,26 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api.local;
 
 import org.identityconnectors.common.Pair;
 
-class BundleKey extends Pair<String,String> {
-    public BundleKey() {
+class BundleKey extends Pair<String, String> {
 
+    BundleKey() {
     }
-    public BundleKey(String name, String version) {
-        super(name,version);
+
+    BundleKey(String name, String version) {
+        super(name, version);
     }
+
     public String getName() {
-        return first;
+        return getKey();
     }
+
     public String getVersion() {
-        return second;
+        return getValue();
     }
 }

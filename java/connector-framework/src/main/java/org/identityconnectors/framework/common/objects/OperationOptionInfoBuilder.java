@@ -20,13 +20,16 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2015-2016 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
 import org.identityconnectors.common.security.GuardedString;
 
 public final class OperationOptionInfoBuilder {
+
     private String name;
+
     private Class<?> type;
 
     public OperationOptionInfoBuilder() {
@@ -71,7 +74,7 @@ public final class OperationOptionInfoBuilder {
     public static OperationOptionInfo buildAttributesToGet() {
         return build(OperationOptions.OP_ATTRIBUTES_TO_GET, String[].class);
     }
-    
+
     public static OperationOptionInfo buildReturnDefaultAttributes() {
         return build(OperationOptions.OP_RETURN_DEFAULT_ATTRIBUTES, Boolean.class);
     }
@@ -107,11 +110,11 @@ public final class OperationOptionInfoBuilder {
     public static OperationOptionInfo buildSortKeys() {
         return build(OperationOptions.OP_SORT_KEYS, SortKey.class);
     }
-    
+
     public static OperationOptionInfo buildAllowPartialResults() {
         return build(OperationOptions.OP_ALLOW_PARTIAL_RESULTS, Boolean.class);
     }
-    
+
     public static OperationOptionInfo buildAllowPartialAttributeValues() {
         return build(OperationOptions.OP_ALLOW_PARTIAL_ATTRIBUTE_VALUES, Boolean.class);
     }

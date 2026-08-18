@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -48,7 +49,7 @@ public interface SearchOp<T> extends SPIOperation {
      * @return A filter translator. This must not be <code>null</code>. A <code>null</code> return value will cause the
      * API (<code>SearchApiOp</code>) to throw {@link NullPointerException}.
      */
-    public FilterTranslator<T> createFilterTranslator(ObjectClass objectClass, OperationOptions options);
+    FilterTranslator<T> createFilterTranslator(ObjectClass objectClass, OperationOptions options);
 
     /**
      * ConnectorFacade calls this method once for each native query that the
@@ -67,6 +68,5 @@ public interface SearchOp<T> extends SPIOperation {
      * @param options Additional options that impact the way this operation is run. If the caller passes null, the
      * framework will convert this into an empty set of options, so SPI need not guard against options being null.
      */
-    public void executeQuery(ObjectClass objectClass, T query, ResultsHandler handler, OperationOptions options);
-
+    void executeQuery(ObjectClass objectClass, T query, ResultsHandler handler, OperationOptions options);
 }

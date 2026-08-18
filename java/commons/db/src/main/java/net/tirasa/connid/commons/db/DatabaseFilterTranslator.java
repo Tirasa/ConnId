@@ -47,9 +47,9 @@ import org.identityconnectors.framework.common.objects.filter.StartsWithFilter;
  */
 public abstract class DatabaseFilterTranslator extends AbstractFilterTranslator<FilterWhereBuilder> {
 
-    ObjectClass oclass;
+    private final ObjectClass oclass;
 
-    OperationOptions options;
+    private final OperationOptions options;
 
     /**
      * DatabaseFilterTranslator translate filters to database WHERE clause
@@ -67,16 +67,20 @@ public abstract class DatabaseFilterTranslator extends AbstractFilterTranslator<
     }
 
     @Override
-    protected FilterWhereBuilder createAndExpression(FilterWhereBuilder leftExpression,
+    protected FilterWhereBuilder createAndExpression(
+            FilterWhereBuilder leftExpression,
             FilterWhereBuilder rightExpression) {
+
         FilterWhereBuilder build = createBuilder();
         build.join("AND", leftExpression, rightExpression);
         return build;
     }
 
     @Override
-    protected FilterWhereBuilder createOrExpression(FilterWhereBuilder leftExpression,
+    protected FilterWhereBuilder createOrExpression(
+            FilterWhereBuilder leftExpression,
             FilterWhereBuilder rightExpression) {
+
         FilterWhereBuilder build = createBuilder();
         build.join("OR", leftExpression, rightExpression);
         return build;

@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -43,5 +44,5 @@ public interface ResultsHandler {
      * @throws RuntimeException the implementor should throw a {@link RuntimeException} that wraps any native exception
      * (or that describes any other problem during execution) that is serious enough to stop the iteration.
      */
-    boolean handle(final ConnectorObject connectorObject);
+    boolean handle(ConnectorObject connectorObject);
 }

@@ -19,13 +19,11 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import org.identityconnectors.common.CollectionUtil;
 
 /**
  * Helps implementing {@link ConnectorObject} and {@link ConnectorObjectIdentification}.
@@ -42,6 +40,4 @@ public abstract class BaseConnectorObject extends BaseObject {
      * (We have no other way of telling what attributes are the identifiers.)
      */
     public abstract ConnectorObjectIdentification getIdentification();
-
-
 }

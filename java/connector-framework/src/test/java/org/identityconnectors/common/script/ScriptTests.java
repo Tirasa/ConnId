@@ -35,9 +35,7 @@ public class ScriptTests {
         Script s1 = new Script("Groovy", "print 'foo'");
         assertEquals(s1.getScriptLanguage(), "Groovy");
         assertEquals(s1.getScriptText(), "print 'foo'");
-        Script s2 =
-                new ScriptBuilder().setScriptLanguage("Groovy").setScriptText("print 'foo'")
-                        .build();
+        Script s2 = new ScriptBuilder().setScriptLanguage("Groovy").setScriptText("print 'foo'").build();
         assertEquals(s1, s2);
         assertEquals(s1.hashCode(), s2.hashCode());
     }

@@ -24,8 +24,6 @@
  */
 package org.identityconnectors.framework.impl.api.local;
 
-import static org.identityconnectors.framework.common.FrameworkUtil.isSupportedConfigurationType;
-
 import java.beans.BeanInfo;
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.Introspector;
@@ -41,8 +39,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeSet;
 import org.identityconnectors.common.ReflectionUtil;
 import org.identityconnectors.common.StringUtil;
@@ -59,12 +57,11 @@ import org.identityconnectors.framework.spi.ConfigurationClass;
 import org.identityconnectors.framework.spi.ConfigurationProperty;
 import org.identityconnectors.framework.spi.operations.SPIOperation;
 
-
 /**
  * Class for translating from a Java class to ConfigurationProperties and from
  * ConfigurationProperties to a java class.
  */
-public class JavaClassProperties {
+public final class JavaClassProperties {
 
     /**
      * Given a configuration class, creates the configuration properties for it.
@@ -147,7 +144,7 @@ public class JavaClassProperties {
             } else {
                 type = desc.getPropertyType();
             }
-            if (!isSupportedConfigurationType(type)) {
+            if (!FrameworkUtil.isSupportedConfigurationType(type)) {
                 final String MSG = "Property type ''{0}'' is not supported.";
                 throw new IllegalArgumentException(MessageFormat.format(MSG, type));
             }
@@ -306,7 +303,7 @@ public class JavaClassProperties {
                 continue;
             }
             if (filterUnsupported && descriptor.getPropertyType() != null
-                    && !isSupportedConfigurationType(descriptor.getPropertyType())) {
+                    && !FrameworkUtil.isSupportedConfigurationType(descriptor.getPropertyType())) {
 
                 //Silently ignore if the property type is not supported
                 continue;
@@ -327,7 +324,7 @@ public class JavaClassProperties {
                 props.load(resource);
             } catch (IOException e) {
                 // Silently ignoring
-            };
+            }
         }
         return props;
     }
@@ -343,5 +340,8 @@ public class JavaClassProperties {
             opts = getter.getAnnotation(ConfigurationProperty.class);
         }
         return opts;
+    }
+
+    private JavaClassProperties() {
     }
 }

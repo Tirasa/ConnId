@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -35,13 +36,13 @@ public interface ConnectorMessages {
      * Formats the given message key in the {@link CurrentLocale}.
      *
      * @param key
-     *            The message key to format.
+     * The message key to format.
      * @param dflt
-     *            The default message if key is not found. If null, defaults to
-     *            key.
+     * The default message if key is not found. If null, defaults to
+     * key.
      * @param args
-     *            Parameters with which to format the message.
+     * Parameters with which to format the message.
      * @return The formatted string.
      */
-    public String format(String key, String dflt, Object... args);
+    String format(String key, String dflt, Object... args);
 }

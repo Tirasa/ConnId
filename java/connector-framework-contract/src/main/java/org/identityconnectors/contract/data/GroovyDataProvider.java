@@ -151,10 +151,10 @@ public class GroovyDataProvider implements DataProvider {
 
     /* **** for snapshot generating **** */
     /** command line switch for snapshots */
-    private final String PARAM_PROPERTY_OUT_FILE = "test.parameters.outFile";
+    private static final String PARAM_PROPERTY_OUT_FILE = "test.parameters.outFile";
 
     /** command line switch for creating queried properties' dump */
-    private final String PARAM_QUERIED_PROPERTY_OUT_FILE = "test.parameters.outQueriedFile";
+    private static final String PARAM_QUERIED_PROPERTY_OUT_FILE = "test.parameters.outQueriedFile";
 
     /** buffer for queried properties log */
     private StringBuilder dumpBuffer = null;
@@ -166,19 +166,19 @@ public class GroovyDataProvider implements DataProvider {
     private StringBuilder dumpBufferDefaultVal = null;
 
     /** output file for concatenated snapshots */
-    private File _propertyOutFile = null;
+    private File propertyOutFile = null;
 
     /** output file for queried properties dump */
-    private File _queriedPropsOutFile = null;
+    private File queriedPropsOutFile = null;
 
-    static final String ASSIGNMENT_MARK = "=";
+    protected static final String ASSIGNMENT_MARK = "=";
 
-    private final String FOUND_MSG = "found";
+    private static final String FOUND_MSG = "found";
 
     /** Turn on debugging prefixes in parsing. Output: System.out */
-    private final boolean DEBUG_ON = false;
+    private static final boolean DEBUG_ON = false;
 
-    private final String EMPTY_PREFIX = "";
+    private static final String EMPTY_PREFIX = "";
 
     /**
      * default constructor
@@ -250,12 +250,12 @@ public class GroovyDataProvider implements DataProvider {
         String pOut = System.getProperty(PARAM_QUERIED_PROPERTY_OUT_FILE);
         if (StringUtil.isNotBlank(pOut)) {
             try {
-                _queriedPropsOutFile = Path.of(pOut).toFile();
-                if (!_queriedPropsOutFile.exists()) {
-                    _queriedPropsOutFile.createNewFile();
+                queriedPropsOutFile = Path.of(pOut).toFile();
+                if (!queriedPropsOutFile.exists()) {
+                    queriedPropsOutFile.createNewFile();
                 }
-                if (!_queriedPropsOutFile.canWrite()) {
-                    _queriedPropsOutFile = null;
+                if (!queriedPropsOutFile.canWrite()) {
+                    queriedPropsOutFile = null;
                     LOG.warn("Unable to write to ''{0}'' file, the test parameters will not be stored", pOut);
                 } else {
                     LOG.info("Storing parameter values to ''{0}'', you can rerun the test "
@@ -276,12 +276,12 @@ public class GroovyDataProvider implements DataProvider {
         String pOut = System.getProperty(PARAM_PROPERTY_OUT_FILE);
         if (StringUtil.isNotBlank(pOut)) {
             try {
-                _propertyOutFile = Path.of(pOut).toFile();
-                if (!_propertyOutFile.exists()) {
-                    _propertyOutFile.createNewFile();
+                propertyOutFile = Path.of(pOut).toFile();
+                if (!propertyOutFile.exists()) {
+                    propertyOutFile.createNewFile();
                 }
-                if (!_propertyOutFile.canWrite()) {
-                    _propertyOutFile = null;
+                if (!propertyOutFile.canWrite()) {
+                    propertyOutFile = null;
                     LOG.warn("Unable to write to ''{0}'' file, the test parameters will not be stored", pOut);
                 } else {
                     LOG.info("Storing parameter values to ''{0}'', you can rerun the test "
@@ -356,7 +356,7 @@ public class GroovyDataProvider implements DataProvider {
                 }
             }
         } finally {
-            if (_queriedPropsOutFile != null) {
+            if (queriedPropsOutFile != null) {
                 logQueriedProperties(o, name, type, isDefaultValue, isFound);
             }
         }
@@ -387,10 +387,10 @@ public class GroovyDataProvider implements DataProvider {
                 Boolean.toString(isDefaultValue), FOUND_MSG, Boolean.toString(isFound))
                 + ((queriedObject != null) ? (" value: " + flatten(queriedObject)) : "") + "\n";
         this.dumpBuffer.append(appendInfo);
-        if (isFound == false) {
+        if (!isFound) {
             this.dumpBufferNotFound.append(appendInfo);
         }
-        if (isDefaultValue == true) {
+        if (isDefaultValue) {
             this.dumpBufferDefaultVal.append(appendInfo);
         }
     }
@@ -406,11 +406,9 @@ public class GroovyDataProvider implements DataProvider {
 
         if (!cache.containsKey(name)) {
             try {
-
                 // get the property for given name
                 // (in case property is not found, ObjectNotFoundException will be thrown.)
                 response = configObjectRecursiveGet(name, this.configObject);
-
             } catch (ObjectNotFoundException onfe) {
                 // we did not found the property for given name, try to search it recursively
                 // by deleting the first prefix
@@ -424,8 +422,8 @@ public class GroovyDataProvider implements DataProvider {
                 } else {
                     throw new ObjectNotFoundException(
                             "Can't find object for key:  " + name);
-                }// fi
-            }// catch
+                }
+            }
         } else {
             response = cache.get(name);
         }
@@ -463,8 +461,7 @@ public class GroovyDataProvider implements DataProvider {
                         + "it can collide with attribute value definition.";
                 fail(MSG.formatted(name, o.toString(), name));
                 return null;
-            }// fi inner
-
+            }
         } else {
             /*
              * request the property name from parsed config file
@@ -493,7 +490,7 @@ public class GroovyDataProvider implements DataProvider {
             }
         } else {
             result = resolvePropObject(result);
-        }// fi
+        }
         return result;
     }
 
@@ -653,7 +650,7 @@ public class GroovyDataProvider implements DataProvider {
 
         StringBuilder sbPath = new StringBuilder();
         if (sequenceNumber != SINGLE_VALUE_MARKER) {
-            sbPath.append("i");// sequence marker e.g.: i1, i2, i3 ...
+            sbPath.append("i"); // sequence marker e.g.: i1, i2, i3 ...
             sbPath.append(sequenceNumber);
             sbPath.append(PROPERTY_SEPARATOR);
             cache.put("param.sequenceNumber", "i" + String.valueOf(sequenceNumber));
@@ -662,8 +659,7 @@ public class GroovyDataProvider implements DataProvider {
         sbPath.append(componentName);
         sbPath.append(".");
         sbPath.append(name);
-        LOG.info("getting data for ''{0}'', type: ''{1}''", sbPath,
-                dataTypeName);
+        LOG.info("getting data for ''{0}'', type: ''{1}''", sbPath, dataTypeName);
 
         cache.put("param.componentName", componentName);
         cache.put("param.name", name);
@@ -674,10 +670,8 @@ public class GroovyDataProvider implements DataProvider {
             // call get to resolve the property value
             Object obj = get(sbPath.toString(), shortTypeName, true);
 
-            LOG.info("Fully resolved ''{0}'' to value ''{1}''", sbPath
-                    .toString(), obj);
+            LOG.info("Fully resolved ''{0}'' to value ''{1}''", sbPath.toString(), obj);
             return obj;
-
         } catch (ObjectNotFoundException ex) {
             LOG.info("Unable to find data for ''{0}''", sbPath.toString());
             throw ex;
@@ -876,7 +870,7 @@ public class GroovyDataProvider implements DataProvider {
      */
     Object writeDataToFile() {
         // do nothing if not having out file
-        if (_propertyOutFile == null) {
+        if (propertyOutFile == null) {
             return null;
         }
 
@@ -884,14 +878,14 @@ public class GroovyDataProvider implements DataProvider {
         String result = flatten(configObject);
 
         try (Writer fw = Files.newBufferedWriter(
-                _propertyOutFile.toPath(),
+                propertyOutFile.toPath(),
                 StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
 
             fw.append("\n\n\n ============================ NEW TEST ==================== \n\n\n");
             fw.append(result);
         } catch (IOException e) {
-            LOG.warn("Writing to contract test property out file failed ''{0}''", _propertyOutFile.getAbsolutePath());
+            LOG.warn("Writing to contract test property out file failed ''{0}''", propertyOutFile.getAbsolutePath());
         }
 
         return result;
@@ -902,12 +896,12 @@ public class GroovyDataProvider implements DataProvider {
      */
     private String writeQueriedDumpToFile() {
         // do nothing if not having out file
-        if (_queriedPropsOutFile == null) {
+        if (queriedPropsOutFile == null) {
             return null;
         }
 
         try (Writer fw = Files.newBufferedWriter(
-                _queriedPropsOutFile.toPath(),
+                queriedPropsOutFile.toPath(),
                 StandardCharsets.UTF_8,
                 StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {
 
@@ -919,7 +913,7 @@ public class GroovyDataProvider implements DataProvider {
                 fw.append("every property was found\n");
             } else {
                 fw.append("The following properties WERE NOT FOUND:\n");
-            }//fi
+            }
             fw.append(this.dumpBufferNotFound.toString() + "\n");
             fw.append("  </missingProperties>\n");
             // PROPS WITH DEFAULT VALUE
@@ -937,10 +931,10 @@ public class GroovyDataProvider implements DataProvider {
             fw.append(this.dumpBuffer.toString() + "\n");
         } catch (IOException e) {
             LOG.warn("Writing to contract test property out file failed ''{0}''",
-                    _queriedPropsOutFile.getAbsolutePath());
+                    queriedPropsOutFile.getAbsolutePath());
         }
 
-        LOG.info("Dump file of queried properties written to: ''{0}''", _queriedPropsOutFile.getAbsolutePath());
+        LOG.info("Dump file of queried properties written to: ''{0}''", queriedPropsOutFile.getAbsolutePath());
 
         return this.dumpBuffer.toString();
     }
@@ -954,7 +948,7 @@ public class GroovyDataProvider implements DataProvider {
      * for foo.bar.boo, when we are flattening bar, prefix contains foo.
      */
     private String flatten(Object obj, Chooser choice, String prefix) {
-        String svalue = null;
+        String svalue;
 
         if (obj instanceof ConfigObject) {
             svalue = flattenCO(obj, prefix);
@@ -969,12 +963,16 @@ public class GroovyDataProvider implements DataProvider {
             // resolve as "Object" and use quotes, if needed
             /* simply print out a string for all types of objects, that are not recognized */
             String output = (obj == null) ? "null" : obj.toString();
-            switch (choice) {
+            svalue = switch (choice) {
                 case QUOTED ->
-                    svalue = "\"%s\"".formatted(output);
+                    "\"%s\"".formatted(output);
+
                 case NOT_QUOTED ->
-                    svalue = output;
-            }
+                    output;
+
+                default ->
+                    null;
+            };
         }
 
         return svalue;
@@ -1019,7 +1017,7 @@ public class GroovyDataProvider implements DataProvider {
             }
             if (lazy instanceof Get) {
                 assertTrue(value instanceof String);
-                resolvedValue = "Lazy.get(\"" + value + "\")";//get((String)value, null, false);
+                resolvedValue = "Lazy.get(\"" + value + "\")"; //get((String)value, null, false);
             } else if (lazy instanceof Random randomLazy) {
                 // IF there is the queried value in cache, use it.
                 // OTHERWISE put Lazy.random("originalPattern", typeArgument);
@@ -1065,7 +1063,7 @@ public class GroovyDataProvider implements DataProvider {
                             + flatten(entry.getKey(), Chooser.NOT_QUOTED, concatToPrefix(prefix, entry.getKey()));
                 } else {
                     key = debugStr("MID|") + flatten(entry.getKey(), concatToPrefix(prefix, entry.getKey()));
-                }// fi (first)
+                }
                 sb.append("%s%s%s".formatted(key, PROPERTY_SEPARATOR, value));
 
             } else {

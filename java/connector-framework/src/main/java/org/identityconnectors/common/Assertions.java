@@ -19,12 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common;
 
 public final class Assertions {
 
-    private final static String NULL_FORMAT = "Parameter '%s' must not be null.";
+    private static final String NULL_FORMAT = "Parameter '%s' must not be null.";
 
     private static final String BLANK_FORMAT = "Parameter '%s' must not be blank.";
 

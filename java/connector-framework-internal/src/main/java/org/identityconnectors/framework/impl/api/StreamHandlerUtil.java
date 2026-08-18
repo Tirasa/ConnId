@@ -31,7 +31,7 @@ import org.identityconnectors.framework.common.objects.SyncDelta;
 import org.identityconnectors.framework.common.objects.SyncResultsHandler;
 import org.identityconnectors.framework.spi.SearchResultsHandler;
 
-public class StreamHandlerUtil {
+public final class StreamHandlerUtil {
 
     /**
      * Adapts from a ObjectStreamHandler to a ResultsHandler (or SearchResultsHandler).
@@ -40,7 +40,7 @@ public class StreamHandlerUtil {
 
         private final ObjectStreamHandler target;
 
-        public SearchResultsHandlerAdapter(final ObjectStreamHandler target) {
+        SearchResultsHandlerAdapter(final ObjectStreamHandler target) {
             this.target = target;
         }
 
@@ -62,7 +62,7 @@ public class StreamHandlerUtil {
 
         private final ObjectStreamHandler target;
 
-        public SyncResultsHandlerAdapter(final ObjectStreamHandler target) {
+        SyncResultsHandlerAdapter(final ObjectStreamHandler target) {
             this.target = target;
         }
 
@@ -81,7 +81,7 @@ public class StreamHandlerUtil {
 
         private final Object target;
 
-        public ObjectStreamHandlerAdapter(final Class<?> targetInterface, final Object target) {
+        ObjectStreamHandlerAdapter(final Class<?> targetInterface, final Object target) {
             Assertions.nullCheck(targetInterface, "targetInterface");
             Assertions.nullCheck(target, "target");
             if (!targetInterface.isInstance(target)) {
@@ -129,4 +129,6 @@ public class StreamHandlerUtil {
         throw new UnsupportedOperationException("Unhandled case: " + interfaceType);
     }
 
+    private StreamHandlerUtil() {
+    }
 }

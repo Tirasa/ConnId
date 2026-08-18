@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -61,24 +62,23 @@ public interface UpdateApiOp extends APIOperation {
      * </ul>
      *
      * @param objectClass
-     *            the type of object to modify. Must not be null.
+     * the type of object to modify. Must not be null.
      * @param uid
-     *            the uid of the object to modify. Must not be null.
+     * the uid of the object to modify. Must not be null.
      * @param replaceAttributes
-     *            set of new {@link Attribute}. the values in this set represent
-     *            the new, merged values to be applied to the object. This set
-     *            may also include {@link OperationalAttributes operational
+     * set of new {@link Attribute}. the values in this set represent
+     * the new, merged values to be applied to the object. This set
+     * may also include {@link OperationalAttributes operational
      *            attributes}. Must not be null.
      * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
+     * additional options that impact the way this operation is run.
+     * May be null.
      * @return the {@link Uid} of the updated object in case the update changes
-     *         the formation of the unique identifier.
+     * the formation of the unique identifier.
      * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException
-     *             if the {@link Uid} does not exist on the resource.
+     * if the {@link Uid} does not exist on the resource.
      */
-    public Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> replaceAttributes,
-            OperationOptions options);
+    Uid update(ObjectClass objectClass, Uid uid, Set<Attribute> replaceAttributes, OperationOptions options);
 
     /**
      * Update the object specified by the {@link ObjectClass} and {@link Uid},
@@ -102,26 +102,17 @@ public interface UpdateApiOp extends APIOperation {
      * {@link UpdateAttributeValuesOp} from a performance and atomicity
      * standpoint.
      *
-     * @param objclass
-     *            the type of object to modify. Must not be null.
-     * @param uid
-     *            the uid of the object to modify. Must not be null.
-     * @param valuesToAdd
-     *            set of {@link Attribute} deltas. The values for the attributes
-     *            in this set represent the values to add to attributes in the
-     *            object. merged. This set must not include
-     *            {@link OperationalAttributes operational attributes}. Must not
-     *            be null.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
-     * @return the {@link Uid} of the updated object in case the update changes
-     *         the formation of the unique identifier.
+     * @param objclass the type of object to modify. Must not be null.
+     * @param uid the uid of the object to modify. Must not be null.
+     * @param valuesToAdd set of {@link Attribute} deltas. The values for the attributes in this set represent the
+     * values to add to attributes in the object. merged. This set must not include
+     * {@link OperationalAttributes operational attributes}. Must not be null.
+     * @param options additional options that impact the way this operation is run. May be null.
+     * @return the {@link Uid} of the updated object in case the update changes the formation of the unique identifier.
      * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException
-     *             if the {@link Uid} does not exist on the resource.
+     * if the {@link Uid} does not exist on the resource.
      */
-    public Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd,
-            OperationOptions options);
+    Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd, OperationOptions options);
 
     /**
      * Update the object specified by the {@link ObjectClass} and {@link Uid},
@@ -146,25 +137,15 @@ public interface UpdateApiOp extends APIOperation {
      * {@link UpdateAttributeValuesOp} from a performance and atomicity
      * standpoint.
      *
-     * @param objclass
-     *            the type of object to modify. Must not be null.
-     * @param uid
-     *            the uid of the object to modify. Must not be null.
-     * @param valuesToRemove
-     *            set of {@link Attribute} deltas. The values for the attributes
-     *            in this set represent the values to remove from attributes in
-     *            the object. merged. This set must not include
-     *            {@link OperationalAttributes operational attributes}. Must not
-     *            be null.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
-     * @return the {@link Uid} of the updated object in case the update changes
-     *         the formation of the unique identifier.
+     * @param objclass the type of object to modify. Must not be null.
+     * @param uid the uid of the object to modify. Must not be null.
+     * @param valuesToRemove set of {@link Attribute} deltas. The values for the attributes in this set represent the
+     * values to remove from attributes in the object. merged. This set must not include 
+     * {@link OperationalAttributes operational attributes}. Must not be null.
+     * @param options additional options that impact the way this operation is run. May be null.
+     * @return the {@link Uid} of the updated object in case the update changes the formation of the unique identifier.
      * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException
-     *             if the {@link Uid} does not exist on the resource.
+     * if the {@link Uid} does not exist on the resource.
      */
-    public Uid removeAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToRemove,
-            OperationOptions options);
-
+    Uid removeAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToRemove, OperationOptions options);
 }

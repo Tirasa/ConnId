@@ -62,7 +62,7 @@ public abstract class AttributesToGetResultsHandler {
         Map<String, Attribute> map = AttributeUtil.toMap(attributesToGet);
         for (String attrName : attrsToGet) {
             Attribute attr = map.get(attrName);
-            // TODO: Should we throw if the attribute is not yet it was requested?? Or do we ignore because the API
+            // Should we throw if the attribute is not yet it was requested?? Or do we ignore because the API
             // maybe asking for what the resource doesn't have??
             Optional.ofNullable(attr).ifPresent(ret::add);
         }

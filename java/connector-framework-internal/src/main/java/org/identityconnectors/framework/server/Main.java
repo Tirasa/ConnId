@@ -59,9 +59,9 @@ public final class Main {
 
     private static final String DEFAULT_LOG_SPI = "org.identityconnectors.common.logging.StdOutLogger";
 
-    private static ConnectorServer connectorServer;
+    private static ConnectorServer CONNECTOR_SERVER;
 
-    private static Log log; // Initialized lazily to avoid early initialization.
+    private static Log LOG; // Initialized lazily to avoid early initialization.
 
     private static void usage() {
         System.out.println("Usage: Main -run -properties <connectorserver.properties>");
@@ -122,7 +122,7 @@ public final class Main {
     }
 
     private static void run(Properties properties) throws Exception {
-        if (connectorServer != null) {
+        if (CONNECTOR_SERVER != null) {
             // Procrun called main() without calling stop().
             // Do not use a logging statement here to avoid initializing logging
             // too early just because a bug in procrun.
@@ -167,29 +167,29 @@ public final class Main {
             Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
         }
 
-        connectorServer = ConnectorServer.newInstance();
-        connectorServer.setPort(port);
-        connectorServer.setBundleURLs(buildBundleURLs(Path.of(bundleDirStr)));
+        CONNECTOR_SERVER = ConnectorServer.newInstance();
+        CONNECTOR_SERVER.setPort(port);
+        CONNECTOR_SERVER.setBundleURLs(buildBundleURLs(Path.of(bundleDirStr)));
         if (libDirStr != null) {
             ClassLoader cl = buildLibClassLoader(Path.of(libDirStr));
-            connectorServer.setBundleParentClassLoader(cl);
+            CONNECTOR_SERVER.setBundleParentClassLoader(cl);
 
         }
-        connectorServer.setKeyHash(keyHash);
+        CONNECTOR_SERVER.setKeyHash(keyHash);
         if (useSSLStr != null) {
             boolean useSSL = Boolean.parseBoolean(useSSLStr);
-            connectorServer.setUseSSL(useSSL);
+            CONNECTOR_SERVER.setUseSSL(useSSL);
         }
         if (ifAddress != null) {
-            connectorServer.setIfAddress(InetAddress.getByName(ifAddress));
+            CONNECTOR_SERVER.setIfAddress(InetAddress.getByName(ifAddress));
         }
-        connectorServer.start();
+        CONNECTOR_SERVER.start();
         getLog().info("Connector server listening on port " + port);
-        connectorServer.awaitStop();
+        CONNECTOR_SERVER.awaitStop();
     }
 
     public static void stop(String[] args) {
-        if (connectorServer == null) {
+        if (CONNECTOR_SERVER == null) {
             // Procrun called stop() without calling main().
             // Do not use a logging statement here to avoid initializing logging
             // too early just because a bug in procrun.
@@ -204,7 +204,7 @@ public final class Main {
             Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
         }
 
-        connectorServer.stop();
+        CONNECTOR_SERVER.stop();
         // Do not set connectorServer to null, because that way the check in run() fails
         // and we ensure that the server cannot be started twice in the same JVM.
         getLog().info("Connector server stopped");
@@ -252,10 +252,13 @@ public final class Main {
         return rv;
     }
 
-    private synchronized static Log getLog() {
-        if (log == null) {
-            log = Log.getLog(Main.class);
+    private static synchronized Log getLog() {
+        if (LOG == null) {
+            LOG = Log.getLog(Main.class);
         }
-        return log;
+        return LOG;
+    }
+
+    private Main() {
     }
 }

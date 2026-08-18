@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -59,21 +60,14 @@ public interface CreateOp extends SPIOperation {
      * {@link Uid}, you should create your own resource-specific attribute for
      * it, such as <I>unix_uid</I>.
      *
-     * @param objectClass
-     *            the type of object to create. Will never be null.
-     * @param createAttributes
-     *            includes all the attributes necessary to create the resource
-     *            object including the {@link ObjectClass} attribute and
-     *            {@link Name} attribute.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            If the caller passes null, the framework will convert this
-     *            into an empty set of options, so SPI need not worry about this
-     *            ever being null.
-     * @return the unique id for the object that is created. For instance in
-     *         LDAP this would be the 'dn', for a database this would be the
-     *         primary key, and for 'ActiveDirectory' this would be the GUID.
+     * @param objectClass the type of object to create. Will never be null.
+     * @param createAttributes includes all the attributes necessary to create the resource
+     * object including the {@link ObjectClass} attribute and {@link Name} attribute.
+     * @param options additional options that impact the way this operation is run.
+     * If the caller passes null, the framework will convert this into an empty set of options, so SPI need not worry
+     * about this ever being null.
+     * @return the unique id for the object that is created. For instance in LDAP this would be the 'dn', for a database
+     * this would be the primary key, and for 'ActiveDirectory' this would be the GUID.
      */
-    Uid create(final ObjectClass objectClass, final Set<Attribute> createAttributes,
-            final OperationOptions options);
+    Uid create(ObjectClass objectClass, Set<Attribute> createAttributes, OperationOptions options);
 }

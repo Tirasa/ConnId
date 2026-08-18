@@ -34,7 +34,9 @@ import org.junit.jupiter.api.Test;
  */
 public class StringPrintWriterTests {
 
-    String[] DATA = new String[] { "Some random text to use!", "Some more text to use wee!",
+    private static final String[] DATA = new String[] {
+        "Some random text to use!",
+        "Some more text to use wee!",
         "Even more text to use woo hoo!" };
 
     @Test

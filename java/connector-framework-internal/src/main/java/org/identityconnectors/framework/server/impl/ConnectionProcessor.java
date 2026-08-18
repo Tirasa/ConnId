@@ -20,8 +20,8 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.server.impl;
 
 import java.io.EOFException;
@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.l10n.CurrentLocale;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
@@ -70,12 +71,14 @@ public class ConnectionProcessor implements Runnable {
     private static final Log LOG = Log.getLog(ConnectionListener.class);
 
     private static class RemoteResultsHandler implements ObjectStreamHandler {
+
         private static final int PAUSE_INTERVAL = 200;
 
         private final RemoteFrameworkConnection connection;
+
         private long count = 0;
 
-        public RemoteResultsHandler(RemoteFrameworkConnection conn) {
+        RemoteResultsHandler(RemoteFrameworkConnection conn) {
             connection = conn;
         }
 
@@ -104,6 +107,7 @@ public class ConnectionProcessor implements Runnable {
     }
 
     private final ConnectorServer connectorServer;
+
     private final RemoteFrameworkConnection connection;
 
     public ConnectionProcessor(ConnectorServer server, Socket socket) {
@@ -132,8 +136,9 @@ public class ConnectionProcessor implements Runnable {
                 }
             }
         } catch (Throwable e) {
-
-            LOG.error(e, "The following exception occurred during the processing of the current request: {0}", e.getLocalizedMessage());
+            LOG.error(e,
+                    "The following exception occurred during the processing of the current request: {0}",
+                    e.getLocalizedMessage());
         }
     }
 
@@ -176,35 +181,32 @@ public class ConnectionProcessor implements Runnable {
             requestObject = connection.readObject();
         } catch (Exception e) {
 
-                LOG.error(e,"An exception was thrown from initial connection object read: {0}",e.getLocalizedMessage());
+            LOG.error(e, "An exception was thrown from initial connection object read: {0}", e.getLocalizedMessage());
             ErrorResponse errorMessage = new ErrorResponse(e);
             connection.writeObject(errorMessage);
             throw e;
         }
 
-        if (requestObject instanceof HelloRequest) {
-
+        if (requestObject instanceof HelloRequest helloRequest) {
             LOG.ok("Processing HelloRequest");
             if (authException != null) {
                 HelloResponse response = new HelloResponse(authException, null, null, null);
                 connection.writeObject(response);
             } else {
-                HelloResponse response = processHelloRequest((HelloRequest) requestObject);
+                HelloResponse response = processHelloRequest(helloRequest);
                 connection.writeObject(response);
             }
-        } else if (requestObject instanceof OperationRequest) {
-
+        } else if (requestObject instanceof OperationRequest operationRequest) {
             LOG.ok("Processing operation request");
             if (authException != null) {
                 OperationResponsePart part = new OperationResponsePart(authException, null);
                 connection.writeObject(part);
             } else {
-                OperationRequest opRequest = (OperationRequest) requestObject;
+                OperationRequest opRequest = operationRequest;
                 OperationResponsePart part = processOperationRequest(opRequest);
                 connection.writeObject(part);
             }
-        } else if (requestObject instanceof EchoMessage) {
-
+        } else if (requestObject instanceof EchoMessage echoMessage) {
             LOG.ok("Processing EchoMessage");
             if (authException != null) {
                 // echo message probably doesn't need auth, but
@@ -212,7 +214,7 @@ public class ConnectionProcessor implements Runnable {
                 EchoMessage part = new EchoMessage(authException, null);
                 connection.writeObject(part);
             } else {
-                EchoMessage message = (EchoMessage) requestObject;
+                EchoMessage message = echoMessage;
                 Object obj = message.getObject();
                 String xml = message.getXml();
                 if (xml != null) {
@@ -241,7 +243,7 @@ public class ConnectionProcessor implements Runnable {
         Map<String, Object> serverInfo = null;
         Exception exception = null;
         try {
-            serverInfo = new HashMap<String, Object>(1);
+            serverInfo = new HashMap<>(1);
             if (request.isServerInfo()) {
                 serverInfo.put(HelloResponse.SERVER_START_TIME, connectorServer.getStartTime());
 
@@ -250,20 +252,20 @@ public class ConnectionProcessor implements Runnable {
             if (request.isConnectorKeys()) {
                 ConnectorInfoManager manager = getConnectorInfoManager();
                 List<ConnectorInfo> localInfos = manager.getConnectorInfos();
-                connectorKeys = new ArrayList<ConnectorKey>();
+                connectorKeys = new ArrayList<>();
                 for (ConnectorInfo localInfo : localInfos) {
                     ConnectorKey connectorKey = localInfo.getConnectorKey();
                     connectorKeys.add(connectorKey);
 
-                    LOG.ok("Appended connector name {0}, connector version {1} to server hello response", connectorKey.getBundleName(), connectorKey.getBundleVersion());
+                    LOG.ok("Appended connector name {0}, connector version {1} to server hello response",
+                            connectorKey.getBundleName(), connectorKey.getBundleVersion());
                 }
                 if (!connectorKeys.isEmpty()) {
-
                     LOG.ok("Appended Connector Keys information to the Hello Request response");
                 }
 
                 if (request.isConnectorInfo()) {
-                    connectorInfo = new ArrayList<RemoteConnectorInfoImpl>();
+                    connectorInfo = new ArrayList<>();
                     for (ConnectorInfo localInfo : localInfos) {
                         LocalConnectorInfoImpl localInfoImpl = (LocalConnectorInfoImpl) localInfo;
                         RemoteConnectorInfoImpl remoteInfo = localInfoImpl.toRemote();
@@ -304,8 +306,7 @@ public class ConnectionProcessor implements Runnable {
         return found;
     }
 
-    private OperationResponsePart processOperationRequest(OperationRequest request)
-            throws IOException {
+    private OperationResponsePart processOperationRequest(OperationRequest request) throws IOException {
         Object result;
         Throwable exception = null;
         try {
@@ -316,15 +317,11 @@ public class ConnectionProcessor implements Runnable {
                     populateStreamHandlers(method.getParameterTypes(), arguments);
 
             try {
-
                 LOG.ok("Request of the API Operation: {0}, invoking the API Method: {1}",
                         operation.getClass().getSimpleName(), method.getName());
 
-                if (LOG.isOk()) {
-                    if (arguments != null && !arguments.isEmpty()) {
-                    } else {
-                        LOG.ok("Request being processed does not contain any arguments");
-                    }
+                if (CollectionUtil.isEmpty(arguments)) {
+                    LOG.ok("Request being processed does not contain any arguments");
                 }
 
                 result = method.invoke(operation, argumentsAndStreamHandlers.toArray());
@@ -337,8 +334,8 @@ public class ConnectionProcessor implements Runnable {
                     LOG.ok("Writing blank operation response");
                     connection.writeObject(new OperationResponseEnd());
                 } catch (RuntimeException e) {
-                    if (e.getCause() instanceof IOException) {
-                        throw new BrokenConnectionException((IOException) e.getCause());
+                    if (e.getCause() instanceof IOException iOException) {
+                        throw new BrokenConnectionException(iOException);
                     } else {
                         throw e;
                     }
@@ -348,7 +345,9 @@ public class ConnectionProcessor implements Runnable {
             // at this point the stream is broken - just give up
             throw w.getIOException();
         } catch (Throwable e) {
-            LOG.error(e, "Exception occurred during the processing of an operation request: {0}", e.getLocalizedMessage());
+            LOG.error(e,
+                    "Exception occurred during the processing of an operation request: {0}",
+                    e.getLocalizedMessage());
             exception = e;
             result = null;
         }
@@ -357,7 +356,7 @@ public class ConnectionProcessor implements Runnable {
     }
 
     private List<Object> populateStreamHandlers(Class<?>[] paramTypes, List<Object> arguments) {
-        List<Object> rv = new ArrayList<Object>();
+        List<Object> rv = new ArrayList<>();
         boolean firstStream = true;
         Iterator<Object> argIt = arguments.iterator();
         for (Class<?> paramType : paramTypes) {
@@ -397,13 +396,12 @@ public class ConnectionProcessor implements Runnable {
 
         static final long serialVersionUID = 0L;
 
-        public BrokenConnectionException(IOException ex) {
+        BrokenConnectionException(IOException ex) {
             super(ex);
         }
 
-        public IOException getIOException() {
+        IOException getIOException() {
             return (IOException) getCause();
         }
     }
-
 }

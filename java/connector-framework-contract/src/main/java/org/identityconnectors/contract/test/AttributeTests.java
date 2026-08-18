@@ -278,7 +278,7 @@ public class AttributeTests extends ObjectClassRunner {
             // in case no exception is thrown:
             if (!exceptionCaught) {
                 fail("No exception thrown when update is performed on non-updateable attribute(s). "
-                        + "(hint: throw a RuntimeException) %s".formatted(((logInfo != null) ? logInfo.toString() : "")));
+                        + "(hint: throw a RuntimeException) %s".formatted((logInfo != null ? logInfo.toString() : "")));
             }
         } else {
             printSkipTestMsg("testNonUpdateable", objectClass);
@@ -374,7 +374,7 @@ public class AttributeTests extends ObjectClassRunner {
                         filter((attr) -> (ConnectorHelper.isRequired(oci, attr))).
                         filter((attr) -> (!ConnectorHelper.isCreateable(oci, attr))).
                         map((attr) -> "Required attribute is not createable. Attribute name: %s".
-                        formatted(attr.getName())).forEachOrdered(msg -> {
+                                formatted(attr.getName())).forEachOrdered(msg -> {
                     //WARN
                     fail(msg);
                 });
@@ -400,9 +400,10 @@ public class AttributeTests extends ObjectClassRunner {
      */
     private void testReturnedByDefault(final ObjectClass objectClass, final ApiOperations apiOp) {
         /** marker in front of every assert message */
-        String testMarkMsg = "[testReturnedByDefault/%s]".formatted(apiOp);
+        String testMarkMsg = String.format("[testReturnedByDefault/%s]", apiOp);
 
-        // run the contract test only if <strong>apiOp</strong> APIOperation is supported
+        // run the contract test only if <strong>apiOp</strong> APIOperation is
+        // supported
         if (ConnectorHelper.operationSupported(getConnectorFacade(), objectClass, apiOp.getClazz())) {
             // start synchronizing from now
             SyncToken token = null;
@@ -429,12 +430,13 @@ public class AttributeTests extends ObjectClassRunner {
                 // get the user to make sure it exists now
                 ConnectorObject obj = null;
                 switch (apiOp) {
-                    case GET ->
+                    case GET:
                         /* last _null_ param - no operation option, response contains just attributes returned by
                          * default */
                         obj = getConnectorFacade().getObject(objectClass, uid, null);
-                    // GET
-                    case SEARCH -> {
+                        break;
+
+                    case SEARCH:
                         Filter fltUid = FilterBuilder.equalTo(AttributeBuilder
                                 .build(Uid.NAME, uid.getUidValue()));
 
@@ -444,19 +446,23 @@ public class AttributeTests extends ObjectClassRunner {
                                 getConnectorFacade(), objectClass, fltUid, null);
 
                         assertTrue(coObjects.size() == 1, testMarkMsg
-                                + " Search filter by uid with no OperationOptions failed, expected to return one object,"
-                                + " but returned " + coObjects.size());
+                                + " Search filter by uid with no OperationOptions failed, expected to return "
+                                + "one object, but returned " + coObjects.size());
 
                         assertNotNull(coObjects.get(0), testMarkMsg + " Unable to retrieve newly created object");
 
                         obj = coObjects.get(0);
-                    }
+                        break;
 
-                    case LIVE_SYNC ->
+                    case LIVE_SYNC:
                         uid = testLivesync(objectClass, uid, attrs, oci, testMarkMsg);
+                        break;
 
-                    case SYNC ->
+                    case SYNC:
                         uid = testSync(objectClass, uid, token, attrs, oci, testMarkMsg);
+                        break;
+
+                    default:
                 }
 
                 /*
@@ -499,8 +505,6 @@ public class AttributeTests extends ObjectClassRunner {
             /*
              * this is a hack that skips control of UID, as it is presently
              * non returned by default, however it is automatically returned.
-             * see discussion in Issue mailing list -- Issue #334
-             * future TODO: after joining UID to schema, erase the condition.
              */
             if (!attr.getName().equals(Uid.NAME)) {
                 assertTrue(ConnectorHelper.isReturnedByDefault(oci, attr), msg);
@@ -745,58 +749,57 @@ public class AttributeTests extends ObjectClassRunner {
         return uid;
     }
 
-}// end of class AttributeTests
+    /** helper inner class for passing the type of tested operations */
+    enum ApiOperations {
+        SEARCH(SearchApiOp.class),
+        GET(GetApiOp.class),
+        LIVE_SYNC(LiveSyncApiOp.class),
+        SYNC(SyncApiOp.class);
 
-/** helper inner class for passing the type of tested operations */
-enum ApiOperations {
-    SEARCH(SearchApiOp.class),
-    GET(GetApiOp.class),
-    LIVE_SYNC(LiveSyncApiOp.class),
-    SYNC(SyncApiOp.class);
+        private final String s;
 
-    private final String s;
+        private final Class<? extends APIOperation> clazz;
 
-    private final Class<? extends APIOperation> clazz;
+        ApiOperations(Class<? extends APIOperation> c) {
+            this.s = c.getName();
+            this.clazz = c;
+        }
 
-    private ApiOperations(Class<? extends APIOperation> c) {
-        this.s = c.getName();
-        this.clazz = c;
+        @Override
+        public String toString() {
+            return s;
+        }
+
+        Class<? extends APIOperation> getClazz() {
+            return clazz;
+        }
     }
 
-    @Override
-    public String toString() {
-        return s;
-    }
+    /** helper inner class for saving log information */
+    class LogInfo {
 
-    public Class<? extends APIOperation> getClazz() {
-        return clazz;
-    }
-}
+        /** attribute set */
+        private final Set<Attribute> attrSet;
 
-/** helper inner class for saving log information */
-class LogInfo {
+        /** object class */
+        private final ObjectClass oc;
 
-    /** attribute set */
-    private final Set<Attribute> attrSet;
+        LogInfo(ObjectClass oc, Set<Attribute> attrSet) {
+            this.oc = oc;
+            this.attrSet = attrSet;
+        }
 
-    /** object class */
-    private final ObjectClass oc;
+        public Set<Attribute> getAttrSet() {
+            return attrSet;
+        }
 
-    public LogInfo(ObjectClass oc, Set<Attribute> attrSet) {
-        this.oc = oc;
-        this.attrSet = attrSet;
-    }
+        public ObjectClass getOc() {
+            return oc;
+        }
 
-    public Set<Attribute> getAttrSet() {
-        return attrSet;
-    }
-
-    public ObjectClass getOc() {
-        return oc;
-    }
-
-    @Override
-    public String toString() {
-        return " \n ObjectClass: " + oc.toString() + "\n AttributeSet: " + attrSet.toString();
+        @Override
+        public String toString() {
+            return " \n ObjectClass: " + oc.toString() + "\n AttributeSet: " + attrSet.toString();
+        }
     }
 }

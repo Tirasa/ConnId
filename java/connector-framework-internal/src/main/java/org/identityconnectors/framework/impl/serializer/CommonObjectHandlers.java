@@ -54,18 +54,49 @@ import org.identityconnectors.framework.common.exceptions.PreconditionFailedExce
 import org.identityconnectors.framework.common.exceptions.PreconditionRequiredException;
 import org.identityconnectors.framework.common.exceptions.RetryableException;
 import org.identityconnectors.framework.common.exceptions.UnknownUidException;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
+import org.identityconnectors.framework.common.objects.AttributeDeltaBuilder;
+import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.AttributeInfo.Flags;
+import org.identityconnectors.framework.common.objects.AttributeInfoBuilder;
+import org.identityconnectors.framework.common.objects.BaseConnectorObject;
+import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.ConnectorObjectIdentification;
+import org.identityconnectors.framework.common.objects.ConnectorObjectReference;
+import org.identityconnectors.framework.common.objects.EmbeddedObject;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
+import org.identityconnectors.framework.common.objects.LiveSyncDelta;
+import org.identityconnectors.framework.common.objects.LiveSyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.ObjectClassInfo;
+import org.identityconnectors.framework.common.objects.OperationOptionInfo;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.QualifiedUid;
+import org.identityconnectors.framework.common.objects.Schema;
+import org.identityconnectors.framework.common.objects.ScriptContext;
+import org.identityconnectors.framework.common.objects.SearchResult;
+import org.identityconnectors.framework.common.objects.SortKey;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
+import org.identityconnectors.framework.common.objects.SuggestedValuesBuilder;
+import org.identityconnectors.framework.common.objects.SyncDelta;
+import org.identityconnectors.framework.common.objects.SyncDeltaBuilder;
+import org.identityconnectors.framework.common.objects.SyncDeltaType;
+import org.identityconnectors.framework.common.objects.SyncToken;
+import org.identityconnectors.framework.common.objects.Uid;
+import org.identityconnectors.framework.common.objects.ValueListOpenness;
 import org.identityconnectors.framework.impl.api.remote.RemoteWrappedException;
 
 /**
  * Serialization handles for APIConfiguration and dependencies.
  */
-class CommonObjectHandlers {
+final class CommonObjectHandlers {
 
     public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<>();
 
-    private static abstract class AttributeHandler<T extends Attribute> extends AbstractObjectSerializationHandler {
+    private abstract static class AttributeHandler<T extends Attribute> extends AbstractObjectSerializationHandler {
 
         protected AttributeHandler(final Class<T> clazz, final String typeName) {
             super(clazz, typeName);
@@ -89,8 +120,7 @@ class CommonObjectHandlers {
         protected abstract T createAttribute(String name, List<Object> value);
     }
 
-    private static abstract class ThrowableHandler<T extends Throwable> extends
-            AbstractObjectSerializationHandler {
+    private abstract static class ThrowableHandler<T extends Throwable> extends AbstractObjectSerializationHandler {
 
         protected ThrowableHandler(final Class<T> clazz, final String typeName) {
             super(clazz, typeName);
@@ -360,8 +390,8 @@ class CommonObjectHandlers {
                 final int count = decoder.getNumSubObjects();
                 for (int i = 0; i < count; i++) {
                     final Object o = decoder.readObjectContents(i);
-                    if (o instanceof AttributeInfo.Flags) {
-                        flags.add((AttributeInfo.Flags) o);
+                    if (o instanceof AttributeInfo.Flags flags1) {
+                        flags.add(flags1);
                     }
                 }
                 builder.setFlags(flags);
@@ -409,7 +439,7 @@ class CommonObjectHandlers {
             }
         });
 
-        HANDLERS.add(new AbstractObjectSerializationHandler(EmbeddedObject.class, "EmbeddedObject" ) {
+        HANDLERS.add(new AbstractObjectSerializationHandler(EmbeddedObject.class, "EmbeddedObject") {
 
             @Override
             public Object deserialize(ObjectDecoder decoder) {
@@ -895,6 +925,8 @@ class CommonObjectHandlers {
                 encoder.writeStringField("description", val.getDescription());
             }
         });
+    }
 
+    private CommonObjectHandlers() {
     }
 }

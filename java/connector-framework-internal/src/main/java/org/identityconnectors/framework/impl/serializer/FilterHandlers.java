@@ -46,11 +46,11 @@ import org.identityconnectors.framework.common.objects.filter.StartsWithFilter;
 /**
  * Serialization handles for APIConfiguration and dependencies.
  */
-class FilterHandlers {
+final class FilterHandlers {
 
     public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<>();
 
-    private static abstract class CompositeFilterHandler<T extends CompositeFilter>
+    private abstract static class CompositeFilterHandler<T extends CompositeFilter>
             extends AbstractObjectSerializationHandler {
 
         protected CompositeFilterHandler(final Class<T> clazz, final String typeName) {
@@ -74,7 +74,7 @@ class FilterHandlers {
         protected abstract T createFilter(Filter left, Filter right);
     }
 
-    private static abstract class AttributeFilterHandler<T extends AttributeFilter>
+    private abstract static class AttributeFilterHandler<T extends AttributeFilter>
             extends AbstractObjectSerializationHandler {
 
         protected AttributeFilterHandler(final Class<T> clazz, final String typeName) {
@@ -216,5 +216,8 @@ class FilterHandlers {
                 return new ContainsAllValuesFilter(attribute);
             }
         });
+    }
+
+    private FilterHandlers() {
     }
 }

@@ -42,24 +42,24 @@ public abstract class ConnectorFacadeFactory {
     private static final String IMPL_NAME_MANAGED =
             "org.identityconnectors.framework.impl.api.ManagedConnectorFacadeFactoryImpl";
 
-    private static ConnectorFacadeFactory instance;
+    private static ConnectorFacadeFactory INSTANCE;
 
-    private static ConnectorFacadeFactory managedInstance;
+    private static ConnectorFacadeFactory MANAGED_INSTANCE;
 
     /**
      * Get the singleton instance of the {@link ConnectorFacadeFactory}.
      */
     public static synchronized ConnectorFacadeFactory getInstance() {
-        if (instance == null) {
+        if (INSTANCE == null) {
             try {
                 final Class<?> clazz = Class.forName(IMPL_NAME);
                 final Object object = clazz.getDeclaredConstructor().newInstance();
-                instance = ConnectorFacadeFactory.class.cast(object);
+                INSTANCE = ConnectorFacadeFactory.class.cast(object);
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -68,16 +68,16 @@ public abstract class ConnectorFacadeFactory {
      * @since 1.4
      */
     public static synchronized ConnectorFacadeFactory getManagedInstance() {
-        if (managedInstance == null) {
+        if (MANAGED_INSTANCE == null) {
             try {
                 final Class<?> clazz = Class.forName(IMPL_NAME_MANAGED);
                 final Object object = clazz.getDeclaredConstructor().newInstance();
-                managedInstance = ConnectorFacadeFactory.class.cast(object);
+                MANAGED_INSTANCE = ConnectorFacadeFactory.class.cast(object);
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);
             }
         }
-        return managedInstance;
+        return MANAGED_INSTANCE;
     }
 
     /**

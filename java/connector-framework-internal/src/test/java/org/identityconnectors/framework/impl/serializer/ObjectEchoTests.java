@@ -29,18 +29,16 @@ import org.identityconnectors.framework.impl.api.remote.RemoteFrameworkConnectio
 import org.identityconnectors.framework.impl.api.remote.messages.EchoMessage;
 
 public class ObjectEchoTests extends ObjectSerializationTests {
+
     @Override
     protected Object cloneObject(Object o) {
-        //TODO: figure out how to automate these tests
         if (true) {
             return super.cloneObject(o);
         } else {
-            EchoMessage message = new EchoMessage(o,null);
+            EchoMessage message = new EchoMessage(o, null);
             RemoteFrameworkConnectionInfo info =
-                new RemoteFrameworkConnectionInfo("127.0.0.1",8759,
-                        new GuardedString("changeit".toCharArray()));
-            RemoteFrameworkConnection conn =
-                new RemoteFrameworkConnection(info);
+                    new RemoteFrameworkConnectionInfo("127.0.0.1", 8759, new GuardedString("changeit".toCharArray()));
+            RemoteFrameworkConnection conn = new RemoteFrameworkConnection(info);
             try {
                 conn.writeObject(CurrentLocale.get());
                 conn.writeObject(info.getKey());

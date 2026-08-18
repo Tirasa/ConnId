@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common.security;
 
@@ -31,18 +32,16 @@ public interface Encryptor {
     /**
      * Decrypts the given byte array.
      *
-     * @param bytes
-     *            The encrypted bytes
+     * @param bytes The encrypted bytes
      * @return The decrypted bytes
      */
-    public byte[] decrypt(byte[] bytes);
+    byte[] decrypt(byte[] bytes);
 
     /**
      * Encrypts the given byte array.
      *
-     * @param bytes
-     *            The clear bytes
+     * @param bytes The clear bytes
      * @return The ecnrypted bytes
      */
-    public byte[] encrypt(byte[] bytes);
+    byte[] encrypt(byte[] bytes);
 }

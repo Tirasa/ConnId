@@ -47,9 +47,6 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
  * <li>Supported OperationOptionInfo by operation(
  * {@link #getSupportedOptionsByOperation()()}).</li>
  * </ol>
- *
- * TODO: add more to describe and what is expected from this call and how it is
- * used.. based on OperationalAttribute etc..
  */
 public final class Schema {
 
@@ -77,29 +74,22 @@ public final class Schema {
             Map<Class<? extends APIOperation>, Set<OperationOptionInfo>> supportedOptionsByOperation) {
         declaredObjectClasses = CollectionUtil.newReadOnlySet(info);
         declaredOperationOptions = CollectionUtil.newReadOnlySet(options);
-        // make read-only
-        {
-            Map<Class<? extends APIOperation>, Set<ObjectClassInfo>> temp =
-                    new HashMap<>();
-            supportedObjectClassesByOperation.entrySet().forEach((entry) -> {
-                Class<? extends APIOperation> op = entry.getKey();
-                Set<ObjectClassInfo> resolvedClasses =
-                        CollectionUtil.newReadOnlySet(entry.getValue());
-                temp.put(op, resolvedClasses);
-            });
-            this.supportedObjectClassesByOperation = CollectionUtil.asReadOnlyMap(temp);
-        }
-        // make read-only
-        {
-            Map<Class<? extends APIOperation>, Set<OperationOptionInfo>> temp = new HashMap<>();
-            supportedOptionsByOperation.entrySet().forEach((entry) -> {
-                Class<? extends APIOperation> op = entry.getKey();
-                Set<OperationOptionInfo> resolvedClasses =
-                        CollectionUtil.newReadOnlySet(entry.getValue());
-                temp.put(op, resolvedClasses);
-            });
-            this.supportedOptionsByOperation = CollectionUtil.asReadOnlyMap(temp);
-        }
+
+        Map<Class<? extends APIOperation>, Set<ObjectClassInfo>> ops2cli = new HashMap<>();
+        supportedObjectClassesByOperation.entrySet().forEach((entry) -> {
+            Class<? extends APIOperation> op = entry.getKey();
+            Set<ObjectClassInfo> resolvedClasses = CollectionUtil.newReadOnlySet(entry.getValue());
+            ops2cli.put(op, resolvedClasses);
+        });
+        this.supportedObjectClassesByOperation = CollectionUtil.asReadOnlyMap(ops2cli);
+
+        Map<Class<? extends APIOperation>, Set<OperationOptionInfo>> ops2ooi = new HashMap<>();
+        supportedOptionsByOperation.entrySet().forEach((entry) -> {
+            Class<? extends APIOperation> op = entry.getKey();
+            Set<OperationOptionInfo> resolvedClasses = CollectionUtil.newReadOnlySet(entry.getValue());
+            ops2ooi.put(op, resolvedClasses);
+        });
+        this.supportedOptionsByOperation = CollectionUtil.asReadOnlyMap(ops2ooi);
     }
 
     /**
@@ -215,8 +205,7 @@ public final class Schema {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Schema) {
-            Schema other = (Schema) obj;
+        if (obj instanceof Schema other) {
             if (!CollectionUtil.equals(getObjectClassInfo(), other.getObjectClassInfo())) {
                 return false;
             }

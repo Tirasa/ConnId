@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -50,23 +51,13 @@ public interface AuthenticateOp extends SPIOperation {
      * exceptions provided in the exceptions package. For instance one of the
      * most common is {@link InvalidPasswordException}.
      *
-     * @param objectClass
-     *            The object class to use for authenticate. Will typically be an
-     *            account. Must not be null.
-     * @param username
-     *            the name based credential for authentication.
-     * @param password
-     *            the password based credential for authentication.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            If the caller passes null, the framework will convert this
-     *            into an empty set of options, so SPI need not worry about this
-     *            ever being null.
+     * @param objectClass The object class to use for authenticate. Will typically be an account. Must not be null.
+     * @param username the name based credential for authentication.
+     * @param password the password based credential for authentication.
+     * @param options additional options that impact the way this operation is run. If the caller passes null, the
+     * framework will convert this into an empty set of options, so SPI need not worry about this ever being null.
      * @return Uid The uid of the account that was used to authenticate
-     * @throws RuntimeException
-     *             if native authentication fails. If a native exception if
-     *             available attempt to throw it.
+     * @throws RuntimeException if native authentication fails. If a native exception if available attempt to throw it.
      */
-    Uid authenticate(ObjectClass objectClass, final String username, final GuardedString password,
-            final OperationOptions options);
+    Uid authenticate(ObjectClass objectClass, String username, GuardedString password, OperationOptions options);
 }

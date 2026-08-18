@@ -19,16 +19,15 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
 public abstract class AbstractObjectSerializationHandler
-    extends ObjectTypeMapperImpl
-    implements ObjectSerializationHandler {
+        extends ObjectTypeMapperImpl
+        implements ObjectSerializationHandler {
 
-    protected AbstractObjectSerializationHandler(Class<?> handledClass,
-            String type) {
-        super(handledClass,type);
+    protected AbstractObjectSerializationHandler(Class<?> handledClass, String type) {
+        super(handledClass, type);
     }
-
 }

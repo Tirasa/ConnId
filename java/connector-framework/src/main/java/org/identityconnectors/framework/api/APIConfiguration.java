@@ -45,7 +45,7 @@ public interface APIConfiguration {
      * These are initialized to their default values based on meta information.
      * Caller can then modify the properties as needed.
      */
-    public ConfigurationProperties getConfigurationProperties();
+    ConfigurationProperties getConfigurationProperties();
 
     /**
      * Determines if this {@link Connector} uses the framework's connector

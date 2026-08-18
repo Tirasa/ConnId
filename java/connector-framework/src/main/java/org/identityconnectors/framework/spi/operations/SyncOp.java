@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -61,28 +62,19 @@ public interface SyncOp extends SPIOperation {
      * call {@link #getLatestSyncToken} and then pass that token into this
      * {@code sync()} method.
      *
-     * @param objectClass
-     *            The class of object for which to return synchronization
-     *            events. Must not be null.
-     * @param token
-     *            The token representing the last token from the previous sync.
-     *            The {@code SyncResultsHandler} will return any number of
-     *            {@linkplain SyncDelta} objects, each of which contains a
-     *            token. Should be {@code null} if this is the client's first
-     *            call to the {@code sync()} method for this connector.
-     * @param handler
-     *            The result handler. Must not be null.
-     * @param options
-     *            Options that affect the way this operation is run. If the
-     *            caller passes {@code null}, the framework will convert this
-     *            into an empty set of options, so an implementation need not
-     *            guard against this being null.
-     * @throws IllegalArgumentException
-     *             if {@code objectClass} or {@code handler} is null or if any
-     *             argument is invalid.
+     * @param objectClass The class of object for which to return synchronization events. Must not be null.
+     * @param token The token representing the last token from the previous sync.
+     * The {@code SyncResultsHandler} will return any number of {@linkplain SyncDelta} objects, each of which contains
+     * a token. Should be {@code null} if this is the client's first call to the {@code sync()} method for this
+     * connector.
+     * @param handler The result handler. Must not be null.
+     * @param options Options that affect the way this operation is run. If the caller passes {@code null}, the
+     * framework will convert this into an empty set of options, so an implementation need not guard against this being
+     * null.
+     * @throws IllegalArgumentException if {@code objectClass} or {@code handler} is null or if any argument is
+     * invalid.
      */
-    public void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler,
-            OperationOptions options);
+    void sync(ObjectClass objectClass, SyncToken token, SyncResultsHandler handler, OperationOptions options);
 
     /**
      * Returns the token corresponding to the most recent synchronization event.
@@ -92,12 +84,10 @@ public interface SyncOp extends SPIOperation {
      * after this method is called-- should call this method and then pass the
      * resulting token into {@linkplain #sync the sync() method}.
      *
-     * @param objectClass
-     *            the class of object for which to find the most recent
-     *            synchronization event (if any). Must not be null.
+     * @param objectClass the class of object for which to find the most recent synchronization event (if any). Must not
+     * be null.
      * @return A token if synchronization events exist; otherwise {@code null}.
-     * @throws IllegalArgumentException
-     *             if {@code objectClass} is null or is invalid.
+     * @throws IllegalArgumentException if {@code objectClass} is null or is invalid.
      */
-    public SyncToken getLatestSyncToken(ObjectClass objectClass);
+    SyncToken getLatestSyncToken(ObjectClass objectClass);
 }

@@ -48,7 +48,7 @@ import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.common.security.SecurityUtil;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
-class Primitives {
+final class Primitives {
 
     public static final List<ObjectTypeMapper> HANDLERS = new ArrayList<>();
 
@@ -388,7 +388,7 @@ class Primitives {
 
             private final Object value;
 
-            public MapEntry(Object key, Object value) {
+            MapEntry(Object key, Object value) {
                 this.key = key;
                 this.value = value;
             }
@@ -439,8 +439,8 @@ class Primitives {
                 // special case - for case insensitive maps
                 if (CollectionUtil.isCaseInsensitiveMap(map)) {
                     encoder.writeBooleanField("caseInsensitive", true);
-                } // for all other sorted maps, we don't know how to serialize them
-                else if (map instanceof SortedMap) {
+                } else if (map instanceof SortedMap) {
+                    // for all other sorted maps, we don't know how to serialize them
                     throw new IllegalArgumentException("Serialization of SortedMap not supported");
                 }
                 map.forEach((key, value) -> encoder.writeObjectContents(new MapEntry(key, value)));
@@ -466,9 +466,7 @@ class Primitives {
             @Override
             public void serialize(final Object object, final ObjectEncoder encoder) {
                 final List<?> list = (List<?>) object;
-                list.forEach((obj) -> {
-                    encoder.writeObjectContents(obj);
-                });
+                list.forEach(encoder::writeObjectContents);
             }
 
             @Override
@@ -503,12 +501,11 @@ class Primitives {
                 // special case - for case insensitive sets
                 if (CollectionUtil.isCaseInsensitiveSet(set)) {
                     encoder.writeBooleanField("caseInsensitive", true);
-                } // for all other sorted sets, we don't know how
-                // to serialize them
-                else if (set instanceof SortedSet) {
+                } else if (set instanceof SortedSet) {
+                    // for all other sorted maps, we don't know how to serialize them
                     throw new IllegalArgumentException("Serialization of SortedSet not supported");
                 }
-                set.forEach((obj) -> encoder.writeObjectContents(obj));
+                set.forEach(encoder::writeObjectContents);
             }
 
             @Override
@@ -605,5 +602,8 @@ class Primitives {
                 });
             }
         });
+    }
+
+    private Primitives() {
     }
 }

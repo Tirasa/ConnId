@@ -52,7 +52,7 @@ public class DelegatingTimeoutProxy implements InvocationHandler {
      * Create a new MethodTimeoutProxy.
      *
      * @param target
-     *            The object we are wrapping
+     * The object we are wrapping
      * @param timeoutMillis
      */
     public DelegatingTimeoutProxy(Object target, long timeoutMillis, int bufferSize) {
@@ -73,15 +73,13 @@ public class DelegatingTimeoutProxy implements InvocationHandler {
         // figure out the actual handler that we want to delegate to
         InvocationHandler handler = null;
 
-        // if this is as stream handler method, we need the
-        // buffered results proxy (if configured)
+        // if this is as stream handler method, we need the buffered results proxy (if configured)
         if (isStreamHandlerMethod(method)) {
             if (timeoutMillis != APIOperation.NO_TIMEOUT || bufferSize != 0) {
                 handler = new BufferedResultsProxy(target, bufferSize, timeoutMillis);
             }
-        }
-        // otherwise it's a basic timeout proxy
-        else {
+        } else {
+            // otherwise it's a basic timeout proxy
             if (timeoutMillis != APIOperation.NO_TIMEOUT) {
                 // everything else is a general purpose timeout proxy
                 handler = new MethodTimeoutProxy(target, timeoutMillis);
@@ -91,9 +89,8 @@ public class DelegatingTimeoutProxy implements InvocationHandler {
         // delegate to the timeout handler if specified
         if (handler != null) {
             return handler.invoke(proxy, method, args);
-        }
-        // otherwise, pass the call directly to the object
-        else {
+        } else {
+            // otherwise, pass the call directly to the object
             try {
                 return method.invoke(target, args);
             } catch (InvocationTargetException e) {

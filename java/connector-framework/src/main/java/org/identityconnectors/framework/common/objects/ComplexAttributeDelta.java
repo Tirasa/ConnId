@@ -20,12 +20,15 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2022 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.identityconnectors.common.CollectionUtil;
-
-import java.util.*;
 
 /**
  * <p>
@@ -59,7 +62,7 @@ import java.util.*;
  * by an administrator and it does not need old/current password value. It is represented as replace delta.
  * Password change is usually a self-service operation and it does require old/current password value.
  * Password change should be represented as add/delete delta, new password value being added, old/current
- * password value being removed. 
+ * password value being removed.
  * </p>
  * <p>
  * Terminology note: The term "delete" would be better than "remove", especially because "remove" may be
@@ -75,8 +78,6 @@ import java.util.*;
  */
 public class ComplexAttributeDelta extends BaseAttributeDelta {
 
-
-
     /**
      * Attribute values to add
      */
@@ -91,6 +92,7 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
         this.valueDeltas = (valueDeltas == null) ? null : CollectionUtil.newReadOnlyList(valueDeltas);
     }
 
+    @Override
     public String getName() {
         return super.getName();
     }
@@ -99,6 +101,7 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
         return valueDeltas;
     }
 
+    @Override
     protected void extendToStringMap(final Map<String, Object> map) {
         // Nothing to do here. Just for use in subclasses.
         map.put("valueDeltas", valueDeltas);
@@ -112,7 +115,7 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
         }
         if (!super.equals(obj)) {
             return false;
-        };
+        }
         // test that the exact class matches
         if (!(getClass().equals(obj.getClass()))) {
             return false;
@@ -126,12 +129,19 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.valueDeltas);
+        return hash;
+    }
+
+    @Override
     public Attribute applyTo(Attribute attribute) {
-        var values = attribute != null ? new ArrayList<>(attribute.getValue()) :  new ArrayList<>();
+        var values = attribute != null ? new ArrayList<>(attribute.getValue()) : new ArrayList<>();
         for (ComplexValueDelta delta : valueDeltas) {
             delta.applyTo(values);
         }
         return new Attribute(getName(), values);
     }
-
 }

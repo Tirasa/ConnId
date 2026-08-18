@@ -45,12 +45,8 @@ import org.identityconnectors.framework.impl.api.remote.messages.ErrorResponse;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloRequest;
 import org.identityconnectors.framework.impl.api.remote.messages.HelloResponse;
 
-public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager,
-        ConnectorEventPublisher, Runnable {
+public class RemoteConnectorInfoManagerImpl implements ConnectorInfoManager, ConnectorEventPublisher, Runnable {
 
-    /**
-     * Logger.
-     */
     private static final Log LOG = Log.getLog(RemoteConnectorInfoManagerImpl.class);
 
     private final RemoteFrameworkConnectionInfo frameworkConnectionInfo;

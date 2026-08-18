@@ -114,7 +114,8 @@ public class SyncApiOpTests extends ObjectClassRunner {
 
                 // check delta
                 ConnectorHelper.checkSyncDelta(
-                        getObjectClassInfo(objectClass), deltas.get(0), uid, attrs, SyncDeltaType.CREATE_OR_UPDATE, true);
+                        getObjectClassInfo(objectClass), 
+                        deltas.get(0), uid, attrs, SyncDeltaType.CREATE_OR_UPDATE, true);
 
                 token = deltas.get(0).getToken();
             }

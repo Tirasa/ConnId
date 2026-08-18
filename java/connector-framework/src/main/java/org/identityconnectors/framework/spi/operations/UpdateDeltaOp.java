@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -97,7 +98,10 @@ public interface UpdateDeltaOp extends SPIOperation {
      * if the delta execution would result in violation of the schema,
      * if the result would be missing mandatory attribute and in similar cases.
      */
-    public Set<AttributeDelta> updateDelta(ObjectClass objclass, Uid uid, Set<AttributeDelta> modifications,
+    Set<AttributeDelta> updateDelta(
+            ObjectClass objclass,
+            Uid uid,
+            Set<AttributeDelta> modifications,
             OperationOptions options);
 
 }

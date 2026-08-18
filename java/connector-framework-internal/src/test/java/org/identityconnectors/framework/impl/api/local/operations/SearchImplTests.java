@@ -26,20 +26,19 @@ package org.identityconnectors.framework.impl.api.local.operations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.identityconnectors.framework.common.objects.AttributeBuilder;
-import org.identityconnectors.framework.common.objects.ConnectorObject;
-import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
-import org.identityconnectors.framework.common.objects.BaseObject;
-import org.identityconnectors.framework.common.objects.EmbeddedObject;
-import org.identityconnectors.framework.common.objects.ObjectClass;
-import org.identityconnectors.framework.common.objects.OperationOptions;
-import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
-import org.identityconnectors.framework.common.objects.ResultsHandler;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.identityconnectors.common.CollectionUtil;
+import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.BaseObject;
+import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.ConnectorObjectBuilder;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
+import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.objects.filter.FilterTranslator;
 import org.identityconnectors.framework.common.objects.filter.FilterVisitor;
@@ -184,10 +183,10 @@ public class SearchImplTests {
      */
     public static class MockFilter implements Filter {
 
-        public final List<List<ConnectorObject>> _objs;
+        private final List<List<ConnectorObject>> objs;
 
         public MockFilter(List<List<ConnectorObject>> objs) {
-            _objs = objs;
+            this.objs = objs;
         }
 
         @Override
@@ -195,12 +194,13 @@ public class SearchImplTests {
             return true;
         }
 
+        @Override
         public <R, P> R accept(FilterVisitor<R, P> v, P p) {
             return v.visitExtendedFilter(p, this);
         }
 
         public List<List<ConnectorObject>> getObjects() {
-            return _objs;
+            return objs;
         }
     }
 }

@@ -214,174 +214,184 @@ public class FilterTranslatorTests {
         Attribute attribute2 = AttributeBuilder.build("att-name2", "att-value2");
         AllFiltersTranslator translator = new AllFiltersTranslator();
 
-        {
-            Filter filter = FilterBuilder.contains(attribute);
-            String expected = "( CONTAINS att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        contains(attribute, attribute2, translator);
+        endsWith(attribute, attribute2, translator);
+        equalTo(attribute, attribute2, translator);
+        equalsIC(attribute, attribute2, translator);
+        gt(attribute, attribute2, translator);
+        ge(attribute, attribute2, translator);
+        lt(attribute, attribute2, translator);
+        le(attribute, attribute2, translator);
+        startsWith(attribute, attribute2, translator);
+        containsAll(attribute, attribute2, translator);
+        and(attribute, attribute2, translator);
+        or(attribute, attribute2, translator);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void contains(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.contains(attribute);
+        String expected = "( CONTAINS att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.endsWith(attribute);
-            String expected = "( ENDS-WITH att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void endsWith(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.endsWith(attribute);
+        String expected = "( ENDS-WITH att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.equalTo(attribute);
-            String expected = "( = att-name [att-value] )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void equalTo(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.equalTo(attribute);
+        String expected = "( = att-name [att-value] )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.equalsIgnoreCase(attribute);
-            String expected = "( EQUALSIGNORECASE att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void equalsIC(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.equalsIgnoreCase(attribute);
+        String expected = "( EQUALSIGNORECASE att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.greaterThan(attribute);
-            String expected = "( > att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void gt(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.greaterThan(attribute);
+        String expected = "( > att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.greaterThanOrEqualTo(attribute);
-            String expected = "( >= att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void ge(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.greaterThanOrEqualTo(attribute);
+        String expected = "( >= att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.lessThan(attribute);
-            String expected = "( < att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void lt(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.lessThan(attribute);
+        String expected = "( < att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.lessThanOrEqualTo(attribute);
-            String expected = "( <= att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void le(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.lessThanOrEqualTo(attribute);
+        String expected = "( <= att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.startsWith(attribute);
-            String expected = "( STARTS-WITH att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void startsWith(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.startsWith(attribute);
+        String expected = "( STARTS-WITH att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        {
-            Filter filter = FilterBuilder.containsAllValues(attribute);
-            String expected = "( CONTAINS-ALL-VALUES " + attribute + " )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-            filter = FilterBuilder.not(filter);
-            expected = "( ! " + expected + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
-        // and
-        {
-            Filter left = FilterBuilder.contains(attribute);
-            Filter right = FilterBuilder.contains(attribute2);
-            String expectedLeft = "( CONTAINS att-name att-value )";
-            String expectedRight = "( CONTAINS att-name2 att-value2 )";
-            Filter filter = FilterBuilder.and(left, right);
-            String expected = "( & " + expectedLeft + " " + expectedRight + " )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+    void containsAll(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.containsAllValues(attribute);
+        String expected = "( CONTAINS-ALL-VALUES " + attribute + " )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-            filter = FilterBuilder.not(filter);
-            expectedLeft = "( ! " + expectedLeft + " )";
-            expectedRight = "( ! " + expectedRight + " )";
-            expected = "( | " + expectedLeft + " " + expectedRight + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expected = "( ! " + expected + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
 
-        }
+    void and(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter left = FilterBuilder.contains(attribute);
+        Filter right = FilterBuilder.contains(attribute2);
+        String expectedLeft = "( CONTAINS att-name att-value )";
+        String expectedRight = "( CONTAINS att-name2 att-value2 )";
+        Filter filter = FilterBuilder.and(left, right);
+        String expected = "( & " + expectedLeft + " " + expectedRight + " )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-        // or
-        {
-            Filter left = FilterBuilder.contains(attribute);
-            Filter right = FilterBuilder.contains(attribute2);
-            String expectedLeft = "( CONTAINS att-name att-value )";
-            String expectedRight = "( CONTAINS att-name2 att-value2 )";
-            Filter filter = FilterBuilder.or(left, right);
-            String expected = "( | " + expectedLeft + " " + expectedRight + " )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
+        filter = FilterBuilder.not(filter);
+        expectedLeft = "( ! " + expectedLeft + " )";
+        expectedRight = "( ! " + expectedRight + " )";
+        expected = "( | " + expectedLeft + " " + expectedRight + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
-            filter = FilterBuilder.not(filter);
-            expectedLeft = "( ! " + expectedLeft + " )";
-            expectedRight = "( ! " + expectedRight + " )";
-            expected = "( & " + expectedLeft + " " + expectedRight + " )";
-            actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    }
 
-        // double-negative
-        {
-            Filter filter = FilterBuilder.contains(attribute);
-            filter = FilterBuilder.not(filter);
-            filter = FilterBuilder.not(filter);
-            String expected = "( CONTAINS att-name att-value )";
-            String actual = translateSingle(translator, filter);
-            assertEquals(actual, expected);
-        }
+    void or(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter left = FilterBuilder.contains(attribute);
+        Filter right = FilterBuilder.contains(attribute2);
+        String expectedLeft = "( CONTAINS att-name att-value )";
+        String expectedRight = "( CONTAINS att-name2 att-value2 )";
+        Filter filter = FilterBuilder.or(left, right);
+        String expected = "( | " + expectedLeft + " " + expectedRight + " )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
 
+        filter = FilterBuilder.not(filter);
+        expectedLeft = "( ! " + expectedLeft + " )";
+        expectedRight = "( ! " + expectedRight + " )";
+        expected = "( & " + expectedLeft + " " + expectedRight + " )";
+        actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
+    }
+
+    void doubleNeg(final Attribute attribute, final Attribute attribute2, final AllFiltersTranslator translator) {
+        Filter filter = FilterBuilder.contains(attribute);
+        filter = FilterBuilder.not(filter);
+        filter = FilterBuilder.not(filter);
+        String expected = "( CONTAINS att-name att-value )";
+        String actual = translateSingle(translator, filter);
+        assertEquals(actual, expected);
     }
 
     /**

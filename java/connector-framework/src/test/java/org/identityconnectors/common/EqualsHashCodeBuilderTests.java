@@ -877,32 +877,32 @@ public class EqualsHashCodeBuilderTests {
 
         private int a;
 
-        public TestObject() {
+        TestObject() {
         }
 
-        public TestObject(int a) {
+        TestObject(int a) {
             this.a = a;
         }
 
         @Override
         public boolean equals(Object o) {
             boolean ret = false;
-            if (o instanceof TestObject) {
+            if (o instanceof TestObject testObject) {
                 if (o == this) { // identity check..
                     ret = true;
                 } else { // value check..
-                    TestObject rhs = (TestObject) o;
+                    TestObject rhs = testObject;
                     ret = (a == rhs.a);
                 }
             }
             return ret;
         }
 
-        public void setA(int a) {
+        void setA(int a) {
             this.a = a;
         }
 
-        public int getA() {
+        int getA() {
             return a;
         }
 
@@ -916,11 +916,11 @@ public class EqualsHashCodeBuilderTests {
 
         private int b;
 
-        public TestSubObject() {
+        TestSubObject() {
             super(0);
         }
 
-        public TestSubObject(int a, int b) {
+        TestSubObject(int a, int b) {
             super(a);
             this.b = b;
         }
@@ -928,22 +928,22 @@ public class EqualsHashCodeBuilderTests {
         @Override
         public boolean equals(Object o) {
             boolean ret = false;
-            if (o instanceof TestSubObject) {
+            if (o instanceof TestSubObject testSubObject) {
                 if (o == this) { // identity check..
                     ret = true;
                 } else { // value check..
-                    TestSubObject rhs = (TestSubObject) o;
+                    TestSubObject rhs = testSubObject;
                     ret = super.equals(o) && (b == rhs.b);
                 }
             }
             return ret;
         }
 
-        public void setB(int b) {
+        void setB(int b) {
             this.b = b;
         }
 
-        public int getB() {
+        int getB() {
             return b;
         }
 
@@ -955,7 +955,7 @@ public class EqualsHashCodeBuilderTests {
 
     static class TestEmptySubObject extends TestObject {
 
-        public TestEmptySubObject(int a) {
+        TestEmptySubObject(int a) {
             super(a);
         }
     }
@@ -964,7 +964,7 @@ public class EqualsHashCodeBuilderTests {
 
         private final int a;
 
-        public TestACanEqualB(int a) {
+        TestACanEqualB(int a) {
             this.a = a;
         }
 
@@ -973,11 +973,11 @@ public class EqualsHashCodeBuilderTests {
             if (o == this) {
                 return true;
             }
-            if (o instanceof TestACanEqualB) {
-                return this.a == ((TestACanEqualB) o).getA();
+            if (o instanceof TestACanEqualB testACanEqualB) {
+                return this.a == testACanEqualB.getA();
             }
-            if (o instanceof TestBCanEqualA) {
-                return this.a == ((TestBCanEqualA) o).getB();
+            if (o instanceof TestBCanEqualA testBCanEqualA) {
+                return this.a == testBCanEqualA.getB();
             }
             return false;
         }
@@ -998,7 +998,7 @@ public class EqualsHashCodeBuilderTests {
 
         private final int b;
 
-        public TestBCanEqualA(int b) {
+        TestBCanEqualA(int b) {
             this.b = b;
         }
 
@@ -1007,11 +1007,11 @@ public class EqualsHashCodeBuilderTests {
             if (o == this) {
                 return true;
             }
-            if (o instanceof TestACanEqualB) {
-                return this.b == ((TestACanEqualB) o).getA();
+            if (o instanceof TestACanEqualB testACanEqualB) {
+                return this.b == testACanEqualB.getA();
             }
-            if (o instanceof TestBCanEqualA) {
-                return this.b == ((TestBCanEqualA) o).getB();
+            if (o instanceof TestBCanEqualA testBCanEqualA) {
+                return this.b == testBCanEqualA.getB();
             }
             return false;
         }
@@ -1023,7 +1023,7 @@ public class EqualsHashCodeBuilderTests {
             return hash;
         }
 
-        public int getB() {
+        int getB() {
             return this.b;
         }
     }

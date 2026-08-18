@@ -64,10 +64,10 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
 
     private class MyTrustManager extends X509ExtendedTrustManager {
 
-        private final String _keyStoreName;
+        private final String keyStoreName;
 
-        public MyTrustManager(String name) {
-            _keyStoreName = name;
+        MyTrustManager(String name) {
+            keyStoreName = name;
         }
 
         @Override
@@ -77,9 +77,8 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
 
         @Override
         public boolean equals(Object o) {
-            if (o instanceof MyTrustManager) {
-                MyTrustManager other = (MyTrustManager) o;
-                return _keyStoreName.equals(other._keyStoreName);
+            if (o instanceof MyTrustManager other) {
+                return keyStoreName.equals(other.keyStoreName);
             }
             return false;
         }
@@ -102,7 +101,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
         }
 
         private void checkTrusted(X509Certificate[] chain) throws CertificateException {
-            KeyStore store = loadKeyStoreResource(_keyStoreName);
+            KeyStore store = loadKeyStoreResource(keyStoreName);
             try {
                 if (store.getCertificateAlias(chain[0]) == null) {
                     throw new CertificateException();
@@ -133,15 +132,14 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
         public void checkServerTrusted(
                 final X509Certificate[] xcs, final String string, final SSLEngine ssle) throws CertificateException {
         }
-
     }
 
     private class MyKeyManager extends X509ExtendedKeyManager {
 
-        private final String _keyStoreName;
+        private final String keyStoreName;
 
-        public MyKeyManager(String name) {
-            _keyStoreName = name;
+        MyKeyManager(String name) {
+            keyStoreName = name;
         }
 
         @Override
@@ -153,7 +151,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
         public boolean equals(Object o) {
             if (o instanceof MyKeyManager) {
                 MyKeyManager other = (MyKeyManager) o;
-                return _keyStoreName.equals(other._keyStoreName);
+                return keyStoreName.equals(other.keyStoreName);
             }
             return false;
         }
@@ -171,7 +169,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
         @Override
         public X509Certificate[] getCertificateChain(String a) {
             try {
-                KeyStore store = loadKeyStoreResource(_keyStoreName);
+                KeyStore store = loadKeyStoreResource(keyStoreName);
                 String alias = store.aliases().nextElement();
                 return new X509Certificate[] { (X509Certificate) store.getCertificateChain(alias)[0] };
             } catch (Exception e) {
@@ -187,7 +185,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
         @Override
         public PrivateKey getPrivateKey(String a) {
             try {
-                KeyStore store = loadKeyStoreResource(_keyStoreName);
+                KeyStore store = loadKeyStoreResource(keyStoreName);
                 String alias = store.aliases().nextElement();
                 return (PrivateKey) store.getKey(alias, "changeit".toCharArray());
             } catch (Exception e) {
@@ -202,7 +200,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
 
     }
 
-    private static ConnectorServer _server;
+    private static ConnectorServer SERVER;
 
     /**
      * To be overridden by subclasses to get different ConnectorInfoManagers
@@ -220,15 +218,15 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
         KeyManager serverKeyManager = new MyKeyManager("server.pfx");
 
         synchronized (RemoteConnectorInfoManagerSSLTests.class) {
-            if (null == _server) {
-                _server = ConnectorServer.newInstance();
-                _server.setBundleURLs(urls);
-                _server.setPort(PORT);
-                _server.setKeyHash(SecurityUtil.computeBase64SHA1Hash("changeit".toCharArray()));
-                _server.setUseSSL(true);
-                _server.setKeyManagers(CollectionUtil.newList(serverKeyManager));
-                _server.setIfAddress(InetAddress.getByName("127.0.0.1"));
-                _server.start();
+            if (null == SERVER) {
+                SERVER = ConnectorServer.newInstance();
+                SERVER.setBundleURLs(urls);
+                SERVER.setPort(PORT);
+                SERVER.setKeyHash(SecurityUtil.computeBase64SHA1Hash("changeit".toCharArray()));
+                SERVER.setUseSSL(true);
+                SERVER.setKeyManagers(CollectionUtil.newList(serverKeyManager));
+                SERVER.setIfAddress(InetAddress.getByName("127.0.0.1"));
+                SERVER.start();
             }
         }
         ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.getInstance();
@@ -247,9 +245,9 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
     @Override
     protected void shutdownConnnectorInfoManager() {
         synchronized (RemoteConnectorInfoManagerSSLTests.class) {
-            if (_server != null) {
-                _server.stop();
-                _server = null;
+            if (SERVER != null) {
+                SERVER.stop();
+                SERVER = null;
             }
         }
         // These are initialized by the connector server.

@@ -37,8 +37,10 @@ public class MockConnector implements Connector, SchemaOp {
      * Represents a call to a connector method.
      */
     public static class Call {
-        final Object[] args;
-        final String methodName;
+
+        private final Object[] args;
+
+        private final String methodName;
 
         public Call(String methodName, Object... args) {
             this.args = args;
@@ -55,7 +57,7 @@ public class MockConnector implements Connector, SchemaOp {
     }
 
     // need to keep track of when methods are called an their parameters..
-    private static List<Call> callPattern = new ArrayList<Call>();
+    private static final List<Call> CALL_PATTERN = new ArrayList<>();
 
     private Configuration configuration;
 
@@ -85,14 +87,14 @@ public class MockConnector implements Connector, SchemaOp {
      * Clear the call pattern.
      */
     public static void reset() {
-        callPattern.clear();
+        CALL_PATTERN.clear();
     }
 
     /**
      * Get the current call pattern.
      */
     public static List<Call> getCallPattern() {
-        return CollectionUtil.newList(callPattern);
+        return CollectionUtil.newList(CALL_PATTERN);
     }
 
     /**
@@ -100,6 +102,6 @@ public class MockConnector implements Connector, SchemaOp {
      */
     public static void addCall(Object... args) {
         String methodName = ReflectionUtil.getMethodName(2);
-        callPattern.add(new Call(methodName, args));
+        CALL_PATTERN.add(new Call(methodName, args));
     }
 }

@@ -206,10 +206,14 @@ public class SearchApiOpTests extends ObjectClassRunner {
                 } else {
                     if (compareExistingObjectsByUidOnly()) {
                         assertTrue(coBeforeTest.containsKey(cObject.getUid()),
-                                "Object returned by null-filter search is neither in list of objects created by test nor in list of objects that were in connector resource before test. Objects were compared by Uid only.");
+                                "Object returned by null-filter search is neither in list of objects created by test "
+                                + "nor in list of objects that were in connector resource before test. "
+                                + "Objects were compared by Uid only.");
                     } else {
                         assertTrue(coBeforeTest.containsValue(cObject),
-                                "Object returned by null-filter search is neither in list of objects created by test nor in list of objects that were in connector resource before test. Objects were compared by all attributes.");
+                                "Object returned by null-filter search is neither in list of objects created by test "
+                                + "nor in list of objects that were in connector resource before test. "
+                                + "Objects were compared by all attributes.");
                     }
                 }
             }
@@ -254,8 +258,8 @@ public class SearchApiOpTests extends ObjectClassRunner {
                 List<ConnectorObject> coObjects = ConnectorHelper.search(getConnectorFacade(),
                         objectClass, fltUid, null);
                 assertTrue(coObjects.size() == 1,
-                        "Search filter by uid with no OperationOptions failed, expected to return one object, but returned "
-                        + coObjects.size());
+                        "Search filter by uid with no OperationOptions failed, expected to return one object, "
+                        + "but returned " + coObjects.size());
 
                 assertNotNull(coObjects.get(0), "Unable to retrieve newly created object");
 
@@ -316,22 +320,23 @@ public class SearchApiOpTests extends ObjectClassRunner {
                 String uidStr = uid.getUidValue();
 
                 // change the case in UID
-                String caseChngd_uidStr = changeCase(uidStr); // inverts the case of the original uid (example: BvZAO96 --> bVzao96)
+                // inverts the case of the original uid (example: BvZAO96 --> bVzao96)
+                String caseChngdUidStr = changeCase(uidStr);
 
                 // change the case in NAME
                 String name = getName(objectClass, uid);
-                String caseChngd_NAME = changeCase(name);
+                String caseChngdName = changeCase(name);
 
                 //perform search with changed case UID
                 ConnectorObject searchWithChngdCaseResult = searchForUid(objectClass,
-                        caseChngd_uidStr, "[query by changed case uid]");
+                        caseChngdUidStr, "[query by changed case uid]");
 
                 assertTrue(searchWithChngdCaseResult.equals(searchResult),
                         "The search responses differ for changed case query [UID] and simple query.");
 
                 //perform search with changed case NAME
                 searchWithChngdCaseResult = searchForName(objectClass,
-                        caseChngd_NAME, "[query by changed case name]");
+                        caseChngdName, "[query by changed case name]");
 
                 assertTrue(searchWithChngdCaseResult.equals(searchResult),
                         "The search responses differ for changed case query [NAME] and simple query.");
@@ -349,9 +354,9 @@ public class SearchApiOpTests extends ObjectClassRunner {
         }
     }
 
-    private ConnectorObject searchForName(ObjectClass objectClass, String caseChngd_NAME, String msg) {
+    private ConnectorObject searchForName(ObjectClass objectClass, String caseChngdName, String msg) {
         // get the user to make sure it exists now
-        Filter fltUid = FilterBuilder.equalTo(AttributeBuilder.build(Name.NAME, caseChngd_NAME));
+        Filter fltUid = FilterBuilder.equalTo(AttributeBuilder.build(Name.NAME, caseChngdName));
         List<ConnectorObject> coObjects = ConnectorHelper.search(
                 getConnectorFacade(), objectClass, fltUid, null);
         assertTrue(coObjects.size() == 1,
@@ -388,13 +393,13 @@ public class SearchApiOpTests extends ObjectClassRunner {
     }
 
     /** replace upper and lowercase letters */
-    static String changeCase(String str_uid) {
-        char[] result = new char[str_uid.length()];
-        for (int i = 0; i < str_uid.length(); i++) {
-            if (Character.isLowerCase(str_uid.charAt(i))) {
-                result[i] = Character.toUpperCase(str_uid.charAt(i));
+    static String changeCase(String strUid) {
+        char[] result = new char[strUid.length()];
+        for (int i = 0; i < strUid.length(); i++) {
+            if (Character.isLowerCase(strUid.charAt(i))) {
+                result[i] = Character.toUpperCase(strUid.charAt(i));
             } else {
-                result[i] = Character.toLowerCase(str_uid.charAt(i));
+                result[i] = Character.toLowerCase(strUid.charAt(i));
             }
         }
 

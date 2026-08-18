@@ -44,9 +44,8 @@ public class ObjectClassInfoTests {
     }
 
     public void testNoName() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new ObjectClassInfo(ObjectClass.ACCOUNT_NAME, new HashSet<>(), false, false, false);
-        });
+        assertThrows(IllegalArgumentException.class,
+                () -> new ObjectClassInfo(ObjectClass.ACCOUNT_NAME, new HashSet<>(), false, false, false));
     }
 
     @Test
@@ -90,19 +89,19 @@ public class ObjectClassInfoTests {
     @Test
     public void testEquals() {
         // Test type case-insensitivity
-        ObjectClassInfo oci_lower = build("group");
-        ObjectClassInfo oci_upper = build("Group");
+        ObjectClassInfo ociLower = build("group");
+        ObjectClassInfo ociUpper = build("Group");
 
-        assertEquals(oci_lower, oci_upper);
+        assertEquals(ociLower, ociUpper);
     }
 
     @Test
     public void testHashCode() {
         // Test type case-insensitivity
-        ObjectClassInfo oci_lower = build("group");
-        ObjectClassInfo oci_upper = build("Group");
+        ObjectClassInfo ociLower = build("group");
+        ObjectClassInfo ociUpper = build("Group");
 
-        assertEquals(oci_lower.hashCode(), oci_upper.hashCode());
+        assertEquals(ociLower.hashCode(), ociUpper.hashCode());
     }
 
     @Test

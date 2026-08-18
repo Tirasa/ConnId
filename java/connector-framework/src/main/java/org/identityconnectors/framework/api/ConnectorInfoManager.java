@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api;
 
@@ -37,16 +38,16 @@ public interface ConnectorInfoManager {
      *
      * @return the list of <code>ConnectorInfo</code> instances.
      */
-    public List<ConnectorInfo> getConnectorInfos();
+    List<ConnectorInfo> getConnectorInfos();
 
     /**
      * Returns the <code>ConnectorInfo</code> that is associated with the
      * specified <code>ConnectorKey</code>.
      *
      * @param key
-     *            The key of a connector.
+     * The key of a connector.
      * @return The <code>ConnectorInfo</code> or <code>null</code> if none was
-     *         associated with the specified key.
+     * associated with the specified key.
      */
-    public ConnectorInfo findConnectorInfo(ConnectorKey key);
+    ConnectorInfo findConnectorInfo(ConnectorKey key);
 }

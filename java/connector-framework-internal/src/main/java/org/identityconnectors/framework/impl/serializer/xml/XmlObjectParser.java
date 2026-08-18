@@ -41,7 +41,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class XmlObjectParser {
+public final class XmlObjectParser {
 
     private static final SAXParserFactory SAX_PARSER_FACTORY;
 
@@ -94,9 +94,9 @@ public class XmlObjectParser {
         /**
          * Is the handler still handing.
          */
-        private boolean _stillHandling = true;
+        private boolean stillHandling = true;
 
-        public MySAXHandler(final XmlObjectResultsHandler handler, final boolean validate) {
+        MySAXHandler(final XmlObjectResultsHandler handler, final boolean validate) {
             this.handler = handler;
             this.validate = validate;
         }
@@ -118,10 +118,10 @@ public class XmlObjectParser {
                 Element element = elementStack.pop();
                 if (elementStack.isEmpty()) {
                     currentTopLevelElementDocument = null;
-                    if (_stillHandling) {
+                    if (stillHandling) {
                         XmlObjectDecoder decoder = new XmlObjectDecoder(element, null);
                         Object object = decoder.readObject();
-                        _stillHandling = handler.handle(object);
+                        stillHandling = handler.handle(object);
                     }
                 }
             }
@@ -180,5 +180,8 @@ public class XmlObjectParser {
                 return null;
             }
         }
+    }
+
+    private XmlObjectParser() {
     }
 }

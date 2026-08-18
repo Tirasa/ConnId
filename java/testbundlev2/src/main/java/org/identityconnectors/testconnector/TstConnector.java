@@ -40,7 +40,7 @@ import org.identityconnectors.testcommon.TstCommon;
         displayNameKey = "TestConnector")
 public class TstConnector implements CreateOp, AuthenticateOp, Connector {
 
-    private Configuration _config;
+    private Configuration config;
 
     @Override
     public Uid create(ObjectClass objectClass, Set<Attribute> createAttributes, OperationOptions options) {
@@ -58,12 +58,12 @@ public class TstConnector implements CreateOp, AuthenticateOp, Connector {
 
     @Override
     public void init(Configuration cfg) {
-        _config = cfg;
+        config = cfg;
     }
 
     @Override
     public Configuration getConfiguration() {
-        return _config;
+        return config;
     }
 
     @Override

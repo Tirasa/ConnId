@@ -19,12 +19,16 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
-import org.identityconnectors.framework.common.objects.*;
-
 import java.util.Set;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
+import org.identityconnectors.framework.common.objects.BaseAttributeDelta;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.Uid;
 
 /**
  * <p>
@@ -95,7 +99,9 @@ public interface ComplexUpdateDeltaOp extends SPIOperation {
      * if the delta execution would result in violation of the schema,
      * if the result would be missing mandatory attribute and in similar cases.
      */
-    public Set<BaseAttributeDelta> complexUpdateDelta(ObjectClass objclass, Uid uid, Set<BaseAttributeDelta> modifications,
-                                                  OperationOptions options);
-
+    Set<BaseAttributeDelta> complexUpdateDelta(
+            ObjectClass objclass,
+            Uid uid,
+            Set<BaseAttributeDelta> modifications,
+            OperationOptions options);
 }

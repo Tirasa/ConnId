@@ -19,10 +19,12 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 import org.identityconnectors.common.CollectionUtil;
 
 /**
@@ -44,6 +46,7 @@ public class SuggestedValues {
     /**
      * Openness of value list. Closed lists (the default) can accept only specified values.
      * Open lists can accept any value.
+     *
      * @see ValueListOpenness
      */
     private final ValueListOpenness openness;
@@ -54,10 +57,11 @@ public class SuggestedValues {
 
     SuggestedValues(List<Object> values, ValueListOpenness openness) {
         if (values == null) {
-            throw new IllegalArgumentException("List of suggested values cannot be null, use empty list to indicate no values");
+            throw new IllegalArgumentException(
+                    "List of suggested values cannot be null, use empty list to indicate no values");
         }
         // copy to prevent corruption..
-        this.values =  CollectionUtil.newReadOnlyList(values);
+        this.values = CollectionUtil.newReadOnlyList(values);
         this.openness = openness;
     }
 
@@ -73,6 +77,7 @@ public class SuggestedValues {
     /**
      * Returns openness of value list. Closed lists (the default) can accept only specified values.
      * Open lists can accept any value.
+     *
      * @see ValueListOpenness
      */
     public ValueListOpenness getOpenness() {
@@ -81,8 +86,12 @@ public class SuggestedValues {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         SuggestedValues that = (SuggestedValues) o;
         return values.equals(that.values) && openness == that.openness;
     }
@@ -100,5 +109,4 @@ public class SuggestedValues {
         bld.append(" (").append(openness).append(")");
         return bld.toString();
     }
-
 }

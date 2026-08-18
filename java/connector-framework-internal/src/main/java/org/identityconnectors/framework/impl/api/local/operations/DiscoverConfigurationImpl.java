@@ -19,15 +19,16 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
-import java.util.*;
+import java.util.Map;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.DiscoverConfigurationApiOp;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
 import org.identityconnectors.framework.spi.Connector;
-import org.identityconnectors.framework.spi.operations.*;
+import org.identityconnectors.framework.spi.operations.DiscoverConfigurationOp;
 
 /**
  * Handles both version of update this include simple replace and the advance update.
@@ -43,29 +44,35 @@ public class DiscoverConfigurationImpl extends ConnectorAPIOperationRunner imple
 
     @Override
     public void testPartialConfiguration() {
-        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "testPartialConfiguration");
+        SpiOperationLoggingUtil.logOpEntry(
+                OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "testPartialConfiguration");
 
         try {
             ((DiscoverConfigurationOp) getConnector()).testPartialConfiguration();
         } catch (RuntimeException e) {
-            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "testPartialConfiguration", e);
+            SpiOperationLoggingUtil.logOpException(
+                    OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "testPartialConfiguration", e);
             throw e;
         }
-        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "testPartialConfiguration");
+        SpiOperationLoggingUtil.logOpExit(
+                OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "testPartialConfiguration");
     }
 
     @Override
     public Map<String, SuggestedValues> discoverConfiguration() {
-        SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "discoverConfiguration");
+        SpiOperationLoggingUtil.logOpEntry(
+                OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "discoverConfiguration");
 
         Map<String, SuggestedValues> ret;
         try {
             ret = ((DiscoverConfigurationOp) getConnector()).discoverConfiguration();
         } catch (RuntimeException e) {
-            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "discoverConfiguration", e);
+            SpiOperationLoggingUtil.logOpException(
+                    OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "discoverConfiguration", e);
             throw e;
         }
-        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "discoverConfiguration", ret);
+        SpiOperationLoggingUtil.logOpExit(
+                OP_LOG, getOperationalContext(), DiscoverConfigurationOp.class, "discoverConfiguration", ret);
         return ret;
     }
 }

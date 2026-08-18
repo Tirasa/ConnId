@@ -55,8 +55,8 @@ import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.CollectionUtil;
 import org.identityconnectors.common.IOUtil;
 import org.identityconnectors.common.StringUtil;
-import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.common.logging.Log;
+import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
 /**
@@ -693,46 +693,45 @@ public final class SQLUtil {
             stmt.setNull(idx, sqlType);
             return;
         }
-        //Set the generics 
+        //Set the generics
         if (sqlType == Types.NULL) {
             stmt.setObject(idx, val);
             return;
         }
-        //Set specific object
-        if (val instanceof BigDecimal) {
-            stmt.setBigDecimal(idx, (BigDecimal) val);
-        } else if (val instanceof Double) {
-            stmt.setDouble(idx, (Double) val);
-        } else if (val instanceof Float) {
-            stmt.setFloat(idx, (Float) val);
-        } else if (val instanceof Integer) {
-            stmt.setInt(idx, (Integer) val);
-        } else if (val instanceof Long) {
-            stmt.setLong(idx, (Long) val);
-        } else if (val instanceof BigInteger) {
-            stmt.setLong(idx, ((BigInteger) val).longValue());
-        } else if (val instanceof Byte) {
-            stmt.setByte(idx, (Byte) val);
-        } else if (val instanceof Integer) {
-            stmt.setInt(idx, (Integer) val);
-        } else if (val instanceof InputStream) {
-            stmt.setBinaryStream(idx, (InputStream) val, 10000);
-        } else if (val instanceof Blob) {
-            stmt.setBlob(idx, (Blob) val);
-        } else if (val instanceof byte[]) {
-            stmt.setBytes(idx, (byte[]) val);
-        } else if (val instanceof Timestamp) {
-            stmt.setTimestamp(idx, (Timestamp) val);
-        } else if (val instanceof java.sql.Date) {
-            stmt.setDate(idx, (java.sql.Date) val);
-        } else if (val instanceof java.sql.Time) {
-            stmt.setTime(idx, (java.sql.Time) val);
-        } else if (val instanceof Boolean) {
-            stmt.setBoolean(idx, (Boolean) val);
-        } else if (val instanceof String) {
-            stmt.setString(idx, (String) val);
-        } else {
-            stmt.setObject(idx, val);
+        //Set specific objec
+        switch (val) {
+            case BigDecimal bigDecimal ->
+                stmt.setBigDecimal(idx, bigDecimal);
+            case Double aDouble ->
+                stmt.setDouble(idx, aDouble);
+            case Float aFloat ->
+                stmt.setFloat(idx, aFloat);
+            case Integer integer ->
+                stmt.setInt(idx, integer);
+            case Long aLong ->
+                stmt.setLong(idx, aLong);
+            case BigInteger bigInteger ->
+                stmt.setLong(idx, bigInteger.longValue());
+            case Byte aByte ->
+                stmt.setByte(idx, aByte);
+            case InputStream inputStream ->
+                stmt.setBinaryStream(idx, inputStream, 10000);
+            case Blob blob ->
+                stmt.setBlob(idx, blob);
+            case byte[] bs ->
+                stmt.setBytes(idx, bs);
+            case Timestamp timestamp ->
+                stmt.setTimestamp(idx, timestamp);
+            case java.sql.Date date ->
+                stmt.setDate(idx, date);
+            case java.sql.Time time ->
+                stmt.setTime(idx, time);
+            case Boolean aBoolean ->
+                stmt.setBoolean(idx, aBoolean);
+            case String string ->
+                stmt.setString(idx, string);
+            default ->
+                stmt.setObject(idx, val);
         }
     }
 
@@ -748,17 +747,17 @@ public final class SQLUtil {
         if (value == null) {
             return ret;
         }
-        if (value instanceof Blob) {
-            ret = blob2ByteArray((Blob) value);
-        } else if (value instanceof java.sql.Timestamp) {
-            ret = timestamp2String((java.sql.Timestamp) value);
-        } else if (value instanceof java.sql.Time) {
-            ret = time2String((java.sql.Time) value);
-        } else if (value instanceof java.sql.Date) {
-            ret = date2String((java.sql.Date) value);
-        } else if (value instanceof java.util.Date) {
+        if (value instanceof Blob blob) {
+            ret = blob2ByteArray(blob);
+        } else if (value instanceof java.sql.Timestamp timestamp) {
+            ret = timestamp2String(timestamp);
+        } else if (value instanceof java.sql.Time time) {
+            ret = time2String(time);
+        } else if (value instanceof java.sql.Date date) {
+            ret = date2String(date);
+        } else if (value instanceof java.util.Date date) {
             //convert date to String
-            ret = ((java.util.Date) value).toString();
+            ret = date.toString();
             /* } else if (value instanceof Long) {
              * ret = value;
              * } else if (value instanceof Character) {
@@ -779,7 +778,7 @@ public final class SQLUtil {
              * ret = value; */
         } else {
             // converted to string leads to error in contract tests
-            // TODO figure out, which type fail. It could be Character[] 
+            // TODO figure out, which type fail. It could be Character[]
             ret = value;
         }
         return ret;
@@ -799,76 +798,76 @@ public final class SQLUtil {
             return null;
         }
         switch (sqlType) {
-            //Known conversions
-            case Types.DECIMAL:
-            case Types.NUMERIC:
-            case Types.DOUBLE:
+            case Types.DECIMAL, Types.NUMERIC, Types.DOUBLE -> {
                 if (value instanceof BigDecimal) {
                     return value;
                 } else if (value instanceof Double) {
                     return value;
                 } else if (value instanceof Float) {
                     return value;
-                } else if (value instanceof String) {
-                    return Double.valueOf((String) value);
+                } else if (value instanceof String string) {
+                    return Double.valueOf(string);
                 } else {
                     return Double.valueOf(value.toString());
                 }
-            case Types.FLOAT:
-            case Types.REAL:
+            }
+            case Types.FLOAT, Types.REAL -> {
                 if (value instanceof BigDecimal) {
                     return value;
                 } else if (value instanceof Float) {
                     return value;
                 } else if (value instanceof Double) {
                     return value;
-                } else if (value instanceof String) {
-                    return Float.valueOf((String) value);
+                } else if (value instanceof String string) {
+                    return Float.valueOf(string);
                 } else {
                     return Float.valueOf(value.toString());
                 }
-            case Types.INTEGER:
-            case Types.BIGINT:
+            }
+            case Types.INTEGER, Types.BIGINT -> {
                 if (value instanceof BigInteger) {
                     return value;
                 } else if (value instanceof Long) {
                     return value;
                 } else if (value instanceof Integer) {
                     return value;
-                } else if (value instanceof String) {
-                    return Long.valueOf((String) value);
+                } else if (value instanceof String string) {
+                    return Long.valueOf(string);
                 } else {
                     return Long.valueOf(value.toString());
                 }
-            case Types.TIMESTAMP:
-                if (value instanceof String) {
-                    return string2Timestamp((String) value);
+            }
+            case Types.TIMESTAMP -> {
+                if (value instanceof String string) {
+                    return string2Timestamp(string);
                 }
-                break;
-            case Types.DATE:
-                if (value instanceof String) {
-                    return string2Date((String) value);
+            }
+            case Types.DATE -> {
+                if (value instanceof String string) {
+                    return string2Date(string);
                 }
-                break;
-            case Types.TIME:
-                if (value instanceof String) {
-                    return string2Time((String) value);
+            }
+            case Types.TIME -> {
+                if (value instanceof String string) {
+                    return string2Time(string);
                 }
-                break;
-            case Types.BIT:
-            case Types.BOOLEAN:
-                if (value instanceof String) {
-                    return string2Boolean((String) value);
+            }
+            case Types.BIT, Types.BOOLEAN -> {
+                if (value instanceof String string) {
+                    return string2Boolean(string);
                 }
-                break;
-            case Types.LONGVARCHAR:
-            case Types.VARCHAR:
-            case Types.CHAR:
+            }
+            case Types.LONGVARCHAR, Types.VARCHAR, Types.CHAR -> {
                 if (value instanceof String) {
                     return value;
                 }
                 return value.toString();
+            }
+
+            default -> {
+            }
         }
+        //Known conversions
         return value;
     }
 
@@ -891,7 +890,7 @@ public final class SQLUtil {
                         //Never use setString, the DB2 database will fail for secured columns
                         stmt.setObject(idx, new String(clearChars));
                     } catch (SQLException e) {
-                        // checked exception are not allowed in the access method 
+                        // checked exception are not allowed in the access method
                         // Lets use the exception softening pattern
                         throw new RuntimeException(e);
                     }
@@ -899,8 +898,8 @@ public final class SQLUtil {
             });
         } catch (RuntimeException e) {
             // determine if there's a SQLException and re-throw that..
-            if (e.getCause() instanceof SQLException) {
-                throw (SQLException) e.getCause();
+            if (e.getCause() instanceof SQLException sQLException) {
+                throw sQLException;
             }
             throw e;
         }
@@ -951,7 +950,7 @@ public final class SQLUtil {
             throws SQLException {
         PreparedStatement st = null;
         ResultSet rs = null;
-        List<Object[]> rows = new ArrayList<Object[]>();
+        List<Object[]> rows = new ArrayList<>();
         try {
             st = conn.prepareStatement(sql);
             setParams(st, Arrays.asList(params));
