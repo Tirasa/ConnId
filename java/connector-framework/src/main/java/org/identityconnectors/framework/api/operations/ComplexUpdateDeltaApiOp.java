@@ -28,6 +28,6 @@ import java.util.Set;
 
 public interface ComplexUpdateDeltaApiOp extends APIOperation {
 
-    Set<ComplexAttributeDelta> updateDelta(ObjectClass objclass, Uid uid, Set<ComplexAttributeDelta> modifications,
+    Set<BaseAttributeDelta> complexUpdateDelta(ObjectClass objclass, Uid uid, Set<BaseAttributeDelta> modifications,
                                            OperationOptions options);
 }

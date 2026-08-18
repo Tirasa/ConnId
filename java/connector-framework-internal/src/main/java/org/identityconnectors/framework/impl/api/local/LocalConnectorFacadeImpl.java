@@ -79,6 +79,8 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
         addImplementation(SyncApiOp.class, SyncImpl.class);
         addImplementation(LiveSyncApiOp.class, LiveSyncImpl.class);
         addImplementation(DiscoverConfigurationApiOp.class, DiscoverConfigurationImpl.class);
+        addImplementation(PartialSchemaApiOp.class, PartialSchemaImpl.class);
+        addImplementation(ComplexUpdateDeltaApiOp.class, ComplexUpdateDeltaImpl.class);
     }
 
     // =======================================================================

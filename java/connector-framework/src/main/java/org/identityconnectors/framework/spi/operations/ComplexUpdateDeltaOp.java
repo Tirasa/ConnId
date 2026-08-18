@@ -95,7 +95,7 @@ public interface ComplexUpdateDeltaOp extends SPIOperation {
      * if the delta execution would result in violation of the schema,
      * if the result would be missing mandatory attribute and in similar cases.
      */
-    public Set<ComplexAttributeDelta> updateDelta(ObjectClass objclass, Uid uid, Set<ComplexAttributeDelta> modifications,
+    public Set<BaseAttributeDelta> complexUpdateDelta(ObjectClass objclass, Uid uid, Set<BaseAttributeDelta> modifications,
                                                   OperationOptions options);
 
 }
