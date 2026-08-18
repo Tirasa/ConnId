@@ -33,6 +33,7 @@ import org.identityconnectors.framework.api.operations.DeleteApiOp;
 import org.identityconnectors.framework.api.operations.DiscoverConfigurationApiOp;
 import org.identityconnectors.framework.api.operations.GetApiOp;
 import org.identityconnectors.framework.api.operations.LiveSyncApiOp;
+import org.identityconnectors.framework.api.operations.PartialSchemaApiOp;
 import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
 import org.identityconnectors.framework.api.operations.SchemaApiOp;
 import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
@@ -55,7 +56,7 @@ import org.identityconnectors.framework.api.operations.ValidateApiOp;
  */
 public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, UpdateApiOp, UpdateDeltaApiOp,
         SchemaApiOp, AuthenticationApiOp, ResolveUsernameApiOp, GetApiOp, ValidateApiOp, TestApiOp,
-        ScriptOnConnectorApiOp, ScriptOnResourceApiOp, SyncApiOp, LiveSyncApiOp, DiscoverConfigurationApiOp {
+        ScriptOnConnectorApiOp, ScriptOnResourceApiOp, SyncApiOp, LiveSyncApiOp, DiscoverConfigurationApiOp, PartialSchemaApiOp {
 
     /**
      * Gets the unique generated identifier of this ConnectorFacade.
