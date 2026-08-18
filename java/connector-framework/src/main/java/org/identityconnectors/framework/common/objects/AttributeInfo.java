@@ -370,6 +370,10 @@ public final class AttributeInfo {
         return ConnectorObjectReference.class.equals(type);
     }
 
+    public boolean isEmbedded() {
+        return EmbeddedObject.class.equals(type);
+    }
+
     /**
      * Determines if the name parameter matches this {@link AttributeInfo}.
      */
