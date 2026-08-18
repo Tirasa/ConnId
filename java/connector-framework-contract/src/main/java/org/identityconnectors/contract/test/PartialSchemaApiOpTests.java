@@ -20,27 +20,28 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  */
-package org.identityconnectors.framework.api.operations;
 
-import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
-import org.identityconnectors.framework.common.objects.Schema;
-import org.identityconnectors.framework.spi.Connector;
+package org.identityconnectors.contract.test;
+import org.identityconnectors.framework.api.operations.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
- * Get the schema from the {@link Connector}.
+ * Contract test of {@link PartialSchemaApiOp} operation.
  */
-public interface PartialSchemaApiOp extends APIOperation {
+public class PartialSchemaApiOpTests extends ContractTestBase {
+
 
     /**
-     * Retrieve only a subset of the possible object classes as a schema of this {@link Connector}.
-     * The subset is defined as an array of {@link LightweightObjectClassInfo} which were provided by the
-     * {@link PartialSchemaApiOp#getObjectClassInformation()} method.
+     * {@inheritDoc}
      */
-    public Schema getPartialSchema(LightweightObjectClassInfo... ObjectClassInfo);
-
-    /**
-     * Retrieve and array of {@link LightweightObjectClassInfo} objects which can be provided in the schema of this
-     * {@link Connector}.
-     */
-    public LightweightObjectClassInfo[] getObjectClassInformation();
+    @Override
+    public Set<Class<? extends APIOperation>> getAPIOperations() {
+        Set<Class<? extends APIOperation>> s = new HashSet<>();
+        // list of required operations by this test:
+        s.add(PartialSchemaApiOp.class);
+        return s;
+    }
 }
