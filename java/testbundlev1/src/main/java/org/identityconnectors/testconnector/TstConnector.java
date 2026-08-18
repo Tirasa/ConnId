@@ -103,12 +103,12 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
 
     public static final String GROUP_2_NAME = "group2";
 
-    private static final String USER_CLASS_DESCRIPTION = "A User object is a digital identity object that represents a single human user or, a non-human agent (e.g., service account) authorized to access digital resources.";
+    public static final String USER_CLASS_DESCRIPTION = "A User object is a digital identity object that represents a single human user or, a non-human agent (e.g., service account) authorized to access digital resources.";
     private static final String USER_CLASS_UID_DESCRIPTION = "A unique, immutable identifier for the user.";
     private static final String USER_CLASS_NAME_DESCRIPTION = "A human-readable login name.";
     private static final String USER_CLASS_MEMBER_OF_DESCRIPTION = "Unique identifiers of groups represented as a list of memberships for policy inheritance.";
     private static final String USER_CLASS_ACCESS_DESCRIPTION = "Unique identifiers of group access policies, .";
-    private static final String GROUP_CLASS_DESCRIPTION = "A Group is a logical container object that represents a collection of user accounts or other groups.";
+    public static final String GROUP_CLASS_DESCRIPTION = "A Group is a logical container object that represents a collection of user accounts or other groups.";
     private static final String GROUP_CLASS_UID_DESCRIPTION = "A unique, immutable identifier for the group.";
     private static final String GROUP_CLASS_NAME_DESCRIPTION = "A human-readable name.";
     private static final String GROUP_CLASS_MEMBERS_ATTR_DESCRIPTION = "List of user identifiers or nested group identifiers.";
@@ -396,6 +396,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             objectClassInfoBuilder.setAuxiliary(lightweightObjectClassInfo.isAuxiliary());
             objectClassInfoBuilder.setContainer(lightweightObjectClassInfo.isContainer());
             objectClassInfoBuilder.addAllAttributeInfo(buildAttributeInfos(type));
+            schemaBuilder.defineObjectClass(objectClassInfoBuilder.build());
         }
 
         return schemaBuilder.build();

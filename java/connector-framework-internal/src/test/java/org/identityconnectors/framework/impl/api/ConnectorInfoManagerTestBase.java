@@ -35,7 +35,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -66,6 +68,7 @@ import org.identityconnectors.framework.common.objects.AttributeInfo;
 import org.identityconnectors.framework.common.objects.ConnectorObject;
 import org.identityconnectors.framework.common.objects.ConnectorObjectIdentification;
 import org.identityconnectors.framework.common.objects.ConnectorObjectReference;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
 import org.identityconnectors.framework.common.objects.Name;
 import org.identityconnectors.framework.common.objects.ObjectClass;
 import org.identityconnectors.framework.common.objects.ObjectClassInfo;
@@ -667,6 +670,70 @@ public abstract class ConnectorInfoManagerTestBase {
         } catch (OperationTimeoutException e) {
             //expected
         }
+    }
+
+    @Test
+    public void testGetObjectClassInformation() throws Exception {
+
+        ConnectorInfoManager manager = getConnectorInfoManager();
+        ConnectorInfo info = findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
+        ConnectorFacade facade = ConnectorFacadeFactory.getInstance()
+                .newInstance(info.createDefaultAPIConfiguration());
+        LightweightObjectClassInfo[] lightweightObjectClassInfos = facade.getObjectClassInformation();
+        assertNotNull(lightweightObjectClassInfos);
+        assertEquals(lightweightObjectClassInfos.length, 5);
+    }
+
+    @Test
+    public void testGetPartialSchema() throws Exception {
+        ConnectorInfoManager manager = getConnectorInfoManager();
+        ConnectorInfo info = findConnectorInfo(manager,
+                "1.0.0.0",
+                "org.identityconnectors.testconnector.TstConnector");
+
+        ConnectorFacade facade = ConnectorFacadeFactory.getInstance()
+                .newInstance(info.createDefaultAPIConfiguration());
+
+        LightweightObjectClassInfo[] lightweightObjectClassInfos = facade.getObjectClassInformation();
+        assertNotNull(lightweightObjectClassInfos);
+        Iterator<LightweightObjectClassInfo> iteratorLwOCI = Arrays.stream(lightweightObjectClassInfos).iterator();
+        ArrayList<LightweightObjectClassInfo> lightweightObjectClassInfoList = new ArrayList<>();
+
+        while (iteratorLwOCI.hasNext()) {
+            LightweightObjectClassInfo lightweightObjectClassInfo = iteratorLwOCI.next();
+            if (lightweightObjectClassInfo.is(TstConnector.USER_CLASS_NAME) ||
+                    lightweightObjectClassInfo.is(TstConnector.GROUP_CLASS_NAME)) {
+                lightweightObjectClassInfoList.add(lightweightObjectClassInfo);
+            }
+        }
+
+        Schema schema = facade.getPartialSchema(lightweightObjectClassInfoList.toArray(new LightweightObjectClassInfo[0]));
+
+        assertEquals(2, schema.getObjectClassInfo().size());
+
+        ObjectClassInfo userObjectClass = schema.findObjectClassInfo(TstConnector.USER_CLASS_NAME);
+        assertNotNull(userObjectClass);
+        assertNotNull(userObjectClass.getDescription());
+        assertEquals(TstConnector.USER_CLASS_DESCRIPTION, userObjectClass.getDescription());
+        userObjectClass.getAttributeInfo().stream()
+                .filter(attr -> attr.getName().equals(TstConnector.MEMBER_OF_ATTR_NAME))
+                .findFirst()
+                .ifPresentOrElse(attr -> {
+                    assertEquals(TstConnector.GROUP_CLASS_NAME, attr.getReferencedObjectClassName());
+                    assertEquals(TstConnector.GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME, attr.getSubtype());
+                    assertEquals(AttributeInfo.RoleInReference.SUBJECT.toString(), attr.getRoleInReference());
+                    assertTrue(attr.isMultiValued());
+                }, () -> {
+                    fail("Attribute " + TstConnector.MEMBER_OF_ATTR_NAME + " not found");
+                });
+
+        ObjectClassInfo groupObjectClass = schema.findObjectClassInfo(TstConnector.GROUP_CLASS_NAME);
+        assertNotNull(groupObjectClass);
+        assertNotNull(groupObjectClass.getDescription());
+        assertEquals(TstConnector.GROUP_CLASS_DESCRIPTION, groupObjectClass.getDescription());
     }
 
     static File getTestBundlesDir() throws URISyntaxException {

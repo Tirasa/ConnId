@@ -849,5 +849,32 @@ class CommonObjectHandlers {
         });
 
         HANDLERS.add(new EnumSerializationHandler(ValueListOpenness.class, "ValueListOpenness"));
+
+        HANDLERS.add(new AbstractObjectSerializationHandler(LightweightObjectClassInfo.class,
+                "LightweightObjectClassInfo") {
+
+            @Override
+            public Object deserialize(final ObjectDecoder decoder) {
+                final String type = decoder.readStringField("type", null);
+                final boolean container = decoder.readBooleanField("container", false);
+                final boolean auxiliary = decoder.readBooleanField("auxiliary", false);
+                final boolean embedded = decoder.readBooleanField("embedded", false);
+                final String description = decoder.readStringField("description", null);
+
+                return new LightweightObjectClassInfo(type, container, auxiliary, embedded, description);
+            }
+
+            @Override
+            public void serialize(final Object object, final ObjectEncoder encoder) {
+                final LightweightObjectClassInfo val = (LightweightObjectClassInfo) object;
+
+                encoder.writeStringField("type", val.getType());
+                encoder.writeBooleanField("container", val.isContainer());
+                encoder.writeBooleanField("auxiliary", val.isAuxiliary());
+                encoder.writeBooleanField("embedded", val.isEmbedded());
+                encoder.writeStringField("description", val.getDescription());
+            }
+        });
+
     }
 }
