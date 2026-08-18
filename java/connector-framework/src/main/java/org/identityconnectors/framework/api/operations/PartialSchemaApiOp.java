@@ -22,7 +22,7 @@
  */
 package org.identityconnectors.framework.api.operations;
 
-import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.spi.Connector;
 
@@ -33,11 +33,14 @@ public interface PartialSchemaApiOp extends APIOperation {
 
     /**
      * Retrieve only a subset of the possible object classes as a schema of this {@link Connector}.
+     * The subset is defined as an array of {@link LightweightObjectClassInfo} which were provided by the
+     * {@link PartialSchemaApiOp#getObjectClassInformation()} method.
      */
-    public Schema getPartialSchema(ObjectClass ... objectClasses);
+    public Schema getPartialSchema(LightweightObjectClassInfo... ObjectClassInfo);
 
     /**
-     * Retrieve and array of {@link ObjectClass} objects which can be provided in the schema of this {@link Connector}.
+     * Retrieve and array of {@link LightweightObjectClassInfo} objects which can be provided in the schema of this
+     * {@link Connector}.
      */
-    public ObjectClass[] getObjectClasses();
+    public LightweightObjectClassInfo[] getObjectClassInformation();
 }

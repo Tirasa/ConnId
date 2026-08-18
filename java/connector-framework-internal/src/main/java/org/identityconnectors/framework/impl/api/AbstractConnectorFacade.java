@@ -326,16 +326,17 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      * {@inheritDoc}
      */
     @Override
-    public final Schema getPartialSchema(ObjectClass ... objectClasses) {
-        return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).getPartialSchema(objectClasses);
+    public final Schema getPartialSchema(LightweightObjectClassInfo ... ObjectClassInfo) {
+        return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).
+                getPartialSchema(ObjectClassInfo);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final ObjectClass[] getObjectClasses() {
-        return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).getObjectClasses();
+    public final LightweightObjectClassInfo[] getObjectClassInformation() {
+        return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).getObjectClassInformation();
     }
 
     private static final String MSG = "Operation ''{0}'' not supported.";

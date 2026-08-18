@@ -34,6 +34,7 @@ import org.identityconnectors.framework.impl.api.AbstractConnectorFacade;
 import org.identityconnectors.framework.impl.api.LoggingProxy;
 import org.identityconnectors.framework.impl.api.local.operations.*;
 import org.identityconnectors.framework.spi.Connector;
+import org.identityconnectors.framework.spi.operations.PartialSchemaOp;
 
 /**
  * Implements all the methods of the facade.
@@ -79,6 +80,7 @@ public class LocalConnectorFacadeImpl extends AbstractConnectorFacade {
         addImplementation(SyncApiOp.class, SyncImpl.class);
         addImplementation(LiveSyncApiOp.class, LiveSyncImpl.class);
         addImplementation(DiscoverConfigurationApiOp.class, DiscoverConfigurationImpl.class);
+        addImplementation(PartialSchemaApiOp.class, PartialSchemaImpl.class);
     }
 
     // =======================================================================

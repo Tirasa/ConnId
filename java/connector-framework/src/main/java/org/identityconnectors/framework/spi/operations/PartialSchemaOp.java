@@ -22,7 +22,7 @@
  */
 package org.identityconnectors.framework.spi.operations;
 
-import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
 import org.identityconnectors.framework.common.objects.Schema;
 import org.identityconnectors.framework.spi.Connector;
 
@@ -38,7 +38,6 @@ public interface PartialSchemaOp extends SPIOperation {
 
     /**
      * Describes a subset of the types of objects this {@link Connector} supports.
-     *
      * This method is considered an operation since determining supported
      * objects may require configuration information and allows this
      * determination to be dynamic.
@@ -54,14 +53,14 @@ public interface PartialSchemaOp extends SPIOperation {
      *
      * @return a subset of the basic schema supported by this {@link Connector}.
      */
-    Schema getPartialSchema(ObjectClass... objectClasses);
+    Schema getPartialSchema(LightweightObjectClassInfo... ObjectClassInfo);
 
     /**
-     * Provides the client with an array of {@link ObjectClass} which this {@link Connector} supports.
+     * Provides the client with an array of {@link LightweightObjectClassInfo} which this {@link Connector} supports.
      * The list can be used in the {@link org.identityconnectors.framework.api.operations.PartialSchemaApiOp} method
-     * to request subset of the {@link ObjectClass} objects which this {@link Connector} is capable of managing.
+     * to request a schema of a subset of the objects which this {@link Connector} is capable of managing.
      *
-     * @return an array of the Object Classes supported by this {@link Connector}.
+     * @return an array of the partial Object Class information supported by this {@link Connector}.
      */
-    public ObjectClass[] getObjectClasses();
+    public LightweightObjectClassInfo[] getObjectClassInformation();
 }
