@@ -50,6 +50,19 @@ public class LightweightObjectClassInfo {
     /**
      * Public only for serialization; Use LightweightObjectClassInfoBuilder instead.
      *
+     * @param objectClassInfo Inheritor {@link ObjectClassInfo} class which will be simplified to
+     *                       a {@link LightweightObjectClassInfo} class
+     */
+
+    public LightweightObjectClassInfo(ObjectClassInfo objectClassInfo) {
+
+        this(objectClassInfo.getType(), objectClassInfo.isContainer(),
+                objectClassInfo.isAuxiliary(), objectClassInfo.isEmbedded(), objectClassInfo.getDescription());
+    }
+
+    /**
+     * Public only for serialization; Use LightweightObjectClassInfoBuilder instead.
+     *
      * @param type The name of the object class
      * @param isContainer True if this can contain other object classes.
      */
