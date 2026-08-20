@@ -400,7 +400,7 @@ public class AttributeTests extends ObjectClassRunner {
      */
     private void testReturnedByDefault(final ObjectClass objectClass, final ApiOperations apiOp) {
         /** marker in front of every assert message */
-        String testMarkMsg = String.format("[testReturnedByDefault/%s]", apiOp);
+        String testMarkMsg = "[testReturnedByDefault/%s]".formatted(apiOp);
 
         // run the contract test only if <strong>apiOp</strong> APIOperation is
         // supported
