@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.server.impl;
 
@@ -33,11 +34,11 @@ public class CCLWatchThreadFactory implements ThreadFactory {
     // Copied from java.util.concurrent.Executors.DefaultThreadFactory.
     static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
 
-    final ThreadGroup group;
+    private final ThreadGroup group;
 
-    final AtomicInteger threadNumber = new AtomicInteger(1);
+    private final AtomicInteger threadNumber = new AtomicInteger(1);
 
-    final String namePrefix;
+    private final String namePrefix;
 
     CCLWatchThreadFactory() {
         group = Thread.currentThread().getThreadGroup();

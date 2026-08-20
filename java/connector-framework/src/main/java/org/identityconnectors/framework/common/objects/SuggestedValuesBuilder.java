@@ -19,10 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import org.identityconnectors.common.CollectionUtil;
 
 /**
@@ -33,7 +37,7 @@ import org.identityconnectors.common.CollectionUtil;
  */
 public final class SuggestedValuesBuilder {
 
-    private List<Object> values = new ArrayList<Object>();
+    private final List<Object> values = new ArrayList<>();
     
     private ValueListOpenness openness = ValueListOpenness.CLOSED;
 

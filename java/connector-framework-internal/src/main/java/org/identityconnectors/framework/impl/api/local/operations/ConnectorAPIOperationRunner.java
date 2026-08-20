@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -39,8 +40,7 @@ public abstract class ConnectorAPIOperationRunner extends APIOperationRunner {
     /**
      * Creates the API operation so it can called multiple times.
      */
-    public ConnectorAPIOperationRunner(final ConnectorOperationalContext context,
-            final Connector connector) {
+    public ConnectorAPIOperationRunner(final ConnectorOperationalContext context, final Connector connector) {
         super(context);
         this.connector = connector;
     }
@@ -59,9 +59,9 @@ public abstract class ConnectorAPIOperationRunner extends APIOperationRunner {
 
     public final ObjectNormalizerFacade getNormalizer(ObjectClass objectClass) {
         AttributeNormalizer norm = null;
-        Connector connector = getConnector();
-        if (connector instanceof AttributeNormalizer) {
-            norm = (AttributeNormalizer) connector;
+        Connector localConnector = getConnector();
+        if (localConnector instanceof AttributeNormalizer attributeNormalizer) {
+            norm = attributeNormalizer;
         }
         return new ObjectNormalizerFacade(objectClass, norm);
     }

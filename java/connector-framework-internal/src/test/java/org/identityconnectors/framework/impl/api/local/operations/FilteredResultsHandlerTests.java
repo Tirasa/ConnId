@@ -105,9 +105,7 @@ public class FilteredResultsHandlerTests {
     }
 
     public void nullProducer() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new FilteredResultsHandler(null, new RangeFilter(0, 100));
-        });
+        assertThrows(IllegalArgumentException.class, () -> new FilteredResultsHandler(null, new RangeFilter(0, 100)));
     }
 
     /**
@@ -116,9 +114,9 @@ public class FilteredResultsHandlerTests {
      */
     static class RangeFilter implements Filter {
 
-        final long low, high;
+        private final long low, high;
 
-        public RangeFilter(long low, long high) {
+        RangeFilter(long low, long high) {
             this.low = low;
             this.high = high;
         }

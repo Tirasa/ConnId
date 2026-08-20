@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
@@ -36,7 +37,6 @@ import org.identityconnectors.framework.impl.serializer.xml.XmlObjectParser;
 import org.identityconnectors.framework.impl.serializer.xml.XmlObjectSerializerImpl;
 import org.xml.sax.InputSource;
 
-
 public class ObjectSerializerFactoryImpl extends ObjectSerializerFactory {
 
     @Override
@@ -53,14 +53,15 @@ public class ObjectSerializerFactoryImpl extends ObjectSerializerFactory {
     public XmlObjectSerializer newXmlSerializer(Writer w,
             boolean includeHeader,
             boolean multiObject) {
-        return new XmlObjectSerializerImpl(w,includeHeader,multiObject);
+        return new XmlObjectSerializerImpl(w, includeHeader, multiObject);
     }
 
     @Override
-    public void deserializeXmlStream(InputSource is,
+    public void deserializeXmlStream(
+            InputSource is,
             XmlObjectResultsHandler handler,
             boolean validate) {
+        
         XmlObjectParser.parse(is, handler, validate);
     }
-
 }

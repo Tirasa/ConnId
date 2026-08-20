@@ -43,14 +43,14 @@ public final class AttributeInfoUtil {
      * the <code>AttributeInfo</code> instance with that name.
      *
      * @param attributes
-     *            set of AttributeInfo to transform to a map.
+     * set of AttributeInfo to transform to a map.
      * @return a map of string and AttributeInfo.
      * @throws NullPointerException
-     *             if the parameter <strong>attributes</strong> is
-     *             <strong>null</strong>.
+     * if the parameter <strong>attributes</strong> is
+     * <strong>null</strong>.
      */
     public static Map<String, AttributeInfo> toMap(Collection<? extends AttributeInfo> attributes) {
-        Map<String, AttributeInfo> ret = CollectionUtil.<AttributeInfo> newCaseInsensitiveMap();
+        Map<String, AttributeInfo> ret = CollectionUtil.newCaseInsensitiveMap();
         for (AttributeInfo attr : attributes) {
             ret.put(attr.getName(), attr);
         }
@@ -61,11 +61,11 @@ public final class AttributeInfoUtil {
      * Find the {@link AttributeInfo} of the given name in the {@link Set}.
      *
      * @param name
-     *            {@link AttributeInfo}'s name to search for.
+     * {@link AttributeInfo}'s name to search for.
      * @param attrs
-     *            {@link Set} of AttributeInfo to search.
+     * {@link Set} of AttributeInfo to search.
      * @return {@link AttributeInfo} with the specified otherwise
-     *         <code>null</code>.
+     * <code>null</code>.
      */
     public static AttributeInfo find(String name, Set<AttributeInfo> attrs) {
         Assertions.nullCheck(name, "name");
@@ -77,5 +77,4 @@ public final class AttributeInfoUtil {
         }
         return null;
     }
-
 }

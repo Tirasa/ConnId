@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common;
 
@@ -52,7 +53,7 @@ public class PrettyStringBuilder {
     /**
      * Returns pretty value from object value.
      */
-    @SuppressWarnings("rawtypes")         
+    @SuppressWarnings("rawtypes")
     protected String toPrettyString(final Object obj) {
         deep++;
         if (obj == null) {
@@ -79,8 +80,7 @@ public class PrettyStringBuilder {
                 s.append("...");
             }
             s.append(']');
-        } else if (obj instanceof Collection) {
-            final Collection coll = (Collection) obj;
+        } else if (obj instanceof Collection coll) {
             final Iterator it = coll.iterator();
             int i = 0;
             s.append('(');
@@ -92,8 +92,7 @@ public class PrettyStringBuilder {
                 s.append("...");
             }
             s.append(')');
-        } else if (obj instanceof Map) {
-            final Map map = (Map) obj;
+        } else if (obj instanceof Map map) {
             final Iterator it = map.keySet().iterator();
             int i = 0;
             s.append('{');
@@ -102,7 +101,7 @@ public class PrettyStringBuilder {
                 s.append(key).append(':');
                 s.append(toPrettyString(map.get(key)));
                 if (it.hasNext()) {
-                	s.append(",");
+                    s.append(",");
                 }
                 i++;
             }

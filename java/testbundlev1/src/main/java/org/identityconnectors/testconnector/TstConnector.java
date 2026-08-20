@@ -75,7 +75,8 @@ import org.identityconnectors.testcommon.TstCommon;
         displayNameKey = "TestConnector",
         categoryKey = "TestConnector.category",
         configurationClass = TstConnectorConfig.class)
-public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, SearchOp<String>, SyncOp, LiveSyncOp, PartialSchemaOp {
+public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, SearchOp<String>, SyncOp, LiveSyncOp,
+        PartialSchemaOp {
 
     public static final String USER_CLASS_NAME = "user";
 
@@ -110,23 +111,40 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
 
     public static final String GROUP_2_NAME = "group2";
 
-    public static final String USER_CLASS_DESCRIPTION = "A User object is a digital identity object that represents a single human user or, a non-human agent (e.g., service account) authorized to access digital resources.";
+    public static final String USER_CLASS_DESCRIPTION =
+            "A User object is a digital identity object that represents a single human user or, a non-human agent "
+            + "(e.g., service account) authorized to access digital resources.";
+
     private static final String USER_CLASS_UID_DESCRIPTION = "A unique, immutable identifier for the user.";
+
     private static final String USER_CLASS_NAME_DESCRIPTION = "A human-readable login name.";
-    private static final String USER_CLASS_MEMBER_OF_DESCRIPTION = "Unique identifiers of groups represented as a list of memberships for policy inheritance.";
+
+    private static final String USER_CLASS_MEMBER_OF_DESCRIPTION =
+            "Unique identifiers of groups represented as a list of memberships for policy inheritance.";
+
     private static final String USER_CLASS_ACCESS_DESCRIPTION = "Unique identifiers of group access policies, .";
-    public static final String GROUP_CLASS_DESCRIPTION = "A Group is a logical container object that represents a collection of user accounts or other groups.";
+
+    public static final String GROUP_CLASS_DESCRIPTION =
+            "A Group is a logical container object that represents a collection of user accounts or other groups.";
+
     private static final String GROUP_CLASS_UID_DESCRIPTION = "A unique, immutable identifier for the group.";
+
     private static final String GROUP_CLASS_NAME_DESCRIPTION = "A human-readable name.";
-    private static final String GROUP_CLASS_MEMBERS_ATTR_DESCRIPTION = "List of user identifiers or nested group identifiers.";
-    private static final String ACCESS_CLASS_DESCRIPTION = "This object represents a form of access to a group, either by another group or a user.";
-    private static final String ACCESS_CLASS_ATTR_REFERENCE_DESCRIPTION = "Reference attribute representing the relationship between a group and a user";
 
-    private static int _connectionCount = 0;
+    private static final String GROUP_CLASS_MEMBERS_ATTR_DESCRIPTION =
+            "List of user identifiers or nested group identifiers.";
 
-    private MyTstConnection _myConnection;
+    private static final String ACCESS_CLASS_DESCRIPTION =
+            "This object represents a form of access to a group, either by another group or a user.";
 
-    private TstConnectorConfig _config;
+    private static final String ACCESS_CLASS_ATTR_REFERENCE_DESCRIPTION =
+            "Reference attribute representing the relationship between a group and a user";
+
+    private static int CONNECTION_COUNT = 0;
+
+    private MyTstConnection myConnection;
+
+    private TstConnectorConfig config;
 
     public static void checkClassLoader() {
         if (Thread.currentThread().getContextClassLoader() != TstConnector.class.getClassLoader()) {
@@ -149,7 +167,7 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             }
         }
         if (options.getOptions().get("testPooling") != null) {
-            return new Uid(String.valueOf(_myConnection.getConnectionNumber()));
+            return new Uid(String.valueOf(myConnection.getConnectionNumber()));
         } else {
             String version = TstCommon.getVersion();
             return new Uid(version);
@@ -159,31 +177,31 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
     @Override
     public void init(Configuration cfg) {
         checkClassLoader();
-        _config = (TstConnectorConfig) cfg;
-        if (_config.getResetConnectionCount()) {
-            _connectionCount = 0;
+        config = (TstConnectorConfig) cfg;
+        if (config.getResetConnectionCount()) {
+            CONNECTION_COUNT = 0;
         }
-        _myConnection = new MyTstConnection(_connectionCount++);
+        myConnection = new MyTstConnection(CONNECTION_COUNT++);
     }
 
     @Override
     public Configuration getConfiguration() {
-        return _config;
+        return config;
     }
 
     @Override
     public void dispose() {
         checkClassLoader();
-        if (_myConnection != null) {
-            _myConnection.dispose();
-            _myConnection = null;
+        if (myConnection != null) {
+            myConnection.dispose();
+            myConnection = null;
         }
     }
 
     @Override
     public void checkAlive() {
         checkClassLoader();
-        _myConnection.test();
+        myConnection.test();
     }
 
     /**
@@ -211,8 +229,8 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             return;
         }
 
-        int remaining = _config.getNumResults();
-        for (int i = 0; i < _config.getNumResults(); i++) {
+        int remaining = config.getNumResults();
+        for (int i = 0; i < config.getNumResults(); i++) {
             Integer delay = (Integer) options.getOptions().get("delay");
             if (delay != null) {
                 try {
@@ -237,8 +255,8 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             }
         }
 
-        if (handler instanceof SearchResultsHandler) {
-            ((SearchResultsHandler) handler).handleResult(new SearchResult("", remaining));
+        if (handler instanceof SearchResultsHandler searchResultsHandler) {
+            searchResultsHandler.handleResult(new SearchResult("", remaining));
         }
     }
 
@@ -295,8 +313,8 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             OperationOptions options) {
 
         checkClassLoader();
-        int remaining = _config.getNumResults();
-        for (int i = 0; i < _config.getNumResults(); i++) {
+        int remaining = config.getNumResults();
+        for (int i = 0; i < config.getNumResults(); i++) {
             ConnectorObjectBuilder obuilder = new ConnectorObjectBuilder();
             obuilder.setUid(Integer.toString(i));
             obuilder.setName(Integer.toString(i));
@@ -313,8 +331,8 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
             }
             remaining--;
         }
-        if (handler instanceof SyncTokenResultsHandler) {
-            ((SyncTokenResultsHandler) handler).handleResult(new SyncToken(remaining));
+        if (handler instanceof SyncTokenResultsHandler syncTokenResultsHandler) {
+            syncTokenResultsHandler.handleResult(new SyncToken(remaining));
         }
     }
 
@@ -384,7 +402,6 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
         return new ObjectClass(USER_CLASS_NAME);
     }
 
-
     // Get only the parts of the schema which are requested by the IAM system.
     @Override
     public Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos) {
@@ -412,65 +429,70 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
     private Collection<AttributeInfo> buildAttributeInfos(String type) {
 
         Collection<AttributeInfo> attributeInfos = new ArrayList<>();
-        if (USER_CLASS_NAME.equals(type)) {
-
-            attributeInfos.add(
-                    new AttributeInfoBuilder(Uid.NAME, String.class)
-                            .setRequired(true)
-                            .setDescription(USER_CLASS_UID_DESCRIPTION)
-                            .build());
-            attributeInfos.add(
-                    new AttributeInfoBuilder(Name.NAME, String.class)
-                            .setRequired(true)
-                            .setDescription(USER_CLASS_NAME_DESCRIPTION)
-                            .build());
-            attributeInfos.add(
-                    new AttributeInfoBuilder(MEMBER_OF_ATTR_NAME, ConnectorObjectReference.class)
-                            .setReferencedObjectClassName(GROUP_CLASS_NAME)
-                            .setSubtype(GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME)
-                            .setRoleInReference(RoleInReference.SUBJECT.toString())
-                            .setMultiValued(true)
-                            .setDescription(USER_CLASS_MEMBER_OF_DESCRIPTION)
-                            .build());
-            attributeInfos.add(
-                    new AttributeInfoBuilder(ACCESS_ATTR_NAME, ConnectorObjectReference.class)
-                            .setReferencedObjectClassName(ACCESS_CLASS_NAME)
-                            .setRoleInReference(RoleInReference.SUBJECT.toString())
-                            .setMultiValued(true)
-                            .setDescription(USER_CLASS_ACCESS_DESCRIPTION)
-                            .build());
-
-        } else if (GROUP_CLASS_NAME.equals(type)) {
-            attributeInfos.add(
-                    new AttributeInfoBuilder(Uid.NAME, String.class)
-                            .setRequired(true)
-                            .setDescription(GROUP_CLASS_UID_DESCRIPTION)
-                            .build());
-            attributeInfos.add(
-                    new AttributeInfoBuilder(Name.NAME, String.class)
-                            .setRequired(true)
-                            .setDescription(GROUP_CLASS_NAME_DESCRIPTION)
-                            .build());
-            attributeInfos.add(
-                    new AttributeInfoBuilder(MEMBERS_ATTR_NAME, ConnectorObjectReference.class)
-                            .setReferencedObjectClassName(USER_CLASS_NAME)
-                            .setSubtype(GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME)
-                            .setRoleInReference(RoleInReference.OBJECT.toString())
-                            .setMultiValued(true)
-                            .setDescription(GROUP_CLASS_MEMBERS_ATTR_DESCRIPTION)
-                            .build());
-
-        } else if (ACCESS_CLASS_NAME.equals(type)) {
-
-            attributeInfos.add(
-                    new AttributeInfoBuilder(GROUP_ATTR_NAME, ConnectorObjectReference.class)
-                            .setReferencedObjectClassName(GROUP_CLASS_NAME)
-                            .setDescription(ACCESS_CLASS_ATTR_REFERENCE_DESCRIPTION)
-                            .build());
-
-        } else {
+        if (null == type) {
             for (int j = 0; j < 200; j++) {
                 attributeInfos.add(AttributeInfoBuilder.build("attributename" + j, String.class));
+            }
+        } else {
+            switch (type) {
+                case USER_CLASS_NAME -> {
+                    attributeInfos.add(
+                            new AttributeInfoBuilder(Uid.NAME, String.class)
+                                    .setRequired(true)
+                                    .setDescription(USER_CLASS_UID_DESCRIPTION)
+                                    .build());
+                    attributeInfos.add(
+                            new AttributeInfoBuilder(Name.NAME, String.class)
+                                    .setRequired(true)
+                                    .setDescription(USER_CLASS_NAME_DESCRIPTION)
+                                    .build());
+                    attributeInfos.add(
+                            new AttributeInfoBuilder(MEMBER_OF_ATTR_NAME, ConnectorObjectReference.class)
+                                    .setReferencedObjectClassName(GROUP_CLASS_NAME)
+                                    .setSubtype(GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME)
+                                    .setRoleInReference(RoleInReference.SUBJECT.toString())
+                                    .setMultiValued(true)
+                                    .setDescription(USER_CLASS_MEMBER_OF_DESCRIPTION)
+                                    .build());
+                    attributeInfos.add(
+                            new AttributeInfoBuilder(ACCESS_ATTR_NAME, ConnectorObjectReference.class)
+                                    .setReferencedObjectClassName(ACCESS_CLASS_NAME)
+                                    .setRoleInReference(RoleInReference.SUBJECT.toString())
+                                    .setMultiValued(true)
+                                    .setDescription(USER_CLASS_ACCESS_DESCRIPTION)
+                                    .build());
+                }
+                case GROUP_CLASS_NAME -> {
+                    attributeInfos.add(
+                            new AttributeInfoBuilder(Uid.NAME, String.class)
+                                    .setRequired(true)
+                                    .setDescription(GROUP_CLASS_UID_DESCRIPTION)
+                                    .build());
+                    attributeInfos.add(
+                            new AttributeInfoBuilder(Name.NAME, String.class)
+                                    .setRequired(true)
+                                    .setDescription(GROUP_CLASS_NAME_DESCRIPTION)
+                                    .build());
+                    attributeInfos.add(
+                            new AttributeInfoBuilder(MEMBERS_ATTR_NAME, ConnectorObjectReference.class)
+                                    .setReferencedObjectClassName(USER_CLASS_NAME)
+                                    .setSubtype(GROUP_MEMBERSHIP_REFERENCE_TYPE_NAME)
+                                    .setRoleInReference(RoleInReference.OBJECT.toString())
+                                    .setMultiValued(true)
+                                    .setDescription(GROUP_CLASS_MEMBERS_ATTR_DESCRIPTION)
+                                    .build());
+                }
+                case ACCESS_CLASS_NAME ->
+                    attributeInfos.add(
+                            new AttributeInfoBuilder(GROUP_ATTR_NAME, ConnectorObjectReference.class)
+                                    .setReferencedObjectClassName(GROUP_CLASS_NAME)
+                                    .setDescription(ACCESS_CLASS_ATTR_REFERENCE_DESCRIPTION)
+                                    .build());
+                default -> {
+                    for (int j = 0; j < 200; j++) {
+                        attributeInfos.add(AttributeInfoBuilder.build("attributename" + j, String.class));
+                    }
+                }
             }
         }
         return attributeInfos;
@@ -508,6 +530,6 @@ public class TstConnector implements CreateOp, PoolableConnector, SchemaOp, Sear
                         .setDescription(ACCESS_CLASS_DESCRIPTION)
                         .build());
 
-        return lightweightObjectClassInfos.toArray(new LightweightObjectClassInfo[0]);
+        return lightweightObjectClassInfos.toArray(LightweightObjectClassInfo[]::new);
     }
 }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -33,5 +34,5 @@ public interface SchemaApiOp extends APIOperation {
     /**
      * Retrieve the basic schema of this {@link Connector}.
      */
-    public Schema schema();
+    Schema schema();
 }

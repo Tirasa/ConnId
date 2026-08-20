@@ -19,23 +19,28 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.contract.test;
-import org.identityconnectors.framework.api.operations.*;
-import org.identityconnectors.framework.common.objects.*;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import org.identityconnectors.framework.api.operations.APIOperation;
+import org.identityconnectors.framework.api.operations.PartialSchemaApiOp;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
+import org.identityconnectors.framework.common.objects.ObjectClassInfo;
+import org.identityconnectors.framework.common.objects.Schema;
 import org.junit.jupiter.api.Test;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 
 /**
  * Contract test of {@link PartialSchemaApiOp} operation.
  */
 public class PartialSchemaApiOpTests extends ContractTestBase {
-
 
     /**
      * {@inheritDoc}
@@ -48,22 +53,21 @@ public class PartialSchemaApiOpTests extends ContractTestBase {
         return s;
     }
 
-
     /**
      * Basic test case.
      */
     @Test
     protected void testBasic() {
 
-        LightweightObjectClassInfo[] lightweightObjectClassInfos =  getConnectorFacade().getObjectClassInformation();
+        LightweightObjectClassInfo[] lightweightObjectClassInfos = getConnectorFacade().getObjectClassInformation();
         assertNotNull(lightweightObjectClassInfos, "Null Object class information found");
 
-        Iterator<LightweightObjectClassInfo> iterator =  Arrays.stream(lightweightObjectClassInfos).iterator();
+        Iterator<LightweightObjectClassInfo> iterator = Arrays.stream(lightweightObjectClassInfos).iterator();
 
         Schema schema = null;
         LightweightObjectClassInfo lightweightObjectClassInfo = null;
 
-        if (iterator.hasNext()){
+        if (iterator.hasNext()) {
 
             lightweightObjectClassInfo = iterator.next();
 
@@ -77,10 +81,7 @@ public class PartialSchemaApiOpTests extends ContractTestBase {
         Set<ObjectClassInfo> objectClassInfos = schema.getObjectClassInfo();
         Iterator<ObjectClassInfo> infoIterator = objectClassInfos.iterator();
 
-        assertTrue(objectClassInfos.size() ==1);
+        assertTrue(objectClassInfos.size() == 1);
         assertTrue(lightweightObjectClassInfo.is(infoIterator.next().getType()));
-
-
     }
-
 }

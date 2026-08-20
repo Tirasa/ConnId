@@ -69,9 +69,8 @@ public class DiscoverConfigurationApiOpTests extends ContractTestBase {
         ConfigurationProperties configurationProperties = ConnectorHelper.getConfigurationProperties(getDataProvider());
         for (Map.Entry<String, SuggestedValues> discoveredConfigurationEntry : discoveredConfiguration.entrySet()) {
             assertTrue(configurationProperties.getPropertyNames().contains(discoveredConfigurationEntry.getKey()),
-                    "Discovered property " + discoveredConfigurationEntry.getKey() + " is not legal configuration property");
+                    "Discovered property " + discoveredConfigurationEntry.getKey()
+                    + " is not legal configuration property");
         }
-
     }
-
 }

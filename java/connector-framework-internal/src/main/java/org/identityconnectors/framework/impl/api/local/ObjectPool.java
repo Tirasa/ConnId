@@ -101,7 +101,7 @@ public class ObjectPool<T> {
          */
         private boolean isNew;
 
-        public PooledObject(final T object) {
+        PooledObject(final T object) {
             this.object = object;
             isNew = true;
             touch();
@@ -122,15 +122,15 @@ public class ObjectPool<T> {
             }
         }
 
-        public boolean isNew() {
+        boolean isNew() {
             return isNew;
         }
 
-        public void setNew(final boolean n) {
+        void setNew(final boolean n) {
             isNew = n;
         }
 
-        public void setActive(final boolean v) {
+        void setActive(final boolean v) {
             if (isActive != v) {
                 touch();
                 isActive = v;
@@ -141,7 +141,7 @@ public class ObjectPool<T> {
             lastStateChangeTimestamp = System.currentTimeMillis();
         }
 
-        public boolean isOlderThan(long maxAge) {
+        boolean isOlderThan(long maxAge) {
             return maxAge < (System.currentTimeMillis() - lastStateChangeTimestamp);
         }
 
@@ -280,7 +280,9 @@ public class ObjectPool<T> {
         try {
             do {
                 rv = borrowObjectNoTest();
-                if (rv != null && poolConfiguration.getMaxIdleTimeMillis() > 0 && rv.isOlderThan(poolConfiguration.getMaxIdleTimeMillis())) {
+                if (rv != null && poolConfiguration.getMaxIdleTimeMillis() > 0
+                        && rv.isOlderThan(poolConfiguration.getMaxIdleTimeMillis())) {
+
                     // Note: this implementation of maxIdleTimeMillis is not perfect.
                     // Idle connector instance may be kept in the pool for a long time, it gets disposed only when
                     // there is an attempt to use the instance. Therefore this implementation cannot be used to
@@ -493,12 +495,12 @@ public class ObjectPool<T> {
      * Signals a waiting take. Called only from borrowObjectNoTest
      */
     private void signalNotEmpty() {
-        final ReentrantLock takeLock = this.takeLock;
-        takeLock.lock();
+        final ReentrantLock localLock = this.takeLock;
+        localLock.lock();
         try {
             notEmpty.signal();
         } finally {
-            takeLock.unlock();
+            localLock.unlock();
         }
     }
 

@@ -19,15 +19,21 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
-import org.identityconnectors.framework.common.objects.*;
-
 import java.util.Set;
+import org.identityconnectors.framework.common.objects.BaseAttributeDelta;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.Uid;
 
 public interface ComplexUpdateDeltaApiOp extends APIOperation {
 
-    Set<BaseAttributeDelta> complexUpdateDelta(ObjectClass objclass, Uid uid, Set<BaseAttributeDelta> modifications,
-                                           OperationOptions options);
+    Set<BaseAttributeDelta> complexUpdateDelta(
+            ObjectClass objclass,
+            Uid uid,
+            Set<BaseAttributeDelta> modifications,
+            OperationOptions options);
 }

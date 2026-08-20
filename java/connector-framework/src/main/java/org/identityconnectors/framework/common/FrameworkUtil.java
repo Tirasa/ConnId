@@ -48,17 +48,57 @@ import org.identityconnectors.common.Version;
 import org.identityconnectors.common.script.Script;
 import org.identityconnectors.common.security.GuardedByteArray;
 import org.identityconnectors.common.security.GuardedString;
-import org.identityconnectors.framework.api.operations.*;
+import org.identityconnectors.framework.api.operations.APIOperation;
+import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
+import org.identityconnectors.framework.api.operations.ComplexUpdateDeltaApiOp;
+import org.identityconnectors.framework.api.operations.CreateApiOp;
+import org.identityconnectors.framework.api.operations.DeleteApiOp;
+import org.identityconnectors.framework.api.operations.DiscoverConfigurationApiOp;
+import org.identityconnectors.framework.api.operations.GetApiOp;
+import org.identityconnectors.framework.api.operations.LiveSyncApiOp;
+import org.identityconnectors.framework.api.operations.PartialSchemaApiOp;
+import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
+import org.identityconnectors.framework.api.operations.SchemaApiOp;
+import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
+import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
+import org.identityconnectors.framework.api.operations.SearchApiOp;
+import org.identityconnectors.framework.api.operations.SyncApiOp;
+import org.identityconnectors.framework.api.operations.TestApiOp;
+import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
+import org.identityconnectors.framework.api.operations.ValidateApiOp;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.ConnectorObjectReference;
+import org.identityconnectors.framework.common.objects.EmbeddedObject;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.QualifiedUid;
+import org.identityconnectors.framework.common.objects.SortKey;
+import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
-import org.identityconnectors.framework.spi.operations.*;
+import org.identityconnectors.framework.spi.operations.AuthenticateOp;
+import org.identityconnectors.framework.spi.operations.ComplexUpdateDeltaOp;
+import org.identityconnectors.framework.spi.operations.CreateOp;
+import org.identityconnectors.framework.spi.operations.DeleteOp;
+import org.identityconnectors.framework.spi.operations.DiscoverConfigurationOp;
+import org.identityconnectors.framework.spi.operations.LiveSyncOp;
+import org.identityconnectors.framework.spi.operations.PartialSchemaOp;
+import org.identityconnectors.framework.spi.operations.ResolveUsernameOp;
+import org.identityconnectors.framework.spi.operations.SPIOperation;
+import org.identityconnectors.framework.spi.operations.SchemaOp;
+import org.identityconnectors.framework.spi.operations.ScriptOnConnectorOp;
+import org.identityconnectors.framework.spi.operations.ScriptOnResourceOp;
+import org.identityconnectors.framework.spi.operations.SearchOp;
+import org.identityconnectors.framework.spi.operations.SyncOp;
+import org.identityconnectors.framework.spi.operations.TestOp;
+import org.identityconnectors.framework.spi.operations.UpdateAttributeValuesOp;
+import org.identityconnectors.framework.spi.operations.UpdateDeltaOp;
+import org.identityconnectors.framework.spi.operations.UpdateOp;
 
 public final class FrameworkUtil {
 
     private static final String PROP_FRAMEWORK_VERSION = "framework.version";
 
-    private static Version frameworkVersion;
+    private static Version FRAMEWORK_VERSION;
 
     /**
      * Never allow this to be instantiated.
@@ -417,10 +457,10 @@ public final class FrameworkUtil {
     public static Version getFrameworkVersion() {
         synchronized (FrameworkUtil.class) {
             try {
-                if (frameworkVersion == null) {
-                    frameworkVersion = getFrameworkVersion(FrameworkUtil.class.getClassLoader());
+                if (FRAMEWORK_VERSION == null) {
+                    FRAMEWORK_VERSION = getFrameworkVersion(FrameworkUtil.class.getClassLoader());
                 }
-                return frameworkVersion;
+                return FRAMEWORK_VERSION;
             } catch (IOException e) {
                 throw new ConnectorException(e);
             }
@@ -449,6 +489,6 @@ public final class FrameworkUtil {
 
     // For tests only!
     static synchronized void setFrameworkVersion(Version version) {
-        frameworkVersion = version;
+        FRAMEWORK_VERSION = version;
     }
 }

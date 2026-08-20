@@ -78,7 +78,7 @@ public class ValidateApiOpTests extends ContractTestBase {
                 }
                 Map<?, ?> currentWrongMapConfig = (Map<?, ?>) currentWrongConfigMap;
 
-                _connFacade = ConnectorHelper
+                connFacade = ConnectorHelper
                         .createConnectorFacadeWithWrongConfiguration(
                                 getDataProvider(), currentWrongMapConfig);
                 try {

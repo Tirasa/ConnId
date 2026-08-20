@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2019 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -66,8 +67,7 @@ public class MethodTimeoutProxy implements InvocationHandler {
     /**
      * Create a new MethodTimeoutProxy.
      *
-     * @param target
-     *            The object we are wrapping
+     * @param target The object we are wrapping
      * @param timeoutMillis
      */
     public MethodTimeoutProxy(Object target, long timeoutMillis) {
@@ -87,6 +87,7 @@ public class MethodTimeoutProxy implements InvocationHandler {
         final Locale locale = CurrentLocale.get();
 
         Callable<Object> callable = new Callable<Object>() {
+
             @Override
             public Object call() throws Exception {
                 try {
@@ -100,28 +101,29 @@ public class MethodTimeoutProxy implements InvocationHandler {
                     }
                 } catch (InvocationTargetException e) {
                     Throwable root = e.getCause();
-                    if (root instanceof RuntimeException) {
-                        throw (RuntimeException) root;
-                    } else if (root instanceof Exception) {
-                        throw (Exception) root;
-                    } else if (root instanceof Error) {
-                        throw (Error) root;
-                    } else {
-                        throw ConnectorException.wrap(root);
+                    switch (root) {
+                        case RuntimeException runtimeException ->
+                            throw runtimeException;
+                        case Exception exception ->
+                            throw exception;
+                        case Error error ->
+                            throw error;
+                        default ->
+                            throw ConnectorException.wrap(root);
                     }
                 }
             }
         };
 
         // package in a future task so we can set a timeout..
-        FutureTask<Object> t = new FutureTask<Object>(callable);
+        FutureTask<Object> t = new FutureTask<>(callable);
         try {
             // execute it in the thread pool so we don't waste resources.
             THREADPOOL.execute(t);
             // execute and hope it doesn't timeout :)
             return t.get(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (TimeoutException ex) {
-        	t.cancel(true);
+            t.cancel(true);
             throw new OperationTimeoutException(ex);
         } catch (ExecutionException ex) {
             throw ex.getCause();

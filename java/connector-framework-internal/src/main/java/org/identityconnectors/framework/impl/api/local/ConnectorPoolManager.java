@@ -40,7 +40,7 @@ import org.identityconnectors.framework.spi.Configuration;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.PoolableConnector;
 
-public class ConnectorPoolManager {
+public final class ConnectorPoolManager {
 
     public static class ConnectorPoolKey {
 
@@ -50,7 +50,8 @@ public class ConnectorPoolManager {
 
         private final ObjectPoolConfiguration poolingConfig;
 
-        public ConnectorPoolKey(final ConnectorKey connectorKey,
+        public ConnectorPoolKey(
+                final ConnectorKey connectorKey,
                 final ConfigurationPropertiesImpl configProperties,
                 final ObjectPoolConfiguration poolingConfig) {
 
@@ -66,8 +67,7 @@ public class ConnectorPoolManager {
 
         @Override
         public boolean equals(final Object object) {
-            if (object instanceof ConnectorPoolKey) {
-                final ConnectorPoolKey other = (ConnectorPoolKey) object;
+            if (object instanceof ConnectorPoolKey other) {
                 if (!connectorKey.equals(other.connectorKey)) {
                     return false;
                 }
@@ -91,7 +91,7 @@ public class ConnectorPoolManager {
 
         private final OperationalContext context;
 
-        public ConnectorPoolHandler(
+        ConnectorPoolHandler(
                 final APIConfigurationImpl apiConfiguration,
                 final LocalConnectorInfoImpl localInfo) {
 
@@ -270,7 +270,7 @@ public class ConnectorPoolManager {
      * Shuts down the connector pool. No more connectors will be created.
      */
     public static void shutdown() {
-    	LOG.info("Shutting down all connector pools");
+        LOG.info("Shutting down all connector pools");
         synchronized (POOLS) {
             // close each pool..
             POOLS.values().forEach(pool -> {
@@ -283,5 +283,8 @@ public class ConnectorPoolManager {
             // clear the map of all POOLS..
             POOLS.clear();
         }
+    }
+
+    private ConnectorPoolManager() {
     }
 }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api.remote;
 
@@ -44,8 +45,11 @@ import org.identityconnectors.framework.common.serializer.ObjectSerializerFactor
 public class RemoteFrameworkConnection implements Closeable {
 
     private static final Log LOG = Log.getLog(RemoteFrameworkConnection.class);
+
     private Socket socket;
+
     private BinaryObjectSerializer encoder;
+
     private BinaryObjectDeserializer decoder;
 
     public RemoteFrameworkConnection(RemoteFrameworkConnectionInfo info) {
@@ -74,17 +78,17 @@ public class RemoteFrameworkConnection implements Closeable {
     }
 
     private void init(RemoteFrameworkConnectionInfo connectionInfo) throws Exception {
-        Socket socket = new Socket();
-        socket.setSoTimeout(connectionInfo.getTimeout());
-        socket.connect(new InetSocketAddress(connectionInfo.getHost(), connectionInfo.getPort()),
+        Socket localSocket = new Socket();
+        localSocket.setSoTimeout(connectionInfo.getTimeout());
+        localSocket.connect(new InetSocketAddress(connectionInfo.getHost(), connectionInfo.getPort()),
                 connectionInfo.getTimeout());
         try {
             if (connectionInfo.getUseSSL()) {
                 List<TrustManager> trustManagers = connectionInfo.getTrustManagers();
                 TrustManager[] trustManagerArr = null;
-                if (null != trustManagers && trustManagers.size() > 0) {
+                if (null != trustManagers && !trustManagers.isEmpty()) {
                     // convert empty to null
-                    trustManagerArr = trustManagers.toArray(new TrustManager[trustManagers.size()]);
+                    trustManagerArr = trustManagers.toArray(TrustManager[]::new);
                 }
                 SSLSocketFactory factory;
                 // the only way to get the default keystore is this way
@@ -96,22 +100,21 @@ public class RemoteFrameworkConnection implements Closeable {
                     factory = context.getSocketFactory();
                 }
 
-                socket =
-                        factory.createSocket(socket, connectionInfo.getHost(), connectionInfo
-                                .getPort(), true);
-                ((SSLSocket) socket).startHandshake();
+                localSocket = factory.createSocket(
+                        localSocket, connectionInfo.getHost(), connectionInfo.getPort(), true);
+                ((SSLSocket) localSocket).startHandshake();
             }
         } catch (Exception e) {
             try {
                 LOG.warn("Closing socket for remote framework connection because of error {}", e.getLocalizedMessage());
-                socket.close();
+                localSocket.close();
             } catch (Exception e2) {
                 /* ignore */
                 LOG.warn("Error while closing socket for remote framework connection {}", e.getLocalizedMessage());
             }
             throw e;
         }
-        init(socket);
+        init(localSocket);
     }
 
     private void init(Socket socket) throws Exception {

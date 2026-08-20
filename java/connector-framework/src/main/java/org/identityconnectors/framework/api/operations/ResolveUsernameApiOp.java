@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -29,25 +30,17 @@ import org.identityconnectors.framework.common.objects.Uid;
 public interface ResolveUsernameApiOp extends APIOperation {
 
     /**
-     * Resolve the given {@link AuthenticationApiOp authentication} username to
-     * the corresponding {@link Uid}.
+     * Resolve the given {@link AuthenticationApiOp authentication} username to the corresponding {@link Uid}.
      *
-     * The <code>Uid</code> is the one that
-     * {@link AuthenticationApiOp#authenticate} would return in case of a
+     * The <code>Uid</code> is the one that {@link AuthenticationApiOp#authenticate} would return in case of a
      * successful authentication.
      *
-     * @param objectClass
-     *            The object class to use for authenticate. Will typically be an
-     *            account. Must not be null.
-     * @param username
-     *            string that represents the account or user id.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
+     * @param objectClass The object class to use for authenticate. Will typically be an account. Must not be null.
+     * @param username string that represents the account or user id.
+     * @param options additional options that impact the way this operation is run. May be null.
      * @return Uid The uid of the account that would be used to authenticate.
-     * @throws RuntimeException
-     *             if the username could not be resolved.
+     * @throws RuntimeException if the username could not be resolved.
      * @since 1.1
      */
-    public Uid resolveUsername(ObjectClass objectClass, String username, OperationOptions options);
+    Uid resolveUsername(ObjectClass objectClass, String username, OperationOptions options);
 }

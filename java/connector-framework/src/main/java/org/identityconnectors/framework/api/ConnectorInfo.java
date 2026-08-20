@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api;
 
@@ -38,33 +39,32 @@ public interface ConnectorInfo {
      *
      * @return The friendly name
      */
-    public String getConnectorDisplayName();
+    String getConnectorDisplayName();
 
     /**
      * Returns the connector messages for this connector.
      *
      * @return The connector messages for this connector.
      */
-    public ConnectorMessages getMessages();
+    ConnectorMessages getMessages();
 
     /**
      * Get the category this connector belongs to.
      *
      * @return category name.
      */
-    public String getConnectorCategory();
+    String getConnectorCategory();
 
     /**
      * Uniquely identifies this connector in a given installation.
      *
      * @return The connector key
      */
-    public ConnectorKey getConnectorKey();
+    ConnectorKey getConnectorKey();
 
     /**
      * Loads the {@link Connector} and {@link Configuration} class in order to
      * determine the proper default configuration parameters.
      */
-    public APIConfiguration createDefaultAPIConfiguration();
-
+    APIConfiguration createDefaultAPIConfiguration();
 }

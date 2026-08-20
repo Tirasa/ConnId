@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi;
 
@@ -37,7 +38,6 @@ import org.identityconnectors.framework.spi.operations.SPIOperation;
  * @author Will Droste
  * @since 1.0
  */
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface ConfigurationProperty {
@@ -45,35 +45,35 @@ public @interface ConfigurationProperty {
     /**
      * Order in which this property is displayed.
      */
-    public int order() default -1;
+    int order() default -1;
 
     /**
      * Change the default help message key.
      */
-    public String helpMessageKey() default "";
+    String helpMessageKey() default "";
 
     /**
      * Change the default display message key.
      */
-    public String displayMessageKey() default "";
+    String displayMessageKey() default "";
 
     /**
      * Grouping of properties for UI.
      */
-    public String groupMessageKey() default "";
+    String groupMessageKey() default "";
 
     /**
      * Is this a confidential property whose value should be encrypted by the
      * application when persisted?
      */
-    public boolean confidential() default false;
+    boolean confidential() default false;
 
     /**
      * Is this property required?
      *
      * @return True if the property is required
      */
-    public boolean required() default false;
+    boolean required() default false;
 
     /**
      * List of operations for which this property must be specified. This is
@@ -82,7 +82,7 @@ public @interface ConfigurationProperty {
      * "empty array" is special in that it means that this property is
      * applicable to all operations.
      */
-    public Class<? extends SPIOperation>[] operations() default {};
+    Class<? extends SPIOperation>[] operations() default {};
 
     /**
      * List of allowed values for the property.
@@ -91,7 +91,7 @@ public @interface ConfigurationProperty {
      *
      * @since 1.5.2.0
      */
-    public String[] allowedValues() default {};
+    String[] allowedValues() default {};
 
     /**
      * Specification of openness of list of allowed values.
@@ -102,5 +102,5 @@ public @interface ConfigurationProperty {
      *
      * @since 1.5.2.0
      */
-    public ValueListOpenness allowedValuesOpenness() default ValueListOpenness.CLOSED;
+    ValueListOpenness allowedValuesOpenness() default ValueListOpenness.CLOSED;
 }

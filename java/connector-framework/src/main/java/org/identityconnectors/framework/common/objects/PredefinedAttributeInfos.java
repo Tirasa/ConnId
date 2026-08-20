@@ -81,13 +81,13 @@ public final class PredefinedAttributeInfos {
     public static final AttributeInfo GROUPS = AttributeInfoBuilder.build(
             PredefinedAttributes.GROUPS_NAME, String.class, EnumSet.of(Flags.MULTIVALUED,
                     Flags.NOT_RETURNED_BY_DEFAULT));
-    
+
     /**
      * Pseudo-attribute that represents auxiliary object classes.
      * Auxiliary object classes can be used in addition to the
      * primary object class. They define additional characteristics of the object.
      */
     public static final AttributeInfo AUXILIARY_OBJECT_CLASS = AttributeInfoBuilder.build(
-    		PredefinedAttributes.AUXILIARY_OBJECT_CLASS_NAME, String.class, EnumSet.of(Flags.MULTIVALUED));
+            PredefinedAttributes.AUXILIARY_OBJECT_CLASS_NAME, String.class, EnumSet.of(Flags.MULTIVALUED));
 
 }

@@ -25,29 +25,30 @@ package org.identityconnectors.testconnector;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 
 public class MyTstConnection {
-     private final int _connectionNumber;
-    private boolean _isGood = true;
+
+    private final int connectionNumber;
+
+    private boolean isGood = true;
 
     public MyTstConnection(int connectionNumber) {
-        _connectionNumber = connectionNumber;
+        this.connectionNumber = connectionNumber;
     }
 
     public void test() {
-        if (!_isGood) {
+        if (!isGood) {
             throw new ConnectorException("Connection is bad");
         }
     }
 
     public void dispose() {
-        _isGood = false;
+        isGood = false;
     }
 
     public boolean isGood() {
-        return _isGood;
+        return isGood;
     }
 
     public int getConnectionNumber() {
-        return _connectionNumber;
+        return connectionNumber;
     }
 }
-

@@ -35,8 +35,39 @@ import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.common.security.GuardedString;
 import org.identityconnectors.framework.api.ConnectorFacade;
-import org.identityconnectors.framework.api.operations.*;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.api.operations.APIOperation;
+import org.identityconnectors.framework.api.operations.AuthenticationApiOp;
+import org.identityconnectors.framework.api.operations.CreateApiOp;
+import org.identityconnectors.framework.api.operations.DeleteApiOp;
+import org.identityconnectors.framework.api.operations.DiscoverConfigurationApiOp;
+import org.identityconnectors.framework.api.operations.GetApiOp;
+import org.identityconnectors.framework.api.operations.LiveSyncApiOp;
+import org.identityconnectors.framework.api.operations.PartialSchemaApiOp;
+import org.identityconnectors.framework.api.operations.ResolveUsernameApiOp;
+import org.identityconnectors.framework.api.operations.SchemaApiOp;
+import org.identityconnectors.framework.api.operations.ScriptOnConnectorApiOp;
+import org.identityconnectors.framework.api.operations.ScriptOnResourceApiOp;
+import org.identityconnectors.framework.api.operations.SearchApiOp;
+import org.identityconnectors.framework.api.operations.SyncApiOp;
+import org.identityconnectors.framework.api.operations.TestApiOp;
+import org.identityconnectors.framework.api.operations.UpdateApiOp;
+import org.identityconnectors.framework.api.operations.UpdateDeltaApiOp;
+import org.identityconnectors.framework.api.operations.ValidateApiOp;
+import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeDelta;
+import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
+import org.identityconnectors.framework.common.objects.LiveSyncResultsHandler;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.ResultsHandler;
+import org.identityconnectors.framework.common.objects.Schema;
+import org.identityconnectors.framework.common.objects.ScriptContext;
+import org.identityconnectors.framework.common.objects.SearchResult;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
+import org.identityconnectors.framework.common.objects.SyncResultsHandler;
+import org.identityconnectors.framework.common.objects.SyncToken;
+import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 import org.identityconnectors.framework.common.serializer.SerializerUtil;
 
@@ -326,7 +357,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      * {@inheritDoc}
      */
     @Override
-    public final Schema getPartialSchema(LightweightObjectClassInfo ... objectClassInfos) {
+    public final Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos) {
         return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).
                 getPartialSchema(objectClassInfos);
     }
@@ -336,7 +367,8 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      */
     @Override
     public final LightweightObjectClassInfo[] getObjectClassInformation() {
-        return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).getObjectClassInformation();
+        return ((PartialSchemaApiOp) this.getOperationCheckSupported(PartialSchemaApiOp.class)).
+                getObjectClassInformation();
     }
 
     private static final String MSG = "Operation ''{0}'' not supported.";
@@ -378,7 +410,7 @@ public abstract class AbstractConnectorFacade implements ConnectorFacade {
      * @param api The operation to implement.
      * @return The implementation
      */
-    protected abstract APIOperation getOperationImplementation(final Class<? extends APIOperation> api);
+    protected abstract APIOperation getOperationImplementation(Class<? extends APIOperation> api);
 
     protected final APIConfigurationImpl getAPIConfiguration() {
         return configuration;

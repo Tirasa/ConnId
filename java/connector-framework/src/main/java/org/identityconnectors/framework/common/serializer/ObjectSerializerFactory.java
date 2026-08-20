@@ -30,35 +30,34 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.xml.sax.InputSource;
 
 /**
- * Serializer factory for serializing connector objects. The list of
- * supported types are as follows:
- * TODO: list supported types
- * <ul>
- * </ul>
+ * Serializer factory for serializing connector objects.
+ *
  * @see SerializerUtil
  */
 public abstract class ObjectSerializerFactory {
-    // At some point we might make this pluggable, but for now, hard-code
-    private static final String IMPL_NAME = "org.identityconnectors.framework.impl.serializer.ObjectSerializerFactoryImpl";
 
-    private static ObjectSerializerFactory instance;
+    // At some point we might make this pluggable, but for now, hard-code
+    private static final String IMPL_NAME =
+            "org.identityconnectors.framework.impl.serializer.ObjectSerializerFactoryImpl";
+
+    private static ObjectSerializerFactory INSTANCE;
 
     /**
      * Get the singleton instance of the {@link ObjectSerializerFactory}.
      */
     public static ObjectSerializerFactory getInstance() {
         synchronized (ObjectSerializerFactory.class) {
-            if (instance == null) {
+            if (INSTANCE == null) {
                 try {
                     final Class<?> clazz = Class.forName(IMPL_NAME);
                     final Object object = clazz.getDeclaredConstructor().newInstance();
-                    instance = ObjectSerializerFactory.class.cast(object);
+                    INSTANCE = ObjectSerializerFactory.class.cast(object);
                 } catch (Exception e) {
                     throw ConnectorException.wrap(e);
                 }
             }
 
-            return instance;
+            return INSTANCE;
         }
     }
 

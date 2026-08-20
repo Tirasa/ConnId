@@ -107,7 +107,8 @@ public class UpdateApiOpTests extends ObjectClassRunner {
             assertNotNull(uid, "Create returned null Uid.");
 
             // get by uid
-            obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
+            obj = getConnectorFacade().getObject(
+                    objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
             assertNotNull(obj, "Cannot retrieve created object.");
 
             Set<Attribute> replaceAttributes = ConnectorHelper.getUpdateableAttributes(

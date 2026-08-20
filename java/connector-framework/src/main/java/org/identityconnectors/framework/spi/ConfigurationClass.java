@@ -19,8 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.spi;
 
 import java.lang.annotation.ElementType;
@@ -35,7 +35,6 @@ import java.lang.annotation.Target;
  * @author Laszlo Hordos
  * @since 1.4
  */
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ConfigurationClass {
@@ -43,12 +42,12 @@ public @interface ConfigurationClass {
     /**
      * Silently skips properties with unsupported types.
      */
-    public boolean skipUnsupported() default false;
+    boolean skipUnsupported() default false;
 
     /**
      * List of properties which should be excluded from configuration properties.
      */
-    public String[] ignore() default {};
+    String[] ignore() default {};
 
     /**
      * Optional Property file which overrides configuration property visibility.

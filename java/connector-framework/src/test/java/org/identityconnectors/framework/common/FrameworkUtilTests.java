@@ -60,7 +60,7 @@ public class FrameworkUtilTests {
 
         private final String version;
 
-        public VersionClassLoader(ClassLoader parent, String version) {
+        VersionClassLoader(ClassLoader parent, String version) {
             super(parent);
             this.version = version;
         }

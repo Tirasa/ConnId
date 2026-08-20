@@ -56,7 +56,8 @@ import org.identityconnectors.framework.api.operations.ValidateApiOp;
  */
 public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, UpdateApiOp, UpdateDeltaApiOp,
         SchemaApiOp, AuthenticationApiOp, ResolveUsernameApiOp, GetApiOp, ValidateApiOp, TestApiOp,
-        ScriptOnConnectorApiOp, ScriptOnResourceApiOp, SyncApiOp, LiveSyncApiOp, DiscoverConfigurationApiOp, PartialSchemaApiOp {
+        ScriptOnConnectorApiOp, ScriptOnResourceApiOp, SyncApiOp, LiveSyncApiOp, DiscoverConfigurationApiOp,
+        PartialSchemaApiOp {
 
     /**
      * Gets the unique generated identifier of this ConnectorFacade.
@@ -68,7 +69,7 @@ public interface ConnectorFacade extends CreateApiOp, DeleteApiOp, SearchApiOp, 
      * @return identifier of this ConnectorFacade instance.
      * @since 1.4
      */
-    public String getConnectorFacadeKey();
+    String getConnectorFacadeKey();
 
     /**
      * Get the set of operations that this {@link ConnectorFacade} will support.

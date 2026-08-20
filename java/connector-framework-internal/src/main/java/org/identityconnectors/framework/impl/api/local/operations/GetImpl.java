@@ -21,6 +21,7 @@
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
  * Portions Copyrighted 2014 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -44,7 +45,7 @@ import org.identityconnectors.framework.spi.operations.SearchOp;
  */
 public class GetImpl implements GetApiOp {
 
-    final SearchApiOp op;
+    private final SearchApiOp op;
 
     public GetImpl(SearchApiOp search) {
         this.op = search;
@@ -61,7 +62,7 @@ public class GetImpl implements GetApiOp {
         if (options == null) {
             options = new OperationOptionsBuilder().build();
         }
-        final List<ConnectorObject> list = new ArrayList<ConnectorObject>();
+        final List<ConnectorObject> list = new ArrayList<>();
         // No need to log entry/exit here. SeachImpl will do it.
         op.search(objectClass, FilterBuilder.equalTo(uid), new ResultsHandler() {
 

@@ -19,19 +19,20 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
+import java.util.Set;
 import org.identityconnectors.common.Assertions;
 import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.operations.ComplexUpdateDeltaApiOp;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.BaseAttributeDelta;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.Uid;
 import org.identityconnectors.framework.spi.Connector;
 import org.identityconnectors.framework.spi.operations.ComplexUpdateDeltaOp;
-import org.identityconnectors.framework.spi.operations.UpdateDeltaOp;
-import org.identityconnectors.framework.spi.operations.UpdateOp;
-
-import java.util.Set;
 
 public class ComplexUpdateDeltaImpl extends ConnectorAPIOperationRunner implements ComplexUpdateDeltaApiOp {
 
@@ -43,7 +44,12 @@ public class ComplexUpdateDeltaImpl extends ConnectorAPIOperationRunner implemen
     }
 
     @Override
-    public Set<BaseAttributeDelta> complexUpdateDelta(ObjectClass objclass, Uid uid, Set<BaseAttributeDelta> modifications, OperationOptions options) {
+    public Set<BaseAttributeDelta> complexUpdateDelta(
+            ObjectClass objclass,
+            Uid uid,
+            Set<BaseAttributeDelta> modifications,
+            OperationOptions options) {
+
         // validate all the parameters..
         Assertions.nullCheck(uid, "uid");
         Assertions.nullCheck(objclass, "objectClass");
@@ -52,7 +58,7 @@ public class ComplexUpdateDeltaImpl extends ConnectorAPIOperationRunner implemen
         }
         Assertions.nullCheck(modifications, "modifications");
         var connector = getConnector();
-        if (connector instanceof ComplexUpdateDeltaOp deltaOp)  {
+        if (connector instanceof ComplexUpdateDeltaOp deltaOp) {
             logOpEntry("complexUpdateDelta", objclass, uid, modifications, options);
             Set<BaseAttributeDelta> attrsDelta;
             try {
@@ -72,7 +78,8 @@ public class ComplexUpdateDeltaImpl extends ConnectorAPIOperationRunner implemen
     }
 
     private void logOpExit(String opName, Object returnValue) {
-        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), ComplexUpdateDeltaOp.class, opName, returnValue);
+        SpiOperationLoggingUtil.logOpExit(
+                OP_LOG, getOperationalContext(), ComplexUpdateDeltaOp.class, opName, returnValue);
     }
 
     private void logOpException(String opName, RuntimeException e) {

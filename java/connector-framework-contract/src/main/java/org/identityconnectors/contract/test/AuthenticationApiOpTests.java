@@ -365,7 +365,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                 Set<Attribute> attrs = ConnectorHelper.getCreateableAttributes(getDataProvider(),
                         getObjectClassInfo(objectClass), getTestName(), 0, true, false);
 
-                // Remove enabled and password_expired, connector must create valid account then  
+                // Remove enabled and password_expired, connector must create valid account then
                 for (Iterator<Attribute> i = attrs.iterator(); i.hasNext();) {
                     Attribute attr = i.next();
                     if (attr.is(OperationalAttributes.ENABLE_NAME)
@@ -433,7 +433,7 @@ public class AuthenticationApiOpTests extends ObjectClassRunner {
                 Set<Attribute> attrs = ConnectorHelper.getCreateableAttributes(getDataProvider(),
                         getObjectClassInfo(objectClass), getTestName(), 0, true, false);
 
-                // Remove enabled and password_expired, connector must create valid account then  
+                // Remove enabled and password_expired, connector must create valid account then
                 for (Iterator<Attribute> i = attrs.iterator(); i.hasNext();) {
                     Attribute attr = i.next();
                     if (attr.is(OperationalAttributes.ENABLE_NAME)

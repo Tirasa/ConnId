@@ -69,7 +69,7 @@ public class DeleteApiOpTests extends ObjectClassRunner {
      */
     @Override
     protected void testRun(ObjectClass objectClass) {
-        ConnectorObject obj = null;
+        ConnectorObject obj;
         Uid uid = null;
 
         try {
@@ -79,14 +79,16 @@ public class DeleteApiOpTests extends ObjectClassRunner {
                     DeleteApiOp.class));
 
             // The object should exist now
-            obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
+            obj = getConnectorFacade().getObject(
+                    objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
             assertNotNull(obj, "Unable to perform delete test because object to be deleted cannot be created");
 
             // try to delete object
             getConnectorFacade().delete(objectClass, uid, getOperationOptionsByOp(objectClass, DeleteApiOp.class));
 
             // Try to find it now, it should be deleted
-            obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
+            obj = getConnectorFacade().getObject(
+                    objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
             assertNull(obj, "Object wasn't deleted by delete.");
 
         } finally {

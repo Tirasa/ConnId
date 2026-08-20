@@ -23,6 +23,14 @@
  */
 package org.identityconnectors.framework.impl.api;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -55,7 +63,23 @@ import org.identityconnectors.framework.api.operations.SyncApiOp;
 import org.identityconnectors.framework.common.FrameworkUtilTestHelpers;
 import org.identityconnectors.framework.common.exceptions.ConnectorException;
 import org.identityconnectors.framework.common.exceptions.OperationTimeoutException;
-import org.identityconnectors.framework.common.objects.*;
+import org.identityconnectors.framework.common.objects.Attribute;
+import org.identityconnectors.framework.common.objects.AttributeBuilder;
+import org.identityconnectors.framework.common.objects.AttributeInfo;
+import org.identityconnectors.framework.common.objects.ConnectorObject;
+import org.identityconnectors.framework.common.objects.ConnectorObjectIdentification;
+import org.identityconnectors.framework.common.objects.ConnectorObjectReference;
+import org.identityconnectors.framework.common.objects.LightweightObjectClassInfo;
+import org.identityconnectors.framework.common.objects.Name;
+import org.identityconnectors.framework.common.objects.ObjectClass;
+import org.identityconnectors.framework.common.objects.ObjectClassInfo;
+import org.identityconnectors.framework.common.objects.OperationOptions;
+import org.identityconnectors.framework.common.objects.OperationOptionsBuilder;
+import org.identityconnectors.framework.common.objects.Schema;
+import org.identityconnectors.framework.common.objects.ScriptContextBuilder;
+import org.identityconnectors.framework.common.objects.SuggestedValues;
+import org.identityconnectors.framework.common.objects.SyncDelta;
+import org.identityconnectors.framework.common.objects.SyncToken;
 import org.identityconnectors.framework.impl.api.local.ConnectorPoolManager;
 import org.identityconnectors.testconnector.TstConnector;
 import org.junit.jupiter.api.AfterEach;
@@ -63,8 +87,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ConnectorInfoManagerTestBase {
 
@@ -520,7 +542,6 @@ public abstract class ConnectorInfoManagerTestBase {
         }
     }
 
-    //TODO: this needs to overridden for C# testing
     @Test
     public void testScripting() throws Exception {
         ConnectorInfoManager manager = getConnectorInfoManager();
@@ -537,46 +558,51 @@ public abstract class ConnectorInfoManagerTestBase {
         builder.addScriptArgument("arg2", "value2");
         builder.setScriptLanguage("GROOVY");
 
-        // test that they can run the script and access the connector object
-        {
-            String script = "return connector.concat(arg1,arg2)";
-            builder.setScriptText(script);
-            String result = (String) facade.runScriptOnConnector(builder.build(), null);
+        script1(facade, builder);
+        script2(facade, builder);
+        script3(facade, builder);
+        script4(facade, builder);
+    }
 
-            assertEquals("value1value2", result);
+    // test that they can run the script and access the connector object
+    void script1(final ConnectorFacade facade, final ScriptContextBuilder builder) {
+        String script = "return connector.concat(arg1,arg2)";
+        builder.setScriptText(script);
+        String result = (String) facade.runScriptOnConnector(builder.build(), null);
+
+        assertEquals("value1value2", result);
+    }
+
+    // test that they can access a class in the class loader
+    void script2(final ConnectorFacade facade, final ScriptContextBuilder builder) {
+        String script = "return org.identityconnectors.testcommon.TstCommon.getVersion()";
+        builder.setScriptText(script);
+        String result = (String) facade.runScriptOnConnector(builder.build(), null);
+        assertEquals("1.0", result);
+    }
+
+    // test that they cannot access a class in internal
+    void script3(final ConnectorFacade facade, final ScriptContextBuilder builder) {
+        String clazz = ConfigurationPropertyImpl.class.getName();
+
+        String script = "return new " + clazz + "()";
+        builder.setScriptText(script);
+        try {
+            facade.runScriptOnConnector(builder.build(), null);
+            fail("exception expected");
+        } catch (Throwable t) {
+            String expectedMessage = "org/identityconnectors/framework/impl/api/ConfigurationPropertyImpl";
+            assertTrue(t.getMessage().contains(expectedMessage));
         }
+    }
 
-        // test that they can access a class in the class loader
-        {
-            String script = "return org.identityconnectors.testcommon.TstCommon.getVersion()";
-            builder.setScriptText(script);
-            String result = (String) facade.runScriptOnConnector(builder.build(), null);
-            assertEquals("1.0", result);
-        }
-
-        // test that they cannot access a class in internal
-        {
-            String clazz = ConfigurationPropertyImpl.class.getName();
-
-            String script = "return new " + clazz + "()";
-            builder.setScriptText(script);
-            try {
-                facade.runScriptOnConnector(builder.build(), null);
-                fail("exception expected");
-            } catch (Throwable t) {
-                String expectedMessage = "org/identityconnectors/framework/impl/api/ConfigurationPropertyImpl";
-                assertTrue(t.getMessage().contains(expectedMessage));
-            }
-        }
-
-        // test that they can access a class in common
-        {
-            String clazz = AttributeBuilder.class.getName();
-            String script = "return " + clazz + ".build(\"myattr\")";
-            builder.setScriptText(script);
-            Attribute attr = (Attribute) facade.runScriptOnConnector(builder.build(), null);
-            assertEquals("myattr", attr.getName());
-        }
+    // test that they can access a class in common
+    void script4(final ConnectorFacade facade, final ScriptContextBuilder builder) {
+        String clazz = AttributeBuilder.class.getName();
+        String script = "return " + clazz + ".build(\"myattr\")";
+        builder.setScriptText(script);
+        Attribute attr = (Attribute) facade.runScriptOnConnector(builder.build(), null);
+        assertEquals("myattr", attr.getName());
     }
 
     @Test
@@ -588,21 +614,18 @@ public abstract class ConnectorInfoManagerTestBase {
                 "org.identityconnectors.testconnector.TstConnector");
         assertNotNull(info1);
 
-        //reset connection count
-        {
-            //trigger TstConnection.init to be called
-            APIConfiguration config = info1.createDefaultAPIConfiguration();
-            config.getConfigurationProperties().getProperty("resetConnectionCount").setValue(true);
-            ConnectorFacade facade1 = ConnectorFacadeFactory.getInstance().newInstance(config);
-            facade1.schema(); //force instantiation            
-        }
-
+        //trigger TstConnection.init to be called
         APIConfiguration config = info1.createDefaultAPIConfiguration();
+        config.getConfigurationProperties().getProperty("resetConnectionCount").setValue(true);
+        ConnectorFacade facade1 = ConnectorFacadeFactory.getInstance().newInstance(config);
+        facade1.schema(); //force instantiation            
+
+        config = info1.createDefaultAPIConfiguration();
 
         config.getConnectorPoolConfiguration().setMinIdle(0);
         config.getConnectorPoolConfiguration().setMaxIdle(0);
 
-        ConnectorFacade facade1 = ConnectorFacadeFactory.getInstance().newInstance(config);
+        facade1 = ConnectorFacadeFactory.getInstance().newInstance(config);
 
         OperationOptionsBuilder builder = new OperationOptionsBuilder();
         builder.setOption("testPooling", "true");
@@ -704,14 +727,15 @@ public abstract class ConnectorInfoManagerTestBase {
 
         while (iteratorLwOCI.hasNext()) {
             LightweightObjectClassInfo lightweightObjectClassInfo = iteratorLwOCI.next();
-            if (lightweightObjectClassInfo.is(TstConnector.USER_CLASS_NAME) ||
-                    lightweightObjectClassInfo.is(TstConnector.GROUP_CLASS_NAME)) {
+            if (lightweightObjectClassInfo.is(TstConnector.USER_CLASS_NAME)
+                    || lightweightObjectClassInfo.is(TstConnector.GROUP_CLASS_NAME)) {
+
                 lightweightObjectClassInfoList.add(lightweightObjectClassInfo);
             }
         }
 
-        Schema schema = facade.getPartialSchema(lightweightObjectClassInfoList.toArray(new LightweightObjectClassInfo[0]));
-
+        Schema schema = facade.getPartialSchema(
+                lightweightObjectClassInfoList.toArray(LightweightObjectClassInfo[]::new));
         assertEquals(2, schema.getObjectClassInfo().size());
 
         ObjectClassInfo userObjectClass = schema.findObjectClassInfo(TstConnector.USER_CLASS_NAME);

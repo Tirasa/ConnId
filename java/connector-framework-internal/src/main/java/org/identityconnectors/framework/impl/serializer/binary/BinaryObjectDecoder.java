@@ -46,16 +46,13 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
 
     private static class ReadState {
 
-        public Map<String, byte[]> objectFields = new HashMap<>();
+        private final Map<String, byte[]> objectFields = new HashMap<>();
 
-        public List<byte[]> anonymousFields = new ArrayList<>();
+        private final List<byte[]> anonymousFields = new ArrayList<>();
 
-        public DataInputStream currentInput;
+        private DataInputStream currentInput;
 
-        public ReadState() {
-        }
-
-        public boolean startField(String name) {
+        boolean startField(String name) {
             currentInput = null;
             byte[] content = objectFields.get(name);
             if (content == null) {
@@ -66,7 +63,7 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
             }
         }
 
-        public void startAnonymousField(int index) {
+        void startAnonymousField(int index) {
             if (index >= anonymousFields.size()) {
                 throw new ConnectorException("Anonymous content not found");
             }
@@ -85,12 +82,11 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
 
         private final DataInputStream rootInput;
 
-        public InternalDecoder(DataInputStream input) {
+        InternalDecoder(DataInputStream input) {
             rootInput = input;
         }
 
-        public Object readObject(ObjectDecoder decoder) {
-
+        Object readObject(final ObjectDecoder decoder) {
             if (firstObject) {
                 int magic = readInt();
                 if (magic != BinaryObjectEncoder.OBJECT_MAGIC) {
@@ -263,7 +259,7 @@ public class BinaryObjectDecoder implements ObjectDecoder, BinaryObjectDeseriali
         }
 
         private DataInputStream getCurrentInput() {
-            if (readStateStack.size() > 0) {
+            if (!readStateStack.isEmpty()) {
                 ReadState state = readStateStack.get(readStateStack.size() - 1);
                 return state.currentInput;
             } else {

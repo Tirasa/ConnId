@@ -56,5 +56,5 @@ import org.identityconnectors.framework.spi.operations.UpdateOp;
  */
 public interface AttributeNormalizer {
 
-    public Attribute normalizeAttribute(ObjectClass objectClass, Attribute attribute);
+    Attribute normalizeAttribute(ObjectClass objectClass, Attribute attribute);
 }

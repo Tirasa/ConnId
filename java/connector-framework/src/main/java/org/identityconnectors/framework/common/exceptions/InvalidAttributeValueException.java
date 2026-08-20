@@ -20,8 +20,8 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2018 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.common.exceptions;
 
 import java.util.Collection;
@@ -46,12 +46,12 @@ import java.util.Collection;
 public class InvalidAttributeValueException extends ConnectorException {
 
     private static final long serialVersionUID = 1L;
-    
+
     /**
-     * Collection of attribute names that are affected by this error. 
+     * Collection of attribute names that are affected by this error.
      * I.e. collection of attribute names that might have been cause of the error.
      */
-    Collection<String> affectedAttributeNames;
+    private Collection<String> affectedAttributeNames;
 
     /**
      * Constructs a new InvalidAttributeValueException exception with
@@ -67,10 +67,9 @@ public class InvalidAttributeValueException extends ConnectorException {
      * detail message. The cause is not initialized, and may subsequently be
      * initialized by a call to {@link #initCause}.
      *
-     * @param message
-     *            the detail message. The detail message is is a String that
-     *            describes this particular exception and saved for later
-     *            retrieval by the {@link #getMessage()} method.
+     * @param message the detail message. The detail message is is a String that
+     * describes this particular exception and saved for later
+     * retrieval by the {@link #getMessage()} method.
      */
     public InvalidAttributeValueException(String message) {
         super(message);
@@ -84,52 +83,40 @@ public class InvalidAttributeValueException extends ConnectorException {
      * constructor is useful for InvalidAccountException exceptions that are
      * little more than wrappers for other throwables.
      *
-     * @param cause
-     *            the cause (which is saved for later retrieval by the
-     *            {@link #getCause()} method). (A <tt>null</tt> value is
-     *            permitted, and indicates that the cause is nonexistent or
-     *            unknown.)
+     * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method). (A <tt>null</tt>
+     * value is permitted, and indicates that the cause is nonexistent or unknown)
      */
     public InvalidAttributeValueException(Throwable cause) {
         super(cause);
     }
 
     /**
-     * Constructs a new InvalidAttributeValueException exception with the specified
-     * detail message and cause.
+     * Constructs a new InvalidAttributeValueException exception with the specified detail message and cause.
      * <p>
-     * Note that the detail message associated with <code>cause</code> is
-     * <i>not</i> automatically incorporated in this Connector exception's
-     * detail message.
+     * Note that the detail message associated with <code>cause</code> is <i>not</i> automatically incorporated in this
+     * Connector exception's detail message.
      *
-     * @param message
-     *            the detail message (which is saved for later retrieval by the
-     *            {@link #getMessage()} method).
-     * @param cause
-     *            the cause (which is saved for later retrieval by the
-     *            {@link #getCause()} method). (A <tt>null</tt> value is
-     *            permitted, and indicates that the cause is nonexistent or
-     *            unknown.)
+     * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method).
+     * @param cause the cause (which is saved for later retrieval by the {@link #getCause()} method). (A <tt>null</tt>
+     * value is permitted, and indicates that the cause is nonexistent or unknown)
      */
     public InvalidAttributeValueException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Returns collection of attribute names that are affected by this error. 
+     * Returns collection of attribute names that are affected by this error.
      * I.e. collection of attribute names that might have been cause of the error.
      */
-	public Collection<String> getAffectedAttributeNames() {
-		return affectedAttributeNames;
-	}
+    public Collection<String> getAffectedAttributeNames() {
+        return affectedAttributeNames;
+    }
 
-	/**
-     * Sets collection of attribute names that are affected by this error. 
+    /**
+     * Sets collection of attribute names that are affected by this error.
      * I.e. collection of attribute names that might have been cause of the error.
      */
-	public void setAffectedAttributeNames(Collection<String> affectedAttributeNames) {
-		this.affectedAttributeNames = affectedAttributeNames;
-	}
-    
-    
+    public void setAffectedAttributeNames(Collection<String> affectedAttributeNames) {
+        this.affectedAttributeNames = affectedAttributeNames;
+    }
 }

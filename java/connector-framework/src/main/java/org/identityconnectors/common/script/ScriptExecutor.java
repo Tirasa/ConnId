@@ -19,29 +19,26 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common.script;
 
 import java.util.Map;
 
 /**
- * Represents a (possibly compiled) script. It can be invoked many times with
- * many arguments: TODO: Specify thread safety. Can this be called from multiple
- * threads or not? Need empirical data from a few scripting engines to determine
- * which is most appropriate.
+ * Represents a (possibly compiled) script. It can be invoked many times with many arguments.
+ * Specify thread safety. Can this be called from multiple
+ * threads or not? Need empirical data from a few scripting engines to determine which is most appropriate.
  */
 public interface ScriptExecutor {
 
     /**
      * Executes the script with the given arguments.
      *
-     * @param arguments
-     *            Map of arguments to pass to the script.
+     * @param arguments Map of arguments to pass to the script.
      * @return A result, if any.
-     * @throws Exception
-     *             Whatever native exception the script engine produces. (When
-     *             called from the connector framework, this will subsequently
-     *             be wrapped in a ConnectorException)
+     * @throws Exception Whatever native exception the script engine produces. (When called from the connector
+     * framework, this will subsequently be wrapped in a ConnectorException)
      */
-    public Object execute(Map<String, Object> arguments) throws Exception;
+    Object execute(Map<String, Object> arguments) throws Exception;
 }

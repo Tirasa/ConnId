@@ -90,7 +90,7 @@ import org.identityconnectors.framework.common.objects.filter.FilterBuilder;
  * @author Tomas Knappek
  * @author Zdenek Louzensky
  */
-public class ConnectorHelper {
+public final class ConnectorHelper {
 
     private static final Log LOG = Log.getLog(ConnectorHelper.class);
 
@@ -415,7 +415,7 @@ public class ConnectorHelper {
 
                     List<Object> fetchedValue = createdAttribute.getValue();
                     List<Object> requestedValue = attribute.getValue();
-                    String msg = 
+                    String msg =
                             "Attribute '%s' was not properly created. Requested values: %s Fetched values: %s".
                                     formatted(attribute.getName(), requestedValue, fetchedValue);
                     assertTrue(checkValue(fetchedValue, requestedValue), msg);
@@ -450,7 +450,7 @@ public class ConnectorHelper {
                         -> (isReadable(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta)))).
                 filter((attributeDelta)
                         -> (checkNotReturnedByDefault
-                || isReturnedByDefault(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta)))).
+                        || isReturnedByDefault(objectClassInfo, AttributeDeltaUtil.getEmptyAttribute(attributeDelta)))).
                 forEachOrdered((attributeDelta) -> {
                     Attribute createdAttribute = connectorObj.getAttributeByName(attributeDelta.getName());
                     if (createdAttribute == null) {
@@ -459,7 +459,8 @@ public class ConnectorHelper {
 
                     List<Object> fetchedValue = createdAttribute.getValue();
                     List<Object> requestedValue = attributeDelta.getValuesToReplace();
-                    String msg = "AttributeDelta '%s' was not properly created. Requested values: %s Fetched values: %s".
+                    String msg =
+                            "AttributeDelta '%s' was not properly created. Requested values: %s Fetched values: %s".
                                     formatted(attributeDelta.getName(), requestedValue, fetchedValue);
                     assertTrue(checkValue(fetchedValue, requestedValue), msg);
                 });
@@ -980,17 +981,17 @@ public class ConnectorHelper {
                     currentOpSupported = true;
                     break;
                 }
-            }//for each object class
+            }
 
             opsSupported.add(currentOpSupported);
-        }//for each operation
+        }
 
         // do and throughout results of every operation
         // to verify if all are supported
         boolean result = true;
         for (Boolean bool : opsSupported) {
             result = result & bool;
-            if (result == false) {
+            if (!result) {
                 break;
             }
         }
@@ -1223,5 +1224,8 @@ public class ConnectorHelper {
      */
     public static ObjectClass getObjectClassFromObjectClassInfo(final ObjectClassInfo objectClassInfo) {
         return new ObjectClass(objectClassInfo.getType());
+    }
+
+    private ConnectorHelper() {
     }
 }

@@ -428,17 +428,14 @@ public class MultiOpTests extends ObjectClassRunner {
         if (isObjectClassSupported(objectClass)
                 && ConnectorHelper.isCRU(getObjectClassInfo(objectClass), OperationalAttributes.ENABLE_DATE_NAME)) {
 
-            // try to retrieve the optional contract tests property for setting the dates, otherwise use the default values
-            //"now"
-            final long createValue = getDateProperty(OperationalAttributes.ENABLE_DATE_NAME, (new Date()).getTime(),
-                    false);
+            // try to retrieve the optional contract tests property for setting the dates, 
+            // otherwise use the default values "now"
+            long createValue = getDateProperty(OperationalAttributes.ENABLE_DATE_NAME, (new Date()).getTime(), false);
             //"1.1.1970"
-            final long updateValue = getDateProperty(OperationalAttributes.ENABLE_DATE_NAME, (new Date(0)).getTime(),
-                    true);
+            long updateValue = getDateProperty(OperationalAttributes.ENABLE_DATE_NAME, (new Date(0)).getTime(), true);
 
             // check ENABLE_DATE for "now" and "1.1.1970"
-            checkOpAttribute(objectClass, OperationalAttributes.ENABLE_DATE_NAME, createValue,
-                    updateValue, Long.class);
+            checkOpAttribute(objectClass, OperationalAttributes.ENABLE_DATE_NAME, createValue, updateValue, Long.class);
         } else {
             LOG.info("----------------------------------------------------------------------------------------");
             LOG.info("Skipping test ''testEnableDateOpAttribute'' for object class ''" + objectClass + "''.");
@@ -451,24 +448,21 @@ public class MultiOpTests extends ObjectClassRunner {
      */
     @ParameterizedTest
     @MethodSource("objectClasses")
-    public void testDisableDateOpAttribute(ObjectClass objectClass) {
-        if (isObjectClassSupported(objectClass)
-                && ConnectorHelper.isCRU(getObjectClassInfo(objectClass), OperationalAttributes.DISABLE_DATE_NAME)) {
+    public void testDisableDateOpAttribute(ObjectClass oc) {
+        if (isObjectClassSupported(oc)
+                && ConnectorHelper.isCRU(getObjectClassInfo(oc), OperationalAttributes.DISABLE_DATE_NAME)) {
 
-            // try to retrieve the optional contract tests property for setting the dates, otherwise use the default values
-            //"now"
-            final long createValue = getDateProperty(OperationalAttributes.DISABLE_DATE_NAME, (new Date()).getTime(),
-                    false);
+            // try to retrieve the optional contract tests property for setting the dates, otherwise use the default 
+            // values "now"
+            long createValue = getDateProperty(OperationalAttributes.DISABLE_DATE_NAME, (new Date()).getTime(), false);
             //"1.1.1970"
-            final long updateValue = getDateProperty(OperationalAttributes.DISABLE_DATE_NAME, (new Date(0)).getTime(),
-                    true);
+            long updateValue = getDateProperty(OperationalAttributes.DISABLE_DATE_NAME, (new Date(0)).getTime(), true);
 
             // check DISABLE_DATE for "now" and "1.1.1970"
-            checkOpAttribute(objectClass, OperationalAttributes.DISABLE_DATE_NAME, createValue,
-                    updateValue, Long.class);
+            checkOpAttribute(oc, OperationalAttributes.DISABLE_DATE_NAME, createValue, updateValue, Long.class);
         } else {
             LOG.info("----------------------------------------------------------------------------------------");
-            LOG.info("Skipping test ''testDisableDateOpAttribute'' for object class ''" + objectClass + "''.");
+            LOG.info("Skipping test ''testDisableDateOpAttribute'' for object class ''" + oc + "''.");
             LOG.info("----------------------------------------------------------------------------------------");
         }
     }
@@ -488,8 +482,8 @@ public class MultiOpTests extends ObjectClassRunner {
             }
 
             Object obj = getDataProvider().getTestSuiteAttribute(propName, getTestName());
-            if (obj instanceof Long) {
-                return (Long) obj;
+            if (obj instanceof Long aLong) {
+                return aLong;
             } else {
                 fail("Property 'testsuite.%s.%s' should be of type *long*".formatted(getTestName(), propName));
             }
@@ -547,15 +541,15 @@ public class MultiOpTests extends ObjectClassRunner {
      */
     @ParameterizedTest
     @MethodSource("objectClasses")
-    public void testPasswordExpiredOpAttribute(ObjectClass objectClass) {
-        if (isObjectClassSupported(objectClass)
-                && ConnectorHelper.isCRU(getObjectClassInfo(objectClass), OperationalAttributes.PASSWORD_EXPIRED_NAME)) {
+    public void testPasswordExpiredOpAttribute(ObjectClass oc) {
+        if (isObjectClassSupported(oc)
+                && ConnectorHelper.isCRU(getObjectClassInfo(oc), OperationalAttributes.PASSWORD_EXPIRED_NAME)) {
 
             // check PASSWORD_EXPIRED for false
-            checkOpAttribute(objectClass, OperationalAttributes.PASSWORD_EXPIRED_NAME, false, true, Boolean.class, true);
+            checkOpAttribute(oc, OperationalAttributes.PASSWORD_EXPIRED_NAME, false, true, Boolean.class, true);
         } else {
             LOG.info("----------------------------------------------------------------------------------------");
-            LOG.info("Skipping test ''testPasswordExpiredOpAttribute'' for object class ''" + objectClass + "''.");
+            LOG.info("Skipping test ''testPasswordExpiredOpAttribute'' for object class ''" + oc + "''.");
             LOG.info("----------------------------------------------------------------------------------------");
         }
     }

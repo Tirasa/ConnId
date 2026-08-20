@@ -41,13 +41,13 @@ public class EncryptorImpl implements Encryptor {
 
     private static final String FULL_ALGORITHM = "AES/CBC/PKCS5Padding";
 
-    private final static byte[] DEFAULT_KEY_BYTES = {
+    private static final byte[] DEFAULT_KEY_BYTES = {
         (byte) 0x23, (byte) 0x65, (byte) 0x87, (byte) 0x22,
         (byte) 0x59, (byte) 0x78, (byte) 0x54, (byte) 0x43,
         (byte) 0x64, (byte) 0x05, (byte) 0x6A, (byte) 0xBD,
         (byte) 0x34, (byte) 0xA2, (byte) 0x34, (byte) 0x57, };
 
-    private final static byte[] DEFAULT_IV_BYTES = {
+    private static final byte[] DEFAULT_IV_BYTES = {
         (byte) 0x51, (byte) 0x65, (byte) 0x22, (byte) 0x23,
         (byte) 0x64, (byte) 0x05, (byte) 0x6A, (byte) 0xBE,
         (byte) 0x51, (byte) 0x65, (byte) 0x22, (byte) 0x23,

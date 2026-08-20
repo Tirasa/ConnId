@@ -25,7 +25,7 @@ package org.identityconnectors.framework.impl.api.local.operations;
 
 import org.identityconnectors.common.logging.Log;
 
-public class SpiOperationLoggingUtil {
+public final class SpiOperationLoggingUtil {
 
     public static final Log.Level LOG_LEVEL = Log.Level.OK;
 
@@ -107,5 +107,8 @@ public class SpiOperationLoggingUtil {
         if (opContext.getInstanceName() != null) {
             sb.append("instance='").append(opContext.getInstanceName()).append("' ");
         }
+    }
+
+    private SpiOperationLoggingUtil() {
     }
 }

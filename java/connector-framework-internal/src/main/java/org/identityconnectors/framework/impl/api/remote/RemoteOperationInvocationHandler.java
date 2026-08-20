@@ -94,29 +94,26 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
             }
 
             // finally return the actual return value
-
             Object response = connection.readObject();
 
-            if (response instanceof OperationResponsePart) {
-
-                OperationResponsePart part = (OperationResponsePart) response;
-
-                if (part.getException() != null) {
-                    throw part.getException();
+            switch (response) {
+                case OperationResponsePart part -> {
+                    if (part.getException() != null) {
+                        throw part.getException();
+                    }
+                    return part.getResult();
                 }
-                return part.getResult();
-            } else if (response instanceof ErrorResponse) {
-                ErrorResponse error = (ErrorResponse) response;
-
-                if (error.getException() != null) {
-                    throw error.getException();
-                } else {
-
-                    throw new ConnectorException("Received an invalid Error response object, exception parameter missing");
+                case ErrorResponse error -> {
+                    if (error.getException() != null) {
+                        throw error.getException();
+                    } else {
+                        throw new ConnectorException(
+                                "Received an invalid Error response object, exception parameter missing");
+                    }
                 }
-            } else {
-
-                throw new ConnectorException("Received unknown response object type: " + response.getClass().getCanonicalName());
+                default ->
+                    throw new ConnectorException(
+                            "Received unknown response object type: " + response.getClass().getCanonicalName());
             }
 
         } finally {
@@ -124,7 +121,6 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
                 connection.close();
             }
         }
-
     }
 
     /**
@@ -136,8 +132,7 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
         boolean handleMore = true;
         while (true) {
             Object response = connection.readObject();
-            if (response instanceof OperationResponsePart) {
-                OperationResponsePart part = (OperationResponsePart) response;
+            if (response instanceof OperationResponsePart part) {
                 if (part.getException() != null) {
                     throw part.getException();
                 }
@@ -153,20 +148,14 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
                 }
             } else if (response instanceof OperationResponseEnd) {
                 break;
-            } else if (response instanceof ErrorResponse) {
-
-                ErrorResponse error = (ErrorResponse) response;
-
+            } else if (response instanceof ErrorResponse error) {
                 if (error.getException() != null) {
-
                     throw ConnectorException.wrap(error.getException());
                 } else {
-
-                    throw new ConnectorException("Received an invalid Error response object, exception parameter missing");
+                    throw new ConnectorException(
+                            "Received an invalid Error response object, exception parameter missing");
                 }
-
-            }else {
-
+            } else {
                 throw new ConnectorException("Unexpected response: " + response);
             }
         }
@@ -181,7 +170,7 @@ public class RemoteOperationInvocationHandler implements InvocationHandler {
      */
     private static ObjectStreamHandler extractStreamHandler(final Class<?>[] paramTypes, final List<Object> arguments) {
         ObjectStreamHandler rv = null;
-        List<Object> filteredArguments = new ArrayList<Object>();
+        List<Object> filteredArguments = new ArrayList<>();
         for (int i = 0; i < paramTypes.length; i++) {
             Class<?> paramType = paramTypes[i];
             Object arg = arguments.get(i);

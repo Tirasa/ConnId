@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi;
 
@@ -38,22 +39,20 @@ public interface Connector {
      *
      * @return The configuration that was passed to {@link #init(Configuration)}.
      */
-    public Configuration getConfiguration();
+    Configuration getConfiguration();
 
     /**
      * Initialize the connector with its configuration. For instance in a JDBC
      * {@link Connector} this would include the database URL, password, and
      * user.
      *
-     * @param cfg
-     *            instance of the {@link Configuration} object implemented by
-     *            the {@link Connector} developer and populated with information
-     *            in order to initialize the {@link Connector}.
+     * @param cfg instance of the {@link Configuration} object implemented by the {@link Connector} developer and
+     * populated with information in order to initialize the {@link Connector}.
      */
-    public void init(Configuration cfg);
+    void init(Configuration cfg);
 
     /**
      * Dispose of any resources the {@link Connector} uses.
      */
-    public void dispose();
+    void dispose();
 }

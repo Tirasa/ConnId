@@ -181,7 +181,7 @@ public final class TestHelpers {
     // At some point we might make this pluggable, but for now, hard-code
     private static final String IMPL_NAME = "org.identityconnectors.framework.impl.test.TestHelpersImpl";
 
-    private static TestHelpersSpi instance;
+    private static TestHelpersSpi INSTANCE;
 
     /**
      * Returns the instance of the SPI implementation.
@@ -189,16 +189,16 @@ public final class TestHelpers {
      * @return The instance of the SPI implementation.
      */
     private static synchronized TestHelpersSpi getSpi() {
-        if (instance == null) {
+        if (INSTANCE == null) {
             try {
                 Class<?> clazz = Class.forName(IMPL_NAME);
                 Object object = clazz.getDeclaredConstructor().newInstance();
-                instance = TestHelpersSpi.class.cast(object);
+                INSTANCE = TestHelpersSpi.class.cast(object);
             } catch (Exception e) {
                 throw ConnectorException.wrap(e);
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
     private static final Map<String, PropertyBag> BAGS = new HashMap<>();

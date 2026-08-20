@@ -91,15 +91,15 @@ public class StringUtilTests {
      */
     @Test
     public void testStripXmlAttribute() {
-        final String DATA[][] = {
+        final String[][] data = {
             // source, attr, result
             { null, null, null },
             { "attr='fads'", "attr", "" },
             { "at1='fasd' at1=''", "at1", "" }
         };
-        for (int i = 0; i < DATA.length; i++) {
-            String tst = StringUtil.stripXmlAttribute(DATA[i][0], DATA[i][1]);
-            assertEquals(tst, DATA[i][2]);
+        for (String[] d : data) {
+            String tst = StringUtil.stripXmlAttribute(d[0], d[1]);
+            assertEquals(tst, d[2]);
         }
     }
 
@@ -108,14 +108,14 @@ public class StringUtilTests {
      */
     @Test
     public void testStripNewlines() {
-        final String[][] TESTS = new String[][] { { null, null },
+        final String[][] tests = new String[][] { { null, null },
         { "afdslf\n", "afdslf" }, { "afds\nfadkfj", "afdsfadkfj" },
         { "afds \nfadkfj", "afds fadkfj" },
         { "afds\n fadkfj", "afds fadkfj" } };
         String tmp;
-        for (String[] data : TESTS) {
-            tmp = StringUtil.stripNewlines(data[0]);
-            assertEquals(tmp, data[1]);
+        for (String[] t : tests) {
+            tmp = StringUtil.stripNewlines(t[0]);
+            assertEquals(tmp, t[1]);
         }
     }
 
@@ -123,7 +123,7 @@ public class StringUtilTests {
      */
     @Test
     public void testStripXmlComments() {
-        final String DATA[][] = {
+        final String[][] data = {
             // test data -> result
             { null, null }, { "<!--test1-->", "" },
             { "test data", "test data" },
@@ -133,9 +133,9 @@ public class StringUtilTests {
             { "<!-- fasdkfj --> test data", " test data" },
             { "<!-- fasdkfj --> test data<!-- fadsom-->", " test data" } };
 
-        for (int i = 0; i < DATA.length; i++) {
-            String tst = StringUtil.stripXmlComments(DATA[i][0]);
-            assertEquals(tst, DATA[i][1]);
+        for (String[] d : data) {
+            String tst = StringUtil.stripXmlComments(d[0]);
+            assertEquals(tst, d[1]);
         }
     }
 
@@ -217,9 +217,9 @@ public class StringUtilTests {
         }
     }
 
-    final char TEXTQ = '"';
+    private final char textq = '"';
 
-    final char FEILDD = ',';
+    private final char fieldd = ',';
 
     /**
      * Tests the {@link StringUtil#parseLine(String, char, char)} method.
@@ -228,7 +228,7 @@ public class StringUtilTests {
     public void testParseLine() {
         List<Object> values;
         values = CollectionUtil.<Object>newReadOnlyList("bob", "george", 4, 23, 230948);
-        parseLineTest(TEXTQ, FEILDD, values);
+        parseLineTest(textq, fieldd, values);
 
     }
 
@@ -236,10 +236,10 @@ public class StringUtilTests {
     public void testRandomParseLine() {
         // try random stuff..
         final Random r = new Random(17);
-        final char[] replace = new char[] { TEXTQ, FEILDD };
+        final char[] replace = new char[] { textq, fieldd };
         for (int i = 0; i < 100; i++) {
             final List<Object> values = randomList(r, 10, replace, 'a');
-            parseLineTest(TEXTQ, FEILDD, values);
+            parseLineTest(textq, fieldd, values);
         }
     }
 
@@ -322,7 +322,7 @@ public class StringUtilTests {
         assertFalse(StringUtil.endsWith("fadsfkj", 'f'));
     }
 
-    private static final String PROP_TEST[] = {
+    private static final String[] PROP_TEST = {
         "# Some comment",
         "prop1=SomeProp",
         "prop2=OtherProp"

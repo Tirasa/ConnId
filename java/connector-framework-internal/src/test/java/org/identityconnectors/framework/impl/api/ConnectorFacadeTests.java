@@ -84,13 +84,13 @@ public class ConnectorFacadeTests {
         /**
          * Simple call back to make the 'facade' calls.
          */
-        public void makeCall(ConnectorFacade facade);
+        void makeCall(ConnectorFacade facade);
 
         /**
          * Given the list of calls determine if they match expected values based
          * on the calls made in the {@link #makeCall(ConnectorFacade)} method.
          */
-        public void checkCalls(List<MockConnector.Call> calls);
+        void checkCalls(List<MockConnector.Call> calls);
     }
 
     /**

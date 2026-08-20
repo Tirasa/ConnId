@@ -42,9 +42,9 @@ import org.junit.jupiter.api.Test;
 
 public class RemoteConnectorInfoManagerClearTests extends ConnectorInfoManagerTestBase {
 
-    private static ConnectorServer _server;
+    private static ConnectorServer SERVER;
 
-    private final int PORT = 8759;
+    private static final int PORT = 8759;
 
     /**
      * To be overridden by subclasses to get different ConnectorInfoManagers
@@ -57,13 +57,13 @@ public class RemoteConnectorInfoManagerClearTests extends ConnectorInfoManagerTe
         List<URL> urls = getTestBundles();
 
         synchronized (RemoteConnectorInfoManagerClearTests.class) {
-            if (_server == null) {
-                _server = ConnectorServer.newInstance();
-                _server.setKeyHash(SecurityUtil.computeBase64SHA1Hash("changeit".toCharArray()));
-                _server.setBundleURLs(urls);
-                _server.setPort(PORT);
-                _server.setIfAddress(InetAddress.getByName("127.0.0.1"));
-                _server.start();
+            if (SERVER == null) {
+                SERVER = ConnectorServer.newInstance();
+                SERVER.setKeyHash(SecurityUtil.computeBase64SHA1Hash("changeit".toCharArray()));
+                SERVER.setBundleURLs(urls);
+                SERVER.setPort(PORT);
+                SERVER.setIfAddress(InetAddress.getByName("127.0.0.1"));
+                SERVER.start();
             }
         }
         ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.getInstance();
@@ -77,9 +77,9 @@ public class RemoteConnectorInfoManagerClearTests extends ConnectorInfoManagerTe
     @Override
     protected synchronized void shutdownConnnectorInfoManager() {
         synchronized (RemoteConnectorInfoManagerClearTests.class) {
-            if (_server != null) {
-                _server.stop();
-                _server = null;
+            if (SERVER != null) {
+                SERVER.stop();
+                SERVER = null;
             }
         }
         // These are initialized by the connector server.

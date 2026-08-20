@@ -19,8 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.common.event;
 
 /**
@@ -31,13 +31,13 @@ package org.identityconnectors.common.event;
  * @since 1.4
  */
 public interface ConnectorEventHandler {
+
     /**
      * Called by the
      * {@link org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoManagerImpl}
      * service to notify the listener of an event.
      *
-     * @param event
-     *            The {@code ConnectorEvent} object.
+     * @param event The {@code ConnectorEvent} object.
      */
-    public void handleEvent(ConnectorEvent event);
+    void handleEvent(ConnectorEvent event);
 }

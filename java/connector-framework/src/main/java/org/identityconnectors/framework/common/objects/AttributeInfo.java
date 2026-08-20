@@ -20,11 +20,9 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2015-2016 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
-
-import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
-import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
 
 import java.util.Collections;
 import java.util.EnumSet;
@@ -80,7 +78,7 @@ public final class AttributeInfo {
      * <li>optional</li>
      * </ul>
      */
-    public static enum Flags {
+    public enum Flags {
         REQUIRED,
         MULTIVALUED,
         NOT_CREATABLE,
@@ -93,7 +91,7 @@ public final class AttributeInfo {
     /**
      * Enumeration of pre-defined attribute subtypes.
      */
-    public static enum Subtypes {
+    public enum Subtypes {
         /**
          * Case-ignore (case-insensitive) string.
          */
@@ -126,7 +124,7 @@ public final class AttributeInfo {
 
         private final String value;
 
-        private Subtypes(String value) {
+        Subtypes(String value) {
             this.value = value;
         }
 
@@ -163,7 +161,7 @@ public final class AttributeInfo {
 
         private final String value;
 
-        private RoleInReference(String value) {
+        RoleInReference(String value) {
             this.value = value;
         }
 
@@ -179,8 +177,8 @@ public final class AttributeInfo {
     }
 
     AttributeInfo(final String name, final Class<?> type, final String subtype, final String nativeName,
-                  final Set<Flags> flags,
-                  String referencedObjectClassName, String roleInReference){
+            final Set<Flags> flags,
+            String referencedObjectClassName, String roleInReference) {
         this(name, type, subtype, nativeName, flags, referencedObjectClassName, roleInReference, null);
     }
 
@@ -215,7 +213,8 @@ public final class AttributeInfo {
                 && !EmbeddedObject.class.equals(type)) {
 
             throw new IllegalArgumentException(
-                    "Referenced object class name and/or role in reference can be set only for reference or complex attributes.");
+                    "Referenced object class name and/or role in reference can be set only for reference "
+                    + "or complex attributes.");
         }
         this.referencedObjectClassName = referencedObjectClassName;
         this.roleInReference = roleInReference;
@@ -386,6 +385,7 @@ public final class AttributeInfo {
     /**
      * Returns the description of this {@link Attribute}.
      * Can be used to determine the potential use of the {@link Attribute}.
+     *
      * @return a string description of this {@link Attribute}
      */
     public String getDescription() {
@@ -396,7 +396,7 @@ public final class AttributeInfo {
      * Determines if the name parameter matches this {@link AttributeInfo}.
      */
     public boolean is(String name) {
-        return namesEqual(this.name, name);
+        return NameUtil.namesEqual(this.name, name);
     }
 
     // =======================================================================
@@ -405,8 +405,7 @@ public final class AttributeInfo {
     @Override
     public boolean equals(Object obj) {
         boolean ret = false;
-        if (obj instanceof AttributeInfo) {
-            AttributeInfo other = (AttributeInfo) obj;
+        if (obj instanceof AttributeInfo other) {
             if (!is(other.getName())) {
                 return false;
             }
@@ -429,7 +428,7 @@ public final class AttributeInfo {
 
     @Override
     public int hashCode() {
-        return nameHashCode(name);
+        return NameUtil.nameHashCode(name);
     }
 
     @Override

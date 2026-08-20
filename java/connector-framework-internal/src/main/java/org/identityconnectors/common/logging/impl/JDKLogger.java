@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common.logging.impl;
 
@@ -38,7 +39,7 @@ import org.identityconnectors.common.logging.LogSpi;
  */
 public class JDKLogger implements LogSpi {
 
-    private volatile ConcurrentMap<String, Logger> map = new ConcurrentHashMap<String, Logger>(1);
+    private volatile ConcurrentMap<String, Logger> map = new ConcurrentHashMap<>(1);
 
     /**
      * Uses the JDK logger to log the message.
@@ -65,16 +66,17 @@ public class JDKLogger implements LogSpi {
      */
     @Override
     public void log(final Class<?> clazz, final StackTraceElement caller, final Level level,
-                    final String message, final Throwable ex) {
-        String methodName = null;
+            final String message, final Throwable ex) {
+        String methodName;
         if (null != caller) {
-            // @formatter:off
-            methodName = caller.getMethodName() +
-                    (caller.isNativeMethod() ? "(Native Method)" :
-                     (caller.getFileName() != null && caller.getLineNumber() >= 0 ?
-                      "(" + caller.getFileName() + ":" + caller.getLineNumber() + ")" :
-                      (caller.getFileName() != null ? "(" + caller.getFileName() + ")" : "(Unknown Source)")));
-            // @formatter:on
+            methodName = caller.getMethodName()
+                    + (caller.isNativeMethod()
+                    ? "(Native Method)"
+                    : (caller.getFileName() != null && caller.getLineNumber() >= 0
+                    ? "(" + caller.getFileName() + ":" + caller.getLineNumber() + ")"
+                    : (caller.getFileName() != null
+                    ? "(" + caller.getFileName() + ")"
+                    : "(Unknown Source)")));
         } else {
             methodName = "unknown";
         }
@@ -124,5 +126,4 @@ public class JDKLogger implements LogSpi {
     ConcurrentMap<String, Logger> getMap() {
         return map;
     }
-
 }

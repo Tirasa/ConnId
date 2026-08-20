@@ -19,14 +19,14 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
-
-import org.identityconnectors.common.CollectionUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.identityconnectors.common.CollectionUtil;
 
 /**
  * Common base class for {@link ConnectorObject} and {@link EmbeddedObject}
@@ -36,7 +36,6 @@ public abstract class BaseObject {
     private final ObjectClass objectClass;
 
     protected final Map<String, Attribute> attributeMap;
-
 
     protected BaseObject(ObjectClass objectClass, Set<? extends Attribute> attributes) {
         // For connector object identification, it is legal to have no object class information.
@@ -80,8 +79,7 @@ public abstract class BaseObject {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof BaseObject) {
-            BaseObject other = (BaseObject) obj;
+        if (obj instanceof BaseObject other) {
             if (!objectClass.equals(other.getObjectClass())) {
                 return false;
             }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -36,11 +37,11 @@ public interface PartialSchemaApiOp extends APIOperation {
      * The subset is defined as an array of {@link LightweightObjectClassInfo} which were provided by the
      * {@link PartialSchemaApiOp#getObjectClassInformation()} method.
      */
-    public Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos);
+    Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos);
 
     /**
      * Retrieve and array of {@link LightweightObjectClassInfo} objects which can be provided in the schema of this
      * {@link Connector}.
      */
-    public LightweightObjectClassInfo[] getObjectClassInformation();
+    LightweightObjectClassInfo[] getObjectClassInformation();
 }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -35,15 +36,11 @@ public interface GetApiOp extends APIOperation {
     /**
      * Get a particular {@link ConnectorObject} based on the {@link Uid}.
      *
-     * @param objectClass
-     *            type of object to get.
-     * @param uid
-     *            the unique id of the object that to get.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
-     * @return {@link ConnectorObject} based on the {@link Uid} provided or
-     *         <code>null</code> if no such object could be found.
+     * @param objectClass type of object to get.
+     * @param uid the unique id of the object that to get.
+     * @param options additional options that impact the way this operation is run. May be null.
+     * @return {@link ConnectorObject} based on the {@link Uid} provided or <code>null</code> if no such object could be
+     * found.
      */
-    public ConnectorObject getObject(ObjectClass objectClass, Uid uid, OperationOptions options);
+    ConnectorObject getObject(ObjectClass objectClass, Uid uid, OperationOptions options);
 }

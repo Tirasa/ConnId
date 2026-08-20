@@ -205,13 +205,13 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
         TreeSet<ConnectorObject> resultSet = new TreeSet<>(new ResourceComparator(sortKeys));
 
         if (null != query) {
-            for (ConnectorObject co : collection.values()) {
+            for (ConnectorObject co : COLLECTION.values()) {
                 if (query.accept(co)) {
                     resultSet.add(co);
                 }
             }
         } else {
-            resultSet.addAll(collection.values());
+            resultSet.addAll(COLLECTION.values());
         }
 
         // Handle the results
@@ -290,7 +290,7 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
         // nothing to do
     }
 
-    private final static SortedMap<String, ConnectorObject> collection = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private static final SortedMap<String, ConnectorObject> COLLECTION = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     static {
         boolean enabled = true;
@@ -305,7 +305,7 @@ public abstract class TstAbstractConnector implements CreateOp, SearchOp<Filter>
             mapAttribute.put("usage", Arrays.asList("home", "work"));
             builder.addAttribute(AttributeBuilder.build("emails", mapAttribute));
             ConnectorObject co = builder.build();
-            collection.put(co.getName().getNameValue(), co);
+            COLLECTION.put(co.getName().getNameValue(), co);
             enabled = !enabled;
         }
     }

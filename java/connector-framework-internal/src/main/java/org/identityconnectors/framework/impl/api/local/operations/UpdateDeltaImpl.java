@@ -171,7 +171,8 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                 //allocation of attribute's values for addAttributeValues, removeAttributeValues and update
                 for (AttributeDelta attrDelta : modifications) {
                     if (attrDelta.getValuesToReplace() != null) {
-                        valuesToReplace.add(AttributeBuilder.build(attrDelta.getName(), attrDelta.getValuesToReplace()));
+                        valuesToReplace.add(AttributeBuilder.build(
+                                attrDelta.getName(), attrDelta.getValuesToReplace()));
                     } else {
                         if (attrDelta.getValuesToAdd() != null) {
                             valuesToAdd.add(AttributeBuilder.build(attrDelta.getName(), attrDelta.getValuesToAdd()));
@@ -236,8 +237,8 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                     throw new UnsupportedOperationException("Connector must support: " + SearchOp.class);
                 }
 
-                // add attrs to get to operation options, so that the object we fetch has exactly the set of attributes we
-                // require (there may be ones that are not in the default set)
+                // add attrs to get to operation options, so that the object we fetch has exactly the set of attributes
+                // we require (there may be ones that are not in the default set)
                 OperationOptionsBuilder builder = new OperationOptionsBuilder(options);
                 Set<String> attrNames = new HashSet<>();
                 for (AttributeDelta attributeDelta : modifications) {
@@ -265,7 +266,9 @@ public class UpdateDeltaImpl extends ConnectorAPIOperationRunner implements Upda
                     // remove values
                     if (attrFromModification.getValuesToReplace() != null) {
                         // add new attribute to list attributes for UpdateOp
-                        attributesForUpdate.add(AttributeBuilder.build(name, attrFromModification.getValuesToReplace()));
+                        attributesForUpdate.add(AttributeBuilder.build(
+                                name,
+                                attrFromModification.getValuesToReplace()));
                     } else {
                         Attribute attrFromSearch = attrsFromSearchMap.get(name);
                         List<Object> values;

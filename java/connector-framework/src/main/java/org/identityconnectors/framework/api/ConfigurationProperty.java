@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api;
 
@@ -36,50 +37,50 @@ public interface ConfigurationProperty {
     /**
      * Get the unique name of the configuration property.
      */
-    public String getName();
+    String getName();
 
     /**
      * Get the help message from the message catalog.
      */
-    public String getHelpMessage(String def);
+    String getHelpMessage(String def);
 
     /**
      * Get the display name for this configuration property.
      */
-    public String getDisplayName(String def);
+    String getDisplayName(String def);
 
     /**
      * Get name of the group for this configuration property.
      */
-    public String getGroup(String def);
+    String getGroup(String def);
 
     /**
      * Get the value from the property. This value should be the default value.
      */
-    public Object getValue();
+    Object getValue();
 
     /**
      * Set the value of the property.
      */
-    public void setValue(Object o);
+    void setValue(Object o);
 
     /**
      * Get the type of the property.
      */
-    public Class<?> getType();
+    Class<?> getType();
 
     /**
      * Is this a confidential property whose value should be encrypted by the
      * application when persisted?
      */
-    public boolean isConfidential();
+    boolean isConfidential();
 
     /**
      * Is this a required property
      *
      * @return True if the property is required
      */
-    public boolean isRequired();
+    boolean isRequired();
 
     /**
      * Set of operations for which this property must be specified.
@@ -89,7 +90,7 @@ public interface ConfigurationProperty {
      * "empty array" is special in that it means that this property is
      * applicable to all operations.
      */
-    public Set<Class<? extends APIOperation>> getOperations();
+    Set<Class<? extends APIOperation>> getOperations();
 
     /**
      * Returns list of allowed values for the property.
@@ -101,5 +102,5 @@ public interface ConfigurationProperty {
      *
      * @since 1.5.2.0
      */
-    public SuggestedValues getAllowedValues();
+    SuggestedValues getAllowedValues();
 }

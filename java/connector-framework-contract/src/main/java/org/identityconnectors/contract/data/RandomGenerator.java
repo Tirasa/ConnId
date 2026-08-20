@@ -65,7 +65,7 @@ import java.util.TreeSet;
  * @author David Adam, Zdenek Louzensky
  *
  */
-public class RandomGenerator {
+public final class RandomGenerator {
 
     private static final Random RND;
 
@@ -133,32 +133,32 @@ public class RandomGenerator {
         // in the macro, a get is done on the map with that character
         // as the key, and the Set returned represents the list of
         // characters to pick from randomly
-        Set<Character> alpha_lower = new TreeSet<>();
-        Set<Character> alpha_upper = new TreeSet<>();
-        Set<Character> alpha_mixed = new TreeSet<>();
-        Set<Character> alpha_numeric = new TreeSet<>();
+        Set<Character> alphaLower = new TreeSet<>();
+        Set<Character> alphaUpper = new TreeSet<>();
+        Set<Character> alphaMixed = new TreeSet<>();
+        Set<Character> alphaNumeric = new TreeSet<>();
         Set<Character> numeric = new TreeSet<>();
 
         // all lower case letters
-        addRange(alpha_lower, 'a', 'z');
+        addRange(alphaLower, 'a', 'z');
         // all upper case letters
-        addRange(alpha_upper, 'A', 'Z');
+        addRange(alphaUpper, 'A', 'Z');
         // all numbers
         addRange(numeric, '0', '9');
         // all lower case, upper case, and numbers
-        alpha_numeric.addAll(alpha_lower);
-        alpha_numeric.addAll(alpha_upper);
-        alpha_numeric.addAll(numeric);
+        alphaNumeric.addAll(alphaLower);
+        alphaNumeric.addAll(alphaUpper);
+        alphaNumeric.addAll(numeric);
         // all lower case and upper case
-        alpha_mixed.addAll(alpha_lower);
-        alpha_mixed.addAll(alpha_upper);
+        alphaMixed.addAll(alphaLower);
+        alphaMixed.addAll(alphaUpper);
 
         // setup the mappings
         characterSetMap.put('#', numeric);
-        characterSetMap.put('a', alpha_lower);
-        characterSetMap.put('A', alpha_upper);
-        characterSetMap.put('?', alpha_mixed);
-        characterSetMap.put('.', alpha_numeric);
+        characterSetMap.put('a', alphaLower);
+        characterSetMap.put('A', alphaUpper);
+        characterSetMap.put('?', alphaMixed);
+        characterSetMap.put('.', alphaNumeric);
 
         return characterSetMap;
     }
@@ -196,7 +196,7 @@ public class RandomGenerator {
         synchronized (RandomGenerator.class) {
             next = rnd.nextInt(patternRange);
         }
-        Character[] charArray = validChars.toArray(new Character[0]);
+        Character[] charArray = validChars.toArray(Character[]::new);
         Character charValue = charArray[next];
         return charValue;
     }
@@ -208,8 +208,10 @@ public class RandomGenerator {
      * @param characterSetMap
      * @return
      */
-    private static String createRandomString(String pattern,
+    private static String createRandomString(
+            String pattern,
             Map<Character, Set<Character>> characterSetMap) {
+
         StringBuilder replacement = new StringBuilder();
         for (int i = 0; i < pattern.length(); i++) {
             Set<Character> characterSet = characterSetMap.get(pattern.charAt(i));
@@ -228,5 +230,8 @@ public class RandomGenerator {
             }
         }
         return replacement.toString();
+    }
+
+    private RandomGenerator() {
     }
 }

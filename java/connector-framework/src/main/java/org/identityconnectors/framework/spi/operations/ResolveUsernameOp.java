@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -54,22 +55,15 @@ public interface ResolveUsernameOp extends SPIOperation {
      * exceptions provided in the exceptions package. For instance one of the
      * most common is {@link UnknownUidException}.
      *
-     * @param objectClass
-     *            The object class to resolve the username for. Will typically
-     *            be an account. Will not be null.
-     * @param username
-     *            the username to resolve. Will not be null.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            If the caller passes null, the framework will convert this
-     *            into an empty set of options, so SPI need not worry about this
-     *            ever being null.
+     * @param objectClass The object class to resolve the username for. Will typically be an account. Will not be null.
+     * @param username the username to resolve. Will not be null.
+     * @param options additional options that impact the way this operation is run. If the caller passes null, the
+     * framework will convert this
+     * into an empty set of options, so SPI need not worry about this ever being null.
      * @return Uid The uid of the object corresponding to the username.
-     * @throws RuntimeException
-     *             if the username cannot be resolved. If a native exception is
-     *             available attempt to throw it.
+     * @throws RuntimeException if the username cannot be resolved. If a native exception is available attempt to throw
+     * it.
      * @since 1.1
      */
-    Uid resolveUsername(final ObjectClass objectClass, final String username,
-            final OperationOptions options);
+    Uid resolveUsername(ObjectClass objectClass, String username, OperationOptions options);
 }

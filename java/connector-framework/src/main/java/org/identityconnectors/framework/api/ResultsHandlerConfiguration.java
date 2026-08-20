@@ -19,8 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.api;
 
 /**
@@ -40,17 +40,17 @@ package org.identityconnectors.framework.api;
 public class ResultsHandlerConfiguration {
 
     /**
-     * Enables the
-     * {@link org.identityconnectors.framework.impl.api.local.operations.NormalizingResultsHandler}
+     * Enables the {@link org.identityconnectors.framework.impl.api.local.operations.NormalizingResultsHandler}
      * in the handler chain.
      */
-    boolean enableNormalizingResultsHandler = true;
+    private boolean enableNormalizingResultsHandler = true;
+
     /**
-     * Enables the
-     * {@link org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandler}
+     * Enables the {@link org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandler}
      * in the handler chain.
      */
-    boolean enableFilteredResultsHandler = true;
+    private boolean enableFilteredResultsHandler = true;
+
     /**
      * Enables the {@link org.identityconnectors.framework.impl.api.local.operations.FilteredResultsHandler}
      * in the handler chain in the validate mode.
@@ -61,17 +61,19 @@ public class ResultsHandlerConfiguration {
      * To use, you have to set BOTH EnableFilteredResultsHandler as well as
      * FilteredResultsHandlerInValidateMode to TRUE.
      */
-    boolean filteredResultsHandlerInValidationMode = false;
+    private boolean filteredResultsHandlerInValidationMode = false;
+
     /**
      * Enables the case insensitive filtering.
      */
-    boolean enableCaseInsensitiveFilter = false;
+    private boolean enableCaseInsensitiveFilter = false;
+
     /**
      * Enables the
      * {@link org.identityconnectors.framework.impl.api.local.operations.SearchImpl.AttributesToGetSearchResultsHandler}
      * in the handler chain.
      */
-    boolean enableAttributesToGetSearchResultsHandler = true;
+    private boolean enableAttributesToGetSearchResultsHandler = true;
 
     /**
      * default empty constructor.
@@ -83,7 +85,7 @@ public class ResultsHandlerConfiguration {
      * Copy constructor.
      *
      * @param source
-     *            configuration that copied to.
+     * configuration that copied to.
      */
     public ResultsHandlerConfiguration(ResultsHandlerConfiguration source) {
         this.enableNormalizingResultsHandler = source.isEnableNormalizingResultsHandler();

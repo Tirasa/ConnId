@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -62,48 +63,48 @@ import java.util.Set;
  * <p>
  *
  * @param <T>
- *            The result type of the translator. Commonly this will be a string,
- *            but there are cases where you might need to return a more complex
- *            data structure. For example if you are building a SQL query, you
- *            will need not *just* the base WHERE clause but a list of tables
- *            that need to be joined together.
+ * The result type of the translator. Commonly this will be a string,
+ * but there are cases where you might need to return a more complex
+ * data structure. For example if you are building a SQL query, you
+ * will need not *just* the base WHERE clause but a list of tables
+ * that need to be joined together.
  */
-abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T> {
+public abstract class AbstractFilterTranslator<T> implements FilterTranslator<T> {
 
     /**
      * Main method to be called to translate a filter
      *
      * @param filter
-     *            The filter to translate.
+     * The filter to translate.
      * @return The list of queries to be performed. The list <code>size()</code>
-     *         may be one of the following:
-     *         <ol>
-     *         <li>0 - This signifies <b>fetch everything</b>. This may occur if
-     *         your filter was null or one of your <code>create*</code> methods
-     *         returned null.</li>
-     *         <li>1 - List contains a single query that will return the results
-     *         from the filter. Note that the results may be a <b>superset</b>
-     *         of those specified by the filter in the case that one of your
-     *         <code>create*</code> methods returned null. That is OK from a
-     *         behavior standpoint since <code>ConnectorFacade</code> performs a
-     *         second level of filtering. However it is undesirable from a
-     *         performance standpoint.</li>
-     *         <li>>1 - List contains multiple queries that must be performed in
-     *         order to meet the filter that was passed in. Note that this only
-     *         occurs if your {@link #createOrExpression} method can return
-     *         null. If this happens, it is the responsibility of the connector
-     *         implementor to perform each query and combine the results. In
-     *         order to eliminate duplicates, the connector implementation must
-     *         keep an in-memory <code>HashSet</code> of those UID that have
-     *         been visited thus far. This will not scale well if your result
-     *         sets are large. Therefore it is <b>recommended</b> that if at all
-     *         possible you implement {@link #createOrExpression}</li>
-     *         </ol>
+     * may be one of the following:
+     * <ol>
+     * <li>0 - This signifies <b>fetch everything</b>. This may occur if
+     * your filter was null or one of your <code>create*</code> methods
+     * returned null.</li>
+     * <li>1 - List contains a single query that will return the results
+     * from the filter. Note that the results may be a <b>superset</b>
+     * of those specified by the filter in the case that one of your
+     * <code>create*</code> methods returned null. That is OK from a
+     * behavior standpoint since <code>ConnectorFacade</code> performs a
+     * second level of filtering. However it is undesirable from a
+     * performance standpoint.</li>
+     * <li>>1 - List contains multiple queries that must be performed in
+     * order to meet the filter that was passed in. Note that this only
+     * occurs if your {@link #createOrExpression} method can return
+     * null. If this happens, it is the responsibility of the connector
+     * implementor to perform each query and combine the results. In
+     * order to eliminate duplicates, the connector implementation must
+     * keep an in-memory <code>HashSet</code> of those UID that have
+     * been visited thus far. This will not scale well if your result
+     * sets are large. Therefore it is <b>recommended</b> that if at all
+     * possible you implement {@link #createOrExpression}</li>
+     * </ol>
      */
     @Override
     public final List<T> translate(Filter filter) {
         if (filter == null) {
-            return new ArrayList<T>();
+            return new ArrayList<>();
         }
         // this must come first
         filter = eliminateExternallyChainedFilters(filter);
@@ -111,12 +112,12 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
         filter = simplifyAndDistribute(filter);
         // might have simplified it to the everything filter
         if (filter == null) {
-            return new ArrayList<T>();
+            return new ArrayList<>();
         }
         List<T> result = translateInternal(filter);
         // now "optimize" - we can eliminate exact matches at least
-        Set<T> set = new HashSet<T>();
-        List<T> optimized = new ArrayList<T>(result.size());
+        Set<T> set = new HashSet<>();
+        List<T> optimized = new ArrayList<>(result.size());
         for (T obj : result) {
             if (set.add(obj)) {
                 optimized.add(obj);
@@ -136,17 +137,19 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * Pushes Not's so that they are just before the leaves of the tree
      */
     private Filter normalizeNot(Filter filter) {
-        if (filter instanceof AndFilter) {
-            AndFilter af = (AndFilter) filter;
-            return new AndFilter(normalizeNot(af.getLeft()), normalizeNot(af.getRight()));
-        } else if (filter instanceof OrFilter) {
-            OrFilter of = (OrFilter) filter;
-            return new OrFilter(normalizeNot(of.getLeft()), normalizeNot(of.getRight()));
-        } else if (filter instanceof NotFilter) {
-            NotFilter nf = (NotFilter) filter;
-            return negate(normalizeNot(nf.getFilter()));
-        } else {
-            return filter;
+        switch (filter) {
+            case AndFilter af -> {
+                return new AndFilter(normalizeNot(af.getLeft()), normalizeNot(af.getRight()));
+            }
+            case OrFilter of -> {
+                return new OrFilter(normalizeNot(of.getLeft()), normalizeNot(of.getRight()));
+            }
+            case NotFilter nf -> {
+                return negate(normalizeNot(nf.getFilter()));
+            }
+            default -> {
+                return filter;
+            }
         }
     }
 
@@ -155,17 +158,19 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * by normalizeNot.
      */
     private Filter negate(Filter filter) {
-        if (filter instanceof AndFilter) {
-            AndFilter af = (AndFilter) filter;
-            return new OrFilter(negate(af.getLeft()), negate(af.getRight()));
-        } else if (filter instanceof OrFilter) {
-            OrFilter of = (OrFilter) filter;
-            return new AndFilter(negate(of.getLeft()), negate(of.getRight()));
-        } else if (filter instanceof NotFilter) {
-            NotFilter nf = (NotFilter) filter;
-            return nf.getFilter();
-        } else {
-            return new NotFilter(filter);
+        switch (filter) {
+            case AndFilter af -> {
+                return new OrFilter(negate(af.getLeft()), negate(af.getRight()));
+            }
+            case OrFilter of -> {
+                return new AndFilter(negate(of.getLeft()), negate(of.getRight()));
+            }
+            case NotFilter nf -> {
+                return nf.getFilter();
+            }
+            default -> {
+                return new NotFilter(filter);
+            }
         }
     }
 
@@ -175,121 +180,123 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * does not implement Or.
      *
      * @param filter
-     *            Nots must already be normalized
+     * Nots must already be normalized
      * @return a simplified filter or null to represent the "everything" filter.
      */
     private Filter simplifyAndDistribute(Filter filter) {
-        if (filter instanceof AndFilter) {
-            AndFilter af = (AndFilter) filter;
-            Filter simplifiedLeft = simplifyAndDistribute(af.getLeft());
-            Filter simplifiedRight = simplifyAndDistribute(af.getRight());
-            if (simplifiedLeft == null) {
-                // left is "everything" - just return the right
-                return simplifiedRight;
-            } else if (simplifiedRight == null) {
-                // right is "everything" - just return the left
-                return simplifiedLeft;
-            } else {
-                // simulate translation of the left and right
-                // to see where we end up
-                List<T> leftExprs = translateInternal(simplifiedLeft);
-                List<T> rightExprs = translateInternal(simplifiedRight);
-                if (leftExprs.isEmpty()) {
-                    // This can happen only when one of the create* methods
-                    // is inconsistent from one invocation to the next
-                    // (simplifiedLeft should have been null
-                    // in the previous 'if' above).
-                    throw new IllegalStateException("Translation method is inconsistent: "
-                            + leftExprs);
-                }
-                if (rightExprs.isEmpty()) {
-                    // This can happen only when one of the create* methods
-                    // is inconsistent from one invocation to the next
-                    // (simplifiedRight should have been null
-                    // in the previous 'if' above).
-                    throw new IllegalStateException("Translation method is inconsistent: "
-                            + rightExprs);
-                }
+        switch (filter) {
+            case AndFilter af -> {
+                Filter simplifiedLeft = simplifyAndDistribute(af.getLeft());
+                Filter simplifiedRight = simplifyAndDistribute(af.getRight());
+                if (simplifiedLeft == null) {
+                    // left is "everything" - just return the right
+                    return simplifiedRight;
+                } else if (simplifiedRight == null) {
+                    // right is "everything" - just return the left
+                    return simplifiedLeft;
+                } else {
+                    // simulate translation of the left and right
+                    // to see where we end up
+                    List<T> leftExprs = translateInternal(simplifiedLeft);
+                    List<T> rightExprs = translateInternal(simplifiedRight);
+                    if (leftExprs.isEmpty()) {
+                        // This can happen only when one of the create* methods
+                        // is inconsistent from one invocation to the next
+                        // (simplifiedLeft should have been null
+                        // in the previous 'if' above).
+                        throw new IllegalStateException("Translation method is inconsistent: "
+                                + leftExprs);
+                    }
+                    if (rightExprs.isEmpty()) {
+                        // This can happen only when one of the create* methods
+                        // is inconsistent from one invocation to the next
+                        // (simplifiedRight should have been null
+                        // in the previous 'if' above).
+                        throw new IllegalStateException("Translation method is inconsistent: "
+                                + rightExprs);
+                    }
 
-                // Simulate ANDing each pair(left,right).
-                // If all of them return null (i.e., "everything"),
-                // then the request cannot be filtered.
-                boolean anyAndsPossible = false;
-                for (T leftExpr : leftExprs) {
-                    for (T rightExpr : rightExprs) {
-                        T test = createAndExpression(leftExpr, rightExpr);
-                        if (test != null) {
-                            anyAndsPossible = true;
+                    // Simulate ANDing each pair(left,right).
+                    // If all of them return null (i.e., "everything"),
+                    // then the request cannot be filtered.
+                    boolean anyAndsPossible = false;
+                    for (T leftExpr : leftExprs) {
+                        for (T rightExpr : rightExprs) {
+                            T test = createAndExpression(leftExpr, rightExpr);
+                            if (test != null) {
+                                anyAndsPossible = true;
+                                break;
+                            }
+                        }
+                        if (anyAndsPossible) {
                             break;
                         }
                     }
-                    if (anyAndsPossible) {
-                        break;
-                    }
-                }
 
-                // If no AND filtering is possible,
-                // return whichever of left or right
-                // contains the fewest expressions.
-                if (!anyAndsPossible) {
-                    if (leftExprs.size() <= rightExprs.size()) {
-                        return simplifiedLeft;
+                    // If no AND filtering is possible,
+                    // return whichever of left or right
+                    // contains the fewest expressions.
+                    if (!anyAndsPossible) {
+                        if (leftExprs.size() <= rightExprs.size()) {
+                            return simplifiedLeft;
+                        } else {
+                            return simplifiedRight;
+                        }
+                    }
+
+                    // Since AND filtering is possible for at least
+                    // one expression, let's distribute.
+                    if (leftExprs.size() > 1) {
+                        // The left can contain more than one expression
+                        // only if the left-hand side is an unimplemented OR.
+                        // Distribute our AND to the left.
+                        OrFilter left = (OrFilter) simplifiedLeft;
+                        OrFilter newFilter =
+                                new OrFilter(new AndFilter(left.getLeft(), simplifiedRight),
+                                        new AndFilter(left.getRight(), simplifiedRight));
+                        return simplifyAndDistribute(newFilter);
+                    } else if (rightExprs.size() > 1) {
+                        // The right can contain more than one expression
+                        // only if the right-hand side is an unimplemented OR.
+                        // Distribute our AND to the right.
+                        OrFilter right = (OrFilter) simplifiedRight;
+                        OrFilter newFilter =
+                                new OrFilter(new AndFilter(simplifiedLeft, right.getLeft()),
+                                        new AndFilter(simplifiedLeft, right.getRight()));
+                        return simplifyAndDistribute(newFilter);
                     } else {
-                        return simplifiedRight;
+                        // Each side contains exactly one expression
+                        // and the translator does implement AND
+                        // (anyAndsPossible must be true
+                        // for them to have hit this branch).
+                        assert anyAndsPossible;
+                        return new AndFilter(simplifiedLeft, simplifiedRight);
                     }
                 }
-
-                // Since AND filtering is possible for at least
-                // one expression, let's distribute.
-                if (leftExprs.size() > 1) {
-                    // The left can contain more than one expression
-                    // only if the left-hand side is an unimplemented OR.
-                    // Distribute our AND to the left.
-                    OrFilter left = (OrFilter) simplifiedLeft;
-                    OrFilter newFilter =
-                            new OrFilter(new AndFilter(left.getLeft(), simplifiedRight),
-                                    new AndFilter(left.getRight(), simplifiedRight));
-                    return simplifyAndDistribute(newFilter);
-                } else if (rightExprs.size() > 1) {
-                    // The right can contain more than one expression
-                    // only if the right-hand side is an unimplemented OR.
-                    // Distribute our AND to the right.
-                    OrFilter right = (OrFilter) simplifiedRight;
-                    OrFilter newFilter =
-                            new OrFilter(new AndFilter(simplifiedLeft, right.getLeft()),
-                                    new AndFilter(simplifiedLeft, right.getRight()));
-                    return simplifyAndDistribute(newFilter);
-                } else {
-                    // Each side contains exactly one expression
-                    // and the translator does implement AND
-                    // (anyAndsPossible must be true
-                    // for them to have hit this branch).
-                    assert anyAndsPossible;
-                    return new AndFilter(simplifiedLeft, simplifiedRight);
+            }
+            case OrFilter of -> {
+                Filter simplifiedLeft = simplifyAndDistribute(of.getLeft());
+                Filter simplifiedRight = simplifyAndDistribute(of.getRight());
+                // If either left or right reduces to "everything",
+                // then simplify the OR to "everything".
+                if (simplifiedLeft == null || simplifiedRight == null) {
+                    return null;
                 }
+                // otherwise
+                return new OrFilter(simplifiedLeft, simplifiedRight);
             }
-        } else if (filter instanceof OrFilter) {
-            OrFilter of = (OrFilter) filter;
-            Filter simplifiedLeft = simplifyAndDistribute(of.getLeft());
-            Filter simplifiedRight = simplifyAndDistribute(of.getRight());
-            // If either left or right reduces to "everything",
-            // then simplify the OR to "everything".
-            if (simplifiedLeft == null || simplifiedRight == null) {
-                return null;
-            }
-            // otherwise
-            return new OrFilter(simplifiedLeft, simplifiedRight);
-        } else {
-            // Otherwise, it's a NOT(LEAF) or a LEAF.
-            // Simulate creating it.
-            T expr = createLeafExpression(filter);
-            if (expr == null) {
-                // If the expression cannot be implemented,
-                // return the "everything" filter.
-                return null;
-            } else {
-                // Otherwise, return the filter.
-                return filter;
+            default -> {
+                // Otherwise, it's a NOT(LEAF) or a LEAF.
+                // Simulate creating it.
+                T expr = createLeafExpression(filter);
+                if (expr == null) {
+                    // If the expression cannot be implemented,
+                    // return the "everything" filter.
+                    return null;
+                } else {
+                    // Otherwise, return the filter.
+                    return filter;
+                }
             }
         }
     }
@@ -300,23 +307,23 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * simplifyAndDistribute.
      *
      * @param filter
-     *            A filter (normalized, simplified, and distibuted)
+     * A filter (normalized, simplified, and distibuted)
      * @return A list of expressions or empty list for everything.
      */
     private List<T> translateInternal(Filter filter) {
-        if (filter instanceof AndFilter) {
-            T result = translateAnd((AndFilter) filter);
-            List<T> rv = new ArrayList<T>();
+        if (filter instanceof AndFilter andFilter) {
+            T result = translateAnd(andFilter);
+            List<T> rv = new ArrayList<>();
             if (result != null) {
                 rv.add(result);
             }
             return rv;
-        } else if (filter instanceof OrFilter) {
-            return translateOr((OrFilter) filter);
+        } else if (filter instanceof OrFilter orFilter) {
+            return translateOr(orFilter);
         } else {
             // otherwise it's either a leaf or a NOT (leaf)
             T expr = createLeafExpression(filter);
-            List<T> exprs = new ArrayList<T>();
+            List<T> exprs = new ArrayList<>();
             if (expr != null) {
                 exprs.add(expr);
             }
@@ -369,7 +376,7 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
             // try to create a combined expression.
             T val = createOrExpression(leftExprs.get(0), rightExprs.get(0));
             if (val != null) {
-                List<T> rv = new ArrayList<T>();
+                List<T> rv = new ArrayList<>();
                 rv.add(val);
                 return rv;
             }
@@ -377,7 +384,7 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
         }
 
         // Return a list of queries from the left and from the right
-        List<T> rv = new ArrayList<T>(leftExprs.size() + rightExprs.size());
+        List<T> rv = new ArrayList<>(leftExprs.size() + rightExprs.size());
         rv.addAll(leftExprs);
         rv.addAll(rightExprs);
         return rv;
@@ -387,14 +394,13 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * Creates an expression for a LEAF or a NOT(leaf)
      *
      * @param filter
-     *            Must be either a leaf or a NOT(leaf)
+     * Must be either a leaf or a NOT(leaf)
      * @return The expression
      */
     private T createLeafExpression(Filter filter) {
         Filter leafFilter;
         boolean not;
-        if (filter instanceof NotFilter) {
-            NotFilter nf = (NotFilter) filter;
+        if (filter instanceof NotFilter nf) {
             leafFilter = nf.getFilter();
             not = true;
         } else {
@@ -409,32 +415,32 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * Creates a Leaf expression
      *
      * @param filter
-     *            Must be a leaf expression
+     * Must be a leaf expression
      * @param not
-     *            Is ! to be applied to the leaf expression
+     * Is ! to be applied to the leaf expression
      * @return The expression or null (for everything)
      */
     private T createLeafExpression(Filter filter, boolean not) {
-        if (filter instanceof ContainsFilter) {
-            return createContainsExpression((ContainsFilter) filter, not);
-        } else if (filter instanceof EndsWithFilter) {
-            return createEndsWithExpression((EndsWithFilter) filter, not);
-        } else if (filter instanceof EqualsFilter) {
-            return createEqualsExpression((EqualsFilter) filter, not);
-        } else if (filter instanceof EqualsIgnoreCaseFilter) {
-            return createEqualsIgnoreCaseExpression((EqualsIgnoreCaseFilter) filter, not);
-        } else if (filter instanceof GreaterThanFilter) {
-            return createGreaterThanExpression((GreaterThanFilter) filter, not);
-        } else if (filter instanceof GreaterThanOrEqualFilter) {
-            return createGreaterThanOrEqualExpression((GreaterThanOrEqualFilter) filter, not);
-        } else if (filter instanceof LessThanFilter) {
-            return createLessThanExpression((LessThanFilter) filter, not);
-        } else if (filter instanceof LessThanOrEqualFilter) {
-            return createLessThanOrEqualExpression((LessThanOrEqualFilter) filter, not);
-        } else if (filter instanceof StartsWithFilter) {
-            return createStartsWithExpression((StartsWithFilter) filter, not);
-        } else if (filter instanceof ContainsAllValuesFilter) {
-            return createContainsAllValuesExpression((ContainsAllValuesFilter) filter, not);
+        if (filter instanceof ContainsFilter containsFilter) {
+            return createContainsExpression(containsFilter, not);
+        } else if (filter instanceof EndsWithFilter endsWithFilter) {
+            return createEndsWithExpression(endsWithFilter, not);
+        } else if (filter instanceof EqualsFilter equalsFilter) {
+            return createEqualsExpression(equalsFilter, not);
+        } else if (filter instanceof EqualsIgnoreCaseFilter equalsIgnoreCaseFilter) {
+            return createEqualsIgnoreCaseExpression(equalsIgnoreCaseFilter, not);
+        } else if (filter instanceof GreaterThanFilter greaterThanFilter) {
+            return createGreaterThanExpression(greaterThanFilter, not);
+        } else if (filter instanceof GreaterThanOrEqualFilter greaterThanOrEqualFilter) {
+            return createGreaterThanOrEqualExpression(greaterThanOrEqualFilter, not);
+        } else if (filter instanceof LessThanFilter lessThanFilter) {
+            return createLessThanExpression(lessThanFilter, not);
+        } else if (filter instanceof LessThanOrEqualFilter lessThanOrEqualFilter) {
+            return createLessThanOrEqualExpression(lessThanOrEqualFilter, not);
+        } else if (filter instanceof StartsWithFilter startsWithFilter) {
+            return createStartsWithExpression(startsWithFilter, not);
+        } else if (filter instanceof ContainsAllValuesFilter containsAllValuesFilter) {
+            return createContainsAllValuesExpression(containsAllValuesFilter, not);
         } else {
             // unrecognized expression - nothing we can do
             return null;
@@ -446,12 +452,12 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * native resource supports AND.
      *
      * @param leftExpression
-     *            The left expression. Will never be null.
+     * The left expression. Will never be null.
      * @param rightExpression
-     *            The right expression. Will never be null.
+     * The right expression. Will never be null.
      * @return The AND expression. A return value of null means a native AND
-     *         query cannot be created for the given expressions. In this case,
-     *         the resulting query will consist of the leftExpression only.
+     * query cannot be created for the given expressions. In this case,
+     * the resulting query will consist of the leftExpression only.
      */
     protected T createAndExpression(T leftExpression, T rightExpression) {
         return null;
@@ -462,13 +468,13 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * native resource supports OR.
      *
      * @param leftExpression
-     *            The left expression. Will never be null.
+     * The left expression. Will never be null.
      * @param rightExpression
-     *            The right expression. Will never be null.
+     * The right expression. Will never be null.
      * @return The OR expression. A return value of null means a native OR query
-     *         cannot be created for the given expressions. In this case,
-     *         {@link #translate} may return multiple queries, each of which
-     *         must be run and results combined.
+     * cannot be created for the given expressions. In this case,
+     * {@link #translate} may return multiple queries, each of which
+     * must be run and results combined.
      */
     protected T createOrExpression(T leftExpression, T rightExpression) {
         return null;
@@ -479,15 +485,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * native resource supports CONTAINS.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT CONTAINS
+     * True if this should be a NOT CONTAINS
      * @return The CONTAINS expression. A return value of null means a native
-     *         CONTAINS query cannot be created for the given filter. In this
-     *         case, {@link #translate} may return an empty query set, meaning
-     *         fetch <b>everything</b>. The filter will be re-applied in memory
-     *         to the resulting object stream. This does not scale well, so if
-     *         possible, you should implement this method.
+     * CONTAINS query cannot be created for the given filter. In this
+     * case, {@link #translate} may return an empty query set, meaning
+     * fetch <b>everything</b>. The filter will be re-applied in memory
+     * to the resulting object stream. This does not scale well, so if
+     * possible, you should implement this method.
      */
     protected T createContainsExpression(ContainsFilter filter, boolean not) {
         return null;
@@ -498,15 +504,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * the native resource supports ENDS-WITH.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT ENDS-WITH
+     * True if this should be a NOT ENDS-WITH
      * @return The ENDS-WITH expression. A return value of null means a native
-     *         ENDS-WITH query cannot be created for the given filter. In this
-     *         case, {@link #translate} may return an empty query set, meaning
-     *         fetch <b>everything</b>. The filter will be re-applied in memory
-     *         to the resulting object stream. This does not scale well, so if
-     *         possible, you should implement this method.
+     * ENDS-WITH query cannot be created for the given filter. In this
+     * case, {@link #translate} may return an empty query set, meaning
+     * fetch <b>everything</b>. The filter will be re-applied in memory
+     * to the resulting object stream. This does not scale well, so if
+     * possible, you should implement this method.
      */
     protected T createEndsWithExpression(EndsWithFilter filter, boolean not) {
         return null;
@@ -517,15 +523,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * native resource supports EQUALS.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT EQUALS
+     * True if this should be a NOT EQUALS
      * @return The EQUALS expression. A return value of null means a native
-     *         EQUALS query cannot be created for the given filter. In this
-     *         case, {@link #translate} may return an empty query set, meaning
-     *         fetch <b>everything</b>. The filter will be re-applied in memory
-     *         to the resulting object stream. This does not scale well, so if
-     *         possible, you should implement this method.
+     * EQUALS query cannot be created for the given filter. In this
+     * case, {@link #translate} may return an empty query set, meaning
+     * fetch <b>everything</b>. The filter will be re-applied in memory
+     * to the resulting object stream. This does not scale well, so if
+     * possible, you should implement this method.
      */
     protected T createEqualsExpression(EqualsFilter filter, boolean not) {
         return null;
@@ -536,15 +542,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * native resource supports EQUALSIGNORECASE.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT EQUALSIGNORECASE
+     * True if this should be a NOT EQUALSIGNORECASE
      * @return The EQUALSIGNORECASE expression. A return value of null means a native
-     *         EQUALSIGNORECASE query cannot be created for the given filter. In this
-     *         case, {@link #translate} may return an empty query set, meaning
-     *         fetch <b>everything</b>. The filter will be re-applied in memory
-     *         to the resulting object stream. This does not scale well, so if
-     *         possible, you should implement this method.
+     * EQUALSIGNORECASE query cannot be created for the given filter. In this
+     * case, {@link #translate} may return an empty query set, meaning
+     * fetch <b>everything</b>. The filter will be re-applied in memory
+     * to the resulting object stream. This does not scale well, so if
+     * possible, you should implement this method.
      */
     protected T createEqualsIgnoreCaseExpression(EqualsIgnoreCaseFilter filter, boolean not) {
         return null;
@@ -555,15 +561,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * the native resource supports GREATER-THAN.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT GREATER-THAN
+     * True if this should be a NOT GREATER-THAN
      * @return The GREATER-THAN expression. A return value of null means a
-     *         native GREATER-THAN query cannot be created for the given filter.
-     *         In this case, {@link #translate} may return an empty query set,
-     *         meaning fetch <b>everything</b>. The filter will be re-applied in
-     *         memory to the resulting object stream. This does not scale well,
-     *         so if possible, you should implement this method.
+     * native GREATER-THAN query cannot be created for the given filter.
+     * In this case, {@link #translate} may return an empty query set,
+     * meaning fetch <b>everything</b>. The filter will be re-applied in
+     * memory to the resulting object stream. This does not scale well,
+     * so if possible, you should implement this method.
      */
     protected T createGreaterThanExpression(GreaterThanFilter filter, boolean not) {
         return null;
@@ -574,15 +580,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * expression if the native resource supports GREATER-THAN-EQUAL.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT GREATER-THAN-EQUAL
+     * True if this should be a NOT GREATER-THAN-EQUAL
      * @return The GREATER-THAN-EQUAL expression. A return value of null means a
-     *         native GREATER-THAN-EQUAL query cannot be created for the given
-     *         filter. In this case, {@link #translate} may return an empty
-     *         query set, meaning fetch <b>everything</b>. The filter will be
-     *         re-applied in memory to the resulting object stream. This does
-     *         not scale well, so if possible, you should implement this method.
+     * native GREATER-THAN-EQUAL query cannot be created for the given
+     * filter. In this case, {@link #translate} may return an empty
+     * query set, meaning fetch <b>everything</b>. The filter will be
+     * re-applied in memory to the resulting object stream. This does
+     * not scale well, so if possible, you should implement this method.
      */
     protected T createGreaterThanOrEqualExpression(GreaterThanOrEqualFilter filter, boolean not) {
         return null;
@@ -593,15 +599,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * the native resource supports LESS-THAN.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT LESS-THAN
+     * True if this should be a NOT LESS-THAN
      * @return The LESS-THAN expression. A return value of null means a native
-     *         LESS-THAN query cannot be created for the given filter. In this
-     *         case, {@link #translate} may return an empty query set, meaning
-     *         fetch <b>everything</b>. The filter will be re-applied in memory
-     *         to the resulting object stream. This does not scale well, so if
-     *         possible, you should implement this method.
+     * LESS-THAN query cannot be created for the given filter. In this
+     * case, {@link #translate} may return an empty query set, meaning
+     * fetch <b>everything</b>. The filter will be re-applied in memory
+     * to the resulting object stream. This does not scale well, so if
+     * possible, you should implement this method.
      */
     protected T createLessThanExpression(LessThanFilter filter, boolean not) {
         return null;
@@ -612,15 +618,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * if the native resource supports LESS-THAN-EQUAL.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT LESS-THAN-EQUAL
+     * True if this should be a NOT LESS-THAN-EQUAL
      * @return The LESS-THAN-EQUAL expression. A return value of null means a
-     *         native LESS-THAN-EQUAL query cannot be created for the given
-     *         filter. In this case, {@link #translate} may return an empty
-     *         query set, meaning fetch <b>everything</b>. The filter will be
-     *         re-applied in memory to the resulting object stream. This does
-     *         not scale well, so if possible, you should implement this method.
+     * native LESS-THAN-EQUAL query cannot be created for the given
+     * filter. In this case, {@link #translate} may return an empty
+     * query set, meaning fetch <b>everything</b>. The filter will be
+     * re-applied in memory to the resulting object stream. This does
+     * not scale well, so if possible, you should implement this method.
      */
     protected T createLessThanOrEqualExpression(LessThanOrEqualFilter filter, boolean not) {
         return null;
@@ -631,15 +637,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * the native resource supports STARTS-WITH.
      *
      * @param filter
-     *            The contains filter. Will never be null.
+     * The contains filter. Will never be null.
      * @param not
-     *            True if this should be a NOT STARTS-WITH
+     * True if this should be a NOT STARTS-WITH
      * @return The STARTS-WITH expression. A return value of null means a native
-     *         STARTS-WITH query cannot be created for the given filter. In this
-     *         case, {@link #translate} may return an empty query set, meaning
-     *         fetch <b>everything</b>. The filter will be re-applied in memory
-     *         to the resulting object stream. This does not scale well, so if
-     *         possible, you should implement this method.
+     * STARTS-WITH query cannot be created for the given filter. In this
+     * case, {@link #translate} may return an empty query set, meaning
+     * fetch <b>everything</b>. The filter will be re-applied in memory
+     * to the resulting object stream. This does not scale well, so if
+     * possible, you should implement this method.
      */
     protected T createStartsWithExpression(StartsWithFilter filter, boolean not) {
         return null;
@@ -650,15 +656,15 @@ abstract public class AbstractFilterTranslator<T> implements FilterTranslator<T>
      * expression if the native resource supports a contains all values.
      *
      * @param filter
-     *            The contains all filter. Will never be null.
+     * The contains all filter. Will never be null.
      * @param not
-     *            True if this should be a NOT CONTAINS-ALL-VALUES.
+     * True if this should be a NOT CONTAINS-ALL-VALUES.
      * @return The CONTAINS-ALL-VALUES expression. A return value of null means
-     *         a native CONTAINS-ALL-VALUES query cannot be created for the
-     *         given filter. In this case, {@link #translate} may return an
-     *         empty query set, meaning fetch <b>everything</b>. The filter will
-     *         be re-applied in memory to the resulting object stream. This does
-     *         not scale well, so if possible, you should implement this method.
+     * a native CONTAINS-ALL-VALUES query cannot be created for the
+     * given filter. In this case, {@link #translate} may return an
+     * empty query set, meaning fetch <b>everything</b>. The filter will
+     * be re-applied in memory to the resulting object stream. This does
+     * not scale well, so if possible, you should implement this method.
      */
     protected T createContainsAllValuesExpression(ContainsAllValuesFilter filter, boolean not) {
         return null;

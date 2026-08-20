@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.server.impl;
 
@@ -44,7 +45,8 @@ public class CCLWatchThread extends Thread {
 
     private void checkCCL() {
         if (getContextClassLoader() == null) {
-            LOG.error(new Throwable(), "The CCL of thread ''{0}'' was null after initialization. The CCL of current thread ''{1}'' is {2}",
+            LOG.error(new Throwable(),
+                    "The CCL of thread ''{0}'' was null after initialization. The CCL of current thread ''{1}'' is {2}",
                     getName(),
                     Thread.currentThread().getName(),
                     Thread.currentThread().getContextClassLoader());

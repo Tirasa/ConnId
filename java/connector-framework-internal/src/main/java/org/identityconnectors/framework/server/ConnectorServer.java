@@ -22,7 +22,6 @@
  * Portions Copyrighted 2010-2013 ForgeRock AS.
  * Portions Copyrighted 2022 ConnId
  */
-
 package org.identityconnectors.framework.server;
 
 import java.net.InetAddress;
@@ -38,8 +37,7 @@ import org.identityconnectors.framework.common.exceptions.ConnectorException;
 public abstract class ConnectorServer {
 
     // At some point we might make this pluggable, but for now, hard-code
-    private static final String IMPL_NAME =
-            "org.identityconnectors.framework.server.impl.ConnectorServerImpl";
+    private static final String IMPL_NAME = "org.identityconnectors.framework.server.impl.ConnectorServerImpl";
 
     /**
      * The port to listen on;
@@ -92,7 +90,7 @@ public abstract class ConnectorServer {
      * The key. managers to use for the connection. If empty, uses JVM defaults.
      * Ignored for non-SSL.
      */
-    private List<KeyManager> keyManagers = CollectionUtil.<KeyManager> newReadOnlyList();
+    private List<KeyManager> keyManagers = CollectionUtil.newReadOnlyList();
 
     /**
      * Get the singleton instance of the {@link ConnectorServer}.
@@ -126,7 +124,7 @@ public abstract class ConnectorServer {
      * Sets the port to listen on.
      *
      * @param port
-     *            The port to listen on
+     * The port to listen on
      */
     public void setPort(final int port) {
         assertNotStarted();
@@ -146,7 +144,7 @@ public abstract class ConnectorServer {
      * Sets the max connections to queue.
      *
      * @param max
-     *            The max connections to queue.
+     * The max connections to queue.
      */
     public void setMaxConnections(final int max) {
         assertNotStarted();
@@ -166,7 +164,7 @@ public abstract class ConnectorServer {
      * Sets the max worker thread to allow.
      *
      * @param maxWorkers
-     *            The max worker threads to allow.
+     * The max worker threads to allow.
      */
     public void setMaxWorkers(final int maxWorkers) {
         assertNotStarted();
@@ -186,7 +184,7 @@ public abstract class ConnectorServer {
      * Sets the min worker thread to allow.
      *
      * @param minWorkers
-     *            The min worker threads to allow.
+     * The min worker threads to allow.
      */
     public void setMinWorkers(final int minWorkers) {
         assertNotStarted();
@@ -206,7 +204,7 @@ public abstract class ConnectorServer {
      * Sets the interface address to bind to.
      *
      * @param addr
-     *            The network interface address to bind to or null.
+     * The network interface address to bind to or null.
      */
     public void setIfAddress(final InetAddress addr) {
         assertNotStarted();
@@ -226,7 +224,7 @@ public abstract class ConnectorServer {
      * Sets whether we should use ssl.
      *
      * @param ssl
-     *            true if we are to use SSL.
+     * true if we are to use SSL.
      */
     public void setUseSSL(final boolean ssl) {
         assertNotStarted();
@@ -246,7 +244,7 @@ public abstract class ConnectorServer {
      * Sets the base-64 encoded SHA1 hash of the key.
      *
      * @param hash
-     *            the base-64 encoded SHA1 hash of the key.
+     * the base-64 encoded SHA1 hash of the key.
      */
     public void setKeyHash(final String hash) {
         assertNotStarted();
@@ -266,9 +264,7 @@ public abstract class ConnectorServer {
     /**
      * Sets the key managers to use for the SSL connection.
      *
-     * @param keyManagers
-     *            the key managers to use for the SSL connection. If null or
-     *            empty, uses the JVM default.
+     * @param keyManagers the key managers to use for the SSL connection. If null or empty, uses the JVM default.
      */
     public void setKeyManagers(final List<KeyManager> keyManagers) {
         assertNotStarted();
@@ -287,8 +283,7 @@ public abstract class ConnectorServer {
     /**
      * Sets the bundle URLs for connectors to expose by this server.
      *
-     * @param urls
-     *            The bundle URLs for connectors to expose by this server.
+     * @param urls The bundle URLs for connectors to expose by this server.
      */
     public void setBundleURLs(final List<URL> urls) {
         assertNotStarted();
@@ -299,8 +294,7 @@ public abstract class ConnectorServer {
      * Gets the class loader that will be used as the parent of the bundle class
      * loaders.
      *
-     * @return the class loader that will be used as the parent of the bundle
-     *         class loaders.
+     * @return the class loader that will be used as the parent of the bundle class loaders.
      */
     public ClassLoader getBundleParentClassLoader() {
         return bundleParentClassLoader;
@@ -311,8 +305,7 @@ public abstract class ConnectorServer {
      * loaders.
      *
      * @param bundleParentClassLoader
-     *            the class loader that will be used as the parent of the bundle
-     *            class loaders.
+     * the class loader that will be used as the parent of the bundle class loaders.
      */
     public void setBundleParentClassLoader(final ClassLoader bundleParentClassLoader) {
         this.bundleParentClassLoader = bundleParentClassLoader;
@@ -325,7 +318,7 @@ public abstract class ConnectorServer {
      *
      * @return last start dateTime in milliseconds
      */
-    abstract public Long getStartTime();
+    public abstract Long getStartTime();
 
     /**
      * Starts the server. All server settings must be configured prior to
@@ -336,13 +329,13 @@ public abstract class ConnectorServer {
      * <li>{@link #setKeyHash(String)}</li>
      * </ul>
      */
-    abstract public void start();
+    public abstract void start();
 
     /**
      * Stops the server gracefully. Returns when all in-progress connections
      * have been serviced.
      */
-    abstract public void stop();
+    public abstract void stop();
 
     /**
      * Return true if the server is started. Note that started is a logical
@@ -351,7 +344,7 @@ public abstract class ConnectorServer {
      *
      * @return true if the server is started.
      */
-    abstract public boolean isStarted();
+    public abstract boolean isStarted();
 
     /**
      * Waits for the server to stop. Similarly to the {@link #isStarted()}
@@ -360,7 +353,7 @@ public abstract class ConnectorServer {
      * not the health of the server.
      *
      * @throws InterruptedException
-     *             if the waiting thread is interrupted.
+     * if the waiting thread is interrupted.
      */
-    abstract public void awaitStop() throws InterruptedException;
+    public abstract void awaitStop() throws InterruptedException;
 }

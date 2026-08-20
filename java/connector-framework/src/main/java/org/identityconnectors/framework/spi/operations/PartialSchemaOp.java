@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -62,5 +63,5 @@ public interface PartialSchemaOp extends SPIOperation {
      *
      * @return an array of the partial Object Class information supported by this {@link Connector}.
      */
-    public LightweightObjectClassInfo[] getObjectClassInformation();
+    LightweightObjectClassInfo[] getObjectClassInformation();
 }

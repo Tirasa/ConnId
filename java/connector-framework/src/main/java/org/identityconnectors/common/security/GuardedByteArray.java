@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common.security;
 
@@ -61,14 +62,17 @@ public final class GuardedByteArray {
          *
          * @param clearBytes
          */
-        public void access(byte[] clearBytes);
+        void access(byte[] clearBytes);
     }
 
-    private static Encryptor encryptor;
+    private static Encryptor ENCRYPTOR;
 
     private boolean readOnly;
+
     private boolean disposed;
+
     private byte[] encryptedBytes;
+
     private String base64SHA1Hash;
 
     /**
@@ -83,8 +87,7 @@ public final class GuardedByteArray {
      *
      * Caller is responsible for zeroing out the array of bytes after the call.
      *
-     * @param clearBytes
-     *            The clear-text bytes
+     * @param clearBytes The clear-text bytes
      */
     public GuardedByteArray(byte[] clearBytes) {
         encryptBytes(clearBytes);
@@ -102,10 +105,8 @@ public final class GuardedByteArray {
      * is merely to verify the contents of the byte array match an expected hash
      * value.
      *
-     * @param accessor
-     *            Accessor callback.
-     * @throws IllegalStateException
-     *             If the byte array has been disposed
+     * @param accessor Accessor callback.
+     * @throws IllegalStateException If the byte array has been disposed
      */
     public void access(Accessor accessor) {
         checkNotDisposed();
@@ -124,12 +125,9 @@ public final class GuardedByteArray {
      * The in-memory data will be decrypted, the byte will be appended, and then
      * it will be re-encrypted.
      *
-     * @param b
-     *            The byte to append.
-     * @throws IllegalStateException
-     *             If the byte array is read-only
-     * @throws IllegalStateException
-     *             If the byte array has been disposed
+     * @param b The byte to append.
+     * @throws IllegalStateException If the byte array is read-only 
+     * @throws IllegalStateException If the byte array has been disposed
      */
     public void appendByte(byte b) {
         checkNotDisposed();
@@ -160,8 +158,7 @@ public final class GuardedByteArray {
      * Returns true if this byte array has been marked read-only.
      *
      * @return true if this byte array has been marked read-only
-     * @throws IllegalStateException
-     *             If the byte array has been disposed
+     * @throws IllegalStateException If the byte array has been disposed
      */
     public boolean isReadOnly() {
         checkNotDisposed();
@@ -171,8 +168,7 @@ public final class GuardedByteArray {
     /**
      * Mark this byte array as read-only.
      *
-     * @throws IllegalStateException
-     *             If the byte array has been disposed
+     * @throws IllegalStateException If the byte array has been disposed
      */
     public void makeReadOnly() {
         checkNotDisposed();
@@ -185,8 +181,7 @@ public final class GuardedByteArray {
      * If this instance is read-only, the copy will not be read-only.
      *
      * @return A copy of the byte array.
-     * @throws IllegalStateException
-     *             If the byte array has been disposed
+     * @throws IllegalStateException If the byte array has been disposed
      */
     public GuardedByteArray copy() {
         checkNotDisposed();
@@ -201,11 +196,9 @@ public final class GuardedByteArray {
      * Verifies that this base-64 encoded SHA1 hash of this byte array matches
      * the given value.
      *
-     * @param hash
-     *            The hash to verify against.
+     * @param hash The hash to verify against.
      * @return True if the hash matches the given parameter.
-     * @throws IllegalStateException
-     *             If the byte array has been disposed
+     * @throws IllegalStateException If the byte array has been disposed
      */
     public boolean verifyBase64SHA1Hash(String hash) {
         checkNotDisposed();
@@ -225,14 +218,14 @@ public final class GuardedByteArray {
     }
 
     private static synchronized Encryptor getEncryptor() {
-        if (encryptor == null) {
-            encryptor = EncryptorFactory.getInstance().newRandomEncryptor();
+        if (ENCRYPTOR == null) {
+            ENCRYPTOR = EncryptorFactory.getInstance().newRandomEncryptor();
         }
-        return encryptor;
+        return ENCRYPTOR;
     }
 
-    static synchronized void setEncryptor(Encryptor encryptor) {
-        GuardedByteArray.encryptor = encryptor;
+    static synchronized void setEncryptor(final Encryptor encryptor) {
+        GuardedByteArray.ENCRYPTOR = encryptor;
     }
 
     private byte[] decryptBytes() {
@@ -249,9 +242,8 @@ public final class GuardedByteArray {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof GuardedByteArray) {
-            GuardedByteArray other = (GuardedByteArray) o;
+    public boolean equals(final Object o) {
+        if (o instanceof GuardedByteArray other) {
             // not the true contract of equals. however,
             // due to the high mathematical improbability of
             // two unequal byte arrays having the same secure hash,

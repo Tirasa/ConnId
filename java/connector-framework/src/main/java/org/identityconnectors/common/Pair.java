@@ -31,9 +31,9 @@ import java.util.Map;
  */
 public class Pair<T1, T2> implements Map.Entry<T1, T2> {
 
-    public T1 first;
+    private T1 first;
 
-    public T2 second;
+    private T2 second;
 
     public Pair() {
     }
@@ -50,18 +50,18 @@ public class Pair<T1, T2> implements Map.Entry<T1, T2> {
      * </p>
      *
      * @param <L>
-     *            the left element type
+     * the left element type
      * @param <R>
-     *            the right element type
+     * the right element type
      * @param left
-     *            the left element, may be null
+     * the left element, may be null
      * @param right
-     *            the right element, may be null
+     * the right element, may be null
      * @return a pair formed from the two parameters, not null
      * @since 1.4
      */
     public static <L, R> Pair<L, R> of(final L left, final R right) {
-        return new Pair<L, R>(left, right);
+        return new Pair<>(left, right);
     }
 
     public Pair(final T1 f, final T2 s) {

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi.operations;
 
@@ -56,26 +57,17 @@ public interface UpdateAttributeValuesOp extends UpdateOp {
      * attribute.
      * <p>
      *
-     * @param objclass
-     *            the type of object to modify. Will never be null.
-     * @param uid
-     *            the uid of the object to modify. Will never be null.
-     * @param valuesToAdd
-     *            set of {@link Attribute} deltas. The values for the attributes
-     *            in this set represent the values to add to attributes in the
-     *            object. merged. This set will never include
-     *            {@link OperationalAttributes operational attributes}. Will
-     *            never be null.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            Will never be null.
-     * @return the {@link Uid} of the updated object in case the update changes
-     *         the formation of the unique identifier.
-     * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException
-     *             if the {@link Uid} does not exist on the resource.
+     * @param objclass the type of object to modify. Will never be null.
+     * @param uid the uid of the object to modify. Will never be null.
+     * @param valuesToAdd set of {@link Attribute} deltas. The values for the attributes in this set represent the
+     * values to add to attributes in the object. merged. This set will never include
+     * {@link OperationalAttributes operational attributes}. Will never be null.
+     * @param options additional options that impact the way this operation is run. Will never be null.
+     * @return the {@link Uid} of the updated object in case the update changes the formation of the unique identifier.
+     * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException if the {@link Uid} does not
+     * exist on the resource.
      */
-    public Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd,
-            OperationOptions options);
+    Uid addAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToAdd, OperationOptions options);
 
     /**
      * Update the object specified by the {@link ObjectClass} and {@link Uid},
@@ -92,25 +84,15 @@ public interface UpdateAttributeValuesOp extends UpdateOp {
      * does not match a current value of that attribute in the target object.
      * Deleting an unmatched value should always succeed.
      *
-     * @param objclass
-     *            the type of object to modify. Will never be null.
-     * @param uid
-     *            the uid of the object to modify. Will never be null.
-     * @param valuesToRemove
-     *            set of {@link Attribute} deltas. The values for the attributes
-     *            in this set represent the values to remove from attributes in
-     *            the object. merged. This set will never include
-     *            {@link OperationalAttributes operational attributes}. Will
-     *            never be null.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            Will never be null..
-     * @return the {@link Uid} of the updated object in case the update changes
-     *         the formation of the unique identifier.
-     * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException
-     *             if the {@link Uid} does not exist on the resource.
+     * @param objclass the type of object to modify. Will never be null.
+     * @param uid the uid of the object to modify. Will never be null.
+     * @param valuesToRemove set of {@link Attribute} deltas. The values for the attributes in this set represent the
+     * values to remove from attributes in the object. merged. This set will never include
+     * {@link OperationalAttributes operational attributes}. Will never be null.
+     * @param options additional options that impact the way this operation is run. Will never be null..
+     * @return the {@link Uid} of the updated object in case the update changes the formation of the unique identifier.
+     * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException if the {@link Uid} does not exist
+     * on the resource.
      */
-    public Uid removeAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToRemove,
-            OperationOptions options);
-
+    Uid removeAttributeValues(ObjectClass objclass, Uid uid, Set<Attribute> valuesToRemove, OperationOptions options);
 }

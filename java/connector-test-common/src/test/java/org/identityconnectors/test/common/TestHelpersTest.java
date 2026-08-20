@@ -140,7 +140,7 @@ public class TestHelpersTest {
         }
     }
 
-    private static class SingleURLEnumeration implements Enumeration<URL> {
+    private static final class SingleURLEnumeration implements Enumeration<URL> {
 
         private URL url;
 

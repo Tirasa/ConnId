@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi;
 
@@ -73,13 +74,11 @@ public interface Configuration {
      * the implementation of the {@link TestOp#test()} method.
      * </p>
      *
-     * @throws RuntimeException
-     *             if the configuration is not valid. Implementations are
-     *             encouraged to throw the most specific exception available.
-     *             When no specific exception is available, implementations can
-     *             throw {@link ConfigurationException}.
+     * @throws RuntimeException if the configuration is not valid. Implementations are encouraged to throw the most
+     * specific exception available.
+     * When no specific exception is available, implementations can throw {@link ConfigurationException}.
      */
-    public void validate();
+    void validate();
 
     /**
      * Should return the {@link ConnectorMessages message catalog} that is set
@@ -87,7 +86,7 @@ public interface Configuration {
      *
      * @return the <code>ConnectorMessages</code> instance.
      */
-    public ConnectorMessages getConnectorMessages();
+    ConnectorMessages getConnectorMessages();
 
     /**
      * Sets the {@link ConnectorMessages message catalog} instance that allows
@@ -95,8 +94,7 @@ public interface Configuration {
      * property setter, the {@link #validate()} method or the
      * {@link #getConnectorMessages()} method.
      *
-     * @param messages
-     *            the message catalog.
+     * @param messages the message catalog.
      */
-    public void setConnectorMessages(ConnectorMessages messages);
+    void setConnectorMessages(ConnectorMessages messages);
 }

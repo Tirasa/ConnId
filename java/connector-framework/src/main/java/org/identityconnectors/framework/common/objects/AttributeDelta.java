@@ -20,19 +20,16 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2022 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
-import static org.identityconnectors.framework.common.objects.NameUtil.nameHashCode;
-import static org.identityconnectors.framework.common.objects.NameUtil.namesEqual;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.identityconnectors.common.CollectionUtil;
-import org.identityconnectors.common.StringUtil;
 
 /**
  * <p>
@@ -66,7 +63,7 @@ import org.identityconnectors.common.StringUtil;
  * by an administrator and it does not need old/current password value. It is represented as replace delta.
  * Password change is usually a self-service operation and it does require old/current password value.
  * Password change should be represented as add/delete delta, new password value being added, old/current
- * password value being removed. 
+ * password value being removed.
  * </p>
  * <p>
  * Terminology note: The term "delete" would be better than "remove", especially because "remove" may be
@@ -134,11 +131,12 @@ public class AttributeDelta extends BaseAttributeDelta {
     /**
      * Determines if the 'name' matches this {@link AttributeDelta}.
      */
+    @Override
     public boolean is(String name) {
         return super.is(name);
     }
 
-
+    @Override
     protected void extendToStringMap(final Map<String, Object> map) {
         map.put("ValuesToAdd", getValuesToAdd());
         map.put("ValuesToRemove", getValuesToRemove());
@@ -176,8 +174,17 @@ public class AttributeDelta extends BaseAttributeDelta {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.valuesToAdd);
+        hash = 97 * hash + Objects.hashCode(this.valuesToRemove);
+        hash = 97 * hash + Objects.hashCode(this.valuesToReplace);
+        return hash;
+    }
+
+    @Override
     public Attribute applyTo(Attribute attr) {
-        var values = attr != null ? new ArrayList<>(attr.getValue()) :  new ArrayList<>();
+        var values = attr != null ? new ArrayList<>(attr.getValue()) : new ArrayList<>();
         if (valuesToReplace != null) {
             return new Attribute(getName(), List.copyOf(valuesToReplace));
         }
@@ -188,6 +195,6 @@ public class AttributeDelta extends BaseAttributeDelta {
         if (valuesToAdd != null) {
             ret.addAll(valuesToAdd);
         }
-        return new Attribute(getName(),ret);
+        return new Attribute(getName(), ret);
     }
 }

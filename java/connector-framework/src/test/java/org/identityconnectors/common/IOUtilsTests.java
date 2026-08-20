@@ -71,7 +71,7 @@ public class IOUtilsTests {
     // public static String getResourceAsString(Class<?> clazz, String res) {
     static class ExceptionReader extends Reader {
 
-        boolean closeCalled;
+        private boolean closeCalled;
 
         @Override
         public void close() throws IOException {
@@ -87,7 +87,7 @@ public class IOUtilsTests {
 
     static class ExceptionInputStream extends InputStream {
 
-        boolean closeCalled;
+        private boolean closeCalled;
 
         @Override
         public void close() throws IOException {
@@ -103,7 +103,7 @@ public class IOUtilsTests {
 
     static class ExceptionWriter extends Writer {
 
-        boolean closeCalled;
+        private boolean closeCalled;
 
         @Override
         public void close() throws IOException {
@@ -122,7 +122,7 @@ public class IOUtilsTests {
 
     static class ExceptionOutputStream extends OutputStream {
 
-        boolean closeCalled;
+        private boolean closeCalled;
 
         @Override
         public void close() throws IOException {

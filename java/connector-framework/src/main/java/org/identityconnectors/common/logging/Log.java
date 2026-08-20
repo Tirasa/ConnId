@@ -77,12 +77,12 @@ public final class Log {
     /**
      * Cache the SPI class so we one search for it once.
      */
-    private static Class<?> cacheSPI;
+    private static Class<?> CACHE_SPI;
 
     /**
      * Basic logging levels.
      */
-    public static enum Level {
+    public enum Level {
 
         /**
          * Maps to java.util.logging.Level.FINE.
@@ -376,11 +376,11 @@ public final class Log {
     static Class<?> getSpiClass() {
         // initialize the SPI class cache object
         synchronized (Log.class) {
-            if (cacheSPI == null) {
-                cacheSPI = findSpiClass();
+            if (CACHE_SPI == null) {
+                CACHE_SPI = findSpiClass();
             }
         }
-        return cacheSPI;
+        return CACHE_SPI;
     }
 
     /**
@@ -388,7 +388,7 @@ public final class Log {
      */
     static void setSpiClass(final Class<?> clazz) {
         synchronized (Log.class) {
-            cacheSPI = clazz;
+            CACHE_SPI = clazz;
         }
     }
 }

@@ -23,7 +23,10 @@
  */
 package net.tirasa.connid.commons.db;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Resolver of properties in UNIX/ant style.
@@ -40,7 +43,7 @@ import java.util.*;
  * @author kitko
  *
  */
-public class PropertiesResolver {
+public final class PropertiesResolver {
 
     private PropertiesResolver() {
         //empty
@@ -56,7 +59,7 @@ public class PropertiesResolver {
         if (properties == null) {
             return null;
         }
-        return resolveProperties(copyProperties(properties), copyProperties(resolvedProperties), new HashSet<String>(5));
+        return resolveProperties(copyProperties(properties), copyProperties(resolvedProperties), new HashSet<>(5));
     }
 
     /**
@@ -70,7 +73,7 @@ public class PropertiesResolver {
             return null;
         }
         Properties copy = copyProperties(properties);
-        return resolveProperties(copy, new Properties(), new HashSet<String>(5));
+        return resolveProperties(copy, new Properties(), new HashSet<>(5));
     }
 
     private static Properties resolveProperties(Properties properties, Properties resolvedProperties,

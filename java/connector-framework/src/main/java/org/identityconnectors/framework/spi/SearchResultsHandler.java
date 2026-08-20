@@ -19,8 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.spi;
 
 import org.identityconnectors.framework.common.objects.ResultsHandler;
@@ -49,11 +49,8 @@ public interface SearchResultsHandler extends ResultsHandler {
     /**
      * Invoked when the request has completed successfully.
      *
-     * @param result
-     *            The query result indicating that no more resources are to be
-     *            returned and, if applicable, including information which
-     *            should be used for subsequent paged results query requests.
+     * @param result The query result indicating that no more resources are to be returned and, if applicable,
+     * including information which should be used for subsequent paged results query requests.
      */
-    public void handleResult(SearchResult result);
-
+    void handleResult(SearchResult result);
 }

@@ -19,8 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.common.event;
 
 /**
@@ -39,18 +39,18 @@ public interface ConnectorEventPublisher {
      * specified. See the class comment.
      *
      * @param handler
-     *            an observer to be added.
+     * an observer to be added.
      * @throws NullPointerException
-     *             if the parameter o is null.
+     * if the parameter o is null.
      */
-    public void addConnectorEventHandler(ConnectorEventHandler handler);
+    void addConnectorEventHandler(ConnectorEventHandler handler);
 
     /**
      * Deletes an observer from the set of observers of this object. Passing
      * {@code null} to this method will have no effect.
      *
      * @param handler
-     *            the observer to be deleted.
+     * the observer to be deleted.
      */
-    public void deleteConnectorEventHandler(ConnectorEventHandler handler);
+    void deleteConnectorEventHandler(ConnectorEventHandler handler);
 }

@@ -67,7 +67,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
 
     private static class OutputBuffer extends Pair<ByteArrayOutputStream, DataOutputStream> {
 
-        public OutputBuffer(ByteArrayOutputStream buf, DataOutputStream data) {
+        OutputBuffer(ByteArrayOutputStream buf, DataOutputStream data) {
             super(buf, data);
         }
     }
@@ -87,12 +87,11 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
 
         private boolean firstObject = true;
 
-        public InternalEncoder(DataOutputStream output) {
+        InternalEncoder(DataOutputStream output) {
             rootOutput = output;
         }
 
-        public void writeObject(ObjectEncoder encoder, Object object) {
-
+        void writeObject(ObjectEncoder encoder, Object object) {
             if (firstObject) {
                 writeInt(OBJECT_MAGIC);
                 writeInt(ENCODING_VERSION);
@@ -100,13 +99,10 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             }
 
             // push the stack
-            OutputBuffer objectBuffer;
-            {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                DataOutputStream data = new DataOutputStream(baos);
-                objectBuffer = new OutputBuffer(baos, data);
-                outputBufferStack.push(objectBuffer);
-            }
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataOutputStream data = new DataOutputStream(baos);
+            OutputBuffer objectBuffer = new OutputBuffer(baos, data);
+            outputBufferStack.push(objectBuffer);
 
             if (object == null) {
                 writeByte(OBJECT_TYPE_NULL);
@@ -151,15 +147,15 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
 
             // now write the actual object
             try {
-                objectBuffer.second.close();
+                objectBuffer.getValue().close();
             } catch (IOException e) {
                 throw ConnectorException.wrap(e);
             }
-            byte[] bytes = objectBuffer.first.toByteArray();
+            byte[] bytes = objectBuffer.getKey().toByteArray();
             writeBytes(bytes);
         }
 
-        public void writeClass(Class<?> clazz) {
+        void writeClass(Class<?> clazz) {
             ObjectSerializationHandler handler = ObjectSerializerRegistry.getHandlerByObjectType(clazz);
             ObjectTypeMapper mapper = ObjectSerializerRegistry.getMapperByObjectType(clazz);
             if (handler == null && clazz.isArray()) {
@@ -176,14 +172,14 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             }
         }
 
-        public void startAnonymousField() {
+        void startAnonymousField() {
             writeByte(FIELD_TYPE_ANONYMOUS_FIELD);
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             DataOutputStream data = new DataOutputStream(buf);
             outputBufferStack.push(new OutputBuffer(buf, data));
         }
 
-        public void startField(String name) {
+        void startField(String name) {
             writeByte(FIELD_TYPE_NAMED_FIELD);
             writeString(name, true);
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
@@ -191,18 +187,18 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             outputBufferStack.push(new OutputBuffer(buf, data));
         }
 
-        public void endField() {
+        void endField() {
             OutputBuffer buf = outputBufferStack.pop();
             try {
-                buf.second.close();
+                buf.getValue().close();
             } catch (IOException e) {
                 throw ConnectorException.wrap(e);
             }
-            byte[] bytes = buf.first.toByteArray();
+            byte[] bytes = buf.getKey().toByteArray();
             writeByteArray(bytes);
         }
 
-        public void writeInt(int v) {
+        void writeInt(int v) {
             try {
                 getCurrentOutput().writeInt(v);
             } catch (IOException e) {
@@ -210,7 +206,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             }
         }
 
-        public void writeLong(long v) {
+        void writeLong(long v) {
             try {
                 getCurrentOutput().writeLong(v);
             } catch (IOException e) {
@@ -218,7 +214,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             }
         }
 
-        public void writeDouble(double l) {
+        void writeDouble(double l) {
             try {
                 getCurrentOutput().writeDouble(l);
             } catch (IOException e) {
@@ -226,7 +222,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             }
         }
 
-        public void writeByteArray(byte[] v) {
+        void writeByteArray(byte[] v) {
             try {
                 getCurrentOutput().writeInt(v.length);
                 getCurrentOutput().write(v);
@@ -235,7 +231,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             }
         }
 
-        public void writeByte(byte b) {
+        void writeByte(byte b) {
             try {
                 getCurrentOutput().writeByte(b);
             } catch (IOException e) {
@@ -243,7 +239,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             }
         }
 
-        public void writeBoolean(boolean b) {
+        void writeBoolean(boolean b) {
             try {
                 getCurrentOutput().writeBoolean(b);
             } catch (IOException e) {
@@ -251,7 +247,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             }
         }
 
-        public void writeString(String str, boolean intern) {
+        void writeString(String str, boolean intern) {
             if (intern) {
                 int code = internIdentifier(str);
                 writeInt(code);
@@ -282,7 +278,7 @@ public class BinaryObjectEncoder implements ObjectEncoder, BinaryObjectSerialize
             if (outputBufferStack.isEmpty()) {
                 return rootOutput;
             } else {
-                return outputBufferStack.peek().second;
+                return outputBufferStack.peek().getValue();
             }
         }
     }

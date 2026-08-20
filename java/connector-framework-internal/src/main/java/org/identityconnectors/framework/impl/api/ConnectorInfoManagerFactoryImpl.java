@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api;
 
@@ -38,11 +39,9 @@ import org.identityconnectors.framework.impl.api.remote.RemoteConnectorInfoManag
 
 public class ConnectorInfoManagerFactoryImpl extends ConnectorInfoManagerFactory {
 
-    private final Map<LocalManagerKey, ConnectorInfoManager> localManagerCache =
-            new HashMap<LocalManagerKey, ConnectorInfoManager>();
+    private final Map<LocalManagerKey, ConnectorInfoManager> localManagerCache = new HashMap<>();
 
-    private final Map<RemoteManagerKey, RemoteConnectorInfoManagerImpl> remoteManagerCache =
-            new HashMap<RemoteManagerKey, RemoteConnectorInfoManagerImpl>();
+    private final Map<RemoteManagerKey, RemoteConnectorInfoManagerImpl> remoteManagerCache = new HashMap<>();
 
     public ConnectorInfoManagerFactoryImpl() {
     }
@@ -116,17 +115,17 @@ public class ConnectorInfoManagerFactoryImpl extends ConnectorInfoManagerFactory
     private static final class LocalManagerKey {
 
         private final List<URL> urls;
+
         private final ClassLoader bundleParentClassLoader;
 
-        public LocalManagerKey(List<URL> urls, ClassLoader bundleParentClassLoader) {
+        LocalManagerKey(List<URL> urls, ClassLoader bundleParentClassLoader) {
             this.urls = CollectionUtil.newReadOnlyList(urls);
             this.bundleParentClassLoader = bundleParentClassLoader;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof LocalManagerKey) {
-                LocalManagerKey other = (LocalManagerKey) obj;
+            if (obj instanceof LocalManagerKey other) {
                 if (!urls.equals(other.urls)) {
                     return false;
                 }
@@ -147,17 +146,17 @@ public class ConnectorInfoManagerFactoryImpl extends ConnectorInfoManagerFactory
     private static final class RemoteManagerKey {
 
         private final String host;
+
         private final int port;
 
-        public RemoteManagerKey(RemoteFrameworkConnectionInfo info) {
+        RemoteManagerKey(RemoteFrameworkConnectionInfo info) {
             host = info.getHost();
             port = info.getPort();
         }
 
         @Override
         public boolean equals(Object o) {
-            if (o instanceof RemoteManagerKey) {
-                RemoteManagerKey other = (RemoteManagerKey) o;
+            if (o instanceof RemoteManagerKey other) {
                 if (!host.equals(other.host)) {
                     return false;
                 }

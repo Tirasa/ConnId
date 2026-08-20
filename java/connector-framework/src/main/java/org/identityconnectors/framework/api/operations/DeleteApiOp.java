@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -31,18 +32,12 @@ public interface DeleteApiOp extends APIOperation {
     /**
      * Delete the object that the specified Uid identifies (if any).
      *
-     * @param objectClass
-     *            type of object to delete.
-     * @param uid
-     *            The unique id that specifies the object to delete.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
-     * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException
-     *             if the {@link Uid} does not exist on the resource.
-     * @throws RuntimeException
-     *             if a problem occurs during the operation (for instance, an
-     *             operational timeout).
+     * @param objectClass type of object to delete.
+     * @param uid The unique id that specifies the object to delete.
+     * @param options additional options that impact the way this operation is run. May be null.
+     * @throws org.identityconnectors.framework.common.exceptions.UnknownUidException if the {@link Uid} does not exist
+     * on the resource.
+     * @throws RuntimeException if a problem occurs during the operation (for instance, an operational timeout).
      */
-    public void delete(final ObjectClass objectClass, final Uid uid, final OperationOptions options);
+    void delete(ObjectClass objectClass, Uid uid, OperationOptions options);
 }

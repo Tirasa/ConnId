@@ -24,7 +24,11 @@
 package net.tirasa.connid.commons.db;
 
 import static org.identityconnectors.framework.common.objects.AttributeBuilder.build;
-import static org.identityconnectors.framework.common.objects.filter.FilterBuilder.*;
+import static org.identityconnectors.framework.common.objects.filter.FilterBuilder.equalTo;
+import static org.identityconnectors.framework.common.objects.filter.FilterBuilder.greaterThan;
+import static org.identityconnectors.framework.common.objects.filter.FilterBuilder.greaterThanOrEqualTo;
+import static org.identityconnectors.framework.common.objects.filter.FilterBuilder.lessThan;
+import static org.identityconnectors.framework.common.objects.filter.FilterBuilder.lessThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.Types;
@@ -63,9 +67,9 @@ class DatabaseFilterTranslatorTests {
     @Test
     void unaryFilters() throws Exception {
         Attribute attr = build("count", 2);
-        Filter filters[] = new Filter[] {
+        Filter[] filters = new Filter[] {
             equalTo(attr), greaterThan(attr), greaterThanOrEqualTo(attr), lessThan(attr), lessThanOrEqualTo(attr) };
-        String ops[] = new String[] { "=", ">", ">=", "<", "<=" };
+        String[] ops = new String[] { "=", ">", ">=", "<", "<=" };
         List<SQLParam> expected = new ArrayList<>();
         expected.add(new SQLParam("count", 2, Types.INTEGER));
         for (int i = 0; i < filters.length; i++) {

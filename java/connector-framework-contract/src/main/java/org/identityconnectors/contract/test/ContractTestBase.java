@@ -43,13 +43,13 @@ public abstract class ContractTestBase {
     protected static final String LOG_SEPARATOR =
             "--------------------------------------------------------------------------------------";
 
-    private static DataProvider _dataProvider;
+    private static DataProvider DATA_PROVIDER;
 
-    protected ConnectorFacade _connFacade;
+    protected ConnectorFacade connFacade;
 
     private static void disposeDataProvider() {
-        if (_dataProvider != null) {
-            _dataProvider.dispose();
+        if (DATA_PROVIDER != null) {
+            DATA_PROVIDER.dispose();
         }
     }
 
@@ -58,7 +58,7 @@ public abstract class ContractTestBase {
      */
     @BeforeEach
     public void init() {
-        _connFacade = ConnectorHelper.createConnectorFacade(getDataProvider());
+        connFacade = ConnectorHelper.createConnectorFacade(getDataProvider());
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class ContractTestBase {
      */
     @AfterEach
     public void dispose() {
-        _connFacade = null;
+        connFacade = null;
         disposeDataProvider();
     }
 
@@ -85,18 +85,18 @@ public abstract class ContractTestBase {
      *
      * @return {@link DataProvider}
      */
-    public synchronized static DataProvider getDataProvider() {
-        if (_dataProvider == null) {
-            _dataProvider = ConnectorHelper.createDataProvider();
+    public static synchronized DataProvider getDataProvider() {
+        if (DATA_PROVIDER == null) {
+            DATA_PROVIDER = ConnectorHelper.createDataProvider();
         }
-        return _dataProvider;
+        return DATA_PROVIDER;
     }
 
     /**
      * Always need a {@link ConnectorFacade}.
      */
     public ConnectorFacade getConnectorFacade() {
-        return _connFacade;
+        return connFacade;
     }
 
     /**

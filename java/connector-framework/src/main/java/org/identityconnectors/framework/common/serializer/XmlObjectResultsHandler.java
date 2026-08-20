@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.serializer;
 
@@ -26,5 +27,6 @@ package org.identityconnectors.framework.common.serializer;
  * Callback interface to receive xml objects from a stream of objects.
  */
 public interface XmlObjectResultsHandler {
-    public boolean handle(Object o);
+
+    boolean handle(Object o);
 }

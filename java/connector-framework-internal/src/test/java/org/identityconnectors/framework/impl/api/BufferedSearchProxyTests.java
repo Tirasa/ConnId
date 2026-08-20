@@ -41,15 +41,12 @@ public class BufferedSearchProxyTests {
 
     private static class ExpectedTestResults implements ResultsHandler {
 
-        private int _count;
+        private int count;
 
-        private final List<ResultsHandler> _resultsHandlers = new ArrayList<>();
-
-        public ExpectedTestResults() {
-        }
+        private final List<ResultsHandler> resultsHandlers = new ArrayList<>();
 
         public void addExpectedResult(ResultsHandler handler) {
-            _resultsHandlers.add(handler);
+            resultsHandlers.add(handler);
         }
 
         public void addExpectedRange(int start, int size) {
@@ -60,31 +57,31 @@ public class BufferedSearchProxyTests {
 
         @Override
         public boolean handle(ConnectorObject object) {
-            if (_count >= _resultsHandlers.size()) {
-                fail("Unpextected number of results: " + _count);
+            if (count >= resultsHandlers.size()) {
+                fail("Unpextected number of results: " + count);
             }
-            boolean rv = _resultsHandlers.get(_count).handle(object);
-            _count++;
+            boolean rv = resultsHandlers.get(count).handle(object);
+            count++;
             return rv;
         }
 
         public void assertFinished() {
-            assertEquals(_resultsHandlers.size(), _count);
+            assertEquals(resultsHandlers.size(), count);
         }
     }
 
     private static class StopResultsHandler implements ResultsHandler {
 
-        private final ResultsHandler _target;
+        private final ResultsHandler target;
 
-        public StopResultsHandler(ResultsHandler target) {
-            _target = target;
+        StopResultsHandler(ResultsHandler target) {
+            this.target = target;
         }
 
         @Override
         public boolean handle(ConnectorObject object) {
-            if (_target != null) {
-                _target.handle(object);
+            if (target != null) {
+                target.handle(object);
             }
             return false;
         }
@@ -92,15 +89,15 @@ public class BufferedSearchProxyTests {
 
     private static class CheckCountHandler implements ResultsHandler {
 
-        private final int _expectedCount;
+        private final int expectedCount;
 
-        public CheckCountHandler(int expectedCount) {
-            _expectedCount = expectedCount;
+        CheckCountHandler(int expectedCount) {
+            this.expectedCount = expectedCount;
         }
 
         @Override
         public boolean handle(ConnectorObject object) {
-            assertEquals(object.getAttributeByName("count").getValue().get(0), _expectedCount);
+            assertEquals(object.getAttributeByName("count").getValue().get(0), expectedCount);
             return true;
         }
     }
@@ -109,7 +106,6 @@ public class BufferedSearchProxyTests {
     public void withBuffer() {
         // test the limit on a range..
         for (int i = 0; i < 200; i++) {
-
             ExpectedTestResults expected = new ExpectedTestResults();
             expected.addExpectedRange(0, i);
 
@@ -121,9 +117,7 @@ public class BufferedSearchProxyTests {
     }
 
     public void testInvalidSearch() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new BufferedResultsProxy(null, 1, 2);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new BufferedResultsProxy(null, 1, 2));
     }
 
     @Test

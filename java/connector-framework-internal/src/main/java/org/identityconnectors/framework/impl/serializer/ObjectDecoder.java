@@ -19,137 +19,143 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
-
 /**
- * Interface to abstract away the difference between deserializing
- * xml and binary
+ * Interface to abstract away the difference between deserializing xml and binary
  */
 public interface ObjectDecoder {
+
     /**
      * Reads an object using the appropriate serializer for that object
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. The subelement name for xml serialization
      * @expectedType Ignored for binary serialization. For xml serialization,
      * this must be specified if it was written in-line.
      * @dflt The default value if there is no value.
      */
-    public Object readObjectField(String fieldName,
-            Class<?> expectedType,
-            Object dflt);
+    Object readObjectField(String fieldName, Class<?> expectedType, Object dflt);
 
     /**
      * Reads a boolean.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. The attribute name for xml serialization
      * @dflt The default value if there is no value.
      */
-    public boolean readBooleanField(String fieldName, boolean dflt);
+    boolean readBooleanField(String fieldName, boolean dflt);
 
     /**
      * Reads an int.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. The attribute name for xml serialization
      * @dflt The default value if there is no value.
      */
-    public int readIntField(String fieldName, int dflt);
+    int readIntField(String fieldName, int dflt);
 
     /**
      * Reads a long.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. The attribute name for xml serialization
      * @dflt The default value if there is no value.
      */
-    public long readLongField(String fieldName, long dflt);
+    long readLongField(String fieldName, long dflt);
 
     /**
      * Reads a float.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. The attribute name for xml serialization
      * @dflt The default value if there is no value.
      */
-    public float readFloatField(String fieldName, float dflt );
+    float readFloatField(String fieldName, float dflt);
 
     /**
      * Reads a Class.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. The attribute name for xml serialization
      * @dflt The default value if there is no value.
      */
-    public Class<?> readClassField(String fieldName, Class<?> dflt );
+    Class<?> readClassField(String fieldName, Class<?> dflt);
 
     /**
      * Reads a String.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. The attribute name for xml serialization
      * @dflt The default value if there is no value.
      */
-    public String readStringField(String fieldName, String dflt );
+    String readStringField(String fieldName, String dflt);
 
     /**
      * Reads a double.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. The attribute name for xml serialization
      * @dflt The default value if there is no value.
      */
-    public double readDoubleField(String fieldName, double dflt );
+    double readDoubleField(String fieldName, double dflt);
 
     /**
      * Reads the value in-line.
      */
-    public String readStringContents( );
+    String readStringContents();
 
     /**
      * Reads the value in-line.
      */
-    public boolean readBooleanContents( );
+    boolean readBooleanContents();
 
     /**
      * Reads the value in-line.
      */
-    public int readIntContents( );
+    int readIntContents();
 
     /**
      * reads the value in-line.
      */
-    public long readLongContents();
+    long readLongContents();
 
     /**
      * Reads the value in-line.
      */
-    public float readFloatContents();
+    float readFloatContents();
 
     /**
      * reads the value in-line.
      */
-    public double readDoubleContents();
+    double readDoubleContents();
 
     /**
      * reads the value in-line.
      */
-    public byte readByteContents();
+    byte readByteContents();
 
     /**
      * reads the value in-line.
      */
-    public byte [] readByteArrayContents();
+    byte[] readByteArrayContents();
 
     /**
      * reads the value in-line.
      */
-    public Class<?> readClassContents();
+    Class<?> readClassContents();
 
     /**
      * Returns the number of anonymous sub-objects.
+     *
      * @return
      */
-    public int getNumSubObjects();
+    int getNumSubObjects();
 
     /**
      * Reads a sub-object
      */
-    public Object readObjectContents(int index);
-
+    Object readObjectContents(int index);
 }

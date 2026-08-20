@@ -64,7 +64,7 @@ public class GetApiOpTests extends ObjectClassRunner {
      */
     @Override
     protected void testRun(ObjectClass objectClass) {
-        ConnectorObject obj = null;
+        ConnectorObject obj;
         Uid uid = null;
 
         try {
@@ -78,7 +78,8 @@ public class GetApiOpTests extends ObjectClassRunner {
                     "Unable to perform get test because object to be get cannot be created");
 
             // retrieve by uid
-            obj = getConnectorFacade().getObject(objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
+            obj = getConnectorFacade().getObject(
+                    objectClass, uid, getOperationOptionsByOp(objectClass, GetApiOp.class));
             assertNotNull(obj, "Unable to get object by uid");
 
             ConnectorHelper.checkObject(getObjectClassInfo(objectClass), obj, requestedAttributes);

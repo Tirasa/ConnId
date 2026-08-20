@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -32,21 +33,12 @@ public interface AuthenticationApiOp extends APIOperation {
     /**
      * Most basic authentication available.
      *
-     * @param objectClass
-     *            The object class to use for authenticate. Will typically be an
-     *            account. Must not be null.
-     * @param username
-     *            string that represents the account or user id.
-     * @param password
-     *            string that represents the password for the account or user.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
+     * @param objectClass The object class to use for authenticate. Will typically be an account. Must not be null.
+     * @param username string that represents the account or user id.
+     * @param password string that represents the password for the account or user.
+     * @param options additional options that impact the way this operation is run. May be null.
      * @return Uid The uid of the account that was used to authenticate
-     * @throws RuntimeException
-     *             if the credentials do not pass authentication otherwise
-     *             nothing.
+     * @throws RuntimeException if the credentials do not pass authentication otherwise nothing.
      */
-    public Uid authenticate(ObjectClass objectClass, String username, GuardedString password,
-            OperationOptions options);
+    Uid authenticate(ObjectClass objectClass, String username, GuardedString password, OperationOptions options);
 }

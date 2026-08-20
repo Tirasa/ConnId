@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2016-2022 Evolveum
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
@@ -59,14 +60,14 @@ import org.identityconnectors.common.security.GuardedString;
  * corresponding attribute of the target object:
  * <ul>
  * <li>For calls to
- * {@link org.identityconnectors.framework.api.operations.UpdateApiOp#update(ObjectClass, Uid, java.util.Set, OperationOptions)
+ * {@link org.identityconnectors.framework.api.operations.UpdateApiOp#update
  * update}, the {@code Attribute} contains the <i>complete, intended state</i>
  * of the attribute.</li>
  * <li>When the update type is
- * {@link org.identityconnectors.framework.api.operations.UpdateApiOp#addAttributeValues(ObjectClass, Uid, java.util.Set, OperationOptions)
+ * {@link org.identityconnectors.framework.api.operations.UpdateApiOp#addAttributeValues
  * addAttributeValues}, the {@code Attribute} contains <i>values to append</i>.</li>
  * <li>When the update type is
- * {@link org.identityconnectors.framework.api.operations.UpdateApiOp#removeAttributeValues(ObjectClass, Uid, java.util.Set, OperationOptions)
+ * {@link org.identityconnectors.framework.api.operations.UpdateApiOp#removeAttributeValues
  * removeAttributeValues}, the {@code Attribute} contains <i>values to
  * remove</i>.</li>
  * </ul>
@@ -80,8 +81,6 @@ import org.identityconnectors.common.security.GuardedString;
  * {@code Attribute} {@linkplain #getName() names the attribute to match} and
  * {@linkplain #getValue() contains the values to match}.</li>
  * </ul>
- *
- * TODO: define the set of allowed values
  *
  * @author Will Droste
  * @since 1.0
@@ -182,7 +181,7 @@ public class Attribute {
         // poor man's consistent toString impl..
         StringBuilder bld = new StringBuilder();
         bld.append("Attribute: ");
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<>();
         map.put("Name", getName());
         map.put("Value", getValue());
         extendToStringMap(map);

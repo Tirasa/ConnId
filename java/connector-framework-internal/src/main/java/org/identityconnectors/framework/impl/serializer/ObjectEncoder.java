@@ -19,16 +19,18 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.serializer;
 
 /**
- * Interface to abstract away the difference between serializing
- * xml and binary
+ * Interface to abstract away the difference between serializing xml and binary
  */
 public interface ObjectEncoder {
+
     /**
      * Writes an object using the appropriate serializer for that object
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. Becomes the subelement name for xml serialization
      * @param object The object to serialize
@@ -36,112 +38,120 @@ public interface ObjectEncoder {
      * this causes us not to have a sub-element. When inlining, polymorphic typing
      * is not supported.
      */
-    public void writeObjectField(String fieldName, Object object, boolean inline);
+    void writeObjectField(String fieldName, Object object, boolean inline);
 
     /**
      * Writes a boolean.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. Becomes the attribute name for xml serialization
      * @param v The value to serialize
      */
-    public void writeBooleanField(String fieldName, boolean v);
+    void writeBooleanField(String fieldName, boolean v);
 
     /**
      * Writes an int.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. Becomes the attribute name for xml serialization
      * @param v The value to serialize
      */
-    public void writeIntField(String fieldName, int v);
+    void writeIntField(String fieldName, int v);
 
     /**
      * Writes a long.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. Becomes the attribute name for xml serialization
      * @param v The value to serialize
      */
-    public void writeLongField(String fieldName, long v);
+    void writeLongField(String fieldName, long v);
 
     /**
      * Writes a float.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. Becomes the attribute name for xml serialization
      * @param v The value to serialize
      */
-    public void writeFloatField(String fieldName, float v);
+    void writeFloatField(String fieldName, float v);
 
     /**
      * Writes a double.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. Becomes the attribute name for xml serialization
      * @param v The value to serialize
      */
-    public void writeDoubleField(String fieldName, double v);
+    void writeDoubleField(String fieldName, double v);
 
     /**
      * Writes a Class.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. Becomes the attribute name for xml serialization
      * @param v The value to serialize
      */
-    public void writeClassField(String fieldName, Class<?> v);
+    void writeClassField(String fieldName, Class<?> v);
 
     /**
      * Writes a String.
+     *
      * @param fieldName A hint of the field name. Ignored for binary
      * serialization. Becomes the attribute name for xml serialization
      * @param v The value to serialize
      */
-    public void writeStringField(String fieldName, String v);
+    void writeStringField(String fieldName, String v);
 
     /**
      * Writes the value in-line.
      */
-    public void writeStringContents(String str);
+    void writeStringContents(String str);
 
     /**
      * Writes the value in-line.
      */
-    public void writeBooleanContents(boolean v);
+    void writeBooleanContents(boolean v);
 
     /**
      * Writes the value in-line.
      */
-    public void writeIntContents(int v);
+    void writeIntContents(int v);
 
     /**
      * Writes the value in-line.
      */
-    public void writeLongContents(long v);
+    void writeLongContents(long v);
 
     /**
      * Writes the value in-line.
      */
-    public void writeFloatContents(float v);
+    void writeFloatContents(float v);
 
     /**
      * Writes the value in-line.
      */
-    public void writeDoubleContents(double v);
+    void writeDoubleContents(double v);
 
     /**
      * Writes the value in-line.
      */
-    public void writeByteContents(byte v);
+    void writeByteContents(byte v);
 
     /**
      * Special case for byte [] that uses base64 encoding for XML
      */
-    public void writeByteArrayContents(byte [] v);
+    void writeByteArrayContents(byte[] v);
 
     /**
      * Writes the value in-line.
      */
-    public void writeClassContents(Class<?> v);
+    void writeClassContents(Class<?> v);
 
     /**
      * Writes a sub-object
+     *
      * @param o The object to write
      */
-    public void writeObjectContents(Object o);
+    void writeObjectContents(Object o);
 }

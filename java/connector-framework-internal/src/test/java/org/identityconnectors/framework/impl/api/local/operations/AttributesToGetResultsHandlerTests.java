@@ -23,7 +23,6 @@
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
-import static org.identityconnectors.framework.common.objects.AttributeBuilder.build;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -38,18 +37,16 @@ import org.junit.jupiter.api.Test;
 public class AttributesToGetResultsHandlerTests {
 
     public void testAttrsToGet() throws Exception {
-        assertThrows(NullPointerException.class, () -> {
-            new TestHandler((String[]) null);
-        });
+        assertThrows(NullPointerException.class, () -> new TestHandler((String[]) null));
     }
 
     @Test
     public void testReduceAttributes() throws Exception {
         String[] attrsToGet = { "a", "b" };
         TestHandler tst = new TestHandler(attrsToGet);
-        Set<Attribute> expected = CollectionUtil.newSet(build("a"), build("b"));
+        Set<Attribute> expected = CollectionUtil.newSet(AttributeBuilder.build("a"), AttributeBuilder.build("b"));
         Set<Attribute> testAttrs = CollectionUtil.newSet(expected);
-        testAttrs.add(build("c"));
+        testAttrs.add(AttributeBuilder.build("c"));
         Set<Attribute> actual = tst.reduceToAttrsToGet(testAttrs);
         assertEquals(actual, expected);
     }
@@ -58,9 +55,9 @@ public class AttributesToGetResultsHandlerTests {
     public void testIgnoreMissing() throws Exception {
         String[] attrsToGet = { "a", "b", "c", "d" };
         TestHandler tst = new TestHandler(attrsToGet);
-        Set<Attribute> expected = CollectionUtil.newSet(build("a"), build("b"));
+        Set<Attribute> expected = CollectionUtil.newSet(AttributeBuilder.build("a"), AttributeBuilder.build("b"));
         Set<Attribute> testAttrs = CollectionUtil.newSet(expected);
-        testAttrs.add(build("g"));
+        testAttrs.add(AttributeBuilder.build("g"));
         Set<Attribute> actual = tst.reduceToAttrsToGet(testAttrs);
         assertEquals(actual, expected);
     }
@@ -82,7 +79,7 @@ public class AttributesToGetResultsHandlerTests {
 
     static class TestHandler extends AttributesToGetResultsHandler {
 
-        public TestHandler(String[] attrsToGet) {
+        TestHandler(String[] attrsToGet) {
             super(attrsToGet);
         }
     }

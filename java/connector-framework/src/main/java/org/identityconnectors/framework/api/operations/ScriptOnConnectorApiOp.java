@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -69,16 +70,12 @@ public interface ScriptOnConnectorApiOp extends APIOperation {
     /**
      * Runs the script.
      *
-     * @param request
-     *            The script and arguments to run.
-     * @param options
-     *            Additional options that control how the script is run. The
-     *            framework does not currently recognize any options but
-     *            specific connectors might. Consult the documentation for each
-     *            connector to identify supported options.
-     * @return The result of the script. The return type must be a type that the
-     *         framework supports for serialization.
+     * @param request The script and arguments to run.
+     * @param options Additional options that control how the script is run. The framework does not currently recognize
+     * any options but specific connectors might. Consult the documentation for each connector to identify supported
+     * options.
+     * @return The result of the script. The return type must be a type that the framework supports for serialization.
      * @see ObjectSerializerFactory for a list of supported return types.
      */
-    public Object runScriptOnConnector(ScriptContext request, OperationOptions options);
+    Object runScriptOnConnector(ScriptContext request, OperationOptions options);
 }

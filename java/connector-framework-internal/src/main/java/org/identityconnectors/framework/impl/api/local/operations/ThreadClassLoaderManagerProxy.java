@@ -50,8 +50,7 @@ public class ThreadClassLoaderManagerProxy implements InvocationHandler {
 
         private final ObjectStreamHandler target;
 
-        public ApplicationClassLoaderHandler(final ClassLoader applicationClassLoader,
-                final ObjectStreamHandler target) {
+        ApplicationClassLoaderHandler(final ClassLoader applicationClassLoader, final ObjectStreamHandler target) {
             Assertions.nullCheck(applicationClassLoader, "applicationClassLoader");
             Assertions.nullCheck(target, "target");
             this.applicationClassLoader = applicationClassLoader;

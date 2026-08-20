@@ -19,15 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
-import org.identityconnectors.framework.common.objects.filter.Filter;
-
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.identityconnectors.framework.common.objects.filter.Filter;
 
 public abstract class ComplexValueDelta {
 
@@ -56,10 +54,9 @@ public abstract class ComplexValueDelta {
         }
     }
 
-    public static abstract class FilterBased extends ComplexValueDelta {
+    public abstract static class FilterBased extends ComplexValueDelta {
 
         private final Filter filter;
-
 
         public FilterBased(Filter filter) {
             this.filter = filter;
@@ -121,8 +118,7 @@ public abstract class ComplexValueDelta {
 
         @Override
         public String toString() {
-            return "Merge: " + getFilter() +
-                    "deltas:" + deltas;
+            return "Merge: " + getFilter() + "deltas:" + deltas;
         }
 
         @Override
@@ -131,8 +127,7 @@ public abstract class ComplexValueDelta {
         }
 
         private Object applyToSingleObject(Object value) {
-            if (value instanceof BaseObject) {
-                var object = (BaseObject) value;
+            if (value instanceof BaseObject object) {
                 if (!filterMatches(object)) {
                     // Filter did not matched, we are reusing original object
                     return object;

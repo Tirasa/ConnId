@@ -19,8 +19,8 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
-
 package org.identityconnectors.framework.impl.api.local;
 
 import java.io.Closeable;
@@ -38,13 +38,12 @@ public interface ObjectPoolEntry<T> extends Closeable {
      *
      * @return The pooled object instance.
      */
-    public T getPooledObject();
+    T getPooledObject();
 
     /**
      * Release the pooled object and puts back to the pool where is was borrowed
      * from.
      */
     @Override
-    public void close() throws IOException;
-
+    void close() throws IOException;
 }

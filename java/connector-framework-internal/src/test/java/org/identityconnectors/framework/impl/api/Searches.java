@@ -32,9 +32,9 @@ import org.identityconnectors.framework.common.objects.ResultsHandler;
 import org.identityconnectors.framework.common.objects.SearchResult;
 import org.identityconnectors.framework.common.objects.filter.Filter;
 
-public class Searches {
+public final class Searches {
 
-    static class EmptySearch implements SearchApiOp {
+    public static class EmptySearch implements SearchApiOp {
 
         @Override
         public SearchResult search(final ObjectClass objectClass, final Filter filter,
@@ -49,7 +49,7 @@ public class Searches {
         /**
          * Amount of data to produce.
          */
-        final int limit;
+        private final int limit;
 
         public ConnectorObjectSearch(int limit) {
             this.limit = limit;
@@ -83,7 +83,7 @@ public class Searches {
         /**
          * Time to wait between objects or 0 for no wait
          */
-        final long wait;
+        private final long wait;
 
         public WaitObjectSearch(int limit, long wait) {
             super(limit);
@@ -92,10 +92,10 @@ public class Searches {
 
         @Override
         protected void beforeObject(int count) {
-            long wait = getCurrentWait(count);
-            if (wait != 0) {
+            long localWait = getCurrentWait(count);
+            if (localWait != 0) {
                 try {
-                    Thread.sleep(wait);
+                    Thread.sleep(localWait);
                 } catch (Exception e) {
                     /* ignore */
                 }
@@ -109,7 +109,7 @@ public class Searches {
 
     public static class WaitListObjectSearch extends WaitObjectSearch {
 
-        private long[] waitList;
+        private final long[] waitList;
 
         public WaitListObjectSearch(long... waitList) {
             super(waitList.length, 0);
@@ -123,8 +123,10 @@ public class Searches {
     }
 
     public static class ThrowsExceptionSearch extends ConnectorObjectSearch {
-        final int idx;
-        final RuntimeException ex;
+
+        private final int idx;
+
+        private final RuntimeException ex;
 
         public ThrowsExceptionSearch(final int limit, final int idx, final RuntimeException ex) {
             super(limit);
@@ -135,11 +137,14 @@ public class Searches {
         @Override
         protected void beforeObject(int count) {
             if (count == idx) {
-                if (null != ex){
+                if (null != ex) {
                     throw this.ex;
                 }
                 assert false;
             }
         }
+    }
+
+    private Searches() {
     }
 }

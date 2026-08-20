@@ -29,24 +29,24 @@ public abstract class EncryptorFactory {
     private static final String IMPL_NAME =
             "org.identityconnectors.common.security.impl.EncryptorFactoryImpl";
 
-    private static EncryptorFactory instance;
+    private static EncryptorFactory INSTANCE;
 
     /**
      * Get the singleton instance of the {@link EncryptorFactory}.
      */
     public static synchronized EncryptorFactory getInstance() {
-        if (instance == null) {
+        if (INSTANCE == null) {
             try {
                 Class<?> clazz = Class.forName(IMPL_NAME);
                 Object object = clazz.getDeclaredConstructor().newInstance();
-                instance = EncryptorFactory.class.cast(object);
+                INSTANCE = EncryptorFactory.class.cast(object);
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        return instance;
+        return INSTANCE;
     }
 
     /**

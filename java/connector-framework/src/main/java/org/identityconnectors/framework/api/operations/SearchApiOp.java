@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2013 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.api.operations;
 
@@ -32,25 +33,15 @@ import org.identityconnectors.framework.common.objects.filter.Filter;
 public interface SearchApiOp extends APIOperation {
 
     /**
-     * Search the resource for all objects that match the object class and
-     * filter.
+     * Search the resource for all objects that match the object class and filter.
      *
-     * @param objectClass
-     *            reduces the number of entries to only those that match the
-     *            {@link ObjectClass} provided.
-     * @param filter
-     *            Reduces the number of entries to only those that match the
-     *            {@link Filter} provided, if any. May be null.
-     * @param handler
-     *            class responsible for working with the objects returned from
-     *            the search.
-     * @param options
-     *            additional options that impact the way this operation is run.
-     *            May be null.
+     * @param objectClass reduces the number of entries to only those that match the {@link ObjectClass} provided.
+     * @param filter Reduces the number of entries to only those that match the {@link Filter} provided, if any. May be
+     * null.
+     * @param handler class responsible for working with the objects returned from the search.
+     * @param options additional options that impact the way this operation is run. May be null.
      * @return The query result or {@code null}.
-     * @throws RuntimeException
-     *             if there is problem during the processing of the results.
+     * @throws RuntimeException if there is problem during the processing of the results.
      */
-    public SearchResult search(final ObjectClass objectClass, final Filter filter,
-            final ResultsHandler handler, final OperationOptions options);
+    SearchResult search(ObjectClass objectClass, Filter filter, ResultsHandler handler, OperationOptions options);
 }

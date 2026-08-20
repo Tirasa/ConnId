@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2010-2014 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.test.common.spi;
 
@@ -43,17 +44,16 @@ import org.identityconnectors.test.common.PropertyBag;
  */
 public interface TestHelpersSpi {
 
-    public APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
+    APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
             Configuration config);
 
-    public APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
-            final Set<String> bundleContents, final PropertyBag configData, String prefix);
+    APIConfiguration createTestConfiguration(Class<? extends Connector> clazz,
+            Set<String> bundleContents, PropertyBag configData, String prefix);
 
-    public void fillConfiguration(Configuration config, Map<String, ? extends Object> configData);
+    void fillConfiguration(Configuration config, Map<String, ? extends Object> configData);
 
-    public SearchResult search(SearchOp<?> search, final ObjectClass objectClass,
-            final Filter filter, ResultsHandler handler, OperationOptions options);
+    SearchResult search(SearchOp<?> search, ObjectClass objectClass,
+            Filter filter, ResultsHandler handler, OperationOptions options);
 
-    public ConnectorMessages createDummyMessages();
-
+    ConnectorMessages createDummyMessages();
 }

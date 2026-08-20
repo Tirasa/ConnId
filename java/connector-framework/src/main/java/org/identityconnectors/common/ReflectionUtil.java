@@ -19,11 +19,13 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.common;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -43,7 +45,7 @@ public final class ReflectionUtil {
      */
     public static Set<Class<?>> getAllInterfaces(final Class<?> target) {
         assert target != null;
-        final Set<Class<?>> ret = new HashSet<Class<?>>();
+        final Set<Class<?>> ret = new HashSet<>();
         getAllInteralInterfaces(target, ret);
         return ret;
     }
@@ -52,9 +54,7 @@ public final class ReflectionUtil {
         // quick exit if target is null..
         if (target != null) {
             // get all the interfaces of the target class..
-            for (Class<?> inter : target.getInterfaces()) {
-                result.add(inter);
-            }
+            result.addAll(Arrays.asList(target.getInterfaces()));
             // get all the interfaces of the super class..
             getAllInteralInterfaces(target.getSuperclass(), result);
         }
@@ -63,10 +63,8 @@ public final class ReflectionUtil {
     /**
      * Determine if the target class implements the provided interface.
      *
-     * @param target
-     *            class to look through for a matching interface.
-     * @param clazz
-     *            interface class to look for.
+     * @param target class to look through for a matching interface.
+     * @param clazz interface class to look for.
      * @return true if a matching interface is found otherwise false.
      */
     public static boolean containsInterface(final Class<?> target, final Class<?> clazz) {
@@ -76,9 +74,8 @@ public final class ReflectionUtil {
     /**
      * Get all interfaces the extends the type provided.
      */
-    public static <T> List<Class<? extends T>> getInterfaces(final Class<?> target,
-            final Class<T> type) {
-        final List<Class<? extends T>> ret = new ArrayList<Class<? extends T>>();
+    public static <T> List<Class<? extends T>> getInterfaces(final Class<?> target, final Class<T> type) {
+        final List<Class<? extends T>> ret = new ArrayList<>();
         final Collection<Class<?>> interfs = getAllInterfaces(target);
         for (Class<?> clazz : interfs) {
             if (containsInterface(clazz, type)) {
@@ -93,8 +90,7 @@ public final class ReflectionUtil {
     /**
      * Returns true if the given class overrides equals and hashCode.
      *
-     * @param clazz
-     *            The class to check.
+     * @param clazz The class to check.
      * @return True if the given class overrides equals and hashCode
      */
     public static boolean overridesEqualsAndHashcode(final Class<?> clazz) {
@@ -104,10 +100,7 @@ public final class ReflectionUtil {
                 return false;
             }
             final Method hashCode = clazz.getMethod("hashCode");
-            if (hashCode.getDeclaringClass() == Object.class) {
-                return false;
-            }
-            return true;
+            return hashCode.getDeclaringClass() != Object.class;
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -119,11 +112,9 @@ public final class ReflectionUtil {
     /**
      * Returns the package the class is associated with.
      *
-     * @param clazz
-     *            class to inspect for the package.
+     * @param clazz class to inspect for the package.
      * @return package for the class provided.
-     * @throws NullPointerException
-     *             if clazz is <code>null</code>.
+     * @throws NullPointerException if clazz is <code>null</code>.
      */
     public static String getPackage(final Class<?> clazz) {
         final String name = clazz.getName();
@@ -136,7 +127,7 @@ public final class ReflectionUtil {
     public static String getMethodName(final int depth) {
         // Hack (?) to get the stack trace.
         final Throwable dummyException = new Throwable();
-        final StackTraceElement locations[] = dummyException.getStackTrace();
+        final StackTraceElement[] locations = dummyException.getStackTrace();
         // caller will be the depth element
         String method = "unknown";
         if (locations != null && locations.length > depth) {

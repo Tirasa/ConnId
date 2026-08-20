@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.spi;
 
@@ -53,8 +54,7 @@ public interface PoolableConnector extends Connector {
      * keep this method fast.
      * </p>
      *
-     * @throws RuntimeException
-     *             if the connector is no longer alive.
+     * @throws RuntimeException if the connector is no longer alive.
      */
-    public void checkAlive();
+    void checkAlive();
 }

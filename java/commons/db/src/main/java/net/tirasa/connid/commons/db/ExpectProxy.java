@@ -41,9 +41,9 @@ import java.util.List;
  */
 public class ExpectProxy<T> implements InvocationHandler {
 
-    private final List<String> methodNames = new ArrayList<String>();
+    private final List<String> methodNames = new ArrayList<>();
 
-    private final List<Object> retVals = new ArrayList<Object>();
+    private final List<Object> retVals = new ArrayList<>();
 
     private int count = 0;
 
@@ -123,7 +123,7 @@ public class ExpectProxy<T> implements InvocationHandler {
     @SuppressWarnings("unchecked")
     public T getProxy(Class<T> clazz) {
         ClassLoader cl = getClass().getClassLoader();
-        Class<?> intef[] = new Class<?>[] { clazz };
+        Class<?>[] intef = new Class<?>[] { clazz };
         return (T) Proxy.newProxyInstance(cl, intef, this);
     }
 }

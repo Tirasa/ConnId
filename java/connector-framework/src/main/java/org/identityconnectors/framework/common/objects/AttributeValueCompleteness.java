@@ -19,22 +19,23 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects;
 
 public enum AttributeValueCompleteness {
-	/**
-	 * The returned attribute has all values. No value is missing.
-	 */
-	COMPLETE,
-	
-	/**
-	 * The returned attribute contains only some values.
-	 * There may be more attribute values on the resource.
-	 * If an empty attribute is returned with an INCOMPLETE
-	 * flag then it is assumed that the attribute has at least
-	 * one value on the resource.
-	 */
-	INCOMPLETE, 
-	
+    /**
+     * The returned attribute has all values. No value is missing.
+     */
+    COMPLETE,
+
+    /**
+     * The returned attribute contains only some values.
+     * There may be more attribute values on the resource.
+     * If an empty attribute is returned with an INCOMPLETE
+     * flag then it is assumed that the attribute has at least
+     * one value on the resource.
+     */
+    INCOMPLETE;
+
 }

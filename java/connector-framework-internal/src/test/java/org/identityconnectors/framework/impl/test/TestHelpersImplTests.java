@@ -47,7 +47,7 @@ public class TestHelpersImplTests {
         assertEquals(1234, testConfig.getPort());
     }
 
-    public final static class TestConfiguration implements Configuration {
+    public static final class TestConfiguration implements Configuration {
 
         private String host;
 

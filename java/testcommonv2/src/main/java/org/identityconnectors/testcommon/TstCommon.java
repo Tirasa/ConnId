@@ -22,8 +22,12 @@
  */
 package org.identityconnectors.testcommon;
 
-public class TstCommon {
-   public static String getVersion() {
-      return "2.0";
-   }
+public final class TstCommon {
+
+    public static String getVersion() {
+        return "2.0";
+    }
+
+    private TstCommon() {
+    }
 }

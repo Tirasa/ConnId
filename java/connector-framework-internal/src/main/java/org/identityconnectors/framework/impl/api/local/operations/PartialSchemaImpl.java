@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api.local.operations;
 
@@ -47,8 +48,6 @@ public class PartialSchemaImpl extends ConnectorAPIOperationRunner implements Pa
      *
      * @see SchemaApiOp#schema()
      */
-
-
     @Override
     public Schema getPartialSchema(LightweightObjectClassInfo... objectClassInfos) {
         SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getPartialSchema");
@@ -57,31 +56,34 @@ public class PartialSchemaImpl extends ConnectorAPIOperationRunner implements Pa
         try {
             partialSchema = ((PartialSchemaOp) getConnector()).getPartialSchema(objectClassInfos);
         } catch (RuntimeException e) {
-            SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getPartialSchema", e);
+            SpiOperationLoggingUtil.logOpException(
+                    OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getPartialSchema", e);
             throw e;
         }
 
-        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getPartialSchema", partialSchema);
+        SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getPartialSchema",
+                partialSchema);
 
         return partialSchema;
     }
 
     @Override
     public LightweightObjectClassInfo[] getObjectClassInformation() {
-        {
-            SpiOperationLoggingUtil.logOpEntry(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getObjectClassInformation");
+        SpiOperationLoggingUtil.logOpEntry(
+                OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getObjectClassInformation");
 
-            LightweightObjectClassInfo[] objectClassInfos;
-            try {
-                objectClassInfos = ((PartialSchemaOp) getConnector()).getObjectClassInformation();
-            } catch (RuntimeException e) {
-                SpiOperationLoggingUtil.logOpException(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getObjectClassInformation", e);
-                throw e;
-            }
-
-            SpiOperationLoggingUtil.logOpExit(OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getObjectClassInformation", objectClassInfos);
-
-            return objectClassInfos;
+        LightweightObjectClassInfo[] objectClassInfos;
+        try {
+            objectClassInfos = ((PartialSchemaOp) getConnector()).getObjectClassInformation();
+        } catch (RuntimeException e) {
+            SpiOperationLoggingUtil.logOpException(
+                    OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getObjectClassInformation", e);
+            throw e;
         }
+
+        SpiOperationLoggingUtil.logOpExit(
+                OP_LOG, getOperationalContext(), PartialSchemaOp.class, "getObjectClassInformation", objectClassInfos);
+
+        return objectClassInfos;
     }
 }

@@ -19,6 +19,7 @@
  * enclosed by brackets [] replaced by your own identifying information:
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.impl.api.local;
 
@@ -32,11 +33,14 @@ import org.identityconnectors.framework.spi.InstanceNameAware;
  * common code. Therefore this util is still better than copying the
  * code to two places or a big code refactoring.
  */
-public class ConnectorLifecycleUtil {
+public final class ConnectorLifecycleUtil {
 
     public static void setConnectorInstanceName(Connector connector, String instanceName) {
-        if (connector instanceof InstanceNameAware) {
-            ((InstanceNameAware) connector).setInstanceName(instanceName);
+        if (connector instanceof InstanceNameAware instanceNameAware) {
+            instanceNameAware.setInstanceName(instanceName);
         }
+    }
+
+    private ConnectorLifecycleUtil() {
     }
 }

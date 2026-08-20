@@ -44,7 +44,7 @@ public class XmlObjectEncoder implements ObjectEncoder {
 
         private boolean elementData = false;
 
-        public OutputElement(String name) {
+        OutputElement(String name) {
             this.name = name;
         }
     }

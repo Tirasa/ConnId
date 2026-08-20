@@ -22,7 +22,7 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-public class LocaleTestUtil {
+public final class LocaleTestUtil {
 
     private LocaleTestUtil() {
     }

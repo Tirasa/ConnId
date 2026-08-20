@@ -255,7 +255,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                         // However, we should definitely warn
                         LOG.info(LOG.isOk() ? e : null,
                                 "Unable to load class {0} from bundle {1}. Class will be ignored and will not be "
-                                        + "listed in list of connectors.",
+                                + "listed in list of connectors.",
                                 className, bundleInfo.getOriginalLocation());
                     }
                 }
@@ -277,7 +277,7 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                     // However, we should definitely warn
                     LOG.info(LOG.isOk() ? e : null,
                             "Unable to load class {0} from bundle {1}. Class will be ignored and will not be "
-                                    + "listed in list of connectors.",
+                            + "listed in list of connectors.",
                             className, bundleInfo.getOriginalLocation());
                 }
                 if (connectorClass != null) {
@@ -288,7 +288,13 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
         return rv;
     }
 
-    private static void addValidConnectorToList(WorkingBundleInfo bundleInfo, ClassLoader loader, Class<?> connectorClass, ConnectorClass options, List<ConnectorInfo> rv) {
+    private static void addValidConnectorToList(
+            WorkingBundleInfo bundleInfo,
+            ClassLoader loader,
+            Class<?> connectorClass,
+            ConnectorClass options,
+            List<ConnectorInfo> rv) {
+
         if (options == null) {
             for (Annotation annotation : connectorClass.getAnnotations()) {
                 if (ConnectorClass.class.getName().equals(annotation.annotationType().getName())) {
@@ -329,12 +335,12 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
             } catch (final NoClassDefFoundError e) {
                 LOG.info(LOG.isOk() ? e : null,
                         "Unable to load configuration class of connector {0} from bundle {1}. "
-                                + "Class will be ignored and will not be listed in list of connectors.",
+                        + "Class will be ignored and will not be listed in list of connectors.",
                         connectorClass, bundleInfo.getOriginalLocation());
             } catch (final TypeNotPresentException e) {
                 LOG.info(LOG.isOk() ? e : null,
                         "Unable to load configuration class of connector {0} from bundle {1}. "
-                                + "Class will be ignored and will not be listed in list of connectors.",
+                        + "Class will be ignored and will not be listed in list of connectors.",
                         connectorClass, bundleInfo.getOriginalLocation());
             }
         }
@@ -465,9 +471,9 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
 
     private static final class BundleTempDirectory {
 
-        private final Random _random = new Random(System.currentTimeMillis());
+        private final Random random = new Random(System.currentTimeMillis());
 
-        private File _bundleTempDir;
+        private File bundleTempDir;
 
         public File copyStreamToFile(final InputStream stream) throws IOException {
             final File bundleDir = getBundleTempDir();
@@ -506,8 +512,8 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
         }
 
         private File getBundleTempDir() throws IOException {
-            if (_bundleTempDir != null) {
-                return _bundleTempDir;
+            if (bundleTempDir != null) {
+                return bundleTempDir;
             }
             final File tempDir = Path.of(System.getProperty("java.io.tmpdir")).toFile();
             if (!tempDir.exists()) {
@@ -518,12 +524,12 @@ public class LocalConnectorInfoManagerImpl implements ConnectorInfoManager {
                 candidate = tempDir.toPath().resolve("bundle-" + nextRandom()).toFile();
             } while (!candidate.mkdir());
             candidate.deleteOnExit();
-            _bundleTempDir = candidate;
+            bundleTempDir = candidate;
             return candidate;
         }
 
         private int nextRandom() {
-            return _random.nextInt() & 0x7fffffff; // Want only positive numbers.
+            return random.nextInt() & 0x7fffffff; // Want only positive numbers.
         }
     }
 }

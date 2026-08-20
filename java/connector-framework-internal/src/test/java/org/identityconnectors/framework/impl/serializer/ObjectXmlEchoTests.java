@@ -29,31 +29,28 @@ import org.identityconnectors.framework.common.serializer.SerializerUtil;
 import org.identityconnectors.framework.impl.api.remote.RemoteFrameworkConnection;
 import org.identityconnectors.framework.impl.api.remote.messages.EchoMessage;
 
-
 public class ObjectXmlEchoTests extends ObjectSerializationTests {
+
     @Override
     protected Object cloneObject(Object o) {
-        //TODO: figure out how to automate these tests
-        if ( true ) {
+        if (true) {
             return super.cloneObject(o);
-        }
-        else {
-            EchoMessage message = new EchoMessage(o,SerializerUtil.serializeXmlObject(o, true));
+        } else {
+            EchoMessage message = new EchoMessage(o, SerializerUtil.serializeXmlObject(o, true));
             RemoteFrameworkConnectionInfo info =
-                new RemoteFrameworkConnectionInfo("127.0.0.1",
-                        8759,
-                        new GuardedString("changeit".toCharArray()));
-            RemoteFrameworkConnection conn =
-                new RemoteFrameworkConnection(info);
+                    new RemoteFrameworkConnectionInfo(
+                            "127.0.0.1",
+                            8759,
+                            new GuardedString("changeit".toCharArray()));
+            RemoteFrameworkConnection conn = new RemoteFrameworkConnection(info);
             try {
                 conn.writeObject(CurrentLocale.get());
                 conn.writeObject(info.getKey());
                 conn.writeObject(message);
-                EchoMessage clone = (EchoMessage)conn.readObject();
+                EchoMessage clone = (EchoMessage) conn.readObject();
                 String xml = clone.getXml();
                 return SerializerUtil.deserializeXmlObject(xml, true);
-            }
-            finally {
+            } finally {
                 conn.close();
             }
         }

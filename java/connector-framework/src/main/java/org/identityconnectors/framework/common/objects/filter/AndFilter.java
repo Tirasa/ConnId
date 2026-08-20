@@ -20,6 +20,7 @@
  * "Portions Copyrighted [year] [name of copyright owner]"
  * ====================
  * Portions Copyrighted 2014 ForgeRock AS.
+ * Portions Copyrighted 2026 ConnId
  */
 package org.identityconnectors.framework.common.objects.filter;
 
@@ -45,7 +46,7 @@ public final class AndFilter extends CompositeFilter {
 
     public AndFilter(final Collection<Filter> filters) {
         super(null, null);
-        subFilters = new LinkedList<Filter>(filters);
+        subFilters = new LinkedList<>(filters);
     }
 
     /**
@@ -68,7 +69,7 @@ public final class AndFilter extends CompositeFilter {
     // Important: Needs to be present for binary backwards compatibility
     @Override
     public boolean accept(ConnectorObject obj) {
-        return accept((BaseObject)  obj);
+        return accept((BaseObject) obj);
     }
 
     @Override
@@ -84,11 +85,11 @@ public final class AndFilter extends CompositeFilter {
     @Override
     public Filter getRight() {
         if (subFilters.size() > 2) {
-            LinkedList<Filter> right = new LinkedList<Filter>(subFilters);
+            LinkedList<Filter> right = new LinkedList<>(subFilters);
             right.removeFirst();
             return new AndFilter(right);
-        } else if (subFilters.size() == 2 ){
-           return subFilters.getLast();
+        } else if (subFilters.size() == 2) {
+            return subFilters.getLast();
         } else {
             return null;
         }
