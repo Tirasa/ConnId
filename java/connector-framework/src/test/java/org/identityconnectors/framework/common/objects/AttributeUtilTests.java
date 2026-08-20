@@ -52,11 +52,11 @@ public class AttributeUtilTests {
 
     public void testGetStringValue() {
         assertThrows(ClassCastException.class, () -> {
-            final String TEST_VALUE = "test value";
+            final String testValue = "test value";
             // test normal..
-            Attribute attr = build("string", TEST_VALUE);
+            Attribute attr = build("string", testValue);
             String value = getStringValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null..
             attr = build("stirng");
             value = getStringValue(attr);
@@ -69,11 +69,11 @@ public class AttributeUtilTests {
 
     @Test
     public void testGetAsStringValue() {
-        final String TEST_VALUE = "test value";
+        final String testValue = "test value";
         // test normal
-        Attribute attr = build("string", TEST_VALUE);
+        Attribute attr = build("string", testValue);
         String value = getAsStringValue(attr);
-        assertEquals(value, TEST_VALUE);
+        assertEquals(value, testValue);
         // test null
         attr = build("stirng");
         value = getStringValue(attr);
@@ -86,11 +86,11 @@ public class AttributeUtilTests {
 
     public void testGetIntegerValue() {
         assertThrows(ClassCastException.class, () -> {
-            final Integer TEST_VALUE = 1;
+            final Integer testValue = 1;
             // test normal
-            Attribute attr = build("int", TEST_VALUE);
+            Attribute attr = build("int", testValue);
             Integer value = getIntegerValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null
             attr = build("int");
             value = getIntegerValue(attr);
@@ -103,11 +103,11 @@ public class AttributeUtilTests {
 
     public void testGetLongValue() {
         assertThrows(ClassCastException.class, () -> {
-            final Long TEST_VALUE = 1L;
+            final Long testValue = 1L;
             // test normal
-            Attribute attr = AttributeBuilder.build("long", TEST_VALUE);
+            Attribute attr = AttributeBuilder.build("long", testValue);
             Long value = AttributeUtil.getLongValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null
             attr = AttributeBuilder.build("long");
             value = AttributeUtil.getLongValue(attr);
@@ -120,11 +120,11 @@ public class AttributeUtilTests {
 
     public void testBigDecimalValue() {
         assertThrows(ClassCastException.class, () -> {
-            final BigDecimal TEST_VALUE = BigDecimal.ONE;
+            final BigDecimal testValue = BigDecimal.ONE;
             // test normal
-            Attribute attr = AttributeBuilder.build("big", TEST_VALUE);
+            Attribute attr = AttributeBuilder.build("big", testValue);
             BigDecimal value = AttributeUtil.getBigDecimalValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null
             attr = AttributeBuilder.build("big");
             value = AttributeUtil.getBigDecimalValue(attr);
@@ -137,11 +137,11 @@ public class AttributeUtilTests {
 
     public void testGetSingleValue() {
         assertThrows(ClassCastException.class, () -> {
-            final Object TEST_VALUE = 1L;
+            final Object testValue = 1L;
             // test normal
-            Attribute attr = AttributeBuilder.build("long", TEST_VALUE);
+            Attribute attr = AttributeBuilder.build("long", testValue);
             Object value = AttributeUtil.getSingleValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null
             attr = AttributeBuilder.build("long");
             value = AttributeUtil.getSingleValue(attr);

@@ -212,7 +212,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
     protected ConnectorInfoManager getConnectorInfoManager() throws Exception {
         List<URL> urls = getTestBundles();
 
-        final int PORT = 8761;
+        final int port = 8761;
 
         TrustManager clientTrustManager = new MyTrustManager("server.pfx");
         KeyManager serverKeyManager = new MyKeyManager("server.pfx");
@@ -221,7 +221,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
             if (null == SERVER) {
                 SERVER = ConnectorServer.newInstance();
                 SERVER.setBundleURLs(urls);
-                SERVER.setPort(PORT);
+                SERVER.setPort(port);
                 SERVER.setKeyHash(SecurityUtil.computeBase64SHA1Hash("changeit".toCharArray()));
                 SERVER.setUseSSL(true);
                 SERVER.setKeyManagers(CollectionUtil.newList(serverKeyManager));
@@ -231,7 +231,7 @@ public class RemoteConnectorInfoManagerSSLTests extends ConnectorInfoManagerTest
         }
         ConnectorInfoManagerFactory fact = ConnectorInfoManagerFactory.getInstance();
 
-        RemoteFrameworkConnectionInfo connInfo = new RemoteFrameworkConnectionInfo("127.0.0.1", PORT,
+        RemoteFrameworkConnectionInfo connInfo = new RemoteFrameworkConnectionInfo("127.0.0.1", port,
                 new GuardedString("changeit".toCharArray()),
                 true,
                 CollectionUtil.newList(clientTrustManager),

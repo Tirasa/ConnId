@@ -224,10 +224,9 @@ public class GroovyDataProvider implements DataProvider {
      * is the information message describing the JAR, where the class resides.
      */
     private static void checkJarDependencies(DataProvider dp, ClassLoader classLoader) {
-        final String PROP_REQUIRED_CLASSES = "requiredClasses";
         Object o;
         try {
-            o = dp.getTestSuiteAttribute(PROP_REQUIRED_CLASSES);
+            o = dp.getTestSuiteAttribute("requiredClasses");
         } catch (ObjectNotFoundException ex) {
             // if property testsuite.requiredClasses is undefined skip checking JARs.
             return;
@@ -455,11 +454,11 @@ public class GroovyDataProvider implements DataProvider {
                 // multiple dots.
                 return configObjectRecursiveGet(name.substring(dotIndex + 1), configObject1);
             } else {
-                final String MSG = "Unexpected object instance. "
+                final String msg = "Unexpected object instance. "
                         + "Searching property: '%s', found value: '%s', expected value is ConfigObject."
                         + "Please check that property '%s' is defined - "
                         + "it can collide with attribute value definition.";
-                fail(MSG.formatted(name, o.toString(), name));
+                fail(msg.formatted(name, o.toString(), name));
                 return null;
             }
         } else {

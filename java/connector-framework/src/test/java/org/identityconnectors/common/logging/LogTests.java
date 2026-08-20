@@ -132,8 +132,8 @@ public class LogTests {
 
     @Test
     public void checkMessageLog() {
-        final String METHOD = "checkMessageLog";
-        final String EXPECTED_MSG = "any old message will do";
+        final String method = "checkMessageLog";
+        final String expectedMsg = "any old message will do";
         // create log w/ Mock..
         MockLogSpi spi = new MockLogSpi();
         Log log = Log.getLog(String.class, spi);
@@ -141,25 +141,25 @@ public class LogTests {
         // attempt to check the message methods...
         spi.message = null;
         spi.isloggable = false;
-        log.error(EXPECTED_MSG);
+        log.error(expectedMsg);
         assertNull(spi.message);
         assertEquals(spi.clazz, String.class);
         spi.isloggable = true;
-        log.error(EXPECTED_MSG);
+        log.error(expectedMsg);
         assertEquals(spi.level, Log.Level.ERROR);
-        assertEquals(spi.message, EXPECTED_MSG);
+        assertEquals(spi.message, expectedMsg);
         assertEquals(spi.clazz, String.class);
-        assertEquals(spi.methodName, METHOD);
+        assertEquals(spi.methodName, method);
     }
 
     @Test
     public void checkFullLogMessage() {
-        final String EXPECTED = "some message: {0}";
+        final String expected = "some message: {0}";
         MockLogSpi spi = new MockLogSpi();
         Log log = Log.getLog(String.class, spi);
         // test that it doesn't log..
         spi.isloggable = false;
-        log.log(Log.Level.INFO, new Exception(), EXPECTED, 1);
+        log.log(Log.Level.INFO, new Exception(), expected, 1);
         assertEquals(spi.level, Log.Level.INFO);
         assertEquals(spi.clazz, String.class);
         assertNull(spi.message);
@@ -169,65 +169,65 @@ public class LogTests {
         spi = new MockLogSpi();
         log = Log.getLog(String.class, spi);
         spi.isloggable = true;
-        final Exception EX = new Exception();
-        log.log(Log.Level.ERROR, EX, EXPECTED, 1);
+        final Exception ex = new Exception();
+        log.log(Log.Level.ERROR, ex, expected, 1);
         assertEquals(spi.message, "some message: 1");
         assertEquals(spi.level, Log.Level.ERROR);
         assertEquals(spi.clazz, String.class);
-        assertEquals(spi.exception, EX);
+        assertEquals(spi.exception, ex);
         assertTrue(spi.isloggable);
         // check that is goes through the condition..
         spi = new MockLogSpi();
         log = Log.getLog(String.class, spi);
         spi.isloggable = true;
-        final String EX_MSG = "dafdslfkj";
-        log.log(Log.Level.ERROR, new Exception(EX_MSG), null);
+        final String exMsg = "dafdslfkj";
+        log.log(Log.Level.ERROR, new Exception(exMsg), null);
         assertEquals(spi.level, Log.Level.ERROR);
         assertEquals(spi.clazz, String.class);
-        assertEquals(spi.message, EX_MSG);
+        assertEquals(spi.message, exMsg);
     }
 
     @Test
     public void checkBasicLogging() {
         for (Log.Level level : Log.Level.values()) {
-            final String EXPECTED_MSG = "Message: " + level;
+            final String expectedMsg = "Message: " + level;
             MockLogSpi spi = new MockLogSpi();
             spi.isloggable = true;
             Log log = Log.getLog(String.class, spi);
             if (Log.Level.ERROR.equals(level)) {
-                log.error(EXPECTED_MSG);
+                log.error(expectedMsg);
             } else if (Log.Level.INFO.equals(level)) {
-                log.info(EXPECTED_MSG);
+                log.info(expectedMsg);
             } else if (Log.Level.OK.equals(level)) {
-                log.ok(EXPECTED_MSG);
+                log.ok(expectedMsg);
             } else if (Log.Level.WARN.equals(level)) {
-                log.warn(EXPECTED_MSG);
+                log.warn(expectedMsg);
             }
             assertNull(spi.exception);
             assertTrue(spi.isloggable);
             assertEquals(spi.level, level);
             assertEquals(spi.clazz, String.class);
-            assertEquals(spi.message, EXPECTED_MSG);
+            assertEquals(spi.message, expectedMsg);
         }
     }
 
     @Test
     public void checkBasicLoggingOff() {
         for (Log.Level level : Log.Level.values()) {
-            final String EXPECTED_MSG = "Message: " + level;
+            final String expectedMsg = "Message: " + level;
             MockLogSpi spi = new MockLogSpi();
             spi.isloggable = false;
             Log log = Log.getLog(String.class, spi);
             if (null != level) {
                 switch (level) {
                     case ERROR ->
-                        log.error(EXPECTED_MSG);
+                        log.error(expectedMsg);
                     case INFO ->
-                        log.info(EXPECTED_MSG);
+                        log.info(expectedMsg);
                     case OK ->
-                        log.ok(EXPECTED_MSG);
+                        log.ok(expectedMsg);
                     case WARN ->
-                        log.warn(EXPECTED_MSG);
+                        log.warn(expectedMsg);
                     default -> {
                     }
                 }
@@ -243,26 +243,26 @@ public class LogTests {
     @Test
     public void checkBasicLoggingWithFormating() {
         for (Log.Level level : Log.Level.values()) {
-            final String FORMAT = "Message: {0}";
-            final String EXPECTED_MSG = "Message: " + level;
+            final String format = "Message: {0}";
+            final String expectedMsg = "Message: " + level;
             MockLogSpi spi = new MockLogSpi();
             spi.isloggable = true;
             Log log = Log.getLog(String.class, spi);
             if (null != level) {
                 switch (level) {
                     case ERROR ->
-                        log.error(FORMAT, level);
+                        log.error(format, level);
                     case INFO ->
-                        log.info(FORMAT, level);
+                        log.info(format, level);
                     case OK ->
-                        log.ok(FORMAT, level);
+                        log.ok(format, level);
                     case WARN ->
-                        log.warn(FORMAT, level);
+                        log.warn(format, level);
                     default -> {
                     }
                 }
             }
-            assertEquals(spi.message, EXPECTED_MSG);
+            assertEquals(spi.message, expectedMsg);
             assertNull(spi.exception);
             assertTrue(spi.isloggable);
             assertEquals(level, spi.level);
@@ -273,29 +273,29 @@ public class LogTests {
     @Test
     public void checkBasicLoggingWithExceptionAndFormating() {
         for (Log.Level level : Log.Level.values()) {
-            final String FORMAT = "Message: {0}";
-            final String EXPECTED_MSG = "Message: " + level;
-            final Exception EXPECTED_EX = new Exception(level.toString());
+            final String format = "Message: {0}";
+            final String expectedMsg = "Message: " + level;
+            final Exception expectedEx = new Exception(level.toString());
             MockLogSpi spi = new MockLogSpi();
             spi.isloggable = true;
             Log log = Log.getLog(String.class, spi);
             switch (level) {
                 case ERROR ->
-                    log.error(EXPECTED_EX, FORMAT, level);
+                    log.error(expectedEx, format, level);
                 case INFO ->
-                    log.info(EXPECTED_EX, FORMAT, level);
+                    log.info(expectedEx, format, level);
                 case OK ->
-                    log.ok(EXPECTED_EX, FORMAT, level);
+                    log.ok(expectedEx, format, level);
                 case WARN ->
-                    log.warn(EXPECTED_EX, FORMAT, level);
+                    log.warn(expectedEx, format, level);
                 default -> {
                 }
             }
-            assertEquals(spi.message, EXPECTED_MSG);
+            assertEquals(spi.message, expectedMsg);
             assertTrue(spi.isloggable);
             assertEquals(level, spi.level);
             assertEquals(spi.clazz, String.class);
-            assertEquals(spi.exception, EXPECTED_EX);
+            assertEquals(spi.exception, expectedEx);
         }
     }
 

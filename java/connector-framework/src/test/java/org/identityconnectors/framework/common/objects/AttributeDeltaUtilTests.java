@@ -52,11 +52,11 @@ public class AttributeDeltaUtilTests {
 
     public void testGetStringValue() {
         assertThrows(ClassCastException.class, () -> {
-            final String TEST_VALUE = "test value";
+            final String testValue = "test value";
             // test normal..
-            AttributeDelta attr = build("string", TEST_VALUE);
+            AttributeDelta attr = build("string", testValue);
             String value = getStringValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null..
             attr = build("stirng");
             value = getStringValue(attr);
@@ -69,11 +69,11 @@ public class AttributeDeltaUtilTests {
 
     @Test
     public void testGetAsStringValue() {
-        final String TEST_VALUE = "test value";
+        final String testValue = "test value";
         // test normal
-        AttributeDelta attr = build("string", TEST_VALUE);
+        AttributeDelta attr = build("string", testValue);
         String value = getAsStringValue(attr);
-        assertEquals(value, TEST_VALUE);
+        assertEquals(value, testValue);
         // test null
         attr = build("stirng");
         value = getStringValue(attr);
@@ -86,11 +86,11 @@ public class AttributeDeltaUtilTests {
 
     public void testGetIntegerValue() {
         assertThrows(ClassCastException.class, () -> {
-            final Integer TEST_VALUE = 1;
+            final Integer testValue = 1;
             // test normal
-            AttributeDelta attr = build("int", TEST_VALUE);
+            AttributeDelta attr = build("int", testValue);
             Integer value = getIntegerValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null
             attr = build("int");
             value = getIntegerValue(attr);
@@ -103,11 +103,11 @@ public class AttributeDeltaUtilTests {
 
     public void testGetLongValue() {
         assertThrows(ClassCastException.class, () -> {
-            final Long TEST_VALUE = 1L;
+            final Long testValue = 1L;
             // test normal
-            AttributeDelta attr = build("long", TEST_VALUE);
+            AttributeDelta attr = build("long", testValue);
             Long value = AttributeDeltaUtil.getLongValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null
             attr = build("long");
             value = AttributeDeltaUtil.getLongValue(attr);
@@ -120,11 +120,11 @@ public class AttributeDeltaUtilTests {
 
     public void testBigDecimalValue() {
         assertThrows(ClassCastException.class, () -> {
-            final BigDecimal TEST_VALUE = BigDecimal.ONE;
+            final BigDecimal testValue = BigDecimal.ONE;
             // test normal
-            AttributeDelta attr = build("big", TEST_VALUE);
+            AttributeDelta attr = build("big", testValue);
             BigDecimal value = AttributeDeltaUtil.getBigDecimalValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null
             attr = build("big");
             value = AttributeDeltaUtil.getBigDecimalValue(attr);
@@ -137,11 +137,11 @@ public class AttributeDeltaUtilTests {
 
     public void testGetSingleValue() {
         assertThrows(ClassCastException.class, () -> {
-            final Object TEST_VALUE = 1L;
+            final Object testValue = 1L;
             // test normal
-            AttributeDelta attr = build("long", TEST_VALUE);
+            AttributeDelta attr = build("long", testValue);
             Object value = AttributeDeltaUtil.getSingleValue(attr);
-            assertEquals(value, TEST_VALUE);
+            assertEquals(value, testValue);
             // test null
             attr = build("long");
             value = AttributeDeltaUtil.getSingleValue(attr);

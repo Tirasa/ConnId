@@ -140,22 +140,23 @@ public class ObjectPoolTests {
 
     @Test
     public void testWithManyThreads() throws Exception {
-        final int NUM_ITERATIONS = 10;
-        final int NUM_THREADS = 10;
-        final int MAX_CONNECTIONS = NUM_THREADS - 3; //make sure we get some waiting
+        final int numIterations = 10;
+        final int numThreads = 10;
+        final int maxConnnections = numThreads - 3; //make sure we get some waiting
+
         ObjectPoolConfiguration config = new ObjectPoolConfiguration();
-        config.setMaxObjects(MAX_CONNECTIONS);
-        config.setMaxIdle(MAX_CONNECTIONS);
-        config.setMinIdle(MAX_CONNECTIONS);
+        config.setMaxObjects(maxConnnections);
+        config.setMaxIdle(maxConnnections);
+        config.setMinIdle(maxConnnections);
         config.setMinEvictableIdleTimeMillis(60 * 1000);
         config.setMaxWait(60 * 1000);
         MyTestConnectionFactory fact = new MyTestConnectionFactory();
 
         ObjectPool<MyTestConnection> pool = new ObjectPool<>(fact, config);
 
-        MyTestThread[] threads = new MyTestThread[NUM_THREADS];
+        MyTestThread[] threads = new MyTestThread[numThreads];
         for (int i = 0; i < threads.length; i++) {
-            threads[i] = new MyTestThread(pool, NUM_ITERATIONS);
+            threads[i] = new MyTestThread(pool, numIterations);
             threads[i].start();
         }
 
@@ -165,10 +166,10 @@ public class ObjectPoolTests {
 
         //these should be the same since we never
         //should have disposed anything
-        assertEquals(MAX_CONNECTIONS, fact.getTotalCreatedConnections());
+        assertEquals(maxConnnections, fact.getTotalCreatedConnections());
         Statistics stats = pool.getStatistics();
         assertEquals(stats.getNumActive(), 0);
-        assertEquals(MAX_CONNECTIONS, stats.getNumIdle());
+        assertEquals(maxConnnections, stats.getNumIdle());
 
         pool.shutdown();
         stats = pool.getStatistics();
@@ -179,11 +180,11 @@ public class ObjectPoolTests {
 
     @Test
     public void testBadConnection() throws Exception {
-        final int MAX_CONNECTIONS = 3;
+        final int maxConnections = 3;
         ObjectPoolConfiguration config = new ObjectPoolConfiguration();
-        config.setMaxObjects(MAX_CONNECTIONS);
-        config.setMaxIdle(MAX_CONNECTIONS);
-        config.setMinIdle(MAX_CONNECTIONS);
+        config.setMaxObjects(maxConnections);
+        config.setMaxIdle(maxConnections);
+        config.setMinIdle(maxConnections);
         config.setMinEvictableIdleTimeMillis(60 * 1000);
         config.setMaxWait(60 * 1000);
         MyTestConnectionFactory fact = new MyTestConnectionFactory();

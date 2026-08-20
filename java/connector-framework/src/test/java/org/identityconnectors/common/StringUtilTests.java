@@ -46,18 +46,18 @@ public class StringUtilTests {
     @Test
     public void testIndexOfDigit() {
         int test = 0;
-        final String TEST0 = null;
-        final String TEST1 = "fsadlkjffj";
-        final String TEST2 = "abac2dafj";
-        final String TEST3 = "fa323jf4af";
+        final String test0 = null;
+        final String test1 = "fsadlkjffj";
+        final String test2 = "abac2dafj";
+        final String test3 = "fa323jf4af";
 
-        test = StringUtil.indexOfDigit(TEST0);
+        test = StringUtil.indexOfDigit(test0);
         assertEquals(test, -1);
-        test = StringUtil.indexOfDigit(TEST1);
+        test = StringUtil.indexOfDigit(test1);
         assertEquals(test, -1);
-        test = StringUtil.indexOfDigit(TEST2);
+        test = StringUtil.indexOfDigit(test2);
         assertEquals(test, 4);
-        test = StringUtil.indexOfDigit(TEST3);
+        test = StringUtil.indexOfDigit(test3);
         assertEquals(test, 2);
     }
 
@@ -66,18 +66,18 @@ public class StringUtilTests {
     @Test
     public void testIndexOfNonDigit() {
         int test = 0;
-        final String TEST0 = null;
-        final String TEST1 = "2131398750976";
-        final String TEST2 = "21312a9320484";
-        final String TEST3 = "32323aa323435";
+        final String test0 = null;
+        final String test1 = "2131398750976";
+        final String test2 = "21312a9320484";
+        final String test3 = "32323aa323435";
 
-        test = StringUtil.indexOfNonDigit(TEST0);
+        test = StringUtil.indexOfNonDigit(test0);
         assertEquals(test, -1);
-        test = StringUtil.indexOfNonDigit(TEST1);
+        test = StringUtil.indexOfNonDigit(test1);
         assertEquals(test, -1);
-        test = StringUtil.indexOfNonDigit(TEST2);
+        test = StringUtil.indexOfNonDigit(test2);
         assertEquals(test, 5);
-        test = StringUtil.indexOfNonDigit(TEST3);
+        test = StringUtil.indexOfNonDigit(test3);
         assertEquals(test, 5);
     }
 

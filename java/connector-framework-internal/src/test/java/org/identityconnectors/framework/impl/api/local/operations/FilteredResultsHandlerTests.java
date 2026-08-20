@@ -41,9 +41,9 @@ public class FilteredResultsHandlerTests {
 
     @Test
     public void withPassThruFilter() {
+        final int expected = 1000;
 
-        final int EXPECTED = 1000;
-        ConnectorObjectSearch data = new ConnectorObjectSearch(EXPECTED);
+        ConnectorObjectSearch data = new ConnectorObjectSearch(expected);
         ToListResultsHandler results = new ToListResultsHandler();
         data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(results,
                 new FilteredResultsHandler.PassThroughFilter()), null);
@@ -58,13 +58,13 @@ public class FilteredResultsHandlerTests {
             }
             actual++;
         }
-        assertEquals(actual, EXPECTED);
+        assertEquals(actual, expected);
     }
 
     @Test
     public void withNullFilter() {
-        final int EXPECTED = 1000;
-        ConnectorObjectSearch data = new ConnectorObjectSearch(EXPECTED);
+        final int expected = 1000;
+        ConnectorObjectSearch data = new ConnectorObjectSearch(expected);
         ToListResultsHandler results = new ToListResultsHandler();
         data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(results, null), null);
         int actual = 0;
@@ -78,19 +78,20 @@ public class FilteredResultsHandlerTests {
             }
             actual++;
         }
-        assertEquals(actual, EXPECTED);
+        assertEquals(actual, expected);
     }
 
     @Test
     public void withRangeFilter() {
-        final int DATA = 1000;
-        final long EXPECTED_LOW = 100;
-        final long EXPECTED_HIGH = 200;
-        ConnectorObjectSearch data = new ConnectorObjectSearch(DATA);
+        final int limit = 1000;
+        final long expectedLow = 100;
+        final long expectedHigh = 200;
+
+        ConnectorObjectSearch data = new ConnectorObjectSearch(limit);
         ToListResultsHandler results = new ToListResultsHandler();
-        data.search(ObjectClass.ACCOUNT, null, new FilteredResultsHandler(results, new RangeFilter(
-                EXPECTED_LOW, EXPECTED_HIGH)), null);
-        long actual = EXPECTED_LOW;
+        data.search(ObjectClass.ACCOUNT, null,
+                new FilteredResultsHandler(results, new RangeFilter(expectedLow, expectedHigh)), null);
+        long actual = expectedLow;
         for (ConnectorObject obj : results.getObjects()) {
             // check that we limit expected values..
             for (Attribute attr : obj.getAttributes()) {
@@ -101,7 +102,7 @@ public class FilteredResultsHandlerTests {
             }
             actual++;
         }
-        assertEquals(actual - EXPECTED_LOW, EXPECTED_HIGH - EXPECTED_LOW);
+        assertEquals(actual - expectedLow, expectedHigh - expectedLow);
     }
 
     public void nullProducer() {

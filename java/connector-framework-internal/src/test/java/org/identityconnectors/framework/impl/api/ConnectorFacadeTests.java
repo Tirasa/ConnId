@@ -596,15 +596,14 @@ public class ConnectorFacadeTests {
         ConnectorObject obj = facade.getObject(ObjectClass.ACCOUNT, newUid(1), null);
         assertEquals(obj.getUid(), newUid(1));
         // ok lets add an attribute that doesn't exist..
-        final String ADDED = "somthing to add to the object";
-        final String ATTR_NAME = "added";
+        final String added = "somthing to add to the object";
+        final String attrName = "added";
         Set<Attribute> addAttrSet;
         addAttrSet = CollectionUtil.newSet(obj.getAttributes());
-        addAttrSet.add(AttributeBuilder.build(ATTR_NAME, ADDED));
+        addAttrSet.add(AttributeBuilder.build(attrName, added));
         Name name = obj.getName();
         addAttrSet.remove(name);
-        Uid uid = facade.addAttributeValues(
-                ObjectClass.ACCOUNT, obj.getUid(), AttributeUtil.filterUid(addAttrSet), null);
+        facade.addAttributeValues(ObjectClass.ACCOUNT, obj.getUid(), AttributeUtil.filterUid(addAttrSet), null);
         // get back the object and see if there are the same..
         addAttrSet.add(name);
         ConnectorObject addO = new ConnectorObject(ObjectClass.ACCOUNT, addAttrSet);
@@ -612,11 +611,12 @@ public class ConnectorFacadeTests {
         assertEquals(obj, addO);
         // attempt to add on to an existing attribute..
         addAttrSet.remove(name);
-        uid = facade.addAttributeValues(ObjectClass.ACCOUNT, obj.getUid(), AttributeUtil.filterUid(addAttrSet), null);
+        Uid uid = facade.addAttributeValues(
+                ObjectClass.ACCOUNT, obj.getUid(), AttributeUtil.filterUid(addAttrSet), null);
         // get the object back out and check on it..
         obj = facade.getObject(ObjectClass.ACCOUNT, uid, null);
-        expected = AttributeBuilder.build(ATTR_NAME, ADDED, ADDED);
-        actual = obj.getAttributeByName(ATTR_NAME);
+        expected = AttributeBuilder.build(attrName, added, added);
+        actual = obj.getAttributeByName(attrName);
         assertEquals(actual, expected);
         // attempt to delete a value from an attribute..
         Set<Attribute> deleteAttrs = CollectionUtil.newSet(addO.getAttributes());
@@ -624,8 +624,8 @@ public class ConnectorFacadeTests {
         uid = facade.removeAttributeValues(
                 ObjectClass.ACCOUNT, addO.getUid(), AttributeUtil.filterUid(deleteAttrs), null);
         obj = facade.getObject(ObjectClass.ACCOUNT, uid, null);
-        expected = AttributeBuilder.build(ATTR_NAME, ADDED);
-        actual = obj.getAttributeByName(ATTR_NAME);
+        expected = AttributeBuilder.build(attrName, added);
+        actual = obj.getAttributeByName(attrName);
         assertEquals(actual, expected);
         // attempt to delete an attribute that doesn't exist..
         Set<Attribute> nonExist = new HashSet<>();

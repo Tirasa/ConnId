@@ -145,8 +145,8 @@ public final class JavaClassProperties {
                 type = desc.getPropertyType();
             }
             if (!FrameworkUtil.isSupportedConfigurationType(type)) {
-                final String MSG = "Property type ''{0}'' is not supported.";
-                throw new IllegalArgumentException(MessageFormat.format(MSG, type));
+                throw new IllegalArgumentException(
+                        MessageFormat.format("Property type ''{0}'' is not supported.", type));
             }
 
             Object value = getter.invoke(defaultObject);
