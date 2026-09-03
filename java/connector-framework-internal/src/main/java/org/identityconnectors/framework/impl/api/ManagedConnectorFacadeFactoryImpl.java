@@ -29,6 +29,7 @@ import org.identityconnectors.common.logging.Log;
 import org.identityconnectors.framework.api.APIConfiguration;
 import org.identityconnectors.framework.api.ConnectorFacade;
 import org.identityconnectors.framework.api.ConnectorInfo;
+import org.identityconnectors.framework.api.ConnectorKey;
 import org.identityconnectors.framework.impl.api.local.LocalConnectorFacadeImpl;
 
 public class ManagedConnectorFacadeFactoryImpl extends ConnectorFacadeFactoryImpl {
@@ -46,7 +47,9 @@ public class ManagedConnectorFacadeFactoryImpl extends ConnectorFacadeFactoryImp
     @Override
     public ConnectorFacade newInstance(final APIConfiguration config) {
         ConnectorFacade facade = super.newInstance(config);
-        ConnectorFacade ret = CACHE.putIfAbsent(facade.getConnectorFacadeKey(), facade);
+        final ConnectorKey connectorKey = ((APIConfigurationImpl) config).getConnectorInfo().getConnectorKey();
+        String cacheKey = cacheKey(connectorKey, facade.getConnectorFacadeKey());
+        ConnectorFacade ret = CACHE.putIfAbsent(cacheKey, facade);
         if (null != ret) {
             LOG.ok("ConnectorFacade found in cache");
             facade = ret;
@@ -57,17 +60,31 @@ public class ManagedConnectorFacadeFactoryImpl extends ConnectorFacadeFactoryImp
 
     @Override
     public ConnectorFacade newInstance(final ConnectorInfo connectorInfo, String config) {
-        ConnectorFacade facade = CACHE.get(config);
+        final String cacheKey = cacheKey(connectorInfo.getConnectorKey(), config);
+        ConnectorFacade facade = CACHE.get(cacheKey);
         if (null == facade) {
             // new ConnectorFacade creation must remain cheap operation
             facade = super.newInstance(connectorInfo, config);
-            ConnectorFacade ret = CACHE.putIfAbsent(facade.getConnectorFacadeKey(), facade);
+            ConnectorFacade ret = CACHE.putIfAbsent(cacheKey, facade);
             if (null != ret) {
                 LOG.ok("ConnectorFacade found in cache");
                 facade = ret;
             }
         }
         return facade;
+    }
+
+    /**
+     * Identifies a cached facade by its bundle version as well as by its configuration.
+     * <p>
+     * The configuration alone is not enough. It is serialized without the ConnectorInfo, so two versions of the same
+     * connector carrying the same configuration produce the same connector facade key, and the version that was
+     * looked up first would answer for both: an operation would silently run the code of a bundle it did not select.
+     * Including the ConnectorKey lets several versions of one bundle be installed side by side and still be told
+     * apart. A local and a remote ConnectorInfo sharing a ConnectorKey still map to the same entry.
+     */
+    private static String cacheKey(final ConnectorKey connectorKey, final String connectorFacadeKey) {
+        return connectorKey.toString() + '\n' + connectorFacadeKey;
     }
 
     /**
