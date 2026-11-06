@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.identityconnectors.common.CollectionUtil;
 
 /**
@@ -97,17 +98,24 @@ public class AttributeDelta extends BaseAttributeDelta {
     /**
      * Create an attribute delta.
      */
-    AttributeDelta(String name, List<Object> valuesToAdd, List<Object> valuesToRemove, List<Object> valuesToReplace) {
+    AttributeDelta(
+            final String name,
+            final List<Object> valuesToAdd,
+            final List<Object> valuesToRemove,
+            final List<Object> valuesToReplace) {
+
         super(name);
+
         // sanity
         if (valuesToReplace != null && (valuesToAdd != null || valuesToRemove != null)) {
             throw new IllegalArgumentException("Delta of attribute '" + name
                     + "' may be either replace or add/remove but not both at the same time");
         }
+
         // copy to prevent corruption..
-        this.valuesToAdd = (valuesToAdd == null) ? null : CollectionUtil.newReadOnlyList(valuesToAdd);
-        this.valuesToRemove = (valuesToRemove == null) ? null : CollectionUtil.newReadOnlyList(valuesToRemove);
-        this.valuesToReplace = (valuesToReplace == null) ? null : CollectionUtil.newReadOnlyList(valuesToReplace);
+        this.valuesToAdd = valuesToAdd == null ? null : CollectionUtil.newReadOnlyList(valuesToAdd);
+        this.valuesToRemove = valuesToRemove == null ? null : CollectionUtil.newReadOnlyList(valuesToRemove);
+        this.valuesToReplace = valuesToReplace == null ? null : CollectionUtil.newReadOnlyList(valuesToReplace);
     }
 
     // Needs to be present for backwards binary compatibility.
@@ -117,23 +125,15 @@ public class AttributeDelta extends BaseAttributeDelta {
     }
 
     public List<Object> getValuesToAdd() {
-        return (this.valuesToAdd == null) ? null : Collections.unmodifiableList(this.valuesToAdd);
+        return valuesToAdd == null ? null : Collections.unmodifiableList(valuesToAdd);
     }
 
     public List<Object> getValuesToRemove() {
-        return (this.valuesToRemove == null) ? null : Collections.unmodifiableList(this.valuesToRemove);
+        return valuesToRemove == null ? null : Collections.unmodifiableList(valuesToRemove);
     }
 
     public List<Object> getValuesToReplace() {
-        return (this.valuesToReplace == null) ? null : Collections.unmodifiableList(this.valuesToReplace);
-    }
-
-    /**
-     * Determines if the 'name' matches this {@link AttributeDelta}.
-     */
-    @Override
-    public boolean is(String name) {
-        return super.is(name);
+        return valuesToReplace == null ? null : Collections.unmodifiableList(valuesToReplace);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class AttributeDelta extends BaseAttributeDelta {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         // test identity
         if (this == obj) {
             return true;
@@ -166,35 +166,31 @@ public class AttributeDelta extends BaseAttributeDelta {
             return false;
         }
 
-        if (!CollectionUtil.equals(valuesToReplace, other.valuesToReplace)) {
-            return false;
-        }
-
-        return true;
+        return CollectionUtil.equals(valuesToReplace, other.valuesToReplace);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.valuesToAdd);
-        hash = 97 * hash + Objects.hashCode(this.valuesToRemove);
-        hash = 97 * hash + Objects.hashCode(this.valuesToReplace);
+        hash = 97 * hash + Objects.hashCode(valuesToAdd);
+        hash = 97 * hash + Objects.hashCode(valuesToRemove);
+        hash = 97 * hash + Objects.hashCode(valuesToReplace);
         return hash;
     }
 
     @Override
-    public Attribute applyTo(Attribute attr) {
-        var values = attr != null ? new ArrayList<>(attr.getValue()) : new ArrayList<>();
+    public Attribute applyTo(final Attribute attr) {
         if (valuesToReplace != null) {
             return new Attribute(getName(), List.copyOf(valuesToReplace));
         }
-        var ret = new ArrayList<>(values);
-        if (valuesToRemove != null) {
-            ret.removeAll(valuesToRemove);
-        }
-        if (valuesToAdd != null) {
-            ret.addAll(valuesToAdd);
-        }
-        return new Attribute(getName(), ret);
+
+        var values = Optional.ofNullable(attr).
+                map(Attribute::getValue).
+                filter(Objects::nonNull).
+                map(ArrayList::new).
+                orElseGet(() -> new ArrayList<>());
+        Optional.ofNullable(valuesToRemove).ifPresent(values::removeAll);
+        Optional.ofNullable(valuesToAdd).ifPresent(values::addAll);
+        return new Attribute(getName(), values);
     }
 }

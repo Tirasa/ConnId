@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.identityconnectors.common.CollectionUtil;
 
 /**
@@ -86,10 +87,10 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
     /**
      * Create an attribute delta.
      */
-    ComplexAttributeDelta(String name, List<ComplexValueDelta> valueDeltas) {
+    ComplexAttributeDelta(final String name, final List<ComplexValueDelta> valueDeltas) {
         super(name);
         // copy to prevent corruption..
-        this.valueDeltas = (valueDeltas == null) ? null : CollectionUtil.newReadOnlyList(valueDeltas);
+        this.valueDeltas = valueDeltas == null ? null : CollectionUtil.newReadOnlyList(valueDeltas);
     }
 
     @Override
@@ -108,7 +109,7 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         // test identity
         if (this == obj) {
             return true;
@@ -122,26 +123,24 @@ public class ComplexAttributeDelta extends BaseAttributeDelta {
         }
         ComplexAttributeDelta other = (ComplexAttributeDelta) obj;
 
-        if (!CollectionUtil.equals(valueDeltas, other.valueDeltas)) {
-            return false;
-        }
-
-        return true;
+        return CollectionUtil.equals(valueDeltas, other.valueDeltas);
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.valueDeltas);
+        hash = 97 * hash + Objects.hashCode(valueDeltas);
         return hash;
     }
 
     @Override
-    public Attribute applyTo(Attribute attribute) {
-        var values = attribute != null ? new ArrayList<>(attribute.getValue()) : new ArrayList<>();
-        for (ComplexValueDelta delta : valueDeltas) {
-            delta.applyTo(values);
-        }
+    public Attribute applyTo(final Attribute attr) {
+        var values = Optional.ofNullable(attr).
+                map(Attribute::getValue).
+                filter(Objects::nonNull).
+                map(ArrayList::new).
+                orElseGet(() -> new ArrayList<>());
+        valueDeltas.forEach(delta -> delta.applyTo(values));
         return new Attribute(getName(), values);
     }
 }

@@ -23,8 +23,6 @@
  */
 package org.identityconnectors.framework.common.objects;
 
-import static org.identityconnectors.framework.common.objects.AttributeDeltaBuilder.build;
-import static org.identityconnectors.framework.common.objects.LocaleTestUtil.resetLocaleCache;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,60 +33,60 @@ import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AttributeDeltaTests {
+class AttributeDeltaTests {
 
     @BeforeEach
     public void before() {
-        resetLocaleCache();
+        LocaleTestUtil.resetLocaleCache();
     }
 
     /**
      * Test the case insensitivity.
      */
     @Test
-    public void testName() {
-        AttributeDelta actual = build("Jack");
-        assertEquals(actual, build("jacK"));
+    void name() {
+        AttributeDelta actual = AttributeDeltaBuilder.build("Jack");
+        assertEquals(actual, AttributeDeltaBuilder.build("jacK"));
         assertTrue(actual.is("JacK"));
     }
 
     @Test
-    public void testArrays() {
+    void arrays() {
         List<byte[]> values1 = new ArrayList<>();
         values1.add(new byte[] { 0, 1 });
         List<byte[]> values2 = new ArrayList<>();
         values2.add(new byte[] { 0, 1 });
         //test build attributeDelta with valuesToReplace
-        AttributeDelta attribute1 = build("test", values1);
-        AttributeDelta attribute2 = build("test", values2);
+        AttributeDelta attribute1 = AttributeDeltaBuilder.build("test", values1);
+        AttributeDelta attribute2 = AttributeDeltaBuilder.build("test", values2);
         assertEquals(attribute1, attribute2, "test failed with valuesToReplace");
         //test build attributeDelta with valuesToAdd and null for valueToRemove
-        attribute1 = build("test", values1, null);
-        attribute2 = build("test", values2, null);
+        attribute1 = AttributeDeltaBuilder.build("test", values1, null);
+        attribute2 = AttributeDeltaBuilder.build("test", values2, null);
         assertEquals(attribute1, attribute2, "test failed with valuesToAdd");
         //test build attributeDelta with valueToRemove and null for valueToAdd
-        attribute1 = build("test", null, values1);
-        attribute2 = build("test", null, values2);
+        attribute1 = AttributeDeltaBuilder.build("test", null, values1);
+        attribute2 = AttributeDeltaBuilder.build("test", null, values2);
         assertEquals(attribute1, attribute2, "test failed with valueToRemove");
         //test build attributeDelta with valueToAdd and valueToRemove
-        attribute1 = build("test", values1, values1);
-        attribute2 = build("test", values2, values2);
+        attribute1 = AttributeDeltaBuilder.build("test", values1, values1);
+        attribute2 = AttributeDeltaBuilder.build("test", values2, values2);
         assertEquals(attribute1, attribute2, "test failed with valueToAdd and valueToRemove");
     }
 
     @Test
-    public void testNormal() {
-        assertEquals(build("test", 1, 2, 4), build("test", 1, 2, 4));
-        assertFalse(build("test", 1, 2, 4).equals(build("test", 2, 4)));
+    void normal() {
+        assertEquals(AttributeDeltaBuilder.build("test", 1, 2, 4), AttributeDeltaBuilder.build("test", 1, 2, 4));
+        assertFalse(AttributeDeltaBuilder.build("test", 1, 2, 4).equals(AttributeDeltaBuilder.build("test", 2, 4)));
     }
 
     @Test
-    public void testEqualsObservesLocale() {
+    void equalsObservesLocale() {
         Locale defLocale = Locale.getDefault();
         try {
             Locale.setDefault(Locale.of("tr"));
-            AttributeDelta attribute1 = build("i");
-            AttributeDelta attribute2 = build("I");
+            AttributeDelta attribute1 = AttributeDeltaBuilder.build("i");
+            AttributeDelta attribute2 = AttributeDeltaBuilder.build("I");
             assertFalse(attribute1.equals(attribute2));
         } finally {
             Locale.setDefault(defLocale);
@@ -96,17 +94,27 @@ public class AttributeDeltaTests {
     }
 
     @Test
-    public void testHashCodeIndependentOnLocale() {
+    void hashCodeIndependentOnLocale() {
         Locale defLocale = Locale.getDefault();
         try {
             Locale.setDefault(Locale.US);
-            final AttributeDelta attribute = build("i");
-            final int hash1 = attribute.hashCode();
+            AttributeDelta attribute = AttributeDeltaBuilder.build("i");
+            int hash1 = attribute.hashCode();
             Locale.setDefault(Locale.of("tr"));
             int hash2 = attribute.hashCode();
             assertEquals(hash1, hash2);
         } finally {
             Locale.setDefault(defLocale);
         }
+    }
+
+    @Test
+    void isseBASE104() {
+        Attribute current = AttributeBuilder.build("description");
+        AttributeDelta delta = AttributeDeltaBuilder.build("description", "new");
+
+        Attribute updated = delta.applyTo(current);
+        assertEquals("description", updated.getName());
+        assertEquals(List.of("new"), updated.getValue());
     }
 }

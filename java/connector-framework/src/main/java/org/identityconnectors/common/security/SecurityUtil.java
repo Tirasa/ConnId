@@ -154,7 +154,7 @@ public final class SecurityUtil {
      */
     public static String decrypt(GuardedString guardedString) {
         String[] clearText = new String[1];
-        guardedString.access((clearChars) -> {
+        guardedString.access(clearChars -> {
             clearText[0] = new String(clearChars);
         });
         return clearText[0];
@@ -169,7 +169,7 @@ public final class SecurityUtil {
      */
     public static byte[] decrypt(GuardedByteArray guardedByteArray) {
         byte[][] clearByte = new byte[1][];
-        guardedByteArray.access((clearBytes) -> {
+        guardedByteArray.access(clearBytes -> {
             clearByte[0] = clearBytes;
         });
         return clearByte[0];

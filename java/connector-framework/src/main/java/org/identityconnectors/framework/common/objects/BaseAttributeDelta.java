@@ -33,7 +33,7 @@ public abstract class BaseAttributeDelta {
      */
     private final String name;
 
-    public BaseAttributeDelta(String name) {
+    public BaseAttributeDelta(final String name) {
         if (StringUtil.isBlank(name)) {
             throw new IllegalArgumentException("Name must not be blank!");
         }
@@ -44,7 +44,7 @@ public abstract class BaseAttributeDelta {
         return name;
     }
 
-    public boolean is(String name) {
+    public boolean is(final String name) {
         return NameUtil.namesEqual(this.name, name);
     }
 
@@ -65,11 +65,11 @@ public abstract class BaseAttributeDelta {
         return bld.toString();
     }
 
-    protected void extendToStringMap(Map<String, Object> map) {
+    protected void extendToStringMap(final Map<String, Object> map) {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
