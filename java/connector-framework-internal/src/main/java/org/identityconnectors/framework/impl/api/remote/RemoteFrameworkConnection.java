@@ -106,11 +106,12 @@ public class RemoteFrameworkConnection implements Closeable {
             }
         } catch (Exception e) {
             try {
-                LOG.warn("Closing socket for remote framework connection because of error {}", e.getLocalizedMessage());
+                LOG.warn("Closing socket for remote framework connection because of error {0}",
+                        e.getLocalizedMessage());
                 localSocket.close();
             } catch (Exception e2) {
                 /* ignore */
-                LOG.warn("Error while closing socket for remote framework connection {}", e.getLocalizedMessage());
+                LOG.warn("Error while closing socket for remote framework connection {0}", e2.getLocalizedMessage());
             }
             throw e;
         }
