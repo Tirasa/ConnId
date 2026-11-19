@@ -215,7 +215,7 @@ public final class Main {
     }
 
     private static void ensureLoggingNotInitialized() throws Exception {
-        Field field = Log.class.getDeclaredField("cacheSPI");
+        Field field = Log.class.getDeclaredField("CACHE_SPI");
         field.setAccessible(true);
         if (field.get(null) != null) {
             throw new IllegalStateException("Logging has already been initialized");
